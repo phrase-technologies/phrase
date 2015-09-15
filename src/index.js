@@ -1,5 +1,5 @@
 import './index.scss';
 import React from 'react';
-import App from './components/App';
+import Layout from './components/Layout';
 
-React.render(<App />, document.getElementById('root'));
+React.render(<Layout />, document.getElementById('root'));

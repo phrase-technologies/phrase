@@ -27,7 +27,11 @@ module.exports = {
         test: /\.scss$/,
         loaders: ['style', 'css', 'autoprefixer', 'sass'],
         include: path.join(__dirname, 'src')
-      }
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg|eot|ttf|woff|woff2|otf)(\?v=\d+\.\d+\.\d+)?$/,
+        loaders: ['file']
+      },      
     ]
   }
 };
