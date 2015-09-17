@@ -30,7 +30,9 @@
   },
   "dependencies": {
     "bootstrap-sass": "3.3.5",
-    "font-awesome": "^4.4.0",
-    "react": "0.13.0"
+    "font-awesome": "4.4.0",
+    "react": "0.13.0",
+    "react-redux": "2.1.2",
+    "redux": "3.0.0"
   }
 }

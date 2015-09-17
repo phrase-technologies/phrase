@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Transport from './Transport';
+import Transport from './Transport.js';
 
 export default class Layout extends Component {
   render() {
