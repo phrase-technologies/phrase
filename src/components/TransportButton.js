@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 
 export default class TransportButton extends Component {
   render() {
-    var buttonClasses = `btn btn-link btn-glow btn-lg ${this.props.toggle ? "active" : ""}`;
+    var colorClass = ` ${this.props.color ? `active-${this.props.color}` : ""}`;
+    var activeClass = ` ${this.props.toggle ? "active" : ""}`;
+    var buttonClasses = `btn btn-link btn-glow btn-lg ` + activeClass + colorClass;
     var iconClasses = `fa fa-${this.props.type}`;
 
     return (

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { TRANSPORT_PLAY, TRANSPORT_STOP, TRANSPORT_REWIND } from '../actions/actions.js';
+import { TRANSPORT_PLAY, TRANSPORT_STOP, TRANSPORT_REWIND, TRANSPORT_RECORD } from '../actions/actions.js';
 
 
 function transportControls(state = [], action) {
@@ -8,6 +8,8 @@ function transportControls(state = [], action) {
       return Object.assign({}, state, {playing: true});
     case TRANSPORT_STOP:
       return Object.assign({}, state, {playing: false});
+    case TRANSPORT_RECORD:
+      return Object.assign({}, state, {armedForRecording: !state.armedForRecording});
     default:
       return state;
   }

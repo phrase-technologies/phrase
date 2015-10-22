@@ -34,12 +34,14 @@ a,
     color: #FFF;
     text-shadow: 0 0 10px #FFF;
   }
-  &.active-red {
-    color: #F00;
-    text-shadow: 0 0 16px #F44;
-  }
-  &.active-green {
-    color: #0F0;
-    text-shadow: 0 0 16px #8F8;
+  &.active {
+    &.active-red {
+      color: #F00;
+      text-shadow: 0 0 16px #F44;
+    }
+    &.active-green {
+      color: #0F0;
+      text-shadow: 0 0 16px #8F8;
+    }
   }
 }
