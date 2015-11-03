@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { transportAction,
+         TRANSPORT_TEMPO
+       } from '../actions/actions.js';
 
 export default class PianoRoll extends Component {
 
@@ -22,9 +26,9 @@ export default class PianoRoll extends Component {
   }
 
   viewRenderLoop() {
-    var r = (this.data.count + 0) % 10;
-    var g = (this.data.count + 4) % 10;
-    var b = (this.data.count + 8) % 10;
+    var r = (this.data.count + 0) % (this.props.tempo % 10);
+    var g = (this.data.count + 4) % (this.props.tempo % 10);
+    var b = (this.data.count + 8) % (this.props.tempo % 10);
     this.data.canvasContext.fillStyle   = "#" + r + g + b;
     this.data.canvasContext.fillRect( this.data.count % 500, this.data.count % 200, 100, 100 );
     this.data.count++;
@@ -40,7 +44,24 @@ export default class PianoRoll extends Component {
     var buttonClasses = this.props.color;
 
     return (
-      <div className="piano-roll"></div>
+      <div className="piano-roll">
+        <input value={this.props.tempo} type="number" min="1" max="999" step="1" onChange={this.props.setTempo} />
+      </div>
     );
   }
 }
+
+
+function mapStateToProps(state) {
+  return {
+    tempo: state.transportControls.tempo
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setTempo: (event) => dispatch(transportAction(TRANSPORT_TEMPO, event.target.value))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PianoRoll);

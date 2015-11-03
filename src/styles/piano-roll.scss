@@ -12,4 +12,10 @@
     right: 0;
     bottom: 0;
   }
+
+  input {
+    position: absolute;
+    z-index: 10;
+    color: #000;
+  }
 }
