@@ -1,9 +1,22 @@
+$piano-roll-corner-radius: 4px;
 .piano-roll {
+  position: absolute;
+  top:    10px;
+  left:   10px;
+  right:  10px;
+  bottom: 10px;
+}
+
+.piano-roll-timeline {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
+  right: 50px;
   bottom: 0;
+  box-shadow: 0 -1px 3px #000, 0 1px 3px #FFF;
+  border: 1px solid #000;
+  border-radius: $piano-roll-corner-radius 0 $piano-roll-corner-radius $piano-roll-corner-radius;
+  background: #333;
 
   canvas {
     position: absolute;
@@ -12,10 +25,91 @@
     right: 0;
     bottom: 0;
   }
+}
+.piano-roll-keyboard {
+  position: absolute;
+  top: 0;
+  width: 50px;
+  right: 0;
+  bottom: 50px;
+  box-shadow: 0 -1px 3px #000, 0 1px 3px #FFF;
+  border: 1px solid #000;
+  border-left: 0;
+  border-radius: 0 $piano-roll-corner-radius $piano-roll-corner-radius 0;
+  background: #333;
+}
+$piano-roll-scroll-corner-radius: 6px;
+.piano-roll-scroll-gutter {
+  position: absolute;
+  height: 10px;
+  left: 10px;
+  right: 50px + 10px;
+  bottom: 10px;
+  box-shadow: inset 0 2px 8px #000,
+              0 0 10px 5px #333;
+  border-radius: $piano-roll-scroll-corner-radius;
+  background: #222;
 
-  input {
-    position: absolute;
-    z-index: 10;
-    color: #000;
+  transition: height 0.125s, border-radius 0.125s;
+
+  &:hover {
+    border-radius: 2px;
+    height: 16px;
+
+    .piano-roll-scroll-bar {
+      border-radius: 2px;
+
+      &:before,
+      &:after {
+        border-color: #222;
+      }
+    }
   }
 }
+.piano-roll-scroll-bar {
+  position: absolute;
+  top: 1px;
+  left: 10%;
+  right: 40%;
+  bottom: 1px;
+  box-shadow: 0 0 3px #000,
+        inset 0 -3px 4px rgba(  0,   0,   0, 0.125),
+        inset 0  3px 4px rgba(255, 255, 255, 0.125);
+  border-radius: $piano-roll-scroll-corner-radius;
+  background: #555;
+  background-image: linear-gradient(to left, #555, #666, #555);
+
+  transition: height 0.125s, border-radius 0.125s;
+
+  &:before,
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    width: 3px;
+    z-index: 2;
+    border: 1px solid transparent;
+    border-top: 0;
+    border-bottom: 0;
+
+    transition: border-color 0.125s;
+  }
+  &:before { left:  2px; }
+  &:after  { right: 2px; }
+}
+.piano-roll-scroll-min,
+.piano-roll-scroll-max {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  z-index: 3;
+
+  &:hover {
+    cursor: move;
+  }
+}
+.piano-roll-scroll-min { left:  0; }
+.piano-roll-scroll-max { right: 0; }
