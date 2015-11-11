@@ -20,10 +20,10 @@ export default class CanvasComponent extends Component {
     this.data.container = React.findDOMNode(this);
     this.data.container.appendChild(this.data.canvas);
     this.data.canvasContext = this.data.canvas.getContext("2d");
-    this.data.canvasContext.scale( this.data.pixelScale, this.data.pixelScale );
 
     // Set Scaling
-    this.data.pixelScale    = window.devicePixelRatio || 1;
+    this.data.pixelScale = window.devicePixelRatio || 1;
+    this.data.canvasContext.scale( this.data.pixelScale, this.data.pixelScale );
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize();
 
@@ -46,8 +46,8 @@ export default class CanvasComponent extends Component {
   }
 
   handleResize() {
-    this.data.canvas.width  = this.data.width  = this.data.container.clientWidth;
-    this.data.canvas.height = this.data.height = this.data.container.clientHeight;
+    this.data.canvas.width  = this.data.width  = this.data.container.clientWidth  * this.data.pixelScale;
+    this.data.canvas.height = this.data.height = this.data.container.clientHeight * this.data.pixelScale;
   }
 
   render() {
@@ -72,5 +72,10 @@ export default class CanvasComponent extends Component {
     }
     this.data.canvasContext.moveTo( x1, y1 );
     this.data.canvasContext.lineTo( x2, y2 );
+  };
+
+  backgroundFill(color) {
+    this.data.canvasContext.fillStyle = color;
+    this.data.canvasContext.fillRect( 0, 0, this.data.width, this.data.height );
   };
 }

@@ -17,7 +17,11 @@ export default class PianoRollTimeline extends PianoRollBase {
   }
 
   renderFrame() {
+    this.backgroundFill("#444444");
     this.renderKeyLines();
+    this.data.canvasContext.fillStyle = "#303030";
+    var topEdge = this.data.height - (50 - 1)*this.data.pixelScale;
+    this.data.canvasContext.fillRect( 0, topEdge, this.data.width, this.data.height );
     this.renderBarLines();
   }
 
@@ -28,6 +32,10 @@ export default class PianoRollTimeline extends PianoRollBase {
     // Styles
     this.data.canvasContext.lineWidth = 1.0;
     this.data.canvasContext.setLineDash( key.alt ? [2,4] : [] );
+    this.data.canvasContext.font = 11*this.data.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif";
+    this.data.canvasContext.fillStyle = "#AAAAAA";
+    this.data.canvasContext.textAlign = "start";
+
     // Draw lines for each beat
     var minBar = this.percentToBar( this.props.barMin ) - 1;
     var maxBar = this.percentToBar( this.props.barMax );
@@ -35,13 +43,27 @@ export default class PianoRollTimeline extends PianoRollBase {
     {
       // Start each line as a separate path (different colors)
       this.data.canvasContext.beginPath();
-      this.data.canvasContext.strokeStyle = ( bar % 1 ) ? "#444" : "#777";
+      this.data.canvasContext.strokeStyle = ( bar % 1 ) ? "#383838" : "#2C2C2C";
 
       var xPosition = this.closestHalfPixel( this.barToXCoord( bar ) );
       this.drawLine( xPosition, 0, xPosition, this.data.height );
 
       // Draw each line (different colors)
       this.data.canvasContext.stroke();
+
+      // Bar Numbers + markers
+      if( bar % 1 === 0 )
+      {
+        this.data.canvasContext.beginPath();
+        let bottomEdge = this.closestHalfPixel( this.data.height - 50*this.data.pixelScale );
+        let bottomEdgeText = bottomEdge + 14*this.data.pixelScale;
+        let bottomEdgeLine = bottomEdge + 2*this.data.pixelScale;
+        let leftEdge = xPosition + 4*this.data.pixelScale;
+        this.data.canvasContext.fillText(bar + 1, leftEdge, bottomEdgeText);
+        this.data.canvasContext.strokeStyle = "#555555";
+        this.drawLine( xPosition, bottomEdgeLine, xPosition, this.data.height );
+        this.data.canvasContext.stroke();
+      }
     }    
   }
 
@@ -49,28 +71,47 @@ export default class PianoRollTimeline extends PianoRollBase {
     // Styles
     this.data.canvasContext.lineWidth   = 1.0;
     this.data.canvasContext.setLineDash([]);
-    this.data.canvasContext.strokeStyle = "#444";
-    this.data.canvasContext.fillStyle   = "#222";
+    this.data.canvasContext.strokeStyle = "#383838";
+    this.data.canvasContext.fillStyle   = "#3D3D3D";
 
     // Each edge + black key fills
     var minKey = this.percentToKey( this.props.keyMin );
     var maxKey = this.percentToKey( this.props.keyMax );
-    for( var key = minKey; key <= maxKey; key++ )
+    for( var key = minKey; key < maxKey; key++ )
     {
-      var prevEdge = this.closestHalfPixel( this.keyToYCoord( key - 1 ) ) + 1;   // Extra pixel to account for stroke width
-      var nextEdge = this.closestHalfPixel( this.keyToYCoord( key     ) ) + 1;   // Extra pixel to account for stroke width
+      var prevEdge = this.closestHalfPixel( this.keyToYCoord( key     ) ) + 1;   // Extra pixel to account for stroke width
+      var nextEdge = this.closestHalfPixel( this.keyToYCoord( key + 1 ) ) + 1;   // Extra pixel to account for stroke width
 
       // Stroke the edge between rows
       if( prevEdge > 0.5 ) // Skip first edge (we have a border to serve that purpose)
         this.drawLine( 0, prevEdge, this.data.width, prevEdge, false );
 
       // Fill the row for the black keys
-      if( key % 12 in {0:true, 2:true, 5: true, 7: true, 10: true} )
+      if( key % 12 in {2:true, 4:true, 6: true, 9: true, 11: true} )
         this.data.canvasContext.fillRect( 0, nextEdge, this.data.width, prevEdge - nextEdge );
-    }
 
-    // Stroke it all at the end!
-    this.data.canvasContext.stroke(); 
+      // Stroke it each octave to get different colours
+      if( key % 12 === 0 )
+      {
+        this.data.canvasContext.stroke();
+        this.data.canvasContext.beginPath();
+        this.data.canvasContext.strokeStyle = "#222222";
+      }
+      else if( key % 12 === 1 )
+      {
+        this.data.canvasContext.stroke();
+        this.data.canvasContext.beginPath();
+        this.data.canvasContext.strokeStyle = "#383838";
+      }
+    }
+    // One final stroke to end the last octave!
+    this.data.canvasContext.stroke();
+
+    this.data.canvasContext.beginPath();
+    this.data.canvasContext.strokeStyle = "#000000";
+    var bottomEdge = this.closestHalfPixel( this.data.height - (50 - 1)*this.data.pixelScale );
+    this.drawLine( 0, bottomEdge, this.data.width, bottomEdge, false );
+    this.data.canvasContext.stroke();
   }  
 }
 

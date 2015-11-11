@@ -24,6 +24,9 @@ $piano-roll-corner-radius: 4px;
     left: 0;
     right: 0;
     bottom: 0;
+    width: 100%;
+  //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
+    border-radius: $piano-roll-corner-radius 0 $piano-roll-corner-radius $piano-roll-corner-radius;
   }
 }
 .piano-roll-keyboard {
@@ -45,8 +48,7 @@ $piano-roll-scroll-corner-radius: 6px;
   left: 10px;
   right: 50px + 10px;
   bottom: 10px;
-  box-shadow: inset 0 2px 8px #000,
-              0 0 10px 5px #333;
+  box-shadow: inset 0 2px 8px #000;
   border-radius: $piano-roll-scroll-corner-radius;
   background: #222;
 
