@@ -72,7 +72,6 @@ PianoRoll.defaultProps = {
 
 
 function mapStateToProps(state) {
-  console.log( state.pianoRoll );
   return {
     barMin: state.pianoRoll.barMin,
     barMax: state.pianoRoll.barMax,

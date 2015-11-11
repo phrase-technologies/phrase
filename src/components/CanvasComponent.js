@@ -46,6 +46,7 @@ export default class CanvasComponent extends Component {
   }
 
   handleResize() {
+    this.data.pixelScale = window.devicePixelRatio || 1;
     this.data.canvas.width  = this.data.width  = this.data.container.clientWidth  * this.data.pixelScale;
     this.data.canvas.height = this.data.height = this.data.container.clientHeight * this.data.pixelScale;
   }
