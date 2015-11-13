@@ -19,19 +19,43 @@ export default class PianoRoll extends Component {
   }
 
   componentWillUnmount() {
-    this.data.container.removeEventListener("wheel", this.handleScroll.bind(this));
+    this.data.container.removeEventListener("wheel", this.handleScroll);
   }
 
   handleScroll(e) {
     // Horizontal Scroll
-    var horizontalWindow = this.props.barMax - this.props.barMin;
-    var horizontalStepSize = e.deltaX / this.data.container.clientWidth * horizontalWindow;    
-    this.props.dispatch(pianoRollScrollX(horizontalStepSize));
+    var barWindow = this.props.barMax - this.props.barMin;
+    var barStepSize = e.deltaX / this.data.container.clientWidth * barWindow;    
+    var newBarMin = this.props.barMin + barStepSize; 
+    var newBarMax = this.props.barMax + barStepSize;
+    if( newBarMin < 0.0 )
+    {
+      newBarMax -= newBarMin;
+      newBarMin = 0.0;
+    }
+    if( newBarMax > 1.0 )
+    {
+      newBarMin -= (newBarMax - 1.0);
+      newBarMax = 1.0;
+    }
+    this.props.dispatch(pianoRollScrollX(newBarMin, newBarMax));
 
     // Vertical Scroll
-    var verticalWindow = this.props.keyMax - this.props.keyMin;
-    var verticalStepSize = e.deltaY / this.data.container.clientHeight * verticalWindow;
-    this.props.dispatch(pianoRollScrollY(verticalStepSize));
+    var keyWindow = this.props.keyMax - this.props.keyMin;
+    var keyStepSize = e.deltaY / this.data.container.clientHeight * keyWindow;
+    var newKeyMin = this.props.keyMin + keyStepSize; 
+    var newKeyMax = this.props.keyMax + keyStepSize;
+    if( newKeyMin < 0.0 )
+    {
+      newKeyMax -= newKeyMin;
+      newKeyMin = 0.0;
+    }
+    if( newKeyMax > 1.0 )
+    {
+      newKeyMin -= (newKeyMax - 1.0);
+      newKeyMax = 1.0;
+    }
+    this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
 
     e.preventDefault();
   }
@@ -62,7 +86,11 @@ class Note {}
 PianoRoll.propTypes = {
   notes:    React.PropTypes.arrayOf(React.PropTypes.instanceOf(Note)),
   cursor:   React.PropTypes.number,
-  playHead: React.PropTypes.number
+  playHead: React.PropTypes.number,
+  barMin:   React.PropTypes.number,
+  barMax:   React.PropTypes.number,
+  keyMin:   React.PropTypes.number,
+  keyMax:   React.PropTypes.number
 };
 PianoRoll.defaultProps = {
   notes:    [],

@@ -20,20 +20,20 @@ export default function pianoRoll(state = defaultPianoRollState, action) {
     // ========================================================================
     case PIANOROLL_SCROLL_X:
     {
-      var newBarMin = state.barMin + action.delta;
-      var newBarMax = state.barMax + action.delta;
-      if( newBarMin < 0.0 )
-      {
-        newBarMax -= newBarMin;
-        newBarMin = 0.0;
-      }
-      if( newBarMax > 1.0 )
-      {
-        newBarMin -= (newBarMax - 1.0);
-        newBarMax = 1.0;
-      }
-      var stateChanges = {barMin: newBarMin, barMax: newBarMax};
-      return Object.assign({}, state, stateChanges);
+      var stateChanges = {};
+
+      // Ensure each limit is valid
+      if( action.min !== null )
+        stateChanges.barMin = action.min < 0.0 ? 0.0 : action.min;
+      if( action.max !== null )
+        stateChanges.barMax = action.max > 1.0 ? 1.0 : action.max;
+
+      // Make sure new state exceeds minimum positive range
+      var newState = Object.assign({}, state, stateChanges);
+      if( newState.barMax - newState.barMin > 0.03125 )
+        return newState;
+      else
+        return state;
     }
 
     // ========================================================================
@@ -41,20 +41,20 @@ export default function pianoRoll(state = defaultPianoRollState, action) {
     // ========================================================================
     case PIANOROLL_SCROLL_Y:
     {
-      var newKeyMin = state.keyMin + action.delta;
-      var newKeyMax = state.keyMax + action.delta;
-      if( newKeyMin < 0.0 )
-      {
-        newKeyMax -= newKeyMin;
-        newKeyMin = 0.0;
-      }
-      if( newKeyMax > 1.0 )
-      {
-        newKeyMin -= (newKeyMax - 1.0);
-        newKeyMax = 1.0;
-      }
-      var stateChanges = {keyMin: newKeyMin, keyMax: newKeyMax};
-      return Object.assign({}, state, stateChanges);
+      var stateChanges = {};
+
+      // Ensure each limit is valid
+      if( action.min !== null )
+        stateChanges.keyMin = action.min < 0.0 ? 0.0 : action.min;
+      if( action.max !== null )
+        stateChanges.keyMax = action.max > 1.0 ? 1.0 : action.max;
+
+      // Make sure new state exceeds minimum positive range
+      var newState = Object.assign({}, state, stateChanges);
+      if( newState.keyMax - newState.keyMin < 0.03125 )
+        return state;
+      else
+        return newState;
     }
 
     // ========================================================================

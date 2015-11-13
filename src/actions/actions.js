@@ -33,15 +33,17 @@ export function transportTempo(tempo) {
     tempo: tempo
   };
 }
-export function pianoRollScrollX(delta) {
+export function pianoRollScrollX(newMin, newMax) {
   return {
     type: PIANOROLL_SCROLL_X,
-    delta: delta
+    min: newMin,
+    max: newMax
   };
 }
-export function pianoRollScrollY(delta) {
+export function pianoRollScrollY(newMin, newMax) {
   return {
     type: PIANOROLL_SCROLL_Y,
-    delta: delta
+    min: newMin,
+    max: newMax
   };
 }

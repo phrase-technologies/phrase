@@ -52,18 +52,25 @@ $piano-roll-scroll-corner-radius: 6px;
   border-radius: $piano-roll-scroll-corner-radius;
   background: #222;
 
-  transition: height 0.125s, border-radius 0.125s;
+  transition: height 0.5s, border-radius 0.5s;
+  transition-delay: 1s;
 
   &:hover {
     border-radius: 2px;
     height: 16px;
+    transition: height 0.125s, border-radius 0.125s;
+    transition-delay: 0s;
 
     .piano-roll-scroll-bar {
       border-radius: 2px;
+      transition: border-radius 0.125s;
+      transition-delay: 0s;
 
       &:before,
       &:after {
         border-color: #222;
+        transition: border-color 0.125s;
+        transition-delay: 0s;
       }
     }
   }
@@ -81,7 +88,8 @@ $piano-roll-scroll-corner-radius: 6px;
   background: #555;
   background-image: linear-gradient(to left, #555, #666, #555);
 
-  transition: height 0.125s, border-radius 0.125s;
+  transition: border-radius 0.5s;
+  transition-delay: 1s;  
 
   &:before,
   &:after {
@@ -96,7 +104,8 @@ $piano-roll-scroll-corner-radius: 6px;
     border-top: 0;
     border-bottom: 0;
 
-    transition: border-color 0.125s;
+    transition: border-color 0.5s;
+    transition-delay: 1s;
   }
   &:before { left:  2px; }
   &:after  { right: 2px; }
