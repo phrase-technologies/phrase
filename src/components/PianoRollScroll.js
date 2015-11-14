@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import shiftInterval from '../helpers/helpers.js';
 import { pianoRollScrollX } from '../actions/actions.js';
 
 export default class PianoRollScroll extends Component {
@@ -50,36 +51,21 @@ export default class PianoRollScroll extends Component {
       // MIN-end of the Bar
       case this.min.getDOMNode():
       {
-        var newMin = this.data.startMin + percentDelta; 
-        if( newMin < 0.0 ) 
-          newMin = 0.0;
+        var newMin = Math.max( this.data.startMin + percentDelta, 0.0 );
         this.props.dispatch(pianoRollScrollX(newMin, null));
         break;
       }
       // Middle of the Bar
       case this.bar.getDOMNode():
       {
-        var newMin = this.data.startMin + percentDelta; 
-        var newMax = this.data.startMax + percentDelta;
-        if( newMin < 0.0 )
-        {
-          newMax -= newMin;
-          newMin = 0.0;
-        }
-        if( newMax > 1.0 )
-        {
-          newMin -= (newMax - 1.0);
-          newMax = 1.0;
-        }
+        var [newMin, newMax] = shiftInterval([this.data.startMin, this.data.startMax], percentDelta);
         this.props.dispatch(pianoRollScrollX(newMin, newMax));
         break;
       }
       // MAX-end of the Bar
       case this.max.getDOMNode():
       {
-        var newMax = this.data.startMax + percentDelta;
-        if( newMax > 1.0 )
-          newMax = 1.0;
+        var newMax = Math.min( this.data.startMax + percentDelta, 1.0 );
         this.props.dispatch(pianoRollScrollX(null, newMax));
         break;
       }
