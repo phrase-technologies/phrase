@@ -10,7 +10,8 @@ export default class CanvasComponent extends Component {
 
   constructor() {
     super();
-    if( this.renderFrame === undefined ) { throw new TypeError("CanvasComponent.renderFrame() can not be undefined.") }
+    if( this.renderFrame === undefined )
+      throw new TypeError("CanvasComponent.renderFrame() can not be undefined.")
   }
 
   componentDidMount() {
@@ -28,7 +29,7 @@ export default class CanvasComponent extends Component {
     this.handleResize();
 
     // Render
-    this.renderLoop();   
+    this.newAnimationFrame();
   }
 
   componentWillUnmount() {
@@ -39,16 +40,22 @@ export default class CanvasComponent extends Component {
     window.removeEventListener('resize', this.handleResize);
   }  
 
-  renderLoop() {
-    this.renderFrame();
+  shouldComponentUpdate() {
+    this.newAnimationFrame();
+    return false;
+  }
 
-    requestAnimationFrame(this.renderLoop.bind(this));    
+  newAnimationFrame() {
+    cancelAnimationFrame(this.renderFrame.bind(this));
+    requestAnimationFrame(this.renderFrame.bind(this));    
   }
 
   handleResize() {
     this.data.pixelScale = window.devicePixelRatio || 1;
     this.data.canvas.width  = this.data.width  = this.data.container.clientWidth  * this.data.pixelScale;
     this.data.canvas.height = this.data.height = this.data.container.clientHeight * this.data.pixelScale;
+    cancelAnimationFrame(this.renderFrame.bind(this));
+    this.newAnimationFrame();
   }
 
   render() {
@@ -65,7 +72,13 @@ export default class CanvasComponent extends Component {
   // In 2D vector graphics, single-pixel stroke width must be drawn at a half-pixel position, otherwise it gets sub-pixel blurring
   closestHalfPixel(pixels){ return parseInt( 0.5 + pixels ) - 0.5; }; // parseInt is a hack for efficient rounding 
 
-  drawLine(x1, y1, x2, y2, xyFlip) {
+  drawLine(x1, y1, x2, y2, xyFlip, color) {
+    if( color )
+    {
+      this.data.canvasContext.beginPath();
+      this.data.canvasContext.strokeStyle = color;
+    }
+
     if( xyFlip )
     {
       x1 = [y1, y1 = x1][0];
@@ -73,6 +86,9 @@ export default class CanvasComponent extends Component {
     }
     this.data.canvasContext.moveTo( x1, y1 );
     this.data.canvasContext.lineTo( x2, y2 );
+
+    if( color )
+      this.data.canvasContext.stroke();
   };
 
   backgroundFill(color) {

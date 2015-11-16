@@ -73,10 +73,12 @@ export default class PianoRoll extends Component {
           />
         <PianoRollNotes />
         <PianoRollKeyboard />
-        <PianoRollScroll
-          min={this.props.barMin}
-          max={this.props.barMax}
-          />
+        <div className="piano-roll-scroll-zone">
+          <PianoRollScroll
+            min={this.props.barMin}
+            max={this.props.barMax}
+            />
+        </div>
       </div>
     );
   }
