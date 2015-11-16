@@ -5,7 +5,7 @@ export default class PianoRollBase extends CanvasComponent {
   constructor(){
     super();
     this.data = this.data || {};
-    this.data.marginTop = 50;
+    this.data.marginTop = 40;
     this.data.marginBottom = 30;
   }
 

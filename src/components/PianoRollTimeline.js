@@ -117,18 +117,10 @@ export default class PianoRollTimeline extends PianoRollBase {
 }
 
 PianoRollTimeline.propTypes = {
-  barCount:     React.PropTypes.number,
-  keyCount:     React.PropTypes.number,
-  barMin:       React.PropTypes.number,
-  barMax:       React.PropTypes.number,
-  keyMin:       React.PropTypes.number,
-  keyMax:       React.PropTypes.number
-};
-PianoRollTimeline.defaultProps = {
-  barCount:  4,
-  keyCount: 88,
-  barMin:    0.000,
-  barMax:    1.000,
-  keyMin:    0.000,
-  keyMax:    1.000
+  barCount:     React.PropTypes.number.isRequired,
+  keyCount:     React.PropTypes.number.isRequired,
+  barMin:       React.PropTypes.number.isRequired,
+  barMax:       React.PropTypes.number.isRequired,
+  keyMin:       React.PropTypes.number.isRequired,
+  keyMax:       React.PropTypes.number.isRequired
 };

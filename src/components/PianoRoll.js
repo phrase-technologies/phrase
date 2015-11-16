@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import shiftInterval from '../helpers/helpers.js';
 import { pianoRollScrollX,
          pianoRollScrollY,
        } from '../actions/actions.js';
@@ -15,7 +16,7 @@ export default class PianoRoll extends Component {
     this.data.container = React.findDOMNode(this);
 
     // Scroll Handler
-    this.data.container.addEventListener("wheel", this.handleScroll.bind(this));    
+    this.data.container.addEventListener("wheel", this.handleScroll.bind(this));
   }
 
   componentWillUnmount() {
@@ -26,35 +27,13 @@ export default class PianoRoll extends Component {
     // Horizontal Scroll
     var barWindow = this.props.barMax - this.props.barMin;
     var barStepSize = e.deltaX / this.data.container.clientWidth * barWindow;    
-    var newBarMin = this.props.barMin + barStepSize; 
-    var newBarMax = this.props.barMax + barStepSize;
-    if( newBarMin < 0.0 )
-    {
-      newBarMax -= newBarMin;
-      newBarMin = 0.0;
-    }
-    if( newBarMax > 1.0 )
-    {
-      newBarMin -= (newBarMax - 1.0);
-      newBarMax = 1.0;
-    }
+    var [newBarMin, newBarMax] = shiftInterval([this.props.barMin, this.props.barMax], barStepSize);
     this.props.dispatch(pianoRollScrollX(newBarMin, newBarMax));
 
     // Vertical Scroll
     var keyWindow = this.props.keyMax - this.props.keyMin;
     var keyStepSize = e.deltaY / this.data.container.clientHeight * keyWindow;
-    var newKeyMin = this.props.keyMin + keyStepSize; 
-    var newKeyMax = this.props.keyMax + keyStepSize;
-    if( newKeyMin < 0.0 )
-    {
-      newKeyMax -= newKeyMin;
-      newKeyMin = 0.0;
-    }
-    if( newKeyMax > 1.0 )
-    {
-      newKeyMin -= (newKeyMax - 1.0);
-      newKeyMax = 1.0;
-    }
+    var [newKeyMin, newKeyMax] = shiftInterval([this.props.keyMin, this.props.keyMax], keyStepSize);
     this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
 
     e.preventDefault();
@@ -77,6 +56,7 @@ export default class PianoRoll extends Component {
           <PianoRollScroll
             min={this.props.barMin}
             max={this.props.barMax}
+            setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
             />
         </div>
       </div>
@@ -97,7 +77,13 @@ PianoRoll.propTypes = {
 PianoRoll.defaultProps = {
   notes:    [],
   cursor:   0.000,
-  playHead: 0.000
+  playHead: 0.000,
+  barCount:  4,
+  keyCount: 88,
+  barMin:    0.000,
+  barMax:    1.000,
+  keyMin:    0.000,
+  keyMax:    1.000
 };
 
 

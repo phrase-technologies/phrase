@@ -31,7 +31,7 @@ $piano-roll-corner-radius: 4px;
 }
 .piano-roll-keyboard {
   position: absolute;
-  top: 50px;
+  top: 40px;
   width: 50px;
   right: 0;
   bottom: 0;
@@ -47,7 +47,7 @@ $piano-roll-corner-radius: 4px;
   left: 1px;
   right: 50px + 1px;
   bottom: 1px;
-  background-image: linear-gradient(to bottom, transparent 0%, #484848 50%);
+  background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);
   border-radius: 0 0 0 4px;
 
   transition: height 0.5s;

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import shiftInterval from '../helpers/helpers.js';
-import { pianoRollScrollX } from '../actions/actions.js';
 
 export default class PianoRollScroll extends Component {
 
@@ -52,13 +51,14 @@ export default class PianoRollScroll extends Component {
       case this.min.getDOMNode():
       {
         var newMin = Math.max( this.data.startMin + percentDelta, 0.0 );
-        this.props.dispatch(pianoRollScrollX(newMin, null));
+        this.props.setScroll(newMin, null);
         break;
       }
       // Middle of the Bar
       case this.bar.getDOMNode():
       {
         var [newMin, newMax] = shiftInterval([this.data.startMin, this.data.startMax], percentDelta);
+        this.props.setScroll(newMin, newMax);
         this.props.dispatch(pianoRollScrollX(newMin, newMax));
         break;
       }
@@ -66,7 +66,7 @@ export default class PianoRollScroll extends Component {
       case this.max.getDOMNode():
       {
         var newMax = Math.min( this.data.startMax + percentDelta, 1.0 );
-        this.props.dispatch(pianoRollScrollX(null, newMax));
+        this.props.setScroll(null, newMax);
         break;
       }
     }
@@ -80,20 +80,6 @@ export default class PianoRollScroll extends Component {
     // End the drag
     this.data.isDragging = false;
   }
-
-  handleScroll(e) {
-    // Horizontal Scroll
-    var horizontalWindow = this.props.barMax - this.props.barMin;
-    var horizontalStepSize = e.deltaX / this.data.container.clientWidth * horizontalWindow;    
-    this.props.dispatch(pianoRollScrollX(horizontalStepSize));
-
-    // Vertical Scroll
-    var verticalWindow = this.props.keyMax - this.props.keyMin;
-    var verticalStepSize = e.deltaY / this.data.container.clientHeight * verticalWindow;
-    this.props.dispatch(pianoRollScrollY(verticalStepSize));
-
-    e.preventDefault();
-  }  
 
   render() {
     var scrollPosition = { left: 100*this.props.min+'%', right: 100*(1-this.props.max)+'%' }
@@ -109,12 +95,9 @@ export default class PianoRollScroll extends Component {
 }
 
 PianoRollScroll.propTypes = {
-  min: React.PropTypes.number,
-  max: React.PropTypes.number
-};
-PianoRollScroll.defaultProps = {
-  min: 0.000,
-  max: 1.000
+  min: React.PropTypes.number.isRequired,
+  max: React.PropTypes.number.isRequired,
+  setScroll: React.PropTypes.func.isRequired
 };
 
 export default connect()(PianoRollScroll);
