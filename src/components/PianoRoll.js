@@ -52,23 +52,18 @@ export default class PianoRoll extends Component {
     return (
       <div className="piano-roll">
         <PianoRollTimeline
-          barCount={this.props.barCount}
-          keyCount={this.props.keyCount}
-          barMin={this.props.barMin}
-          barMax={this.props.barMax}
-          keyMin={this.props.keyMin}
-          keyMax={this.props.keyMax}
+          barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
+          keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
           />
         <PianoRollNotes />
         <PianoRollKeyboard />
         <div className="piano-roll-scroll-zone"
           onMouseEnter={(e) => this.handleScrollZone(e, true)}
-          onMouseLeave={(e) => this.handleScrollZone(e, false)}>
+          onMouseLeave={(e) => this.handleScrollZone(e, false)}
+          >
           <Scrollbar
-            min={this.props.barMin}
-            max={this.props.barMax}
-            setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
-            forceHover={this.data.scrollZoneHover}
+            min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
+            max={this.props.barMax} forceHover={this.data.scrollZoneHover}
             />
         </div>
       </div>

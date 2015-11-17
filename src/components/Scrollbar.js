@@ -19,6 +19,9 @@ export default class Scrollbar extends Component {
     // Drop Handlers
     document.addEventListener("mouseup",   this.drop.bind(this));
     document.addEventListener("mousedown", this.drop.bind(this));
+
+    // Gutter paging
+    this.gutter.getDOMNode().addEventListener("mousedown", this.paging.bind(this))
   }
 
   componentWillUnmount() {
@@ -79,6 +82,22 @@ export default class Scrollbar extends Component {
     // End the drag
     this.data.isDragging = false;
     this.forceUpdate();
+  }
+
+  paging(e) {
+    var clickPosition = (e.clientX - this.gutter.getDOMNode().getBoundingClientRect().left) / this.data.length;
+    
+    // Page DOWN
+    if( clickPosition < this.props.min )
+      var [newMin, newMax] = shiftInterval([this.props.min, this.props.max], this.props.min - this.props.max);
+    // Page UP
+    else if( clickPosition > this.props.max )
+      var [newMin, newMax] = shiftInterval([this.props.min, this.props.max], this.props.max - this.props.min);
+    // Do nothing
+    else
+      return;
+
+    this.props.setScroll(newMin, newMax);
   }
 
   gutterClass() {
