@@ -4,15 +4,19 @@ import shiftInterval from '../helpers/helpers.js';
 import { pianoRollScrollX,
          pianoRollScrollY,
        } from '../actions/actions.js';
-import PianoRollTimeline    from './PianoRollTimeline';
-import PianoRollNotes       from './PianoRollNotes';
-import PianoRollKeyboard    from './PianoRollKeyboard';
-import PianoRollScroll      from './PianoRollScroll';
+import PianoRollTimeline    from './PianoRollTimeline.js';
+import PianoRollNotes       from './PianoRollNotes.js';
+import PianoRollKeyboard    from './PianoRollKeyboard.js';
+import Scrollbar            from './Scrollbar.js';
 
 export default class PianoRoll extends Component {
 
+  constructor() {
+    super();
+    this.data = {};
+  }
+
   componentDidMount() {
-    this.data = this.data || {};
     this.data.container = React.findDOMNode(this);
 
     // Scroll Handler
@@ -39,6 +43,11 @@ export default class PianoRoll extends Component {
     e.preventDefault();
   }
 
+  handleScrollZone(e, hover) {
+    this.data.scrollZoneHover = hover;
+    this.forceUpdate();
+  }
+
   render() {
     return (
       <div className="piano-roll">
@@ -52,11 +61,14 @@ export default class PianoRoll extends Component {
           />
         <PianoRollNotes />
         <PianoRollKeyboard />
-        <div className="piano-roll-scroll-zone">
-          <PianoRollScroll
+        <div className="piano-roll-scroll-zone"
+          onMouseEnter={(e) => this.handleScrollZone(e, true)}
+          onMouseLeave={(e) => this.handleScrollZone(e, false)}>
+          <Scrollbar
             min={this.props.barMin}
             max={this.props.barMax}
             setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
+            forceHover={this.data.scrollZoneHover}
             />
         </div>
       </div>

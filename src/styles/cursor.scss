@@ -1,0 +1,27 @@
+// Prevent user text selection of non form elements
+.disable-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+.enable-select {
+  -webkit-touch-callout: initial;
+  -webkit-user-select: initial;
+  -khtml-user-select: initial;
+  -moz-user-select: initial;
+  -ms-user-select: initial;
+  user-select: initial;
+  cursor: initial;
+}
+
+// Show explicit and implicit custom cursors
+.cursor-default  { cursor: default;                               }
+.cursor-xresize  { cursor: ew-resize;                             }
+.cursor-yresize  { cursor: ns-resize;                             }
+.cursor-grab     { cursor: grab;        cursor: -webkit-grab;     }
+.cursor-grabbing { cursor: grabbing;    cursor: -webkit-grabbing; }
+.cursor-move     { cursor: move;                                  }

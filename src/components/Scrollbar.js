@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import shiftInterval from '../helpers/helpers.js';
 
-export default class PianoRollScroll extends Component {
+export default class Scrollbar extends Component {
 
   componentDidMount() {
     this.data = this.data || {};
@@ -59,7 +59,6 @@ export default class PianoRollScroll extends Component {
       {
         var [newMin, newMax] = shiftInterval([this.data.startMin, this.data.startMax], percentDelta);
         this.props.setScroll(newMin, newMax);
-        this.props.dispatch(pianoRollScrollX(newMin, newMax));
         break;
       }
       // MAX-end of the Bar
@@ -79,25 +78,32 @@ export default class PianoRollScroll extends Component {
 
     // End the drag
     this.data.isDragging = false;
+    this.forceUpdate();
+  }
+
+  gutterClass() {
+    var classes = 'scroll-gutter';
+    classes += (this.data && this.data.isDragging || this.props.forceHover) ? ' hover' : '';
+    return classes;
   }
 
   render() {
+    var gutterClass = this.gutterClass();
     var scrollPosition = { left: 100*this.props.min+'%', right: 100*(1-this.props.max)+'%' }
     return (
-      <div className="piano-roll-scroll-gutter"  ref={(ref) => this.gutter = ref}>
-        <div className="piano-roll-scroll-bar"   ref={(ref) => this.bar    = ref} style={scrollPosition}>
-          <div className="piano-roll-scroll-min" ref={(ref) => this.min    = ref} />
-          <div className="piano-roll-scroll-max" ref={(ref) => this.max    = ref} />
+      <div className={gutterClass}    ref={(ref) => this.gutter = ref}>
+        <div className="scroll-bar"   ref={(ref) => this.bar    = ref} style={scrollPosition}>
+          <div className="scroll-min" ref={(ref) => this.min    = ref} />
+          <div className="scroll-max" ref={(ref) => this.max    = ref} />
         </div>
       </div>
     );
   }
 }
 
-PianoRollScroll.propTypes = {
+Scrollbar.propTypes = {
   min: React.PropTypes.number.isRequired,
   max: React.PropTypes.number.isRequired,
-  setScroll: React.PropTypes.func.isRequired
+  setScroll: React.PropTypes.func.isRequired,
+  forceHover: React.PropTypes.bool
 };
-
-export default connect()(PianoRollScroll);

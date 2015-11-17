@@ -1,0 +1,81 @@
+$scroll-corner-radius: 6px;
+.scroll-gutter {
+  position: absolute;
+  height: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  box-shadow: inset 0 2px 8px #000,
+              0 0 10px rgba(0,0,0,0.25);
+  border-radius: $scroll-corner-radius;
+  background: #222;
+
+  transition: height 0.5s, border-radius 0.5s;
+  transition-delay: 1s;
+
+  &.hover,
+  &:hover {
+    border-radius: 2px;
+    height: 16px;
+    transition: height 0.125s, border-radius 0.125s;
+    transition-delay: 0s;
+
+    .scroll-bar {
+      border-radius: 2px;
+      transition: border-radius 0.125s;
+      transition-delay: 0s;
+
+      &:before,
+      &:after {
+        border-color: #222;
+        transition: border-color 0.125s;
+        transition-delay: 0s;
+      }
+    }
+  }
+}
+.scroll-bar {
+  position: absolute;
+  top: 1px;
+  left: 10%;
+  right: 40%;
+  bottom: 1px;
+  box-shadow: 0 0 3px #000,
+        inset 0 -3px 4px rgba(  0,   0,   0, 0.125),
+        inset 0  3px 4px rgba(255, 255, 255, 0.125);
+  border-radius: $scroll-corner-radius;
+  background: #555;
+  background-image: linear-gradient(to left, #666, #777, #666);
+
+  transition: border-radius 0.5s;
+  transition-delay: 1s;  
+
+  &:before,
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    width: 3px;
+    z-index: 2;
+    border: 1px solid transparent;
+    border-top: 0;
+    border-bottom: 0;
+
+    transition: border-color 0.5s;
+    transition-delay: 1s;
+  }
+  &:before { left:  2px; }
+  &:after  { right: 2px; }
+}
+.scroll-min,
+.scroll-max {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  z-index: 3;
+}
+.scroll-min { left:  0; }
+.scroll-max { right: 0; }
