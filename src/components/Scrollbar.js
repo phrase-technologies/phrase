@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import shiftInterval from '../helpers/helpers.js';
+import { shiftInterval } from '../helpers/helpers.js';
 
 export default class Scrollbar extends Component {
 
@@ -51,21 +51,21 @@ export default class Scrollbar extends Component {
     switch( this.data.startTarget )
     {
       // MIN-end of the Bar
-      case this.min.getDOMNode():
+      case React.findDOMNode(this.min):
       {
         var newMin = Math.max( this.data.startMin + percentDelta, 0.0 );
         this.props.setScroll(newMin, null);
         break;
       }
       // Middle of the Bar
-      case this.bar.getDOMNode():
+      case React.findDOMNode(this.bar):
       {
         var [newMin, newMax] = shiftInterval([this.data.startMin, this.data.startMax], percentDelta);
         this.props.setScroll(newMin, newMax);
         break;
       }
       // MAX-end of the Bar
-      case this.max.getDOMNode():
+      case React.findDOMNode(this.max):
       {
         var newMax = Math.min( this.data.startMax + percentDelta, 1.0 );
         this.props.setScroll(null, newMax);

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import shiftInterval from '../helpers/helpers.js';
+import { shiftInterval,
+         zoomInterval } from '../helpers/helpers.js';
 import { pianoRollScrollX,
-         pianoRollScrollY,
-       } from '../actions/actions.js';
+         pianoRollScrollY } from '../actions/actions.js';
 import PianoRollTimeline    from './PianoRollTimeline.js';
 import PianoRollNotes       from './PianoRollNotes.js';
 import PianoRollKeyboard    from './PianoRollKeyboard.js';
@@ -29,7 +29,20 @@ export default class PianoRoll extends Component {
 
   handleScroll(e) {
     // Zoom
+    if( e.ctrlKey && e.deltaY )
+    {
+      var zoomFactor = (e.deltaY + 500) / 500;
+      var timeline = React.findDOMNode(this.timeline);
+      var fulcrumX = (e.clientX - timeline.getBoundingClientRect().left) / timeline.clientWidth;
+      var fulcrumY = (e.clientY - timeline.getBoundingClientRect().top)  / timeline.clientHeight;
+      var [newBarMin, newBarMax] = zoomInterval([this.props.barMin, this.props.barMax], zoomFactor, fulcrumX);
+      var [newKeyMin, newKeyMax] = zoomInterval([this.props.keyMin, this.props.keyMax], zoomFactor, fulcrumY);
+      this.props.dispatch(pianoRollScrollX(newBarMin, newBarMax));
+      this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
 
+      e.preventDefault();
+      return;
+    }
 
     // Horizontal Scroll
     var barWindow = this.props.barMax - this.props.barMin;
@@ -54,7 +67,7 @@ export default class PianoRoll extends Component {
   render() {
     return (
       <div className="piano-roll">
-        <PianoRollTimeline
+        <PianoRollTimeline ref={(ref) => this.timeline = ref}
           barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
           keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
           />
