@@ -28,6 +28,9 @@ export default class PianoRoll extends Component {
   }
 
   handleScroll(e) {
+    // Zoom
+
+
     // Horizontal Scroll
     var barWindow = this.props.barMax - this.props.barMin;
     var barStepSize = e.deltaX / this.data.container.clientWidth * barWindow;    
@@ -56,7 +59,10 @@ export default class PianoRoll extends Component {
           keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
           />
         <PianoRollNotes />
-        <PianoRollKeyboard />
+        <PianoRollKeyboard
+          keyMin={this.props.keyMin}
+          keyMax={this.props.keyMax}
+          />
         <div className="piano-roll-scroll-zone"
           onMouseEnter={(e) => this.handleScrollZone(e, true)}
           onMouseLeave={(e) => this.handleScrollZone(e, false)}

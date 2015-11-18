@@ -1,10 +1,79 @@
 import React, { Component } from 'react';
 
 export default class PianoRollKeyboard extends Component {
+
+  constructor() {
+    super();
+    this.data = {};
+  }
+
+  componentDidMount() {
+    // Initialize the DOM
+    this.data.container = React.findDOMNode(this);
+
+    // Set Scaling
+    window.addEventListener('resize', this.handleResize.bind(this));
+    this.handleResize();
+  }
+
+  componentWillUnmount() {
+    this.data.container = null;
+    this.data = null;
+    window.removeEventListener('resize', this.handleResize);
+  }  
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if( nextProps.keyMin == this.props.keyMin
+     && nextProps.keyMax == this.props.keyMax
+     && nextProps.keyCount == this.props.keyCount )
+      return false;
+    else
+      return true;
+  }
+
+  handleResize() {
+    this.data.height = this.data.container.clientHeight - 30;
+    this.forceUpdate();
+  }
+
+  renderKeys() {
+    var keys = [];
+    for( var key = 88; key > 0; key-- )
+    {
+      // Fill the row for the black keys
+      var keyClass = "piano-roll-key";
+          keyClass += ( key % 12 in {2:true, 0:true, 10: true, 7: true, 5: true} ) ? ' black' : ' white';
+          keyClass += ( key % 12 in {2:true,  7:true} ) ? ' higher' : '';
+          keyClass += ( key % 12 in {10:true, 5:true} ) ? ' lower' : '';
+          keyClass += ( key % 12 in {6:true} ) ? ' thinner' : '';
+
+      keys.push(<div key={key} className={keyClass} />);
+    }
+    return keys;
+  }
+
   render() {
+    var keyWindow = this.props.keyMax - this.props.keyMin;
+    var keybedHeight = this.data.height / keyWindow;
+    var keybedOffset = this.data.height / keyWindow * this.props.keyMin;
+    var keybedWidth = keybedHeight * 0.1;
+    var style = {
+      top: -keybedOffset+'px',
+      height: keybedHeight+'px',
+      width: keybedWidth+'px'
+    };
+
     return (
       <div className="piano-roll-keyboard">
+        <div className="piano-roll-keybed" style={style}>
+          { this.renderKeys() }
+        </div>
       </div>
     );
   }
 }
+
+PianoRollKeyboard.propTypes = {
+  keyMin:       React.PropTypes.number.isRequired,
+  keyMax:       React.PropTypes.number.isRequired
+};

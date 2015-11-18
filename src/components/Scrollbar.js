@@ -108,7 +108,7 @@ export default class Scrollbar extends Component {
 
   render() {
     var gutterClass = this.gutterClass();
-    var scrollPosition = { left: 100*this.props.min+'%', right: 100*(1-this.props.max)+'%' }
+    var scrollPosition = { left: 100*this.props.min+'%', right: 100*(1-this.props.max)+'%' };
     return (
       <div className={gutterClass}    ref={(ref) => this.gutter = ref}>
         <div className="scroll-bar"   ref={(ref) => this.bar    = ref} style={scrollPosition}>
