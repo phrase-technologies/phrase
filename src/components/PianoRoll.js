@@ -29,7 +29,7 @@ export default class PianoRoll extends Component {
 
   handleScroll(e) {
     // Zoom
-    if( e.ctrlKey && e.deltaY )
+    if( (e.ctrlKey || e.metaKey) && e.deltaY )
     {
       var zoomFactor = (e.deltaY + 500) / 500;
       var timeline = React.findDOMNode(this.timeline);

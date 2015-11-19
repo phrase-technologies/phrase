@@ -11,9 +11,8 @@ $piano-roll-corner-radius: 4px;
   position: absolute;
   top: 0;
   left: 0;
-  right: 100px;
+  right: 150px;
   bottom: 0;
-//box-shadow: 0 -1px 3px #000, 0 1px 3px #FFF;
   border: 1px solid #000;
   border-radius: $piano-roll-corner-radius $piano-roll-corner-radius 0 $piano-roll-corner-radius;
   background: #333;
@@ -32,11 +31,10 @@ $piano-roll-corner-radius: 4px;
 .piano-roll-keyboard {
   position: absolute;
   top: 40px;
-  width: 100px;
+  width: 150px - 1px;
   right: 0;
   bottom: 0;
   box-sizing: content-box;
-//box-shadow: 0 -1px 3px #000, 0 1px 3px #FFF;
   border: 1px solid #000;
   border-left: 0;
   border-radius: 0 $piano-roll-corner-radius $piano-roll-corner-radius 0;
@@ -48,9 +46,11 @@ $piano-roll-corner-radius: 4px;
   height: 1047px;
   width: 104.7px;
 }
-$num-keys:  88.00;
-$key-thickness: percentage(1/$num-keys);
-$key-thickness-margin: $key-thickness * 10; // Used for margins, which are are calculated based off of width rather than height.
+$total-keys:  88.00;
+$octave-keys: 12.00;
+$octave-thickness: percentage($octave-keys/$total-keys);
+$key-thickness: percentage(1/$octave-keys);
+$key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, which are are calculated based off of width rather than height.
 .piano-roll-key {
   display: block;
   position: relative;
@@ -62,29 +62,41 @@ $key-thickness-margin: $key-thickness * 10; // Used for margins, which are are c
 
   &.white {
     border: 1px solid #000;
+    border-left: 0;
+    border-top: 0;
     background: #CCC;
-    background-image: linear-gradient(90deg, #999 25%, #DDD 26%, #BBB 100%);
+    background-image: linear-gradient(90deg, #999 20%, #CCC 21%, #999 100%);
     z-index: 5;   // Above the shadow but below the black keys
     height: 1.75*$key-thickness;   // Make white keys thicker
-    border-top-width: 0px;
-    border-radius: 0 3px 3px 0;
 
     &.active,
     &:active {
       background: #999;
-      background-image: linear-gradient(90deg, #888 22%, #CCC 23%, #AAA 100%);
-      box-shadow: inset 0 1px 3px 2px #555
+      background-image: linear-gradient(90deg, #888 16%, #BBB 17%, #888 100%);
+      box-shadow: inset 0 1px 3px 2px #444;
     }
   }
   &.black {
-    border: solid #222;
-    border-width: 2px 6px 2px 15px;
+    position: relative;
     border-radius: 0 2px 2px 0;
-    background: #555;
+    border: 1px solid #222;
+    background: #222;
     z-index: 10;  // Above the black keys
-    box-shadow: 1px 1px 1px #888;
+    box-shadow: 1px 1px 1px #333;
     height: $key-thickness;    // ...try to cut a pixel off of black keys to prevent asymmetry
     width: 69%;
+
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 8%;
+      bottom: 0;
+      left: 20%;
+      border-radius: 0 10% 10% 0;
+      background: #555;
+    }
 
     // Overlap the adjacent white keys (different amounts depending on where they are on the scale)
     margin: -0.5*$key-thickness-margin 0px -0.5*$key-thickness-margin 0px;
@@ -98,31 +110,71 @@ $key-thickness-margin: $key-thickness * 10; // Used for margins, which are are c
     &.active,
     &:active {
       border-color: #000;
-      border-width: 2px 8px 2px 12px;
-      background: #444;
       box-shadow: none;
-    }
-  }
+      background: #000;
 
-  &:first-child {
-    height: 1.061 * $key-thickness;
+      &:after {
+        left: 15%;
+        background: #444;
+        box-shadow: inset 0 1px 3px 2px #000;
+      }
+    }
   }
 
   &.thinner {
     height: 1.5 * $key-thickness;     // Certain white keys are sandwiched slightly differently to maintain proportions
   }
+}
+.piano-roll-octave {
+  position: relative;
+  height: $octave-thickness;
+
+  &:first-child {
+    margin-top: 1px;
+    height: percentage(1.0/$total-keys);
+
+    .piano-roll-key {
+      height: 100%;
+      border-radius: 0 3px 0 0;
+    }
+  }
 
   &:last-child {
-    height: 1.300 * $key-thickness;
+    .piano-roll-key {
+      &:last-child {
+        height: 1.250 * $key-thickness;
+        border-radius: 0 0 3px 0;
+      }
+    }
   }
 }
+.piano-roll-octave-label {
+  position: absolute;
+  top: -1px;
+  bottom: 0px;
+  left: 100%;
+  width: 20px;
 
+  border: 1px solid #000;
+  border-left: 0;
+  background: #555;
+
+  font-size: 10px;
+  color: #AAA;
+  display: flex;
+  * {
+    align-self: flex-end;
+    width: 100%;
+    padding-bottom: 2px;
+    text-align: center;
+  }
+}
 
 .piano-roll-scroll-zone {
   position: absolute;
   height: 30px;
   left: 1px;
-  right: 100px + 1px;
+  right: 150px + 1px;
   bottom: 1px;
   background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);
   border-radius: 0 0 0 4px;

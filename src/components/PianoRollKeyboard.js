@@ -37,6 +37,7 @@ export default class PianoRollKeyboard extends Component {
   }
 
   renderKeys() {
+    var octaves = [];
     var keys = [];
     for( var key = 88; key > 0; key-- )
     {
@@ -48,8 +49,21 @@ export default class PianoRollKeyboard extends Component {
           keyClass += ( key % 12 in {6:true} ) ? ' thinner' : '';
 
       keys.push(<div key={key} className={keyClass} />);
+
+      // Next keys into octave Group
+      if( key % 12 === 4 || key == 1 )
+      {
+        // Add Octave Label for full octaves
+        if( key < 83 && key > 1 )
+        {
+          let label = 'C' + Math.ceil(key/12.0);
+          keys.unshift(<div className="piano-roll-octave-label"><div>{label}</div></div>);
+        }
+        octaves.push(<div className="piano-roll-octave">{keys}</div>);
+        keys = [];
+      }
     }
-    return keys;
+    return octaves;
   }
 
   render() {
