@@ -69,6 +69,17 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
     z-index: 5;   // Above the shadow but below the black keys
     height: 1.75*$key-thickness;   // Make white keys thicker
 
+    display: flex;
+    padding-right: 5%; 
+    .piano-roll-key-label {
+      visibility: hidden;
+      font-size: 10px;
+      color: #000;
+      align-self: center;
+      text-align: right;
+      width: 100%;
+    }
+
     &.active,
     &:active {
       background: #999;
@@ -145,6 +156,12 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
         height: 1.250 * $key-thickness;
         border-radius: 0 0 3px 0;
       }
+    }
+  }
+
+  &:hover {
+    .piano-roll-key-label {
+      visibility: visible;
     }
   }
 }
