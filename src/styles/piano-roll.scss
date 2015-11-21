@@ -1,10 +1,9 @@
-$piano-roll-corner-radius: 4px;
 .piano-roll {
   position: absolute;
-  top:    10px;
-  left:   10px;
-  right:  10px;
-  bottom: 10px;
+  top:    0;
+  left:   0;
+  right:  100px;
+  bottom: 0;
 }
 
 .piano-roll-timeline {
@@ -13,9 +12,8 @@ $piano-roll-corner-radius: 4px;
   left: 0;
   right: 150px;
   bottom: 0;
-  border: 1px solid #000;
-  border-radius: $piano-roll-corner-radius $piano-roll-corner-radius 0 $piano-roll-corner-radius;
   background: #333;
+  border-right: 1px solid #000;
 
   canvas {
     position: absolute;
@@ -25,21 +23,39 @@ $piano-roll-corner-radius: 4px;
     bottom: 0;
     width: 100%;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
-    border-radius: $piano-roll-corner-radius 0 $piano-roll-corner-radius $piano-roll-corner-radius;
   }
+}
+.piano-roll-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px + 10px;
+  height: 40px;
+  z-index: 10; // Above the keyboard
+
+  border: 1px solid #000;
+  border-radius: 0 0 3px 3px;
+  border-top: 0;
+  background: #444;
+  box-shadow:  0px  1px 3px 1px rgba(  0,   0,   0, 0.75),
+        inset -2px -1px 2px 0   rgba(200, 200, 200, 0.50),
+        inset  2px -1px 2px 0   rgba(200, 200, 200, 0.50);
+
+  color: #DDD;
+  text-align: center;
+  padding: 8px 0;
+  text-shadow: 0 0 10px #DDD;
 }
 .piano-roll-keyboard {
   position: absolute;
   top: 40px;
-  width: 150px - 1px;
+  width: 150px;
   right: 0;
   bottom: 0;
   box-sizing: content-box;
-  border: 1px solid #000;
   border-left: 0;
-  border-radius: 0 $piano-roll-corner-radius $piano-roll-corner-radius 0;
-  background: #333;
-  overflow: hidden;
+  z-index: 5; // Above the timeline
+  box-shadow: -3px 0 2px -2px #000;
 }
 .piano-roll-keybed {
   position: relative;
@@ -66,7 +82,6 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
     border-top: 0;
     background: #CCC;
     background-image: linear-gradient(90deg, #999 20%, #CCC 21%, #999 100%);
-    z-index: 5;   // Above the shadow but below the black keys
     height: 1.75*$key-thickness;   // Make white keys thicker
 
     display: flex;
@@ -82,9 +97,9 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
 
     &.active,
     &:active {
-      background: #999;
-      background-image: linear-gradient(90deg, #888 16%, #BBB 17%, #888 100%);
-      box-shadow: inset 0 1px 3px 2px #444;
+      background: #A99;
+      background-image: linear-gradient(90deg, #988 16%, #CBB 17%, #988 100%);
+      box-shadow: inset 0 1px 3px 2px #544;
     }
   }
   &.black {
@@ -92,7 +107,7 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
     border-radius: 0 2px 2px 0;
     border: 1px solid #222;
     background: #222;
-    z-index: 10;  // Above the black keys
+    z-index: 1;  // Above the white keys
     box-shadow: 1px 1px 1px #333;
     height: $key-thickness;    // ...try to cut a pixel off of black keys to prevent asymmetry
     width: 69%;
@@ -105,7 +120,7 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
       right: 8%;
       bottom: 0;
       left: 20%;
-      border-radius: 0 10% 10% 0;
+      border-radius: 0 20% 20% 0;
       background: #555;
     }
 
@@ -120,14 +135,14 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
 
     &.active,
     &:active {
-      border-color: #000;
+      border-color: #200;
       box-shadow: none;
-      background: #000;
+      background: #200;
 
       &:after {
-        left: 15%;
-        background: #444;
-        box-shadow: inset 0 1px 3px 2px #000;
+        left: 10%;
+        background: #544;
+        box-shadow: inset 0 1px 3px 2px #100;
       }
     }
   }
@@ -192,7 +207,7 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
   height: 30px;
   left: 1px;
   right: 150px + 1px;
-  bottom: 1px;
+  bottom: 0;
   background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);
   border-radius: 0 0 0 4px;
 

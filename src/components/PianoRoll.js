@@ -76,6 +76,10 @@ export default class PianoRoll extends Component {
           keyMin={this.props.keyMin}
           keyMax={this.props.keyMax}
           />
+        <div className="piano-roll-menu">
+          <span>Piano Roll</span>
+          <span className="caret" />
+        </div>
         <div className="piano-roll-scroll-zone"
           onMouseEnter={(e) => this.handleScrollZone(e, true)}
           onMouseLeave={(e) => this.handleScrollZone(e, false)}

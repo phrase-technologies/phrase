@@ -28,9 +28,11 @@ export default class PianoRollTimeline extends PianoRollBase {
     this.renderBarLines();
 
     // Borders
-    var topEdge = this.closestHalfPixel( this.data.pixelScale*this.data.marginTop );
-    this.drawLine( 0, topEdge, this.data.width, topEdge, false, "#000000" );
-    this.drawLine( 0, topEdge+1, this.data.width, topEdge+1, false, "rgba(0,0,0,0.125)" );
+    this.data.canvasContext.lineWidth = 2.0;
+    var topEdge =    this.closestHalfPixel( this.data.pixelScale*this.data.marginTop );
+    var bottomEdge = this.closestHalfPixel( this.data.pixelScale*(this.data.marginTop + 1) );
+    this.drawLine( 0,    topEdge, this.data.width,    topEdge, false, "#000000" );
+    this.drawLine( 0, bottomEdge, this.data.width, bottomEdge, false, "rgba(0,0,0,0.125)" );
   }
 
   renderBarLines() {

@@ -37,7 +37,8 @@ $footer-height: 67px;
   right: 0;
   bottom: $footer-height;
 
-  padding: 20px;
+  background: #333;  
+  overflow: hidden;
 
   /*
   &:after {
