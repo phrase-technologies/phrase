@@ -67,27 +67,39 @@ export default class PianoRoll extends Component {
   render() {
     return (
       <div className="piano-roll">
-        <PianoRollTimeline ref={(ref) => this.timeline = ref}
-          barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
-          keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
-          />
-        <PianoRollNotes />
-        <PianoRollKeyboard
-          keyMin={this.props.keyMin}
-          keyMax={this.props.keyMax}
-          />
-        <div className="piano-roll-menu">
+        <div className="piano-roll-header">
           <span>Piano Roll</span>
-          <span className="caret" />
+          {/*<span className="caret" />*/}
         </div>
-        <div className="piano-roll-scroll-zone"
-          onMouseEnter={(e) => this.handleScrollZone(e, true)}
-          onMouseLeave={(e) => this.handleScrollZone(e, false)}
-          >
-          <Scrollbar
-            min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
-            max={this.props.barMax} forceHover={this.data.scrollZoneHover}
-            />
+        <div className="piano-roll-body">
+          <div className="piano-roll-options">
+            <span className="fa fa-caret-left" />
+            <span className="fa fa-gear" />
+            <span className="fa fa-caret-left" />
+          </div>
+          <div className="piano-roll-wrapper">
+            <PianoRollTimeline ref={(ref) => this.timeline = ref}
+              barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
+              keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
+              />
+            <div className="piano-roll-timeline-overlay" />
+            <div className="piano-roll-notes-overlay" />
+            <PianoRollNotes />
+            <PianoRollKeyboard
+              keyMin={this.props.keyMin}
+              keyMax={this.props.keyMax}
+              />
+            <div className="piano-roll-keyboard-overlay" />
+            <div className="piano-roll-scroll-zone"
+              onMouseEnter={(e) => this.handleScrollZone(e, true)}
+              onMouseLeave={(e) => this.handleScrollZone(e, false)}
+              >
+              <Scrollbar
+                min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
+                max={this.props.barMax} forceHover={this.data.scrollZoneHover}
+                />
+            </div>
+          </div>
         </div>
       </div>
     );

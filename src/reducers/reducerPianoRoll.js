@@ -6,7 +6,7 @@ import { PIANOROLL_SCROLL_X,
          PIANOROLL_SCROLL_Y } from '../actions/actions.js';
 
 let defaultPianoRollState = {
-  barMin: 0.500,
+  barMin: 0.250,
   barMax: 1.000,
   keyMin: 0.500,
   keyMax: 1.000
@@ -51,7 +51,7 @@ export default function pianoRoll(state = defaultPianoRollState, action) {
 
       // Make sure new state exceeds minimum positive range
       var newState = Object.assign({}, state, stateChanges);
-      if( newState.keyMax - newState.keyMin < 0.03125 )
+      if( newState.keyMax - newState.keyMin < 12 / 88 )
         return state;
       else
         return newState;

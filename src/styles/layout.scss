@@ -3,18 +3,54 @@ body {
   overflow: hidden;
   height: 100%;
 
-  background: #555;
+  background: #333;
+}
+
+$layout-session-height: 300px;
+$layout-transport-height: 70px;
+.layout-session {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $layout-session-height;
+}
+.layout-transport {
+  position: absolute;
+  top: $layout-session-height;
+  left: 0;
+  right: 0;
+  height: $layout-transport-height;
+  z-index: 10;
+
+  box-shadow: 0px -1px 5px 1px #000,
+        inset 0  2px 4px 0 rgba(255,255,255,0.25),
+        inset 0 -2px 4px 0 rgba(0,0,0,0.5);
+  border-top: 1px solid #AAA;
+  background: #333;
+  background-image: linear-gradient(to bottom, #555 0%, #555 49%, #444 50%, #444 100%);
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #000;
+}
+.layout-track {
+  position: absolute;
+  top: $layout-session-height + $layout-transport-height + 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  overflow: hidden;
 }
 
 
-$header-height: 100px;
-$footer-height: 67px;
+// METAL GRATE SURFACE (not in use)
 .layout-header {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: $header-height;
+  height: 100px;
 
   background: #222;
   background-image:
@@ -29,43 +65,4 @@ $footer-height: 67px;
   img {
     width: 210px;
   }
-}
-.layout-body {
-  position: absolute;
-  top: $header-height;
-  left: 0;
-  right: 0;
-  bottom: $footer-height;
-
-  background: #333;  
-  overflow: hidden;
-
-  /*
-  &:after {
-    opacity: 0.2;
-    content: "";
-    background: url(img/phrase-logo-black-engraved-2015-10-26.png) no-repeat center;  
-    background-size: 630px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-  }
-  */
-}
-.layout-footer {
-  position: absolute;
-  height: $footer-height;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  box-shadow: 0px 0px 5px 2px #000, inset 0px 4px 4px -2px rgba(255,255,255,0.25);
-  border-top: 1px solid #AAA;
-  background: #333;
-  background-image: linear-gradient(to bottom, #555 0%, #555 49%, #444 50%, #444 100%);
-  padding: 10px;
-  text-align: center;
 }

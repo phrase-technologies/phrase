@@ -17,19 +17,25 @@ export default class Layout extends Component {
   }
 
   render() {
+    var hidden = {display: 'none'};
     var layoutClasses = ["layout", this.getCursorClass(), 'disable-select'];
         layoutClasses = layoutClasses.join(' ').trim();
     var logo = require('../img/phrase-logo-black-engraved-2015-10-26.png');  
     return (
       <div className={layoutClasses}>
-        <div className="layout-header">
+        <div className="layout-header" style={hidden}>
           <img src={logo} />
         </div>
-        <div className="layout-body">
+        <div className="layout-session">
+          Session
+        </div>
+        <div className="layout-transport">
+          <Transport />
+        </div>
+        <div className="layout-track">
           <PianoRoll />
         </div>
-        <div className="layout-footer">
-          <Transport />
+        <div className="layout-editor">
         </div>
       </div>
     );

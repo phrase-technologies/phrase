@@ -60,9 +60,9 @@ export default class PianoRollKeyboard extends Component {
         if( key < 83 && key > 1 )
         {
           let label = 'C' + octave;
-          keys.unshift(<div className="piano-roll-octave-label"><div>{label}</div></div>);
+          keys.unshift(<div className="piano-roll-octave-label" key={label}><div>{label}</div></div>);
         }
-        octaves.push(<div className="piano-roll-octave">{keys}</div>);
+        octaves.push(<div className="piano-roll-octave" key={octave}>{keys}</div>);
         keys = [];
         octave--;
       }

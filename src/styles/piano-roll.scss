@@ -1,3 +1,8 @@
+$piano-roll-corner:           4px;
+$piano-roll-header:          40px;
+$piano-roll-spacing:         15px;
+$piano-roll-keyboard-width: 125px;
+$piano-roll-options-width:   30px;
 .piano-roll {
   position: absolute;
   top:    0;
@@ -5,15 +10,63 @@
   right:  100px;
   bottom: 0;
 }
+.piano-roll-header {
+  position: absolute;
+  top:    0;
+  left:   0;
+  right:  0;
+  height: $piano-roll-header;
 
+  border-top: 1px solid #BBB;
+  border-right: 1px solid #000;
+  border-radius: 0 6px 0 0;
+  box-shadow: inset  1px  2px 2px -2px #FFF,
+              inset -2px -2px 2px -2px #000;
+  background-image: linear-gradient(to bottom, #555 0%, #333 100%);
+  border-bottom: 1px solid #000;
+
+  padding: 9px 15px;
+  text-align: center;
+  color: #FFF;
+  text-shadow: -1px -1px 1px #000;
+  font-weight: normal;
+  //text-shadow: 0 0 10px #FFF;
+}
+.piano-roll-body {
+  position: absolute;
+  top:    $piano-roll-header;
+  left:   0;
+  right:  0;
+  bottom: 0;
+
+  border-right: 1px solid #000;
+  box-shadow: inset  1px  2px 2px -2px #FFF,
+              inset -2px -1px 2px -2px #000;
+  background: #555;
+
+  // Brushed Metal
+  background-image:
+    repeating-linear-gradient(left, hsla(0,0%,10%,0) 0, hsla(0,0%,10%,0)   6px, hsla(0,0%,10%,.10) 7.5px),
+    repeating-linear-gradient(left, hsla(0,0%, 0%,0) 0, hsla(0,0%, 0%,0)   4px, hsla(0,0%, 0%,.03) 4.5px),
+    repeating-linear-gradient(left, hsla(0,0%,10%,0) 0, hsla(0,0%,10%,0) 1.2px, hsla(0,0%,10%,.15) 2.2px);
+}
+.piano-roll-wrapper {
+  position: absolute;
+  top:    $piano-roll-spacing;
+  left:   $piano-roll-spacing + $piano-roll-options-width;
+  right:  $piano-roll-spacing;
+  bottom: $piano-roll-spacing;
+}
 .piano-roll-timeline {
   position: absolute;
   top: 0;
   left: 0;
-  right: 150px;
+  right: $piano-roll-keyboard-width;
   bottom: 0;
+
+  border: 1px solid #000;
+  border-radius: $piano-roll-corner $piano-roll-corner 0 0;
   background: #333;
-  border-right: 1px solid #000;
 
   canvas {
     position: absolute;
@@ -22,40 +75,86 @@
     right: 0;
     bottom: 0;
     width: 100%;
+
+    border-radius: $piano-roll-corner $piano-roll-corner 0 0;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
   }
 }
-.piano-roll-menu {
+.piano-roll-timeline-overlay {
   position: absolute;
   top: 0;
-  right: 0;
-  width: 150px + 10px;
+  left: 0;
+  right: $piano-roll-keyboard-width;
   height: 40px;
-  z-index: 10; // Above the keyboard
+
+  border-radius: $piano-roll-corner $piano-roll-corner 0 0;
+  box-shadow: inset  1px 1px 2px #000,
+              inset -1px 1px 2px #000;
+  z-index: 2; // Above scroll-zone
+  pointer-events: none;
+}
+.piano-roll-notes-overlay {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: $piano-roll-keyboard-width;
+  bottom: 0;
+
+  border-top: 1px solid #000;
+  box-shadow: inset 0 -1px 5px 1px #000;
+  z-index: 2; // Above scroll-zone
+  pointer-events: none;
+}
+.piano-roll-options {
+  position: absolute;
+  top:    $piano-roll-spacing + 40px;
+  left:   $piano-roll-spacing;
+  width:  $piano-roll-options-width;
+  bottom: $piano-roll-spacing;
 
   border: 1px solid #000;
-  border-radius: 0 0 3px 3px;
-  border-top: 0;
+  border-right: 0;
+  border-radius: $piano-roll-corner 0 0 $piano-roll-corner;
   background: #444;
-  box-shadow:  0px  1px 3px 1px rgba(  0,   0,   0, 0.75),
-        inset -2px -1px 2px 0   rgba(200, 200, 200, 0.50),
-        inset  2px -1px 2px 0   rgba(200, 200, 200, 0.50);
+  box-shadow: inset  1px  1px  2px rgba( 0, 0, 0, 0.25),
+              inset  1px -1px  2px rgba( 0, 0, 0, 0.25);
+  z-index: 2; // Above timeline's shadow
 
-  color: #DDD;
-  text-align: center;
-  padding: 8px 0;
-  text-shadow: 0 0 10px #DDD;
+  display: flex;
+  span {
+    display: block;
+    width: 100%;
+    text-align: center;
+    align-self: center;
+  }
 }
 .piano-roll-keyboard {
   position: absolute;
   top: 40px;
-  width: 150px;
+  width: $piano-roll-keyboard-width - 1px;
   right: 0;
   bottom: 0;
   box-sizing: content-box;
+
+  border: 1px solid #000;
   border-left: 0;
+  border-radius: 0 $piano-roll-corner $piano-roll-corner 0;
   z-index: 5; // Above the timeline
-  box-shadow: -3px 0 2px -2px #000;
+  background: #333;
+  overflow: hidden;
+}
+.piano-roll-keyboard-overlay {
+  position: absolute;
+  top: 40px;
+  width: $piano-roll-keyboard-width;
+  right: 0;
+  bottom: 0;
+
+  border-radius: 0 $piano-roll-corner $piano-roll-corner 0;
+  box-shadow: inset -1px  2px 2px rgba(0,0,0,0.5),
+              inset -1px -2px 2px rgba(0,0,0,0.5);
+  z-index: 6; // Above keyboard
+  pointer-events: none;
 }
 .piano-roll-keybed {
   position: relative;
@@ -142,7 +241,7 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
       &:after {
         left: 10%;
         background: #544;
-        box-shadow: inset 0 1px 3px 2px #100;
+        box-shadow: inset 0 1px 3px 2px #200;
       }
     }
   }
@@ -206,8 +305,8 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
   position: absolute;
   height: 30px;
   left: 1px;
-  right: 150px + 1px;
-  bottom: 0;
+  right: $piano-roll-keyboard-width + 1px;
+  bottom: 1px;
   background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);
   border-radius: 0 0 0 4px;
 
