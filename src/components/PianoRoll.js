@@ -68,15 +68,17 @@ export default class PianoRoll extends Component {
     return (
       <div className="piano-roll">
         <div className="piano-roll-header">
-          <span>Piano Roll</span>
+          <h1>MIDI Clip</h1>
           {/*<span className="caret" />*/}
         </div>
         <div className="piano-roll-body">
+          {/*
           <div className="piano-roll-options">
             <span className="fa fa-caret-left" />
             <span className="fa fa-gear" />
             <span className="fa fa-caret-left" />
           </div>
+          */}
           <div className="piano-roll-wrapper">
             <PianoRollTimeline ref={(ref) => this.timeline = ref}
               barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
