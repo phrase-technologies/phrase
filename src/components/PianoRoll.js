@@ -68,7 +68,7 @@ export default class PianoRoll extends Component {
     return (
       <div className="piano-roll">
         <div className="piano-roll-header">
-          <h1>MIDI Clip</h1>
+          <h1>Clip Editor</h1>
           {/*<span className="caret" />*/}
         </div>
         <div className="piano-roll-body">

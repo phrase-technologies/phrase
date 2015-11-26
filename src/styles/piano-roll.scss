@@ -7,7 +7,7 @@ $piano-roll-options-width:    0px;//30px;
   position: absolute;
   top:    0;
   left:   0;
-  right:  100px;
+  right:  0;
   bottom: 0;
 
   border-radius: 0 5px 0 0;
@@ -51,9 +51,8 @@ $piano-roll-options-width:    0px;//30px;
   bottom: 0px;
 
   border-right: 1px solid #000;
-  //border-radius: 0 3px 0 0;
   box-shadow: inset  1px  2px 2px -2px #FFF,
-              inset -2px -1px 2px -2px #000;
+              inset -2px -2px 2px -2px #000;
 
   // Brushed Metal
   background: #555;

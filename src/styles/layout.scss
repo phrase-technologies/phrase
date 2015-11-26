@@ -42,6 +42,69 @@ $layout-transport-height: 70px;
 
   overflow: hidden;
 }
+.layout-track-slider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 200%;
+  transition: left .25s, right .25s;
+
+  left:  -80px;
+  &.toggle {
+    left:  -100%;
+
+    .layout-track-clip {
+      margin-left: 55px;
+      margin-right: -55px;
+    }
+    .layout-track-connect {
+      margin-left: 55px;
+      margin-right: -95px;
+    }
+    .layout-track-chain {
+      margin-left: 95px;
+      margin-right: -95px;
+    }
+  }  
+}
+.layout-track-clip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 80px;
+  right: 50%;
+
+  transition: margin .25s;
+  margin: 0px 20px 0px 0px;
+
+  z-index: 2; // Above connect glow
+}
+.layout-track-connect {
+  position: absolute;
+  top: 40px;
+  bottom: 0;
+  left: 50%;
+  right: 50%;
+
+  transition: margin .25s;
+  margin: 0 -20px;
+
+  background: #555;
+  background-image: linear-gradient(to bottom, #BBB 0%, #999 2%, #666 5%, #BBB 20%, #AAA 35%, #999 35%, #222 100%);
+  box-shadow: 0 0 10px #BBB;
+}
+.layout-track-chain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  right: 80px;
+
+  transition: margin .25s;
+  margin: 0px 0px 0px 20px;
+
+  z-index: 2; // Above connect glow
+}
 
 
 // METAL GRATE SURFACE (not in use)
