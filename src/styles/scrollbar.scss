@@ -77,5 +77,5 @@ $scroll-corner-radius: 6px;
   width: 7px;
   z-index: 3;
 }
-.scroll-min { left:  0; }
-.scroll-max { right: 0; }
+.scroll-min { left:  0; cursor: url(img/cursor-left-edge.ico)  0 8, ew-resize; }
+.scroll-max { right: 0; cursor: url(img/cursor-right-edge.ico) 8 8, ew-resize; }

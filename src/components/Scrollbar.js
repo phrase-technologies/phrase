@@ -8,7 +8,10 @@ export default class Scrollbar extends Component {
     this.data = this.data || {};
     this.data.isDragging = false;
     this.data.startX = null;
-    this.data.length = this.gutter.getDOMNode().clientWidth;
+
+    // Dimensions
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize.bind(this));
 
     // Grip Handler
     this.bar.getDOMNode().addEventListener("mousedown", this.grip.bind(this));
@@ -25,10 +28,17 @@ export default class Scrollbar extends Component {
   }
 
   componentWillUnmount() {
+    this.data = null;
+
     this.bar.getDOMNode().removeEventListener("mousedown", this.grip);
     document.removeEventListener("mousemove", this.drag);
     document.removeEventListener("mouseup",   this.drop);
     document.removeEventListener("mousedown", this.drop);
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize() {
+    this.data.length = this.gutter.getDOMNode().clientWidth;
   }
 
   grip(e) {
@@ -85,6 +95,10 @@ export default class Scrollbar extends Component {
   }
 
   paging(e) {
+    // Ensure scrollbar wasn't clicked
+    if( e.target != this.gutter.getDOMNode() )
+      return false;
+
     var clickPosition = (e.clientX - this.gutter.getDOMNode().getBoundingClientRect().left) / this.data.length;
     
     // Page DOWN
