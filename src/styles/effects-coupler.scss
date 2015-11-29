@@ -1,0 +1,18 @@
+.effects-coupler {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  width: 50px;
+}
+.effects-coupler-body {
+  position: absolute;
+  top:    50px;
+  left:    0px;
+  right:   0px;
+  bottom: 50px;
+
+  border-top: 1px solid #CCC;
+  background: #555;
+  background-image: linear-gradient(to bottom, #BBB 0%, #999 2%, #666 5%, #BBB 20%, #AAA 35%, #999 35%, #222 90%, #000 100%);
+  border-bottom: 1px solid #111;
+}

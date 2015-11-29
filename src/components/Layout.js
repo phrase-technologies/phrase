@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Transport from './Transport.js';
 import PianoRoll from './PianoRoll.js';
-import EffectsChain from './EffectsChain.js';
+import EffectsModule from './EffectsModule.js';
+import EffectsCoupler from './EffectsCoupler.js';
 import { CURSOR_TYPES } from '../actions/actions.js';
 
 export default class Layout extends Component {
@@ -22,18 +23,8 @@ export default class Layout extends Component {
     return resultClass;
   }
 
-  handleClickClip(e) {
-    this.setState({trackToggle: true});
-  }
-
-  handleClickChain(e) {
-    this.setState({trackToggle: false});
-  }
-
   render() {
     var hidden = {display: 'none'};
-    var trackSliderClass = 'layout-track-slider';
-        trackSliderClass += ( this.state && this.state.trackToggle ) ? '' : ' toggle';
     var layoutClasses = ["layout", this.getCursorClass(), 'disable-select'];
         layoutClasses = layoutClasses.join(' ').trim();
     var logo = require('../img/phrase-logo-black-engraved-2015-10-26.png');  
@@ -49,14 +40,18 @@ export default class Layout extends Component {
           <Transport />
         </div>
         <div className="layout-track">
-          <div className={trackSliderClass}>
-            <div className="layout-track-clip" onClick={this.handleClickClip.bind(this)}>
-              <PianoRoll />
-            </div>
-            <div className="layout-track-connect" />
-            <div className="layout-track-chain" onClick={this.handleClickChain.bind(this)}>
-              <EffectsChain />
-            </div>
+          <div className="layout-track-slider">
+            <EffectsCoupler />
+            <EffectsModule name="Clip Editor">
+              <PianoRoll/>
+            </EffectsModule>
+            <EffectsCoupler />
+            <EffectsModule name="Super Saw" />
+            <EffectsCoupler />
+            <EffectsModule name="Reverb" />
+            <EffectsCoupler />
+            <EffectsModule name="Delay" />
+            <EffectsCoupler />
           </div>
         </div>
         <div className="layout-editor">

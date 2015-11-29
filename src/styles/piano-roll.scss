@@ -4,44 +4,8 @@ $piano-roll-spacing:         15px;
 $piano-roll-keyboard-width: 125px;
 $piano-roll-options-width:    0px;//30px;
 .piano-roll {
-  position: absolute;
-  top:    0;
-  left:   0;
-  right:  0;
-  bottom: 0;
-
-  border-radius: 0 5px 0 0;
-  background: #444;
-}
-.piano-roll-header {
-  position: absolute;
-  top:    0px;
-  right:  0px;
-  width:  $piano-roll-header;
-  bottom: 0px;
-
-  border-right: 1px solid #000;
-  border-radius: 0 5px 0 0;
-  box-shadow: inset  2px  2px 2px -2px #FFF,
-              inset -2px -2px 2px -2px #000;
-
-  h1 {
-    transform: rotate(270deg);
-    transform-origin: bottom right 0;
-    position: absolute;
-    bottom: 100%;
-    right: 0;
-    width: 200px;
-    margin: 0;
-
-    text-align: right;
-    text-transform: uppercase;
-    text-shadow: -1px 1px 1px #000;
-    font-size: 16px;
-    font-weight: bold;
-    color: #BBB;    
-    padding: 10px 15px;
-  }  
+  width: 600px;
+  height: 350px;
 }
 .piano-roll-body {
   position: absolute;
