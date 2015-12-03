@@ -31,6 +31,10 @@
   "dependencies": {
     "bootstrap-sass": "3.3.5",
     "font-awesome": "4.4.0",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "moment-twitter": "^0.2.0",
+    "numeral": "^1.5.3",
     "react": "0.13.0",
     "react-redux": "2.1.2",
     "redux": "3.0.0"

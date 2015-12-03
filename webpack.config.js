@@ -25,7 +25,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'autoprefixer', 'sass'],
+        loaders: ['style', 'css', 'autoprefixer', 'sass?precision=10'], // Precision needed for Bootstrap button alignment
         include: path.join(__dirname, 'src')
       },
       {

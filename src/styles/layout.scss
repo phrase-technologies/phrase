@@ -3,9 +3,34 @@ body {
   overflow: hidden;
   height: 100%;
 
-  background: #333;
+  background: #FFF;
 }
 
+.layout-switch {
+  position: absolute;
+  top: 0;
+  right: 10%;
+  width: 80px;
+  height: 30px;
+
+  border: 1px solid #0F0;
+  border-top: 0;
+  background: rgba(0,128,0, 0.5);
+
+  text-align: center;
+  z-index: 20000;
+
+  a {
+    display: inline-block;
+    padding: 3px 10px;
+    color: #0F0;
+    font-weight: bold;
+  }
+}
+
+// ============================================================================
+// Page A - Effects Chain
+// ============================================================================
 $layout-session-height: 200px;
 $layout-transport-height: 70px;
 .layout-session {
@@ -14,6 +39,8 @@ $layout-transport-height: 70px;
   left: 0;
   right: 0;
   height: $layout-session-height;
+
+  background: #333;
 }
 .layout-transport {
   position: absolute;
@@ -35,10 +62,12 @@ $layout-transport-height: 70px;
 }
 .layout-track {
   position: absolute;
-  top: $layout-session-height + $layout-transport-height + 50px;
+  top: $layout-session-height + $layout-transport-height;
   left: 0;
   right: 0;
-  bottom: 10px;
+  bottom: 0;
+
+  background: #333;
 
   // Horizontal Scroll
   padding-bottom: 30px;
@@ -51,9 +80,62 @@ $layout-transport-height: 70px;
   min-width: 100%;
 
   // Horizontal Scroll
-  padding-bottom: 30px;
+  padding: 30px 0;
   white-space: nowrap;
 }
+
+// ============================================================================
+// Page A - Effects Chain
+// ============================================================================
+$layout-page-sidebar: 200px;
+$layout-console-width: 240px;
+.layout-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: $layout-console-width;
+  bottom: 0;
+  overflow: auto;
+
+  color: #333;
+}
+.layout-page-header {
+  border-bottom: 1px solid #DDD;
+  padding: 20px;
+  background: #EEE;
+}
+.layout-page-body {
+  position: relative;
+  padding: 20px;
+  padding-left: 20px + $layout-page-sidebar + 20px;
+  background: #EEE;
+}
+.layout-page-sidebar {
+  opacity: 0.25;
+
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: $layout-page-sidebar;
+
+  font-size: 16px;
+}
+.layout-page-main {
+
+}
+.layout-console {
+  position: fixed;
+  top: 0;
+  width: $layout-console-width;
+  right: 0;
+  bottom: 0;
+
+  background: #333;
+}
+
+// ============================================================================
+// Legacy
+// ============================================================================
 
 // METAL GRATE SURFACE (not in use)
 .layout-header {

@@ -4,6 +4,16 @@ import { shiftInterval } from '../helpers/helpers.js';
 
 export default class Scrollbar extends Component {
 
+  constructor() {
+    super();
+
+    this.handleResize = this.handleResize.bind(this);
+    this.handleGrip   = this.handleGrip.bind(this);
+    this.handleDrag   = this.handleDrag.bind(this);
+    this.handleDrop   = this.handleDrop.bind(this);
+    this.handlePaging = this.handlePaging.bind(this);
+  }
+
   componentDidMount() {
     this.data = this.data || {};
     this.data.isDragging = false;
@@ -11,29 +21,29 @@ export default class Scrollbar extends Component {
 
     // Dimensions
     this.handleResize();
-    window.addEventListener('resize', this.handleResize.bind(this));
+    window.addEventListener('resize', this.handleResize);
 
     // Grip Handler
-    this.bar.getDOMNode().addEventListener("mousedown", this.grip.bind(this));
+    this.bar.getDOMNode().addEventListener("mousedown", this.handleGrip);
 
     // Drag Handler
-    document.addEventListener("mousemove", this.drag.bind(this));
+    document.addEventListener("mousemove", this.handleDrag);
 
     // Drop Handlers
-    document.addEventListener("mouseup",   this.drop.bind(this));
-    document.addEventListener("mousedown", this.drop.bind(this));
+    document.addEventListener("mouseup",   this.handleDrop);
+    document.addEventListener("mousedown", this.handleDrop);
 
     // Gutter paging
-    this.gutter.getDOMNode().addEventListener("mousedown", this.paging.bind(this))
+    this.gutter.getDOMNode().addEventListener("mousedown", this.handlePaging)
   }
 
   componentWillUnmount() {
     this.data = null;
 
-    this.bar.getDOMNode().removeEventListener("mousedown", this.grip);
-    document.removeEventListener("mousemove", this.drag);
-    document.removeEventListener("mouseup",   this.drop);
-    document.removeEventListener("mousedown", this.drop);
+    this.bar.getDOMNode().removeEventListener("mousedown", this.handleGrip);
+    document.removeEventListener("mousemove", this.handleDrag);
+    document.removeEventListener("mouseup",   this.handleDrop);
+    document.removeEventListener("mousedown", this.handleDrop);
     window.removeEventListener('resize', this.handleResize);
   }
 
@@ -41,7 +51,7 @@ export default class Scrollbar extends Component {
     this.data.length = this.gutter.getDOMNode().clientWidth;
   }
 
-  grip(e) {
+  handleGrip(e) {
     // Start the drag
     this.data.isDragging = true;
     this.data.startTarget = e.target;
@@ -50,7 +60,7 @@ export default class Scrollbar extends Component {
     this.data.startMax = this.props.max;
   }
 
-  drag(e) {
+  handleDrag(e) {
     // Ignore moves that aren't drag-initiated
     if( !this.data.isDragging )
       return;
@@ -84,7 +94,7 @@ export default class Scrollbar extends Component {
     }
   }
 
-  drop(e) {
+  handleDrop(e) {
     // Ignore left clicks - those are not drops
     if( e.type == "mousedown" && e.which == 1 )
       return;
@@ -94,7 +104,7 @@ export default class Scrollbar extends Component {
     this.forceUpdate();
   }
 
-  paging(e) {
+  handlePaging(e) {
     // Ensure scrollbar wasn't clicked
     if( e.target != this.gutter.getDOMNode() )
       return false;

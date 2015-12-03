@@ -11,7 +11,9 @@ export default class CanvasComponent extends Component {
   constructor() {
     super();
     if( this.renderFrame === undefined )
-      throw new TypeError("CanvasComponent.renderFrame() can not be undefined.")
+      throw new TypeError("CanvasComponent.renderFrame() is an abstract method and cannot be undefined.");
+
+    this.handleResize = this.handleResize.bind(this);
   }
 
   componentDidMount() {
@@ -25,7 +27,7 @@ export default class CanvasComponent extends Component {
     // Set Scaling
     this.data.pixelScale = window.devicePixelRatio || 1;
     this.data.canvasContext.scale( this.data.pixelScale, this.data.pixelScale );
-    window.addEventListener('resize', this.handleResize.bind(this));
+    window.addEventListener('resize', this.handleResize);
     this.handleResize();
 
     // Render

@@ -14,13 +14,14 @@ export default class PianoRoll extends Component {
   constructor() {
     super();
     this.data = {};
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   componentDidMount() {
     this.data.container = React.findDOMNode(this);
 
     // Scroll Handler
-    this.data.container.addEventListener("wheel", this.handleScroll.bind(this));
+    this.data.container.addEventListener("wheel", this.handleScroll);
   }
 
   componentWillUnmount() {

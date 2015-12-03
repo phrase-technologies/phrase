@@ -5,6 +5,7 @@ export default class PianoRollKeyboard extends Component {
   constructor() {
     super();
     this.data = {};
+    this.handleResize = this.handleResize.bind(this);
   }
 
   componentDidMount() {
@@ -12,7 +13,7 @@ export default class PianoRollKeyboard extends Component {
     this.data.container = React.findDOMNode(this);
 
     // Set Scaling
-    window.addEventListener('resize', this.handleResize.bind(this));
+    window.addEventListener('resize', this.handleResize);
     this.handleResize();
   }
 

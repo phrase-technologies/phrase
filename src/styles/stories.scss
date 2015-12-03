@@ -1,0 +1,141 @@
+$story-corner: 5px;
+.stories {
+  padding-left: 0;
+}
+.story {
+  list-style: none;
+
+  margin-bottom: 15px;
+}
+.story-with-action {
+  border: 1px solid #CCC;
+  border-radius: $story-corner;
+  padding: 10px 12px 12px;
+  background: #FFF;
+  box-shadow: 1px 1px 5px rgba(0,0,0,.1);
+}
+
+.story-action {
+  margin-bottom: 10px;
+
+  font-size: 12px;
+  color: #888;
+}
+.story-user {
+  display: inline-block;
+}
+.story-user-photo {
+  position: relative;
+  display: inline-block;
+  width:  18px;
+  height: 18px;
+
+  border-radius: 50%;
+}
+.story-user-name {
+  font-weight: bold;
+  color: #888;
+
+  vertical-align: middle;
+  line-height: 18px;
+}
+.story-user-action {
+  color: #888;
+
+  vertical-align: middle;
+  line-height: 18px;
+}
+.story-user-timestamp {
+  font-weight: bold;
+  color: #888;
+
+  vertical-align: middle;
+  line-height: 18px;
+}
+
+$story-track-cover: 80px;
+.story-track {
+  position: relative;
+  padding: 6px;
+  padding-left: $story-track-cover + 8px;
+  padding-right: 15px;
+  height: $story-track-cover;
+
+  background: #F2F2F2;
+  box-shadow: 1px 1px 5px rgba(0,0,0,.1);
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    border: 1px solid #CCC;
+    border-radius: $story-corner;
+
+    pointer-events: none;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: $story-track-cover;
+    bottom: 0;
+
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: $story-corner 0 0 $story-corner;
+  }
+}
+.story-track-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width:  $story-track-cover; // 1px for border
+  height: $story-track-cover;
+
+  border-radius: $story-corner 0 0 $story-corner;
+}
+.story-track-name {
+  margin: 0 0 8px;
+  width: 100%;
+
+  font-size: 18px;
+  font-weight: bold;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.story-contributors {
+  font-size: 12px;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.story-contributors-address {
+  vertical-align: middle;
+  line-height: 18px;
+}
+.story-stats {
+  margin-top: 8px;
+
+  font-size: 12px;
+  color: #888;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  .fa {
+    color: #CCC;
+  }
+}
+.story-stats-plays,
+.story-stats-likes,
+.story-stats-comments {
+  margin-right: 10px;
+}
