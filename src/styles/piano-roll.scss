@@ -1,5 +1,5 @@
 $piano-roll-corner:           4px;
-$piano-roll-header:          40px;
+$piano-roll-timeline:          40px;
 $piano-roll-spacing:         15px;
 $piano-roll-keyboard-width: 125px;
 $piano-roll-options-width:    0px;//30px;
@@ -11,7 +11,7 @@ $piano-roll-options-width:    0px;//30px;
   position: absolute;
   top:    0px;
   left:   0px;
-  right:  0px + $piano-roll-header;
+  right:  0px;
   bottom: 0px;
 
   border-right: 1px solid #000;
@@ -37,13 +37,13 @@ $piano-roll-options-width:    0px;//30px;
   top: 0;
   left: 0;
   right: $piano-roll-keyboard-width;
-  bottom: 0;
+  height: $piano-roll-timeline;
 
   border: 1px solid #000;
-  border-radius: $piano-roll-corner $piano-roll-corner 0 $piano-roll-corner;
+  border-radius: $piano-roll-corner $piano-roll-corner 0 0;
   background: #333;
 
-  canvas {
+  > canvas {
     position: absolute;
     top: 0;
     left: 0;
@@ -51,7 +51,7 @@ $piano-roll-options-width:    0px;//30px;
     bottom: 0;
     width: 100%;
 
-    border-radius: $piano-roll-corner $piano-roll-corner 0 $piano-roll-corner;
+    border-radius: $piano-roll-corner $piano-roll-corner 0 0;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
   }
 }
@@ -60,7 +60,7 @@ $piano-roll-options-width:    0px;//30px;
   top: 0;
   left: 0;
   right: $piano-roll-keyboard-width;
-  height: 40px;
+  height: $piano-roll-timeline;
 
   border-radius: $piano-roll-corner $piano-roll-corner 0 0;
   box-shadow: inset  1px 1px 2px #000,
@@ -68,9 +68,32 @@ $piano-roll-options-width:    0px;//30px;
   z-index: 2; // Above scroll-zone
   pointer-events: none;
 }
+.piano-roll-window {
+  position: absolute;
+  top: $piano-roll-timeline;
+  left: 0;
+  right: $piano-roll-keyboard-width;
+  bottom: 0;
+
+  border: 1px solid #000;
+  border-radius: 0 0 0 $piano-roll-corner;
+  background: #333;
+
+  > canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+
+    border-radius: 0 0 0 $piano-roll-corner;
+  //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
+  }
+}
 .piano-roll-notes-overlay {
   position: absolute;
-  top: 40px;
+  top: $piano-roll-timeline;
   left: 0;
   right: $piano-roll-keyboard-width;
   bottom: 0;
@@ -83,7 +106,7 @@ $piano-roll-options-width:    0px;//30px;
 }
 .piano-roll-options {
   position: absolute;
-  top:    $piano-roll-spacing + 40px;
+  top:    $piano-roll-spacing + $piano-roll-timeline;
   left:   $piano-roll-spacing;
   width:  $piano-roll-options-width;
   bottom: $piano-roll-spacing;
@@ -106,7 +129,7 @@ $piano-roll-options-width:    0px;//30px;
 }
 .piano-roll-keyboard {
   position: absolute;
-  top: 40px;
+  top: $piano-roll-timeline;
   width: $piano-roll-keyboard-width - 1px;
   right: 0;
   bottom: 0;
@@ -121,7 +144,7 @@ $piano-roll-options-width:    0px;//30px;
 }
 .piano-roll-keyboard-overlay {
   position: absolute;
-  top: 40px;
+  top: $piano-roll-timeline;
   width: $piano-roll-keyboard-width;
   right: 0;
   bottom: 0;

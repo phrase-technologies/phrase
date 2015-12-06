@@ -1,17 +1,27 @@
+// ============================================================================
+// Canvas Base Component
+// ============================================================================
+// This is a custom-rolled base component which you should use if you are
+// building a canvas component. It takes care of the canvas rendering lifecycle.
+// and All you have to do is extend it and define a renderFrame() method on the
+// child.
+// 
+// See also: TimelineBase.js
+
 import React, { Component } from 'react';
 
 // This is an Abstract Class.
 // Please extend it and define this.className + this.renderFrame
 export default class CanvasComponent extends Component {
 
-  // ==========================================================================
+  // --------------------------------------------------------------------------
   // Canvas Initialization
-  // ==========================================================================
+  // --------------------------------------------------------------------------
 
   constructor() {
     super();
     if( this.renderFrame === undefined )
-      throw new TypeError("CanvasComponent.renderFrame() is an abstract method and cannot be undefined.");
+      throw new TypeError("CanvasComponent.renderFrame() is an abstract method and must be defined by a descendant.");
 
     this.handleResize = this.handleResize.bind(this);
   }
@@ -67,9 +77,9 @@ export default class CanvasComponent extends Component {
     );
   }
 
-  // ==========================================================================
+  // --------------------------------------------------------------------------
   // Canvas/Calculation helpers
-  // ==========================================================================
+  // --------------------------------------------------------------------------
 
   // In 2D vector graphics, single-pixel stroke width must be drawn at a half-pixel position, otherwise it gets sub-pixel blurring
   closestHalfPixel(pixels){ return parseInt( 0.5 + pixels ) - 0.5; }; // parseInt is a hack for efficient rounding 

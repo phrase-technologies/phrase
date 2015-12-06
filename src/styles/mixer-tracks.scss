@@ -1,0 +1,179 @@
+// ============================================================================
+// Existing Individual Track
+// ============================================================================
+.mixer-track {
+  margin: 3px;
+  position: relative;
+
+  height: $mixer-track-height;
+
+  + .mixer-track {
+    margin-top: 4px;
+  }
+}
+.mixer-track-tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: $mixer-track-tag;
+  bottom: 0;
+
+  border: 1px solid #F80;
+  border-radius: $mixer-corner 0 0 $mixer-corner;
+  background: #C60;
+}
+.mixer-track-control {
+  position: absolute;
+  top: 0;
+  width: $mixer-track-control;
+  left: $mixer-track-tag;
+  bottom: 0;
+
+  border: 1px solid #666;
+  border-left: 0;
+  background: #505050;
+}
+.mixer-track-name {
+  margin: 4px 5px;
+
+  font-size: 12px;
+  color: #CCC;
+}
+.mixer-track-caret {
+  position: absolute;
+  top: 2px;
+  right: 8px;
+
+  font-size: 18px;
+  color: #AAA;
+
+  &:hover {
+    cursor: pointer;
+    color: #CCC;
+  }
+}
+.mixer-track-gain,
+.mixer-track-meter {
+  position: absolute;
+  left: 4px;
+  height: 9px;
+  right: 90px;
+
+  border: 1px solid #111;
+  background: #222;
+}
+.mixer-track-gain {
+  bottom: 3px + 10px + 2px;
+}
+.mixer-track-meter {
+  bottom: 4px;
+}
+.mixer-track-btn {
+  position: absolute;
+  bottom: 3px;
+
+  border: 1px solid #222;
+  border-radius: 2px;
+  background: #555;
+  color: #CCC;
+  font-weight: bold;
+  font-size: 12px;
+  text-align: center;
+  padding: 0;
+  width: 24px;
+  line-height: 20px;
+  background-image: linear-gradient(to bottom, #666 0%, #555 50%, #444 100%);
+
+  &:hover {
+    border-color: #000;
+    background-image: linear-gradient(to bottom, #777 0%, #555 50%, #333 100%);
+  }
+  &:active {
+    border-color: #000;
+    background-image: none;
+  }
+}
+.mixer-track-arm {
+  right: 61px;
+}
+.mixer-track-mute {
+  right: 33px;
+}
+.mixer-track-solo {
+  right: 5px;
+}
+.mixer-track-window {
+  position: absolute;
+  top: 0;
+  left: $mixer-track-tag + $mixer-track-control;
+  right: 0;
+  bottom: 0;
+
+  border: 1px solid #555;
+  border-left: 0;
+  border-radius: 0 $mixer-corner $mixer-corner 0;
+  background: #383838;
+
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 20px;
+    bottom: 0;
+  }
+
+  &:before {
+    left: 0;
+
+    border-radius: $mixer-corner 0 0 $mixer-corner;
+    box-shadow: inset 20px 0 20px -20px #222;
+  }
+
+  &:after {
+    right: 0;
+
+    box-shadow: inset -20px 0 20px -20px #222;
+  }
+}
+
+// ============================================================================
+// New Track Button
+// ============================================================================
+.mixer-track-new {
+  margin: 3px;
+  position: relative;
+
+  border: 1px dashed #555;
+  border-radius: $mixer-corner;
+  height: $mixer-track-height;
+
+  cursor: pointer;
+  transition: border-color .1s;
+
+  &:hover {
+    border-color: #F80;
+
+    .mixer-track-new-body {
+      border-color: #630;
+      color: #F80;
+      background: #420;
+    }
+  }
+}
+.mixer-track-new-body {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+
+  border: 1px solid #333;
+  border-radius: $mixer-corner - 1px;
+  text-align: center;
+  color: #555;
+  padding: 10px 0 0;
+  background: #222;
+
+  transition: border-color .1s, color .1s, background .1s;
+}

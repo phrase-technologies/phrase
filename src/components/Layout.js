@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Transport from './Transport.js';
 import PianoRoll from './PianoRoll.js';
 import EffectsModule from './EffectsModule.js';
 import EffectsCoupler from './EffectsCoupler.js';
 import Stories from './Stories.js';
+import LayoutConsole from './LayoutConsole.js';
 import { CURSOR_TYPES } from '../actions/actions.js';
 
 export default class Layout extends Component {
@@ -12,7 +12,7 @@ export default class Layout extends Component {
   constructor() {
     super();
     this.state = {
-      page: 'B'
+      page: 'D'
     }
   }
 
@@ -47,10 +47,6 @@ export default class Layout extends Component {
           <img src={logo} />
         </div>
         <div className="layout-session">
-          Session
-        </div>
-        <div className="layout-transport">
-          <Transport />
         </div>
         <div className="layout-track">
           <div className="layout-track-slider">
@@ -77,7 +73,7 @@ export default class Layout extends Component {
         <div className="layout-page">
           <div className="layout-page-header">
 
-            <h1>Browse Phrases</h1>
+            <h1>Stories</h1>
             <div className="input-group">
               <input type="text" className="form-control" placeholder="Search for..." />
               <div className="input-group-btn">
@@ -111,9 +107,32 @@ export default class Layout extends Component {
 
           </div>
         </div>
-        <div className="layout-console">
+        <div className="layout-console layout-console-collapsed">
         </div>
       </div>
+    );
+
+    var pageC = (
+      <div>
+        <div className="layout-page">
+          <div className="layout-page-header">
+
+            <h1>Sounds</h1>
+
+          </div>
+          <div className="layout-page-body">
+
+            <Stories />
+
+          </div>
+        </div>
+        <div className="layout-console layout-console-collapsed">
+        </div>
+      </div>
+    );
+
+    var pageD = (
+      <LayoutConsole />
     );
 
     switch( this.state.page )
@@ -121,6 +140,8 @@ export default class Layout extends Component {
       default:
       case 'A': var selectedPage = pageA; break;
       case 'B': var selectedPage = pageB; break;
+      case 'C': var selectedPage = pageC; break;
+      case 'D': var selectedPage = pageD; break;
     }
 
     return (
@@ -128,6 +149,8 @@ export default class Layout extends Component {
         <div className="layout-switch">
           <a onClick={this.togglePage.bind(this, 'A')}>A</a>
           <a onClick={this.togglePage.bind(this, 'B')}>B</a>
+          <a onClick={this.togglePage.bind(this, 'C')}>C</a>
+          <a onClick={this.togglePage.bind(this, 'D')}>D</a>
         </div>
         {selectedPage}
       </div>

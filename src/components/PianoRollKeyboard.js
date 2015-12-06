@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { shiftInterval,
+         zoomInterval } from '../helpers/helpers.js';
+import { pianoRollScrollY } from '../actions/actions.js';
 
 export default class PianoRollKeyboard extends Component {
 
@@ -6,6 +9,7 @@ export default class PianoRollKeyboard extends Component {
     super();
     this.data = {};
     this.handleResize = this.handleResize.bind(this);
+    this.handleScrollWheel = this.handleScrollWheel.bind(this);
   }
 
   componentDidMount() {
@@ -13,11 +17,13 @@ export default class PianoRollKeyboard extends Component {
     this.data.container = React.findDOMNode(this);
 
     // Set Scaling
+    this.data.container.addEventListener("wheel", this.handleScrollWheel);
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
   }
 
   componentWillUnmount() {
+    this.data.container.removeEventListener("wheel", this.handleScrollWheel);
     this.data.container = null;
     this.data = null;
     window.removeEventListener('resize', this.handleResize);
@@ -35,6 +41,31 @@ export default class PianoRollKeyboard extends Component {
   handleResize() {
     this.data.height = this.data.container.clientHeight - 30;
     this.forceUpdate();
+  }
+
+  // Scrolling and zooming within the timeline
+  handleScrollWheel(e) {
+    e.preventDefault();
+
+    // Zoom when CTRL or META key pressed
+    if( e.ctrlKey || e.metaKey )
+      this.handleZoom(e);
+
+    // Scroll otherwise
+    else
+      this.handleScrollY(e);
+  }
+  handleZoom(e) {
+    var zoomFactor = (e.deltaY + 500) / 500;
+    var fulcrumY = (e.clientY - this.data.container.getBoundingClientRect().top)  / this.data.container.clientHeight;
+    var [newKeyMin, newKeyMax] = zoomInterval([this.props.keyMin, this.props.keyMax], zoomFactor, fulcrumY);
+    this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
+  }
+  handleScrollY(e) {
+    var keyWindow = this.props.keyMax - this.props.keyMin;
+    var keyStepSize = e.deltaY / this.data.container.clientHeight * keyWindow;
+    var [newKeyMin, newKeyMax] = shiftInterval([this.props.keyMin, this.props.keyMax], keyStepSize);
+    this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
   }
 
   renderKeys() {

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import TimelineBase from './TimelineBase';
 
-export default class PianoRollTimeline extends TimelineBase {
+export default class MixerTimeline extends TimelineBase {
 
   constructor() {
-    super();
+    super(...arguments);
+    this.className = "mixer-timeline";
     this.data.marginLeft   = 10;
     this.data.marginRight  = 10;
-    this.className = "piano-roll-timeline";
   }
 
   renderFrame() {
@@ -52,8 +53,13 @@ export default class PianoRollTimeline extends TimelineBase {
   }
 }
 
-PianoRollTimeline.propTypes = {
+MixerTimeline.propTypes = {
   barCount:     React.PropTypes.number.isRequired,
   barMin:       React.PropTypes.number.isRequired,
   barMax:       React.PropTypes.number.isRequired
+};  
+MixerTimeline.defaultProps = {
+  cursor:   0.000,
+  playHead: 0.000,
+  barCount:  4
 };

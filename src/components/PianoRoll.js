@@ -5,6 +5,7 @@ import { shiftInterval,
 import { pianoRollScrollX,
          pianoRollScrollY } from '../actions/actions.js';
 import PianoRollTimeline    from './PianoRollTimeline.js';
+import PianoRollWindow      from './PianoRollWindow.js';
 import PianoRollNotes       from './PianoRollNotes.js';
 import PianoRollKeyboard    from './PianoRollKeyboard.js';
 import Scrollbar            from './Scrollbar.js';
@@ -14,50 +15,6 @@ export default class PianoRoll extends Component {
   constructor() {
     super();
     this.data = {};
-    this.handleScroll = this.handleScroll.bind(this);
-  }
-
-  componentDidMount() {
-    this.data.container = React.findDOMNode(this);
-
-    // Scroll Handler
-    this.data.container.addEventListener("wheel", this.handleScroll);
-  }
-
-  componentWillUnmount() {
-    this.data.container.removeEventListener("wheel", this.handleScroll);
-  }
-
-  handleScroll(e) {
-    // Zoom
-    if( (e.ctrlKey || e.metaKey) && e.deltaY )
-    {
-      var zoomFactor = (e.deltaY + 500) / 500;
-      var timeline = React.findDOMNode(this.timeline);
-      var fulcrumX = (e.clientX - timeline.getBoundingClientRect().left) / timeline.clientWidth;
-      var fulcrumY = (e.clientY - timeline.getBoundingClientRect().top)  / timeline.clientHeight;
-      var [newBarMin, newBarMax] = zoomInterval([this.props.barMin, this.props.barMax], zoomFactor, fulcrumX);
-      var [newKeyMin, newKeyMax] = zoomInterval([this.props.keyMin, this.props.keyMax], zoomFactor, fulcrumY);
-      this.props.dispatch(pianoRollScrollX(newBarMin, newBarMax));
-      this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
-
-      e.preventDefault();
-      return;
-    }
-
-    // Horizontal Scroll
-    var barWindow = this.props.barMax - this.props.barMin;
-    var barStepSize = e.deltaX / this.data.container.clientWidth * barWindow;    
-    var [newBarMin, newBarMax] = shiftInterval([this.props.barMin, this.props.barMax], barStepSize);
-    this.props.dispatch(pianoRollScrollX(newBarMin, newBarMax));
-
-    // Vertical Scroll
-    var keyWindow = this.props.keyMax - this.props.keyMin;
-    var keyStepSize = e.deltaY / this.data.container.clientHeight * keyWindow;
-    var [newKeyMin, newKeyMax] = shiftInterval([this.props.keyMin, this.props.keyMax], keyStepSize);
-    this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
-
-    e.preventDefault();
   }
 
   handleScrollZone(e, hover) {
@@ -70,15 +27,23 @@ export default class PianoRoll extends Component {
       <div className="piano-roll">
         <div className="piano-roll-wrapper">
           <PianoRollTimeline ref={(ref) => this.timeline = ref}
-            barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
-            keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
+            barMin={this.props.barMin}
+            barMax={this.props.barMax}
+            barCount={this.props.barCount} 
+            dispatch={this.props.dispatch}
             />
           <div className="piano-roll-timeline-overlay" />
           <div className="piano-roll-notes-overlay" />
+          <PianoRollWindow
+            barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
+            keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
+            dispatch={this.props.dispatch}
+           />
           <PianoRollNotes />
           <PianoRollKeyboard
             keyMin={this.props.keyMin}
             keyMax={this.props.keyMax}
+            dispatch={this.props.dispatch}
             />
           <div className="piano-roll-keyboard-overlay" />
           <div className="piano-roll-scroll-zone"

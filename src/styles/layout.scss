@@ -8,13 +8,13 @@ body {
 
 .layout-switch {
   position: absolute;
-  top: 0;
-  right: 10%;
-  width: 80px;
+  bottom: 0;
+  right: 50px;
+  width: 140px;
   height: 30px;
 
   border: 1px solid #0F0;
-  border-top: 0;
+  border-bottom: 0;
   background: rgba(0,128,0, 0.5);
 
   text-align: center;
@@ -22,7 +22,7 @@ body {
 
   a {
     display: inline-block;
-    padding: 3px 10px;
+    padding: 5px 10px;
     color: #0F0;
     font-weight: bold;
   }
@@ -41,24 +41,6 @@ $layout-transport-height: 70px;
   height: $layout-session-height;
 
   background: #333;
-}
-.layout-transport {
-  position: absolute;
-  top: $layout-session-height;
-  left: 0;
-  right: 0;
-  height: $layout-transport-height;
-  z-index: 10;
-
-  box-shadow: 0px -1px 5px 1px #000,
-        inset 0  2px 4px 0 rgba(255,255,255,0.25),
-        inset 0 -2px 4px 0 rgba(0,0,0,0.5);
-  border-top: 1px solid #AAA;
-  background: #333;
-  background-image: linear-gradient(to bottom, #555 0%, #555 49%, #444 50%, #444 100%);
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid #000;
 }
 .layout-track {
   position: absolute;
@@ -85,7 +67,7 @@ $layout-transport-height: 70px;
 }
 
 // ============================================================================
-// Page A - Effects Chain
+// Page B - Browser
 // ============================================================================
 $layout-page-sidebar: 200px;
 $layout-console-width: 240px;
@@ -126,11 +108,23 @@ $layout-console-width: 240px;
 .layout-console {
   position: fixed;
   top: 0;
-  width: $layout-console-width;
+  left: 45px;
   right: 0;
   bottom: 0;
 
-  background: #333;
+  border-left: 1px solid #000;        // For when collapsed!
+  box-shadow: 10px 0 10px 10px #000;  // ...but keep it at all times so that it's visible during transitions
+  background: #444;
+  background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 20%, #333 90%, #111 100% );
+
+  transition: left .25s, right .25s, margin .25s;
+
+}
+.layout-console-collapsed {
+  left: 100%;
+  right: -100%;
+  margin-left: -$layout-console-width;
+  margin-right: $layout-console-width - 45px;
 }
 
 // ============================================================================
