@@ -6,8 +6,8 @@ import { PIANOROLL_SCROLL_X,
          PIANOROLL_SCROLL_Y } from '../actions/actions.js';
 
 let defaultPianoRollState = {
-  barMin: 0.250,
-  barMax: 1.000,
+  barMin: 0.000,
+  barMax: 0.250,
   keyMin: 0.500,
   keyMax: 1.000
 };

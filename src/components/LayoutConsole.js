@@ -15,9 +15,15 @@ export default class LayoutConsole extends Component {
         <MixerTimeline
           barMin={this.props.barMin}
           barMax={this.props.barMax}
+          barCount={16}
           dispatch={this.props.dispatch}
         />
-        <MixerWindow />
+        <MixerWindow
+          barMin={this.props.barMin}
+          barMax={this.props.barMax}
+          barCount={16}
+          dispatch={this.props.dispatch}
+        />
         <div className="mixer-timeline-overlay" />
       </div>
     );

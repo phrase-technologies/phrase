@@ -75,12 +75,8 @@ PianoRoll.defaultProps = {
   notes:    [],
   cursor:   0.000,
   playHead: 0.000,
-  barCount:  4,
+  barCount: 16,
   keyCount: 88,
-  barMin:    0.000,
-  barMax:    1.000,
-  keyMin:    0.000,
-  keyMax:    1.000
 };
 
 

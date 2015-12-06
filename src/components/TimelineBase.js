@@ -50,6 +50,30 @@ export default class TimelineBase extends CanvasComponent {
     super.componentWillUnmount();
   }
 
+  // Calculate thresholds at which to draw barline thicknesses
+  calculateZoomThreshold() {
+    if( this.props.barMin || this.props.barMax )
+    {
+      var pixelsPerBar = this.getActiveWidth() / (this.props.barCount*this.getBarRange());
+
+      var thresholds = [
+        { threshold:   10.0, majorLine: 16.000, middleLine: 4.0000, minorLine:  null     },
+        { threshold:   20.0, majorLine: 16.000, middleLine: 4.0000, minorLine:  1.0000   },
+        { threshold:   40.0, majorLine:  4.000, middleLine: 1.0000, minorLine:  null     },
+        { threshold:   80.0, majorLine:  4.000, middleLine: 1.0000, minorLine:  0.2500   },
+        { threshold:  160.0, majorLine:  1.000, middleLine: 0.2500, minorLine:  null     },
+        { threshold:  320.0, majorLine:  1.000, middleLine: 0.2500, minorLine:  0.0625   },
+        { threshold:  640.0, majorLine:  0.250, middleLine: 0.0625, minorLine:  null     },
+        { threshold: 1280.0, majorLine:  0.250, middleLine: 0.0625, minorLine:  0.015625 }
+      ];
+
+      // Find the first threshold that fits
+      this.data.lineThicknessThresholds = thresholds.find(function(x){
+        return x.threshold > pixelsPerBar || x.threshold > 800; // Always use last one (800) if we get there
+      });
+    }
+  }
+
   // Grid Calculations
   getBarRange(){ return this.props.barMax - this.props.barMin; };
   getKeyRange(){ return this.props.keyMax - this.props.keyMin; };

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import MixerTrackWindow from './MixerTrackWindow.js';
 
 export default class MixerTrack extends Component {
   render() {
@@ -22,11 +23,19 @@ export default class MixerTrack extends Component {
             <span>S</span>
           </button>
         </div>
-        <div className="mixer-track-window" />
+        <MixerTrackWindow
+          barCount={this.props.barCount}
+          barMin={this.props.barMin}
+          barMax={this.props.barMax}
+          dispatch={this.props.dispatch}
+        />
       </div>
     );
   }
 }
 
 MixerTrack.propTypes = {
-};
+  barCount:     React.PropTypes.number.isRequired,
+  barMin:       React.PropTypes.number.isRequired,
+  barMax:       React.PropTypes.number.isRequired
+};  

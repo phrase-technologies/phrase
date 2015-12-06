@@ -14,6 +14,7 @@ export default class PianoRollWindow extends TimelineBase {
 
   renderFrame() {
     this.backgroundFill("#444444");
+    this.calculateZoomThreshold();
     this.renderKeyLines();
     this.renderBarLines();
   }
@@ -32,16 +33,25 @@ export default class PianoRollWindow extends TimelineBase {
     // Draw lines for each beat
     var minBar = this.percentToBar( this.props.barMin ) - 1;
     var maxBar = this.percentToBar( this.props.barMax );
-    for( var bar = minBar; bar <= maxBar; bar += 0.25 )
+    var minorIncrement = this.data.lineThicknessThresholds.minorLine || this.data.lineThicknessThresholds.middleLine;
+    for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
     {
-      // Start each line as a separate path (different colors)
-      this.data.canvasContext.beginPath();
-      this.data.canvasContext.strokeStyle = ( bar % 1 ) ? "#383838" : "#2C2C2C";
-
+      // Draw each line as a separate path (different colors)
       var xPosition = this.closestHalfPixel( this.barToXCoord( bar ) );
-      this.drawLine( xPosition, 0, xPosition, this.data.height );
+
+      // Major Bar lines
+      if( bar % this.data.lineThicknessThresholds.majorLine === 0 )
+        this.data.canvasContext.strokeStyle = "#222222";
+      // Intermediary Bar lines
+      else if( bar % this.data.lineThicknessThresholds.middleLine === 0 )
+        this.data.canvasContext.strokeStyle = "#333333";
+      // Minor Bar lines
+      else if( this.data.lineThicknessThresholds.minorLine )
+        this.data.canvasContext.strokeStyle = "#383838";
 
       // Draw each line (different colors)
+      this.data.canvasContext.beginPath();
+      this.drawLine( xPosition, 0, xPosition, this.data.height );
       this.data.canvasContext.stroke();
     }    
   }

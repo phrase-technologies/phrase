@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import TimelineBase from './TimelineBase';
 
 export default class MixerTimeline extends TimelineBase {
@@ -8,11 +7,12 @@ export default class MixerTimeline extends TimelineBase {
     super(...arguments);
     this.className = "mixer-timeline";
     this.data.marginLeft   = 10;
-    this.data.marginRight  = 10;
+    this.data.marginRight  = 12;
   }
 
   renderFrame() {
     this.backgroundFill("#282828");
+    this.calculateZoomThreshold();
     this.renderBarLines();
   }
 
@@ -26,28 +26,44 @@ export default class MixerTimeline extends TimelineBase {
     // Draw lines for each beat
     var minBar = this.percentToBar( this.props.barMin ) - 1;
     var maxBar = this.percentToBar( this.props.barMax );
-    for( var bar = minBar; bar <= maxBar; bar += 0.25 )
+    var majorIncrement = this.data.lineThicknessThresholds.majorLine;
+    var minorIncrement = this.data.lineThicknessThresholds.minorLine || this.data.lineThicknessThresholds.middleLine;
+    for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
     {
       // Start each line as a separate path (different colors)
-      var xPosition = this.closestHalfPixel( this.barToXCoord( bar ) );
+      let xPosition = this.closestHalfPixel( this.barToXCoord( bar ) );
+      let yPosition = 0;
 
-      // Bar Numbers + Bar lines
-      if( bar % 1 === 0 )
+      // Bar Numbers + Major lines
+      if( bar % this.data.lineThicknessThresholds.majorLine === 0 )
       {
+        // Bar Number
         let topEdge  = 14*this.data.pixelScale;
         let leftEdge =  4*this.data.pixelScale + xPosition;
-        this.data.canvasContext.fillText(bar + 1, leftEdge, topEdge);
+        let barNumber = Math.floor( bar + 1 );
+        let barBeat = ((bar + 1) % 1) * 4 + 1;
+        let outputText = (majorIncrement < 1.0) ? (barNumber + '.' + barBeat) : barNumber;
+        this.data.canvasContext.fillText(outputText, leftEdge, topEdge);
+
+        // Bar line style
         this.data.canvasContext.strokeStyle = "#555555";
       }
-      // Intermediary lines
-      else
+      // Intermediary Bar lines
+      else if( bar % this.data.lineThicknessThresholds.middleLine === 0 )
       {
         this.data.canvasContext.strokeStyle = "#383838";
+        yPosition = 15;
+      }
+      // Minor lines
+      else if( this.data.lineThicknessThresholds.minorLine )
+      {
+        this.data.canvasContext.strokeStyle = "#333333";
+        yPosition = 18;
       }
 
       // Draw each line
       this.data.canvasContext.beginPath();
-      this.drawLine( xPosition, 0, xPosition, this.data.height );
+      this.drawLine( xPosition, yPosition, xPosition, this.data.height );
       this.data.canvasContext.stroke();
     }    
   }
@@ -60,6 +76,5 @@ MixerTimeline.propTypes = {
 };  
 MixerTimeline.defaultProps = {
   cursor:   0.000,
-  playHead: 0.000,
-  barCount:  4
+  playHead: 0.000
 };

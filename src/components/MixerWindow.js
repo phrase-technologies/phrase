@@ -16,8 +16,17 @@ export default class MixerWindow extends Component {
   getTracks() {
     var trackComponents = [];
     this.state.tracks.forEach(function(element){
-      trackComponents.push(<MixerTrack track={element} key={element} />);
-    });
+      trackComponents.push(
+        <MixerTrack
+          key={element}
+          track={element}
+          barCount={this.props.barCount}
+          barMin={this.props.barMin}
+          barMax={this.props.barMax}
+          dispatch={this.props.dispatch}
+        />
+      );
+    }.bind(this));
 
     return trackComponents;
   }
@@ -43,3 +52,9 @@ export default class MixerWindow extends Component {
     );
   }
 }
+
+MixerWindow.propTypes = {
+  barCount:     React.PropTypes.number.isRequired,
+  barMin:       React.PropTypes.number.isRequired,
+  barMax:       React.PropTypes.number.isRequired
+};  
