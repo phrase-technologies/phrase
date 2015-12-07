@@ -104,14 +104,14 @@ export default class TimelineBase extends CanvasComponent {
 
     if( this.props.barMin || this.props.barMax )
     {
-      var fulcrumX = (e.clientX - this.data.container.getBoundingClientRect().left) / this.data.container.clientWidth;
+      var fulcrumX = (e.clientX - this.data.container.getBoundingClientRect().left - this.data.marginLeft) / this.getActiveWidth();
       var [newBarMin, newBarMax] = zoomInterval([this.props.barMin, this.props.barMax], zoomFactor, fulcrumX);
       this.props.dispatch(pianoRollScrollX(newBarMin, newBarMax));
     }
 
     if( this.props.keyMin || this.props.keyMax )
     {
-      var fulcrumY = (e.clientY - this.data.container.getBoundingClientRect().top)  / this.data.container.clientHeight;
+      var fulcrumY = (e.clientY - this.data.container.getBoundingClientRect().top - this.data.marginTop)  / this.getActiveHeight();
       var [newKeyMin, newKeyMax] = zoomInterval([this.props.keyMin, this.props.keyMax], zoomFactor, fulcrumY);
       this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
     }
