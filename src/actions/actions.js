@@ -1,6 +1,8 @@
 // ----------------------------------------------------------------------------
 // Actions
 // ----------------------------------------------------------------------------
+export const NAV_CONSOLE_TOGGLE           = 'NAV_CONSOLE_TOGGLE';
+
 export const TRANSPORT_PLAY               = 'TRANSPORT_PLAY';
 export const TRANSPORT_STOP               = 'TRANSPORT_STOP';
 export const TRANSPORT_REWIND             = 'TRANSPORT_REWIND';
@@ -24,6 +26,12 @@ export const CURSOR_TYPES = {
 // ----------------------------------------------------------------------------
 // Action creators
 // ----------------------------------------------------------------------------
+export function navConsoleToggle() {
+  return {
+    type: NAV_CONSOLE_TOGGLE
+  };
+}
+
 export function transportPlay() {
   return {
     type: TRANSPORT_PLAY
@@ -45,6 +53,7 @@ export function transportTempo(tempo) {
     tempo: tempo
   };
 }
+
 export function pianoRollScrollX(newMin, newMax) {
   return {
     type: PIANOROLL_SCROLL_X,

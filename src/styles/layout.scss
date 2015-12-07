@@ -1,3 +1,8 @@
+$layout-page-sidebar: 200px;
+$layout-page-z-index: 100;
+$layout-console-width: 240px;
+$layout-console-z-index: 200;
+
 html,
 body {
   overflow: hidden;
@@ -26,6 +31,10 @@ body {
     color: #0F0;
     font-weight: bold;
   }
+}
+.layout-overlay-hidden {
+  background: transparent !important;
+  pointer-events: none;
 }
 
 // ============================================================================
@@ -67,18 +76,17 @@ $layout-transport-height: 70px;
 }
 
 // ============================================================================
-// Page B - Browser
+// Page Layout
 // ============================================================================
-$layout-page-sidebar: 200px;
-$layout-console-width: 240px;
 .layout-page {
   position: absolute;
   top: 0;
   left: 0;
   right: $layout-console-width;
   bottom: 0;
-  overflow: auto;
+  z-index: $layout-page-z-index;
 
+  overflow: auto;
   color: #333;
 }
 .layout-page-header {
@@ -102,15 +110,28 @@ $layout-console-width: 240px;
 
   font-size: 16px;
 }
-.layout-page-main {
+.layout-page-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: $layout-console-z-index - 1; // Below Console
 
+  background: rgba(64,64,64,0.5);
+  transition: background .25s;
 }
+
+// ============================================================================
+// Console Layout
+// ============================================================================
 .layout-console {
   position: fixed;
   top: 0;
   left: 45px;
   right: 0;
   bottom: 0;
+  z-index: $layout-console-z-index;
 
   border-left: 1px solid #000;        // For when collapsed!
   box-shadow: 10px 0 10px 10px #000;  // ...but keep it at all times so that it's visible during transitions
@@ -118,7 +139,6 @@ $layout-console-width: 240px;
   background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 20%, #333 90%, #111 100% );
 
   transition: left .25s, right .25s, margin .25s;
-
 }
 .layout-console-collapsed {
   left: 100%;

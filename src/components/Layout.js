@@ -4,20 +4,23 @@ import PianoRoll from './PianoRoll.js';
 import EffectsModule from './EffectsModule.js';
 import EffectsCoupler from './EffectsCoupler.js';
 import Stories from './Stories.js';
+import LayoutPage from './LayoutPage.js';
 import LayoutConsole from './LayoutConsole.js';
-import { CURSOR_TYPES } from '../actions/actions.js';
+import { navConsoleToggle } from '../actions/actions.js';
 
 export default class Layout extends Component {
 
   constructor() {
     super();
     this.state = {
-      page: 'D'
-    }
+      page: 'B'
+    };
+
+    this.handleToggleConsole = this.handleToggleConsole.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({trackToggle: 'clip'});
+  handleToggleConsole() {
+    this.props.dispatch(navConsoleToggle());
   }
 
   getCursorClass() {
@@ -33,6 +36,15 @@ export default class Layout extends Component {
 
   togglePage(page) {
     this.setState({page: page});
+  }
+
+  renderPageOverlay() {
+    var pageOverlayClasses = this.props.navigation.console
+                           ? 'layout-page-overlay'
+                           : 'layout-page-overlay layout-overlay-hidden';
+    return (
+      <div className={pageOverlayClasses} onClick={this.handleToggleConsole} />
+    );
   }
 
   render() {
@@ -69,70 +81,13 @@ export default class Layout extends Component {
     );
 
     var pageB = (
-      <div>
-        <div className="layout-page">
-          <div className="layout-page-header">
-
-            <h1>Stories</h1>
-            <div className="input-group">
-              <input type="text" className="form-control" placeholder="Search for..." />
-              <div className="input-group-btn">
-                <button className="btn btn-default" type="button">
-                  <span>Electronic </span>
-                  <span className="caret"></span>
-                </button>
-                <button className="btn btn-default" type="button">
-                  <span className="fa fa-search"></span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-          <div className="layout-page-body">
-
-            <div className="layout-page-sidebar">
-              <ul className="list-group">
-                <li className="list-group-item">
-                  <span className="fa fa-fw fa-globe"/>
-                  <span> Overview</span>
-                </li>
-                <li className="list-group-item">
-                  <span className="fa fa-fw fa-star"/>
-                  <span> Favourites</span>
-                </li>
-              </ul>
-            </div>
-
-            <Stories />
-
-          </div>
-        </div>
-        <div className="layout-console layout-console-collapsed">
-        </div>
+      <div className="layout">
+        {/*
+        <LayoutPage />
+        */}
+        <LayoutConsole expanded={this.props.navigation.console} />
+        {this.renderPageOverlay()}
       </div>
-    );
-
-    var pageC = (
-      <div>
-        <div className="layout-page">
-          <div className="layout-page-header">
-
-            <h1>Sounds</h1>
-
-          </div>
-          <div className="layout-page-body">
-
-            <Stories />
-
-          </div>
-        </div>
-        <div className="layout-console layout-console-collapsed">
-        </div>
-      </div>
-    );
-
-    var pageD = (
-      <LayoutConsole />
     );
 
     switch( this.state.page )
@@ -140,8 +95,6 @@ export default class Layout extends Component {
       default:
       case 'A': var selectedPage = pageA; break;
       case 'B': var selectedPage = pageB; break;
-      case 'C': var selectedPage = pageC; break;
-      case 'D': var selectedPage = pageD; break;
     }
 
     return (
@@ -149,8 +102,6 @@ export default class Layout extends Component {
         <div className="layout-switch">
           <a onClick={this.togglePage.bind(this, 'A')}>A</a>
           <a onClick={this.togglePage.bind(this, 'B')}>B</a>
-          <a onClick={this.togglePage.bind(this, 'C')}>C</a>
-          <a onClick={this.togglePage.bind(this, 'D')}>D</a>
         </div>
         {selectedPage}
       </div>
@@ -160,6 +111,7 @@ export default class Layout extends Component {
 
 function mapStateToProps(state) {
   return {
+    navigation: state.navigation,
     cursor: state.cursor
   };
 }

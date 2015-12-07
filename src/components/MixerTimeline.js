@@ -74,7 +74,4 @@ MixerTimeline.propTypes = {
   barMin:       React.PropTypes.number.isRequired,
   barMax:       React.PropTypes.number.isRequired
 };  
-MixerTimeline.defaultProps = {
-  cursor:   0.000,
-  playHead: 0.000
-};
+
