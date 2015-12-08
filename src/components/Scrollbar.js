@@ -68,7 +68,12 @@ export default class Scrollbar extends Component {
     var pixelDelta = e.clientX - this.data.startX;    // How many pixels have we moved from start position
     var percentDelta = pixelDelta / this.data.length; // What percent have we moved from the start position
 
-    switch( this.data.startTarget )
+    // If no draggableEndpoints, treat min/max refs as bar
+    var currentTarget = this.props.draggableEndpoints
+                      ? this.data.startTarget
+                      : React.findDOMNode(this.bar);
+
+    switch( currentTarget )
     {
       // MIN-end of the Bar
       case React.findDOMNode(this.min):
@@ -125,14 +130,18 @@ export default class Scrollbar extends Component {
   }
 
   gutterClass() {
-    var classes = 'scroll-gutter';
-    classes += (this.data && this.data.isDragging || this.props.forceHover) ? ' hover' : '';
+    var classes  = 'scroll-gutter';
+        classes += (this.data && this.data.isDragging || this.props.forceHover) ? ' hover' : '';
+        classes += this.props.vertical ? ' scroll-vertical' : ' scroll-horizontal';
+        classes += this.props.draggableEndpoints ? ' scroll-draggable-endpoints' : '';
     return classes;
   }
 
   render() {
     var gutterClass = this.gutterClass();
-    var scrollPosition = { left: 100*this.props.min+'%', right: 100*(1-this.props.max)+'%' };
+    var scrollPosition = this.props.vertical
+                       ? { top:  100*this.props.min+'%', bottom: 100*(1-this.props.max)+'%' }
+                       : { left: 100*this.props.min+'%', right:  100*(1-this.props.max)+'%' };
     return (
       <div className={gutterClass}    ref={(ref) => this.gutter = ref}>
         <div className="scroll-bar"   ref={(ref) => this.bar    = ref} style={scrollPosition}>
@@ -145,8 +154,10 @@ export default class Scrollbar extends Component {
 }
 
 Scrollbar.propTypes = {
+  vertical: React.PropTypes.bool,
   min: React.PropTypes.number.isRequired,
   max: React.PropTypes.number.isRequired,
   setScroll: React.PropTypes.func.isRequired,
+  draggableEndpoints: React.PropTypes.bool,
   forceHover: React.PropTypes.bool
 };

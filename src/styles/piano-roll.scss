@@ -306,15 +306,18 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
   left: 1px;
   right: $piano-roll-keyboard-width + 1px;
   bottom: 1px;
+
+  padding: 10px;
   background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);
   border-radius: 0 0 0 4px;
 
-  transition: height 0.5s;
+  transition: height 0.5s, padding 0.5s;
   transition-delay: 1s;
 
   &:hover {
+    padding-top: 14px;
     height: 40px;
-    transition: height 0.125s;
+    transition: height 0.125s, padding 0.125s;
     transition-delay: 0s;
   }  
 }

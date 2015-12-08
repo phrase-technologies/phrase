@@ -50,7 +50,7 @@ export default class PianoRoll extends Component {
             onMouseEnter={(e) => this.handleScrollZone(e, true)}
             onMouseLeave={(e) => this.handleScrollZone(e, false)}
             >
-            <Scrollbar
+            <Scrollbar draggableEndpoints
               min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
               max={this.props.barMax} forceHover={this.data.scrollZoneHover}
               />
