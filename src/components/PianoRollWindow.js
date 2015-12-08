@@ -1,4 +1,9 @@
 import React from 'react';
+
+import { closestHalfPixel,
+         canvasReset,
+         drawLine } from '../helpers/helpers.js';
+
 import TimelineBase from './TimelineBase';
 
 export default class PianoRollWindow extends TimelineBase {
@@ -13,7 +18,7 @@ export default class PianoRollWindow extends TimelineBase {
   }
 
   renderFrame() {
-    this.backgroundFill("#444444");
+    canvasReset(this.data.canvasContext, this.data.canvas, "#444444");
     this.calculateZoomThreshold();
     this.renderKeyLines();
     this.renderBarLines();
@@ -37,7 +42,7 @@ export default class PianoRollWindow extends TimelineBase {
     for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
     {
       // Draw each line as a separate path (different colors)
-      var xPosition = this.closestHalfPixel( this.barToXCoord( bar ) );
+      var xPosition = closestHalfPixel( this.barToXCoord( bar ) );
 
       // Major Bar lines
       if( bar % this.data.lineThicknessThresholds.majorLine === 0 )
@@ -51,7 +56,7 @@ export default class PianoRollWindow extends TimelineBase {
 
       // Draw each line (different colors)
       this.data.canvasContext.beginPath();
-      this.drawLine( xPosition, 0, xPosition, this.data.height );
+      drawLine( this.data.canvasContext, xPosition, 0, xPosition, this.data.height );
       this.data.canvasContext.stroke();
     }    
   }
@@ -68,11 +73,11 @@ export default class PianoRollWindow extends TimelineBase {
     var maxKey = this.percentToKey( this.props.keyMax );
     for( var key = minKey; key - 1 <= maxKey; key++ )
     {
-      var prevEdge = this.closestHalfPixel( this.keyToYCoord( key - 1 ) ) + 1;   // Extra pixel to account for stroke width
-      var nextEdge = this.closestHalfPixel( this.keyToYCoord( key     ) ) + 1;   // Extra pixel to account for stroke width
+      var prevEdge = closestHalfPixel( this.keyToYCoord( key - 1 ) ) + 1;   // Extra pixel to account for stroke width
+      var nextEdge = closestHalfPixel( this.keyToYCoord( key     ) ) + 1;   // Extra pixel to account for stroke width
 
       // Stroke the edge between rows
-      this.drawLine( 0, prevEdge, this.data.width, prevEdge, false );
+      drawLine( this.data.canvasContext, 0, prevEdge, this.data.width, prevEdge, false );
 
       // Fill the row for the black keys
       if( key % 12 in {3:true, 5:true, 7: true, 10: true, 0: true} )

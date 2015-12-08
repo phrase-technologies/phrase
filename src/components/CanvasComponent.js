@@ -24,6 +24,7 @@ export default class CanvasComponent extends Component {
       throw new TypeError("CanvasComponent.renderFrame() is an abstract method and must be defined by a descendant.");
 
     this.handleResize = this.handleResize.bind(this);
+    this.renderFrame = this.renderFrame.bind(this);
   }
 
   componentDidMount() {
@@ -58,15 +59,14 @@ export default class CanvasComponent extends Component {
   }
 
   newAnimationFrame() {
-    cancelAnimationFrame(this.renderFrame.bind(this));
-    requestAnimationFrame(this.renderFrame.bind(this));    
+    cancelAnimationFrame(this.renderFrame);
+    requestAnimationFrame(this.renderFrame);    
   }
 
   handleResize() {
     this.data.pixelScale = window.devicePixelRatio || 1;
     this.data.canvas.width  = this.data.width  = this.data.container.clientWidth  * this.data.pixelScale;
     this.data.canvas.height = this.data.height = this.data.container.clientHeight * this.data.pixelScale;
-    cancelAnimationFrame(this.renderFrame.bind(this));
     this.newAnimationFrame();
   }
 
@@ -76,35 +76,4 @@ export default class CanvasComponent extends Component {
       </div>
     );
   }
-
-  // --------------------------------------------------------------------------
-  // Canvas/Calculation helpers
-  // --------------------------------------------------------------------------
-
-  // In 2D vector graphics, single-pixel stroke width must be drawn at a half-pixel position, otherwise it gets sub-pixel blurring
-  closestHalfPixel(pixels){ return parseInt( 0.5 + pixels ) - 0.5; }; // parseInt is a hack for efficient rounding 
-
-  drawLine(x1, y1, x2, y2, xyFlip, color) {
-    if( color )
-    {
-      this.data.canvasContext.beginPath();
-      this.data.canvasContext.strokeStyle = color;
-    }
-
-    if( xyFlip )
-    {
-      x1 = [y1, y1 = x1][0];
-      x2 = [y2, y2 = x2][0];
-    }
-    this.data.canvasContext.moveTo( x1, y1 );
-    this.data.canvasContext.lineTo( x2, y2 );
-
-    if( color )
-      this.data.canvasContext.stroke();
-  };
-
-  backgroundFill(color) {
-    this.data.canvasContext.fillStyle = color;
-    this.data.canvasContext.fillRect( 0, 0, this.data.width, this.data.height );
-  };
 }

@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+
+import { closestHalfPixel,
+         canvasReset,
+         drawLine } from '../helpers/helpers.js';
+
 import TimelineBase from './TimelineBase';
 
 export default class MixerTimeline extends TimelineBase {
@@ -11,7 +16,7 @@ export default class MixerTimeline extends TimelineBase {
   }
 
   renderFrame() {
-    this.backgroundFill("#282828");
+    canvasReset(this.data.canvasContext, this.data.canvas, "#282828");
     this.calculateZoomThreshold();
     this.renderBarLines();
   }
@@ -31,7 +36,7 @@ export default class MixerTimeline extends TimelineBase {
     for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
     {
       // Start each line as a separate path (different colors)
-      let xPosition = this.closestHalfPixel( this.barToXCoord( bar ) );
+      let xPosition = closestHalfPixel( this.barToXCoord( bar ) );
       let yPosition = 0;
 
       // Bar Numbers + Major lines
@@ -63,7 +68,7 @@ export default class MixerTimeline extends TimelineBase {
 
       // Draw each line
       this.data.canvasContext.beginPath();
-      this.drawLine( xPosition, yPosition, xPosition, this.data.height );
+      drawLine( this.data.canvasContext, xPosition, yPosition, xPosition, this.data.height );
       this.data.canvasContext.stroke();
     }    
   }
