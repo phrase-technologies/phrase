@@ -6,8 +6,7 @@ import { shiftInterval,
 import { navConsoleToggle,
          pianoRollScrollX } from '../actions/actions.js';
 
-import MixerTimeline from './MixerTimeline.js';
-import MixerTrackList from './MixerTrackList.js';
+import MixerArrangement from './MixerArrangement.js';
 import Transport from './Transport.js';
 
 export default class LayoutConsole extends Component {
@@ -29,19 +28,12 @@ export default class LayoutConsole extends Component {
     return (
       <div className={layoutConsoleClasses} onClick={this.handleToggleConsole}>
         <Transport />
-        <MixerTimeline
+        <MixerArrangement
           barMin={this.props.barMin}
           barMax={this.props.barMax}
           barCount={64}
           dispatch={this.props.dispatch}
         />
-        <MixerTrackList
-          barMin={this.props.barMin}
-          barMax={this.props.barMax}
-          barCount={64}
-          dispatch={this.props.dispatch}
-        />
-        <div className="mixer-timeline-overlay" />
       </div>
     );
   }

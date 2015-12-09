@@ -5,25 +5,33 @@ import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
 import { pianoRollScrollX } from '../actions/actions.js';
 
+import MixerTimeline from './MixerTimeline.js';
 import MixerTrack from './MixerTrack.js';
 import MixerTrackNew from './MixerTrackNew.js';
 import MixerScrollWindow from './MixerScrollWindow.js';
 import ScrollBar from './Scrollbar.js';
 
-export default class MixerTrackList extends Component {
+export default class MixerArrangement extends Component {
 
   render() {
-    var mixerWindowClasses  = 'mixer-track-list-window';
-        mixerWindowClasses += this.state.scroll ? ' mixer-track-list-overflow' : '';
+    var mixerWindowClasses  = 'mixer-arrangement';
+        mixerWindowClasses += this.state.scroll ? ' mixer-arrangement-overflow' : '';
     var scrollOffset = this.state.scroll
                      ? this.state.scroll.min * this.data.scrollTarget.scrollHeight * -1
                      : 0;
     var scrollOffsetStyles = {marginTop: scrollOffset};
     var emptyAreaStyle = {top: this.state.emptyAreaOffset};
-    console.log( emptyAreaStyle );
 
     return (
       <div className={mixerWindowClasses}>
+        <MixerTimeline
+          barMin={this.props.barMin}
+          barMax={this.props.barMax}
+          barCount={64}
+          dispatch={this.props.dispatch}
+        >
+          <div className="mixer-timeline-overlay" />
+        </MixerTimeline>
         <div className="mixer-track-list-gutter">
           <ul className="mixer-track-list" ref={(ref) => this.mixerList = ref} style={scrollOffsetStyles}>
             {this.getTracks()}
@@ -201,7 +209,7 @@ export default class MixerTrackList extends Component {
   }
 }
 
-MixerTrackList.propTypes = {
+MixerArrangement.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   barMin:       React.PropTypes.number.isRequired,

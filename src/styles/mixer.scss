@@ -25,24 +25,26 @@ $mixer-track-control: 200px;
 // ============================================================================
 .mixer-timeline {
   position: absolute;
-  top:    15px;
-  left:  227px;
-  right:  29px;
-  height: 35px;
+  top:    -35px;
+  left:     3px + $mixer-track-control + $mixer-track-tag;
+  right:   -1px;  // Negate the outside border
+  height:  35px;
+  z-index:  2;
 
   border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
   background: #222;
 
   > canvas {
+    width: 100%;
     border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
   }
 }
 .mixer-timeline-overlay {
   position: absolute;
-  top:    15px;
-  left:  227px;
-  right:  29px;
-  height: 35px;
+  top:    0;
+  left:   0;
+  right:  0;
+  bottom: 0;
 
   border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
   box-shadow: inset  5px 5px 5px -4px #000,
@@ -54,7 +56,7 @@ $mixer-track-control: 200px;
 // ============================================================================
 // Mixer Console
 // ============================================================================
-.mixer-track-list-window {
+.mixer-arrangement {
   position: absolute;
   top:    15px + 35px;
   left:   15px;
@@ -64,8 +66,6 @@ $mixer-track-control: 200px;
   border: 1px solid #000;
   border-radius: $mixer-corner+3px 0 $mixer-corner+3px $mixer-corner+3px;
   background: #111;
-
-  overflow: hidden;
 
   &:before,
   &:after {
@@ -92,8 +92,7 @@ $mixer-track-control: 200px;
     box-shadow: inset 0 -10px 10px -8px #000;
   }  
 }
-.mixer-track-list-overflow {
-  overflow: hidden;
+.mixer-arrangement-overflow {
   right:  15px;
 
   border-radius: $mixer-corner+3px;
@@ -182,6 +181,10 @@ $mixer-track-control: 200px;
     border-radius: 0 $mixer-corner $mixer-corner 0;
     box-shadow: inset -20px 0 20px -20px #111;
   }
+
+  > canvas {
+    width: 100%;
+  }
 }
 .mixer-scroll-horizontal {
   position: absolute;
@@ -206,7 +209,7 @@ $mixer-track-control: 200px;
   bottom: 0;
   height: 37px;
   width: 3px + $mixer-track-control + $mixer-track-tag + 1px;
-  z-index: 4; // Above .mixer-track-list-window:after shadow
+  z-index: 4; // Above .mixer-arrangement:after shadow
 
   border-top: 1px solid #666;
   border-right: 1px solid #666;
@@ -222,7 +225,7 @@ $mixer-track-control: 200px;
   bottom: 0;
   height: 37px;
   width: 3px + 1px;
-  z-index: 4; // Above .mixer-track-list-window:after shadow
+  z-index: 4; // Above .mixer-arrangement:after shadow
 
   border-top: 1px solid #666;
   border-left: 1px solid #666;
