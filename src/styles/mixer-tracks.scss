@@ -2,13 +2,13 @@
 // Existing Individual Track
 // ============================================================================
 .mixer-track {
-  margin: 3px;
   position: relative;
 
-  height: $mixer-track-height;
+  border: 3px solid #111;
+  height: $mixer-track-height + 2px + 2px;  // Using borders as margins - account for it
 
   + .mixer-track {
-    margin-top: 4px;
+    margin-top: -2px;
   }
 }
 .mixer-track-tag {
@@ -21,6 +21,8 @@
   border: 1px solid #F80;
   border-radius: $mixer-corner 0 0 $mixer-corner;
   background: #C60;
+
+  pointer-events: all;
 }
 .mixer-track-control {
   position: absolute;
@@ -32,6 +34,8 @@
   border: 1px solid #666;
   border-left: 0;
   background: #555555;
+
+  pointer-events: all;
 }
 .mixer-track-name {
   margin: 4px 5px;
@@ -112,7 +116,8 @@
   border: 1px solid #555;
   border-left: 0;
   border-radius: 0 $mixer-corner $mixer-corner 0;
-  background: #383838;
+
+  pointer-events: all;
 
   &:before,
   &:after {
@@ -125,55 +130,69 @@
 
   &:before {
     left: 0;
-
-    border-radius: $mixer-corner 0 0 $mixer-corner;
-    box-shadow: inset 20px 0 20px -20px #222;
+    box-shadow: inset 20px 0 20px -20px #333;
   }
 
   &:after {
     right: 0;
+    border-radius: 0 $mixer-corner $mixer-corner 0;
+    box-shadow: inset -20px 0 20px -20px #333;
+  }
 
-    box-shadow: inset -20px 0 20px -20px #222;
+  > canvas {
+    width: 100%;
   }
 }
 
 // ============================================================================
 // New Track Button
 // ============================================================================
+.mixer-track-new-wrapper {
+  padding: 1px 3px 5px;
+}
 .mixer-track-new {
-  margin: 4px 3px 3px;
   position: relative;
 
-  border: 1px dashed #555;
+  border: 1px dashed transparent;
   border-radius: $mixer-corner;
   height: $mixer-track-height;
 
   cursor: pointer;
-  transition: border-color .1s;
+  transition: border-color .1s, background .1s, box-shadow .1s;
+  pointer-events: all;
 
   &:hover {
     border-color: #F80;
+    box-shadow: 0 5px 10px #111;
+    background: #111;
 
     .mixer-track-new-body {
       border-color: #630;
       color: #F80;
       background: #420;
+      text-shadow: none;
     }
   }
 }
 .mixer-track-new-body {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  right: 3px;
-  bottom: 3px;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
 
-  border: 1px solid #333;
+  border: 1px solid transparent;
   border-radius: $mixer-corner - 1px;
   text-align: center;
-  color: #555;
-  padding: 10px 20px 0;
-  background: #222;
+  text-shadow:
+     2px  0px 10px #111,
+     2px  2px 10px #111,
+     0px  0px 10px #111,
+     0px  2px 10px #111;
+  font-size: 18px;
+  color: #999;
+  padding: 7px 20px 0;
+  background: none;
 
   transition: border-color .1s, color .1s, background .1s;
 }

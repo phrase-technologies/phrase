@@ -7,18 +7,18 @@ import { closestHalfPixel,
 
 import TimelineBase from './TimelineBase';
 
-export default class MixerTrackWindow extends TimelineBase {
+export default class MixerScrollWindow extends TimelineBase {
 
   constructor() {
     super(...arguments);
-    this.className = "mixer-track-window";
+    this.className = "mixer-scroll-window";
     this.data.marginLeft   = 10;
     this.data.marginRight  = 7;
   }
 
   renderFrame() {
-    // this.calculateZoomThreshold();
-    // this.renderTimeline()
+    this.calculateZoomThreshold();
+    this.renderTimeline()
   }
 
   renderTimeline() {
@@ -49,9 +49,10 @@ export default class MixerTrackWindow extends TimelineBase {
       this.data.canvasContext.stroke();
     }    
   }
+
 }
 
-MixerTrackWindow.propTypes = {
+MixerScrollWindow.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   barMin:       React.PropTypes.number.isRequired,

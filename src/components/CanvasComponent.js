@@ -55,7 +55,7 @@ export default class CanvasComponent extends Component {
 
   shouldComponentUpdate() {
     this.newAnimationFrame();
-    return false;
+    return true;
   }
 
   newAnimationFrame() {
@@ -73,6 +73,7 @@ export default class CanvasComponent extends Component {
   render() {
     return (
       <div className={this.className}>
+        {this.props.children}
       </div>
     );
   }

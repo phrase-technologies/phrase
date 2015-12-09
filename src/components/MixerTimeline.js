@@ -11,7 +11,7 @@ export default class MixerTimeline extends TimelineBase {
   constructor() {
     super(...arguments);
     this.className = "mixer-timeline";
-    this.data.marginLeft   = 10;
+    this.data.marginLeft   = 11;
     this.data.marginRight  = 12;
   }
 
