@@ -6,12 +6,12 @@ import { CURSOR_SET_IMPLICIT,
          CURSOR_SET_EXPLICIT,
          CURSOR_TYPES } from '../actions/actions.js';
 
-let defaultCursorState = {
+let defaultState = {
   implicit: null,
   explicit: null
 };
 
-export default function cursor(state = defaultCursorState, action) {
+export default function cursor(state = defaultState, action) {
   // Validate Cursor Type
   var cursorClass = CURSOR_TYPES[action.cursor];
 

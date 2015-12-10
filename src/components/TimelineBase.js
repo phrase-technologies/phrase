@@ -25,7 +25,8 @@ import CanvasComponent from './CanvasComponent';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
 import { pianoRollScrollX,
-         pianoRollScrollY } from '../actions/actions.js';
+         pianoRollScrollY,
+         timelineCursor } from '../actions/actions.js';
 
 export default class TimelineBase extends CanvasComponent {
   constructor(){
@@ -38,15 +39,18 @@ export default class TimelineBase extends CanvasComponent {
     this.data.marginRight  = 0;
 
     this.handleScrollWheel = this.handleScrollWheel.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
   }
 
   componentDidMount() {
     super.componentDidMount();
     this.data.container.addEventListener("wheel", this.handleScrollWheel);
+    this.data.container.addEventListener("mousemove", this.handleMouseMove);
   }
 
   componentWillUnmount() {
     this.data.container.removeEventListener("wheel", this.handleScrollWheel);
+    this.data.container.removeEventListener("mousemove", this.handleMouseMove);
     super.componentWillUnmount();
   }
 
@@ -83,6 +87,8 @@ export default class TimelineBase extends CanvasComponent {
   barToXCoord(bar){ return ( ( bar / this.props.barCount ) - this.props.barMin ) / this.getBarRange() * this.getActiveWidth()  + this.data.pixelScale*this.data.marginLeft; };
   percentToKey(percent){ return Math.ceil( percent * this.props.keyCount ); }; // Where percent is between 0.000 and 1.000
   percentToBar(percent){ return Math.ceil( percent * this.props.barCount ); }; // Where percent is between 0.000 and 1.000
+  getMouseYPercent(e){ return this.data.pixelScale * (e.clientY - this.data.container.getBoundingClientRect().top - this.data.marginTop)  / this.getActiveHeight(); }
+  getMouseXPercent(e){ return this.data.pixelScale * (e.clientX - this.data.container.getBoundingClientRect().left - this.data.marginLeft) / this.getActiveWidth(); }
 
   // Scrolling and zooming within the timeline
   handleScrollWheel(e) {
@@ -104,14 +110,14 @@ export default class TimelineBase extends CanvasComponent {
 
     if( this.props.barMin || this.props.barMax )
     {
-      var fulcrumX = (e.clientX - this.data.container.getBoundingClientRect().left - this.data.marginLeft) / this.getActiveWidth();
+      var fulcrumX = this.getMouseXPercent(e);
       var [newBarMin, newBarMax] = zoomInterval([this.props.barMin, this.props.barMax], zoomFactor, fulcrumX);
       this.props.dispatch(pianoRollScrollX(newBarMin, newBarMax));
     }
 
     if( this.props.keyMin || this.props.keyMax )
     {
-      var fulcrumY = (e.clientY - this.data.container.getBoundingClientRect().top - this.data.marginTop)  / this.getActiveHeight();
+      var fulcrumY = this.getMouseYPercent(e);
       var [newKeyMin, newKeyMax] = zoomInterval([this.props.keyMin, this.props.keyMax], zoomFactor, fulcrumY);
       this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
     }
@@ -133,5 +139,10 @@ export default class TimelineBase extends CanvasComponent {
       var [newKeyMin, newKeyMax] = shiftInterval([this.props.keyMin, this.props.keyMax], keyStepSize);
       this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
     }
+  }
+  handleMouseMove(e) {
+    var percent = this.getMouseXPercent(e);
+    console.log( percent );
+    this.props.dispatch(timelineCursor(percent));
   }
 }

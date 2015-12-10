@@ -23,6 +23,9 @@ export const CURSOR_TYPES = {
   'move':     'move'
 };
 
+export const TIMELINE_CURSOR              = 'TIMELINE_CURSOR';
+export const TIMELINE_PLAYHEAD            = 'TIMELINE_PLAYHEAD';
+
 // ----------------------------------------------------------------------------
 // Action creators
 // ----------------------------------------------------------------------------
@@ -79,5 +82,18 @@ export function cursorSetExplicit(cursor) {
   return {
     type: CURSOR_SET_EXPLICIT,
     cursor: cursor
+  };
+}
+
+export function timelineCursor(percent) {
+  return {
+    type: TIMELINE_CURSOR,
+    percent: percent
+  };
+}
+export function timelinePlayhead(bar) {
+  return {
+    type: TIMELINE_PLAYHEAD,
+    bar: bar
   };
 }

@@ -57,13 +57,13 @@ export default class MixerTimeline extends TimelineBase {
       else if( bar % this.data.lineThicknessThresholds.middleLine === 0 )
       {
         this.data.canvasContext.strokeStyle = "#383838";
-        yPosition = 15;
+        yPosition = 18 * this.data.pixelScale;
       }
       // Minor lines
       else if( this.data.lineThicknessThresholds.minorLine )
       {
         this.data.canvasContext.strokeStyle = "#333333";
-        yPosition = 18;
+        yPosition = 20 * this.data.pixelScale;
       }
 
       // Draw each line

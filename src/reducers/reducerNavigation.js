@@ -4,11 +4,11 @@
 
 import { NAV_CONSOLE_TOGGLE } from '../actions/actions.js';
 
-let defaultNavigationState = {
+let defaultState = {
   console: true
 };
 
-export default function navigation(state = defaultNavigationState, action) {
+export default function navigation(state = defaultState, action) {
   switch (action.type)
   {
     case NAV_CONSOLE_TOGGLE:

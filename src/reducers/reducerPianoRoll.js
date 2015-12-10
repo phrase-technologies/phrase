@@ -5,14 +5,14 @@
 import { PIANOROLL_SCROLL_X,
          PIANOROLL_SCROLL_Y } from '../actions/actions.js';
 
-let defaultPianoRollState = {
+let defaultState = {
   barMin: 0.000,
   barMax: 0.250,
   keyMin: 0.500,
   keyMax: 1.000
 };
 
-export default function pianoRoll(state = defaultPianoRollState, action) {
+export default function pianoRoll(state = defaultState, action) {
   switch (action.type)
   {
     // ========================================================================

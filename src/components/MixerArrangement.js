@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import _ from 'lodash';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
-import { pianoRollScrollX } from '../actions/actions.js';
+import { pianoRollScrollX,
+         timelineCursor } from '../actions/actions.js';
 
 import MixerTimeline from './MixerTimeline.js';
 import MixerTrack from './MixerTrack.js';
@@ -21,6 +23,10 @@ export default class MixerArrangement extends Component {
                      : 0;
     var scrollOffsetStyles = {marginTop: scrollOffset};
     var emptyAreaStyle = {top: this.state.emptyAreaOffset};
+    var timelineCursorStyles = {
+      display: this.props.timelineCursor === null ? 'none' : 'block',
+      left: this.props.timelineCursor === null ? 0 : 100*this.props.timelineCursor + '%'
+    };
 
     return (
       <div className={mixerWindowClasses}>
@@ -47,6 +53,10 @@ export default class MixerArrangement extends Component {
         >
           {this.renderScrollbarHorizontal()}
         </MixerScrollWindow>
+        <div className="timeline-play-head" />
+        <div className="timeline-cursor-window">
+          <div className="timeline-cursor" style={timelineCursorStyles} />
+        </div>
         <div className="mixer-settings-left" />
         <div className="mixer-settings-right" />
         {this.renderScrollbarVertical()}
@@ -209,9 +219,16 @@ export default class MixerArrangement extends Component {
   }
 }
 
-MixerArrangement.propTypes = {
-  dispatch:     React.PropTypes.func.isRequired,
-  barCount:     React.PropTypes.number.isRequired,
-  barMin:       React.PropTypes.number.isRequired,
-  barMax:       React.PropTypes.number.isRequired
-};  
+MixerArrangement.defaultProps = {
+  barCount: 64
+};
+
+function mapStateToProps(state) {
+  return {
+    barMin: state.pianoRoll.barMin,
+    barMax: state.pianoRoll.barMax,
+    timelineCursor: state.timeline.cursor
+  };
+}
+
+export default connect(mapStateToProps)(MixerArrangement);

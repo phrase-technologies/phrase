@@ -25,3 +25,42 @@
 .cursor-grab     { cursor: grab;        cursor: -webkit-grab;     }
 .cursor-grabbing { cursor: grabbing;    cursor: -webkit-grabbing; }
 .cursor-move     { cursor: move;                                  }
+
+.timeline-play-head {
+  display: none;
+
+  position: absolute;
+  top: -1px;
+  bottom: 37px;
+  left: 300px;
+  width: 1px;
+  z-index: 4;  // Above all other track layers
+
+  background: #BBB;
+
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -5px;
+    border: 6px solid transparent;
+    left: -5px;
+    border-top-color: #BBB;    
+  }
+  &:after { left: -6px; }
+}
+.timeline-cursor {
+  display: none;
+
+  position: absolute;
+  top: -35px;
+  bottom: 37px;
+  left: 320px;
+  width: 1px;
+  z-index: 4;  // Above all other track layers
+
+  background: #666;
+
+  pointer-events: none;
+}

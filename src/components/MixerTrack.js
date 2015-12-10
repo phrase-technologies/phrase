@@ -35,6 +35,7 @@ export default class MixerTrack extends Component {
 }
 
 MixerTrack.propTypes = {
+  dispatch:     React.PropTypes.func.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   barMin:       React.PropTypes.number.isRequired,
   barMax:       React.PropTypes.number.isRequired

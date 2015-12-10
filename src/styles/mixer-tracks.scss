@@ -158,15 +158,18 @@
   height: $mixer-track-height;
 
   cursor: pointer;
-  transition: border-color .1s, background .1s, box-shadow .1s;
   pointer-events: all;
 
   &:hover {
+    transition: border-color .1s, background .1s, box-shadow .1s;
+
     border-color: #F80;
     box-shadow: 0 5px 10px #111;
     background: #111;
 
     .mixer-track-new-body {
+      transition: border-color .1s, color .1s, background .1s;
+
       border-color: #630;
       color: #F80;
       background: #420;
@@ -193,6 +196,4 @@
   color: #999;
   padding: 7px 20px 0;
   background: none;
-
-  transition: border-color .1s, color .1s, background .1s;
 }
