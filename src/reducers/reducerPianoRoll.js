@@ -30,7 +30,7 @@ export default function pianoRoll(state = defaultState, action) {
 
       // Make sure new state exceeds minimum positive range
       var newState = Object.assign({}, state, stateChanges);
-      if( newState.barMax - newState.barMin > 0.03125 )
+      if( newState.barMax - newState.barMin > 0.001 )
         return newState;
       else
         return state;

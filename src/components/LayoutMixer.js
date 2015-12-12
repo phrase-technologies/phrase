@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
@@ -8,7 +9,7 @@ import { navConsoleToggle,
 import MixerArrangement from './MixerArrangement.js';
 import Transport from './Transport.js';
 
-export default class LayoutConsole extends Component {
+export default class LayoutMixer extends Component {
 
   constructor() {
     super();
@@ -21,8 +22,8 @@ export default class LayoutConsole extends Component {
   }
 
   render() {
-    var layoutConsoleClasses = 'layout-console';
-        layoutConsoleClasses += this.props.expanded ? '' : ' layout-console-collapsed';
+    var layoutConsoleClasses = 'layout-mixer';
+        layoutConsoleClasses += this.props.expanded ? '' : ' layout-mixer-collapsed';
 
     return (
       <div className={layoutConsoleClasses} onClick={this.handleToggleConsole}>
@@ -37,3 +38,5 @@ export default class LayoutConsole extends Component {
     );
   }
 }
+
+export default connect()(LayoutMixer);

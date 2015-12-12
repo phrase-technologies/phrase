@@ -38,34 +38,38 @@ export default class PianoRollWindow extends TimelineBase {
     // Draw lines for each beat
     var minBar = this.percentToBar( this.props.barMin ) - 1;
     var maxBar = this.percentToBar( this.props.barMax );
-    var minorIncrement = this.data.lineThicknessThresholds.minorLine || this.data.lineThicknessThresholds.middleLine;
+    var minorIncrement = this.data.lineThresholdsWithKeys.minorLine || this.data.lineThresholdsWithKeys.middleLine;
+
+    // Ensure we increment off a common denominator
+    minBar = minBar - (minBar % minorIncrement);
+
     for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
     {
       // Draw each line as a separate path (different colors)
       var xPosition = closestHalfPixel( this.barToXCoord( bar ) );
 
       // Major Bar lines
-      if( bar % this.data.lineThicknessThresholds.majorLine === 0 )
+      if( bar % this.data.lineThresholdsWithKeys.majorLine === 0 )
         this.data.canvasContext.strokeStyle = "#222222";
       // Intermediary Bar lines
-      else if( bar % this.data.lineThicknessThresholds.middleLine === 0 )
+      else if( bar % this.data.lineThresholdsWithKeys.middleLine === 0 )
         this.data.canvasContext.strokeStyle = "#333333";
       // Minor Bar lines
-      else if( this.data.lineThicknessThresholds.minorLine )
+      else if( this.data.lineThresholdsWithKeys.minorLine )
         this.data.canvasContext.strokeStyle = "#383838";
 
       // Draw each line (different colors)
       this.data.canvasContext.beginPath();
       drawLine( this.data.canvasContext, xPosition, 0, xPosition, this.data.height );
       this.data.canvasContext.stroke();
-    }    
+    }
   }
 
   renderKeyLines() {
     // Styles
     this.data.canvasContext.lineWidth   = 1.0;
     this.data.canvasContext.setLineDash([]);
-    this.data.canvasContext.strokeStyle = "#383838";
+    this.data.canvasContext.strokeStyle = "#393939";
     this.data.canvasContext.fillStyle   = "#3D3D3D";
 
     // Each edge + black key fills
@@ -94,7 +98,7 @@ export default class PianoRollWindow extends TimelineBase {
       {
         this.data.canvasContext.stroke();
         this.data.canvasContext.beginPath();
-        this.data.canvasContext.strokeStyle = "#383838";
+        this.data.canvasContext.strokeStyle = "#393939";
       }
     }
     // One final stroke to end the last octave!

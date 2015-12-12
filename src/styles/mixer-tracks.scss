@@ -10,6 +10,22 @@
   + .mixer-track {
     margin-top: -2px;
   }
+
+  .active {
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      bottom: 0px;
+      right: 0px;
+      z-index: 2;
+
+      border: 1px solid #FFF;
+      border-radius: 4px;
+      box-shadow: 0 0 20px #FFF;
+    }
+  }  
 }
 .mixer-track-tag {
   position: absolute;

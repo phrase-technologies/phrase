@@ -31,8 +31,12 @@ export default class MixerTimeline extends TimelineBase {
     // Draw lines for each beat
     var minBar = this.percentToBar( this.props.barMin ) - 1;
     var maxBar = this.percentToBar( this.props.barMax );
-    var majorIncrement = this.data.lineThicknessThresholds.majorLine;
-    var minorIncrement = this.data.lineThicknessThresholds.minorLine || this.data.lineThicknessThresholds.middleLine;
+    var majorIncrement = this.data.lineThresholdsNoKeys.majorLine;
+    var minorIncrement = this.data.lineThresholdsNoKeys.minorLine || this.data.lineThresholdsNoKeys.middleLine;
+
+    // Ensure we increment off a common denominator
+    minBar = minBar - (minBar % minorIncrement);
+
     for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
     {
       // Start each line as a separate path (different colors)
@@ -40,7 +44,7 @@ export default class MixerTimeline extends TimelineBase {
       let yPosition = 0;
 
       // Bar Numbers + Major lines
-      if( bar % this.data.lineThicknessThresholds.majorLine === 0 )
+      if( bar % this.data.lineThresholdsNoKeys.majorLine === 0 )
       {
         // Bar Number
         let topEdge  = 14*this.data.pixelScale;
@@ -54,13 +58,13 @@ export default class MixerTimeline extends TimelineBase {
         this.data.canvasContext.strokeStyle = "#555555";
       }
       // Intermediary Bar lines
-      else if( bar % this.data.lineThicknessThresholds.middleLine === 0 )
+      else if( bar % this.data.lineThresholdsNoKeys.middleLine === 0 )
       {
         this.data.canvasContext.strokeStyle = "#383838";
         yPosition = 18 * this.data.pixelScale;
       }
       // Minor lines
-      else if( this.data.lineThicknessThresholds.minorLine )
+      else if( this.data.lineThresholdsNoKeys.minorLine )
       {
         this.data.canvasContext.strokeStyle = "#333333";
         yPosition = 20 * this.data.pixelScale;

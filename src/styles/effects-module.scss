@@ -1,45 +1,25 @@
 $effects-module-header: 40px;
-$effects-module-corner: 5px;
+$effects-module-corner: 0px;
 .effects-module {
   display: inline-block;
   position: relative;
-//width: 50%;
-  height: 100%;
-  vertical-align: top;  
 
+  pointer-events: all;
   z-index: 2; // Above EffectsCouplers
   white-space: normal;
 
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
   border-radius: $effects-module-corner;
-  box-shadow: inset  2px  2px 2px -2px #FFF,
-              inset -2px -2px 2px -2px #000;
+  box-shadow: inset  1px  1px 1px -1px #FFF,
+              inset -1px -1px 1px -1px #000,
+              0 0 10px #000;
 
-  // Brushed Metal
+  // Glossy Metal
   background: #555;
-  background-image:
-    repeating-linear-gradient(left, hsla(0,0%,10%,0) 0, hsla(0,0%,10%,0)   6px, hsla(0,0%,10%,.10) 7.5px),
-    repeating-linear-gradient(left, hsla(0,0%, 0%,0) 0, hsla(0,0%, 0%,0)   4px, hsla(0,0%, 0%,.03) 4.5px),
-    repeating-linear-gradient(left, hsla(0,0%,10%,0) 0, hsla(0,0%,10%,0) 1.2px, hsla(0,0%,10%,.15) 2.2px);
+  background-image: linear-gradient(170deg, #444 0%, #666 20%, #444 23%, #333 90%, #222 100% );
 
   &.collapsed {
     .effects-module-header {
-      height: 100%;
-      width: $effects-module-header;
-      border-bottom: 0;
-      border-radius: $effects-module-corner;
-      padding-right: 0;
-
       h1 {
-        transform: rotate(-90deg);
-        transform-origin: bottom right 0;
-        position: absolute;
-        top: 0;
-        right: 0;
-        white-space: nowrap;
-        height: $effects-module-header;
-
         .caret {
           display: none;
         }
@@ -55,11 +35,7 @@ $effects-module-corner: 5px;
   width: 100%;
   height: $effects-module-header;
 
-  border-bottom: 1px solid #888;
   border-radius: $effects-module-corner $effects-module-corner 0 0;
-  background: #444;
-  box-shadow: inset  2px  2px 2px -2px #FFF,
-              inset -2px -2px 2px -2px #000;
 
   text-shadow: 1px 1px 1px #000;
   color: #BBB;    
@@ -69,7 +45,7 @@ $effects-module-corner: 5px;
   h1 {
     margin: 0;
     line-height: $effects-module-header;
-    padding: 0 10px;
+    padding: 0 15px;
 
     text-align: left;
     font-weight: bold;
@@ -84,5 +60,5 @@ $effects-module-corner: 5px;
 }
 .effects-module-body {
   position: relative;
-  padding: 15px;
+  padding: 0 15px 15px;
 }

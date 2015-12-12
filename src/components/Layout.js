@@ -5,7 +5,8 @@ import EffectsModule from './EffectsModule.js';
 import EffectsCoupler from './EffectsCoupler.js';
 import Stories from './Stories.js';
 import LayoutPage from './LayoutPage.js';
-import LayoutConsole from './LayoutConsole.js';
+import LayoutMixer from './LayoutMixer.js';
+import LayoutTrack from './LayoutTrack.js';
 import { navConsoleToggle } from '../actions/actions.js';
 
 export default class Layout extends Component {
@@ -85,7 +86,8 @@ export default class Layout extends Component {
         {/*
         <LayoutPage />
         */}
-        <LayoutConsole expanded={this.props.navigation.console} />
+        <LayoutMixer expanded={this.props.navigation.console} />
+        <LayoutTrack expanded={this.props.navigation.editor} />
         {this.renderPageOverlay()}
       </div>
     );

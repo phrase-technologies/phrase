@@ -4,33 +4,9 @@ $piano-roll-spacing:         15px;
 $piano-roll-keyboard-width: 125px;
 $piano-roll-options-width:    0px;//30px;
 .piano-roll {
-  width: 600px;
-  height: 350px;
-}
-.piano-roll-body {
-  position: absolute;
-  top:    0px;
-  left:   0px;
-  right:  0px;
-  bottom: 0px;
-
-  border-right: 1px solid #000;
-  box-shadow: inset  1px  2px 2px -2px #FFF,
-              inset -2px -2px 2px -2px #000;
-
-  // Brushed Metal
-  background: #555;
-  background-image:
-    repeating-linear-gradient(left, hsla(0,0%,10%,0) 0, hsla(0,0%,10%,0)   6px, hsla(0,0%,10%,.10) 7.5px),
-    repeating-linear-gradient(left, hsla(0,0%, 0%,0) 0, hsla(0,0%, 0%,0)   4px, hsla(0,0%, 0%,.03) 4.5px),
-    repeating-linear-gradient(left, hsla(0,0%,10%,0) 0, hsla(0,0%,10%,0) 1.2px, hsla(0,0%,10%,.15) 2.2px);
-}
-.piano-roll-wrapper {
-  position: absolute;
-  top:    $piano-roll-spacing;
-  left:   $piano-roll-spacing + $piano-roll-options-width;
-  right:  $piano-roll-spacing;
-  bottom: $piano-roll-spacing;
+  position: relative;
+  width: 1000px;
+  height: 600px;
 }
 .piano-roll-timeline {
   position: absolute;
