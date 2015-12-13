@@ -58,7 +58,7 @@ export default class TimelineBase extends CanvasComponent {
   calculateZoomThreshold() {
     if( this.props.barMin || this.props.barMax )
     {
-      var pixelsPerBar = this.getActiveWidth() / (this.props.barCount*this.getBarRange());
+      var pixelsPerBar = this.getActiveWidth() / (this.props.barCount*this.getBarRange()) / this.data.pixelScale;
 
       var thresholdsWithKeys = [
         { threshold:   10.0, majorLine: 16.000, middleLine: 4.0000, minorLine: null      },
