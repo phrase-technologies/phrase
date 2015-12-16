@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { shiftInterval } from '../helpers/helpers.js';
+import { cursorSetExplicit,
+         CURSOR_TYPES } from '../actions/actions.js';
 
 export default class Scrollbar extends Component {
 
@@ -56,6 +60,28 @@ export default class Scrollbar extends Component {
     this.data.startY = e.clientY;
     this.data.startMin = this.props.min;
     this.data.startMax = this.props.max;
+
+    // If no draggableEndpoints, treat min/max refs as bar
+    var currentTarget = this.props.draggableEndpoints
+                      ? this.data.startTarget
+                      : React.findDOMNode(this.bar);
+
+    switch( currentTarget )
+    {
+      // MIN-end of the Bar
+      case React.findDOMNode(this.min):
+        var cursor_type = this.props.vertical ? CURSOR_TYPES.top : CURSOR_TYPES.left;
+        break;
+      // Middle of the Bar
+      case React.findDOMNode(this.bar):
+        var cursor_type = this.props.vertical ? CURSOR_TYPES.yresize : CURSOR_TYPES.xresize;
+        break;
+      // MAX-end of the Bar
+      case React.findDOMNode(this.max):
+        var cursor_type = this.props.vertical ? CURSOR_TYPES.bottom : CURSOR_TYPES.right;
+        break;
+    }
+    this.props.dispatch(cursorSetExplicit(cursor_type));
   }
 
   handleDrag(e) {
@@ -107,6 +133,7 @@ export default class Scrollbar extends Component {
     // End the drag
     this.data.isDragging = false;
     this.forceUpdate();
+    this.props.dispatch(cursorSetExplicit(CURSOR_TYPES.default));    
   }
 
   handlePaging(e) {
@@ -163,3 +190,5 @@ Scrollbar.propTypes = {
   draggableEndpoints: React.PropTypes.bool,
   forceHover: React.PropTypes.bool
 };
+
+export default connect()(Scrollbar);

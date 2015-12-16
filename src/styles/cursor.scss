@@ -6,7 +6,6 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  cursor: default;
 }
 .enable-select {
   -webkit-touch-callout: initial;
@@ -15,16 +14,25 @@
   -moz-user-select: initial;
   -ms-user-select: initial;
   user-select: initial;
-  cursor: initial;
 }
 
 // Show explicit and implicit custom cursors
-.cursor-default  { cursor: default;                               }
-.cursor-xresize  { cursor: ew-resize;                             }
-.cursor-yresize  { cursor: ns-resize;                             }
-.cursor-grab     { cursor: grab;        cursor: -webkit-grab;     }
-.cursor-grabbing { cursor: grabbing;    cursor: -webkit-grabbing; }
-.cursor-move     { cursor: move;                                  }
+.cursor-default        { cursor: default;                                                     }
+.cursor-xresize      * { cursor: ew-resize !important;                                        }
+.cursor-yresize      * { cursor: ns-resize !important;                                        }
+.cursor-rowresize    * { cursor: row-resize !important;                                       }
+.cursor-colresize    * { cursor: col-resize !important;                                       }
+.cursor-grab         * { cursor: grab      !important;   cursor: -webkit-grab     !important; }
+.cursor-grabbing     * { cursor: grabbing  !important;   cursor: -webkit-grabbing !important; }
+.cursor-move         * { cursor: move      !important;                                        }
+@mixin cursor-left()   { cursor: url(img/cursor-left-edge.ico)   0 8, ew-resize !important;   }
+@mixin cursor-right()  { cursor: url(img/cursor-right-edge.ico)  8 8, ew-resize !important;   }
+@mixin cursor-top()    { cursor: url(img/cursor-top-edge.ico)    8 0, ns-resize !important;   }
+@mixin cursor-bottom() { cursor: url(img/cursor-bottom-edge.ico) 8 8, ns-resize !important;   }
+.cursor-left         * { @include cursor-left();   }
+.cursor-right        * { @include cursor-right();  }
+.cursor-top          * { @include cursor-top();    }
+.cursor-bottom       * { @include cursor-bottom(); }
 
 .timeline-play-head {
   display: none;

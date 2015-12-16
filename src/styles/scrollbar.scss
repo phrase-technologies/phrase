@@ -1,3 +1,5 @@
+@import './cursor.scss';
+
 $scroll-corner-radius: 6px;
 .scroll-gutter {
   position: relative;
@@ -161,8 +163,8 @@ $scroll-corner-radius: 6px;
     bottom: 0;
     width: 7px;
   }
-  .scroll-min { left:  0; cursor: url(img/cursor-left-edge.ico)  0 8, ew-resize; }
-  .scroll-max { right: 0; cursor: url(img/cursor-right-edge.ico) 8 8, ew-resize; }
+  .scroll-min { left:   0; @include cursor-left(); }
+  .scroll-max { right:  0; @include cursor-right(); }
 }
 .scroll-vertical {
   .scroll-min,
@@ -171,6 +173,6 @@ $scroll-corner-radius: 6px;
     right: 0;
     height: 7px;
   }
-  .scroll-min { top:    0; cursor: url(img/cursor-top-edge.ico)    8 0, ns-resize; }
-  .scroll-max { bottom: 0; cursor: url(img/cursor-bottom-edge.ico) 8 8, ns-resize; }
+  .scroll-min { top:    0; @include cursor-top(); }
+  .scroll-max { bottom: 0; @include cursor-bottom(); }
 }

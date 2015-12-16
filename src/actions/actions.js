@@ -39,9 +39,15 @@ export const CURSOR_TYPES = {
   'default':  'default',
   'xresize':  'xresize',
   'yresize':  'yresize',
+  'rowresize':  'rowresize',
+  'colresize':  'colresize',
   'grab':     'grab',
   'grabbing': 'grabbing',
-  'move':     'move'
+  'move':     'move',
+  'left':     'left',
+  'right':    'right',
+  'top':      'top',
+  'bottom':   'bottom'
 };
 
 // ----------------------------------------------------------------------------

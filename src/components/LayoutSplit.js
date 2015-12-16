@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { cursorSetExplicit,
+         CURSOR_TYPES } from '../actions/actions.js';
 
 export default class LayoutSplit extends Component {
 
@@ -33,6 +37,7 @@ export default class LayoutSplit extends Component {
   handleGrip(e) {
     // Start the drag
     this.data.isDragging = true;
+    this.props.dispatch(cursorSetExplicit(CURSOR_TYPES.rowresize));
   }
 
   handleDrag(e) {
@@ -55,6 +60,7 @@ export default class LayoutSplit extends Component {
 
     // End the drag
     this.data.isDragging = false;
+    this.props.dispatch(cursorSetExplicit(CURSOR_TYPES.default));
     this.forceUpdate();
   }
 
@@ -78,3 +84,5 @@ LayoutSplit.propTypes = {
   splitRatio: React.PropTypes.number.isRequired,
   setRatio:   React.PropTypes.func.isRequired
 };
+
+export default connect()(LayoutSplit);
