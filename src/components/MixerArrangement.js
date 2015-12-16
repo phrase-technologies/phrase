@@ -51,7 +51,9 @@ export default class MixerArrangement extends Component {
           barCount={this.props.barCount}
           dispatch={this.props.dispatch}
         >
-          {this.renderScrollbarHorizontal()}
+          <div className="mixer-settings-center">
+            {this.renderScrollbarHorizontal()}
+          </div>
         </MixerScrollWindow>
         <div className="timeline-play-head" />
         <div className="timeline-cursor-window">

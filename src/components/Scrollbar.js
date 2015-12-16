@@ -43,7 +43,9 @@ export default class Scrollbar extends Component {
   }
 
   handleResize() {
-    this.data.length = this.gutter.getDOMNode().clientWidth;
+    this.data.length = this.props.vertical
+                     ? this.gutter.getDOMNode().clientHeight
+                     : this.gutter.getDOMNode().clientWidth;
   }
 
   handleGrip(e) {
@@ -51,6 +53,7 @@ export default class Scrollbar extends Component {
     this.data.isDragging = true;
     this.data.startTarget = e.target;
     this.data.startX = e.clientX;
+    this.data.startY = e.clientY;
     this.data.startMin = this.props.min;
     this.data.startMax = this.props.max;
   }
@@ -60,7 +63,9 @@ export default class Scrollbar extends Component {
     if( !this.data.isDragging )
       return;
 
-    var pixelDelta = e.clientX - this.data.startX;    // How many pixels have we moved from start position
+    var pixelDelta = this.props.vertical
+                   ? e.clientY - this.data.startY
+                   : e.clientX - this.data.startX;    // How many pixels have we moved from start position
     var percentDelta = pixelDelta / this.data.length; // What percent have we moved from the start position
 
     // If no draggableEndpoints, treat min/max refs as bar
@@ -109,7 +114,9 @@ export default class Scrollbar extends Component {
     if( e.target != this.gutter.getDOMNode() )
       return false;
 
-    var clickPosition = (e.clientX - this.gutter.getDOMNode().getBoundingClientRect().left) / this.data.length;
+    var clickPosition = this.props.vertical
+                      ? (e.clientY - this.gutter.getDOMNode().getBoundingClientRect().top)  / this.data.length
+                      : (e.clientX - this.gutter.getDOMNode().getBoundingClientRect().left) / this.data.length;
     
     // Page DOWN
     if( clickPosition < this.props.min )
