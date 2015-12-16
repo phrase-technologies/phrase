@@ -5,8 +5,7 @@ $piano-roll-keyboard-width: 125px;
 $piano-roll-options-width:    0px;//30px;
 .piano-roll {
   position: relative;
-  width: 1000px;
-  height: 600px;
+  height: 100%;
 }
 .piano-roll-timeline {
   position: absolute;
@@ -16,6 +15,7 @@ $piano-roll-options-width:    0px;//30px;
   height: $piano-roll-timeline;
 
   border: 1px solid #000;
+  border-bottom: 0;
   border-radius: $piano-roll-corner $piano-roll-corner 0 0;
   background: #333;
 

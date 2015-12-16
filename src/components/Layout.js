@@ -6,8 +6,10 @@ import EffectsCoupler from './EffectsCoupler.js';
 import Stories from './Stories.js';
 import LayoutPage from './LayoutPage.js';
 import LayoutMixer from './LayoutMixer.js';
-import LayoutTrack from './LayoutTrack.js';
-import { navConsoleToggle } from '../actions/actions.js';
+import LayoutSplit from './LayoutSplit.js';
+import LayoutClip from './LayoutClip.js';
+import { layoutConsoleToggle,
+         layoutConsoleSplit } from '../actions/actions.js';
 
 export default class Layout extends Component {
 
@@ -21,7 +23,7 @@ export default class Layout extends Component {
   }
 
   handleToggleConsole() {
-    this.props.dispatch(navConsoleToggle());
+    this.props.dispatch(layoutConsoleToggle());
   }
 
   getCursorClass() {
@@ -35,12 +37,8 @@ export default class Layout extends Component {
     return resultClass;
   }
 
-  togglePage(page) {
-    this.setState({page: page});
-  }
-
   renderPageOverlay() {
-    var pageOverlayClasses = this.props.navigation.console
+    var pageOverlayClasses = this.props.console
                            ? 'layout-page-overlay'
                            : 'layout-page-overlay layout-overlay-hidden';
     return (
@@ -49,63 +47,22 @@ export default class Layout extends Component {
   }
 
   render() {
-    var hidden = {display: 'none'};
     var layoutClasses = ["layout", this.getCursorClass(), 'disable-select'];
         layoutClasses = layoutClasses.join(' ').trim();
     var logo = require('../img/phrase-logo-black-engraved-2015-10-26.png');  
 
-    var pageA = (
-      <div>
-        <div className="layout-header" style={hidden}>
-          <img src={logo} />
-        </div>
-        <div className="layout-session">
-        </div>
-        <div className="layout-track">
-          <div className="layout-track-slider">
-            <EffectsCoupler />
-            <EffectsModule name="Clip Editor">
-              <PianoRoll/>
-            </EffectsModule>
-            <EffectsCoupler />
-            <EffectsModule name="Super Saw" />
-            <EffectsCoupler />
-            <EffectsModule name="Reverb" />
-            <EffectsCoupler />
-            <EffectsModule name="Delay" />
-            <EffectsCoupler />
-          </div>
-        </div>
-        <div className="layout-editor">
-        </div>
-      </div>
-    );
-
-    var pageB = (
-      <div className="layout">
-        {/*
-        <LayoutPage />
-        */}
-        <LayoutMixer expanded={this.props.navigation.console} />
-        <LayoutTrack expanded={this.props.navigation.editor} />
-        {this.renderPageOverlay()}
-      </div>
-    );
-
-    switch( this.state.page )
-    {
-      default:
-      case 'A': var selectedPage = pageA; break;
-      case 'B': var selectedPage = pageB; break;
-    }
 
     return (
       <div className={layoutClasses}>
-        <div className="layout-switch">
-          <a onClick={this.togglePage.bind(this, 'A')}>A</a>
-          <a onClick={this.togglePage.bind(this, 'B')}>B</a>
+        <div className="layout">
+          {/*
+          <LayoutPage />
+          */}
+          <LayoutMixer splitRatio={this.props.consoleSplit} expanded={this.props.console} />
+          <LayoutClip  splitRatio={this.props.consoleSplit} expanded={this.props.console} />
+          <LayoutSplit splitRatio={this.props.consoleSplit} setRatio={(ratio) => this.props.dispatch(layoutConsoleSplit(ratio))} />
+          {this.renderPageOverlay()}
         </div>
-        {selectedPage}
       </div>
     )
   }
@@ -113,7 +70,8 @@ export default class Layout extends Component {
 
 function mapStateToProps(state) {
   return {
-    navigation: state.navigation,
+    console: state.navigation.console,
+    consoleSplit: state.navigation.consoleSplit,
     cursor: state.cursor
   };
 }

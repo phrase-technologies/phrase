@@ -156,6 +156,11 @@ $mixer-track-control: 200px;
   right: 0;
   bottom: 36px;
   overflow: hidden;
+
+  border-radius: $mixer-corner+3px;
+  z-index: 1; // Solves unclipped border-radius bug
+
+  pointer-events: none;
 }
 .mixer-empty-area {
   position: absolute;

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { shiftInterval } from '../helpers/helpers.js';
 
 export default class Scrollbar extends Component {
@@ -23,13 +22,9 @@ export default class Scrollbar extends Component {
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
-    // Grip Handler
+    // Scrollbar Click Handlers
     this.bar.getDOMNode().addEventListener("mousedown", this.handleGrip);
-
-    // Drag Handler
     document.addEventListener("mousemove", this.handleDrag);
-
-    // Drop Handlers
     document.addEventListener("mouseup",   this.handleDrop);
     document.addEventListener("mousedown", this.handleDrop);
 

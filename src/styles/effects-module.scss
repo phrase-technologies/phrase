@@ -17,6 +17,21 @@ $effects-module-corner: 0px;
   background: #555;
   background-image: linear-gradient(170deg, #444 0%, #666 20%, #444 23%, #333 90%, #222 100% );
 
+  &.fill-parent {
+    width: 100%;
+    height: 100%;
+
+    transition: height .25s;
+
+    &.collapsed {
+      height: 40px;
+    }
+
+    > .effects-module-body {
+      height: auto !important;
+    }
+  }
+
   &.collapsed {
     .effects-module-header {
       h1 {
@@ -26,7 +41,8 @@ $effects-module-corner: 0px;
       }
     }
     .effects-module-body {
-      display: none;
+      height: 0;
+      padding-bottom: 0;
     }
   }
 }
@@ -61,4 +77,20 @@ $effects-module-corner: 0px;
 .effects-module-body {
   position: relative;
   padding: 0 15px 15px;
+  box-sizing: content-box;
+  overflow: hidden;
+
+  transition: height .25s, padding .25s;
+}
+.fill-parent {
+  > .effects-module-body {
+    position: absolute;
+    top:    40px;
+    left:   15px;
+    right:  15px;
+    bottom: 15px;
+
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
