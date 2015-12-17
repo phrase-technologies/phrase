@@ -140,7 +140,7 @@ $total-keys:  88.00;
 $octave-keys: 12.00;
 $octave-thickness: percentage($octave-keys/$total-keys);
 $key-thickness: percentage(1/$octave-keys);
-$key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, which are are calculated based off of width rather than height.
+$key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, which are are calculated based off of width rather than height.
 .piano-roll-key {
   display: block;
   position: relative;
@@ -224,10 +224,17 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
   &.thinner {
     height: 1.5 * $key-thickness;     // Certain white keys are sandwiched slightly differently to maintain proportions
   }
+
+  &.compact {
+    .piano-roll-key-label {
+      font-size: 9px;
+    }
+  }
 }
 .piano-roll-octave {
   position: relative;
   height: $octave-thickness;
+  //width: 100px; // Fixed width will 
 
   &:first-child {
     margin-top: 1px;
@@ -259,7 +266,7 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
   top: -1px;
   bottom: 0px;
   left: 100%;
-  width: 20px;
+  width: 100px;
 
   border: 1px solid #000;
   border-left: 0;
@@ -268,11 +275,12 @@ $key-thickness-margin: percentage(1/$total-keys * 10); // Used for margins, whic
   font-size: 10px;
   color: #AAA;
   display: flex;
-  * {
+  > * {
     align-self: flex-end;
     width: 100%;
+    padding-left: 4px;
     padding-bottom: 2px;
-    text-align: center;
+    text-align: left;
   }
 }
 

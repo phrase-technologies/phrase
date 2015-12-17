@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
-import { pianoRollScrollY } from '../actions/actions.js';
+
+import { pianoRollScrollY,
+         pianoRollHeight } from '../actions/actions.js';
 
 export default class PianoRollKeyboard extends Component {
 
@@ -40,6 +44,7 @@ export default class PianoRollKeyboard extends Component {
 
   handleResize() {
     this.data.height = this.data.container.clientHeight - 30;
+    this.props.dispatch(pianoRollHeight(this.data.height));
     this.forceUpdate();
   }
 
@@ -68,7 +73,7 @@ export default class PianoRollKeyboard extends Component {
     this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
   }
 
-  renderKeys() {
+  renderKeys(isCompact) {
     var octave = 8;
     var octaves = [];
     var keys = [];
@@ -80,6 +85,7 @@ export default class PianoRollKeyboard extends Component {
           keyClass += ( key % 12 in {2:true,  7:true} ) ? ' higher' : '';
           keyClass += ( key % 12 in {10:true, 5:true} ) ? ' lower' : '';
           keyClass += ( key % 12 in {6:true} ) ? ' thinner' : '';
+          keyClass += isCompact ? ' compact' : '';
       let keyLabel =  {1:'A', 11:'G', 9:'F', 8:'E', 6:'D', 4:'C', 3:'B'}[ key%12 ];
           keyLabel = keyLabel ? (keyLabel + octave) : null;
 
@@ -106,7 +112,10 @@ export default class PianoRollKeyboard extends Component {
     var keyWindow = this.props.keyMax - this.props.keyMin;
     var keybedHeight = this.data.height / keyWindow;
     var keybedOffset = this.data.height / keyWindow * this.props.keyMin;
-    var keybedWidth = keybedHeight * 0.1;
+    var keybedWidth = keybedHeight / 12.5;
+
+    var isCompact = keybedWidth < 80;
+
     var style = {
       top: -keybedOffset+'px',
       height: keybedHeight+'px',
@@ -116,7 +125,7 @@ export default class PianoRollKeyboard extends Component {
     return (
       <div className="piano-roll-keyboard">
         <div className="piano-roll-keybed" style={style}>
-          { this.renderKeys() }
+          { this.renderKeys(isCompact) }
         </div>
       </div>
     );
@@ -127,3 +136,5 @@ PianoRollKeyboard.propTypes = {
   keyMin:       React.PropTypes.number.isRequired,
   keyMax:       React.PropTypes.number.isRequired
 };
+
+export default connect()(PianoRollKeyboard);
