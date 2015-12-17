@@ -23,7 +23,6 @@ const minKeyboardHeight =  800;
 const maxKeyboardHeight = 1275;
 
 export default function pianoRoll(state = defaultState, action) {
-  console.log( action );
   switch (action.type)
   {
     // ========================================================================
