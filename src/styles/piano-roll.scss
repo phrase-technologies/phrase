@@ -4,8 +4,11 @@ $piano-roll-spacing:         15px;
 $piano-roll-keyboard-width: 125px;
 $piano-roll-options-width:    0px;//30px;
 .piano-roll {
-  position: relative;
-  height: 100%;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
 }
 .piano-roll-timeline {
   position: absolute;

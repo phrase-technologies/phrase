@@ -10,7 +10,7 @@ $mixer-footer-height: 30px;
 // ============================================================================
 .transport {
   position: absolute;
-  top: 6px;
+  top: 2px;
   left: 8px;
   height: 30px;
   width: 220px;
@@ -182,6 +182,8 @@ $mixer-footer-height: 30px;
   left: 3px + 1px + $mixer-track-control + $mixer-track-tag;
   right: 3px + 1px;
   bottom: 0;
+
+  overflow: hidden;
 
   &:before,
   &:after {

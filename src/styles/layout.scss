@@ -1,16 +1,20 @@
 $layout-page-sidebar: 200px;
-$layout-page-z-index: 100;  // Above...? (leave some room)
+$layout-page-z-index: 100;              // Above...? (leave some room)
 $layout-mixer-width: 240px;
-$layout-mixer-z-index: 200; // Above Page
+$layout-mixer-z-index: 200;             // Above Page
+$layout-console-header-height: 45px;
+$layout-console-header-z-index: 300;    // Above Page & Mixer
 $layout-clip-width: 240px;
-$layout-clip-z-index: 300; // Above Page & Mixer
+$layout-clip-z-index: 400;              // Above Page & Mixer
+$layout-effects-chain-width: 300px;
+$layout-effects-chain-z-index: 500;     // Above.... TODO: Obsolete after removing box-shadows....?
 
 html,
 body {
   overflow: hidden;
   height: 100%;
 
-  background: #FFF;
+  background: #DDD;
 }
 
 .layout-overlay-hidden {
@@ -66,48 +70,122 @@ body {
 }
 
 // ============================================================================
-// Mixer Arrangement
+// Overall Console (Mixer, Clip, Effects Chain)
 // ============================================================================
-.layout-mixer {
-  position: fixed;
+.layout-console {
+  position: absolute;
   top: 0;
   left: 45px;
   right: 0;
   bottom: 0;
+
+  overflow: hidden;
+  border-left: 1px solid #000;
+}
+.layout-console-embedded {
+  top:    45px;
+  right:  45px;
+  bottom: 45px;
+  width:  50%;
+  left: auto;
+
+  border-top: 1px solid #000;
+  box-shadow:
+    3px 3px 5px  #AAA,
+    0   0   10px #888;
+}
+.layout-console-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $layout-console-header-height;
+  z-index: $layout-console-header-z-index;
+
+  box-shadow: inset  1px  1px 1px -1px #FFF,
+              inset -1px -1px 0px  0px #111;
+  background: #444;
+  background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
+}
+.layout-console-body {
+  position: absolute;
+  top: $layout-console-header-height;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.layout-console-main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: $layout-effects-chain-width;
+  bottom: 0;
+}
+.layout-console-heading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 13px;
+
+  font-size: 16px;
+  color: #DDD;
+
+  &:hover {
+    cursor: pointer;
+
+    box-shadow: inset  1px  1px 1px -1px #FFF,
+                inset -1px -1px 0px  0px #111;
+    background: rgba(255,255,255,0.25);
+    color: #FFF;
+  }
+}
+
+// ============================================================================
+// Mixer Arrangement
+// ============================================================================
+.layout-console-mixer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: $layout-mixer-z-index;
 
   box-shadow: inset  1px  1px 1px -1px #FFF,
-              inset -1px -1px 1px -1px #000,
-              0 0 10px #000;
+              inset -1px -1px 0px  0px #111;
   background: #444;
-  background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #333 90%, #111 100% );
+  background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
 
   transition: left .25s, right .25s, margin .25s;
-}
-.layout-mixer-collapsed {
-  left: 100%;
-  right: -100%;
-  margin-left: -$layout-mixer-width;
-  margin-right: $layout-mixer-width - 45px;
+
+  &.collapsed {
+    > .mixer-arrangement {
+      display: none;
+    }
+  }
 }
 
 // ============================================================================
 // Clip Editor (Piano Roll or Audio Clip)
 // ============================================================================
-.layout-clip {
+.layout-console-clip {
   position: absolute;
-  top: 0;
-  left: 45px;
+  left: 0;
   right: 0;
   bottom: 0;
   z-index: $layout-clip-z-index;
 
-  pointer-events: none;
+  box-shadow: inset  1px  1px 1px -1px #FFF,
+              inset -1px -1px 0px  0px #111;
+  background: #444;
+  background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
 }
 .layout-console-split {
   position: absolute;
   top: 0;
-  left: 45px;
+  left: 0;
   right: 0;
   bottom: 0;
 
@@ -118,11 +196,46 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  height: 5px;
-  margin-top: -2px;
+  height: 8px;
+  margin-top: -4px;
 
   cursor: row-resize;
   pointer-events: all;
+
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    margin-left: -20px;
+    width: 40px;
+
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #888;
+  }
+  &:before {
+    top: 0px;
+  }
+  &:after {
+    bottom: 0px;
+  }  
+}
+
+// ============================================================================
+// Effects Chain sidebar
+// ============================================================================
+.layout-console-effects-chain {
+  position: absolute;
+  top: 0;
+  width: $layout-effects-chain-width;
+  right: 0;
+  bottom: 0;
+  z-index: $layout-effects-chain-z-index;
+
+  box-shadow: inset  1px  1px 1px -1px #FFF,
+              inset -1px -1px 0px  0px #111;
+  background: #444;
+  background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
 }
 
 // ============================================================================

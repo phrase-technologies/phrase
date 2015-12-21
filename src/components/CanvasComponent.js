@@ -46,11 +46,8 @@ export default class CanvasComponent extends Component {
   }
 
   componentWillUnmount() {
-    this.data.canvas = null;
-    this.data.container = null;
-    this.data.canvasContext = null;
-    this.data = null;
     window.removeEventListener('resize', this.handleResize);
+    cancelAnimationFrame(this.renderFrame);
   }  
 
   shouldComponentUpdate() {

@@ -16,6 +16,9 @@ export default class MixerTimeline extends TimelineBase {
   }
 
   renderFrame() {
+    if( this.componentUnmounted )
+      debugger;
+    
     canvasReset(this.data.canvasContext, this.data.canvas, "#282828");
     this.calculateZoomThreshold();
     this.renderBarLines();

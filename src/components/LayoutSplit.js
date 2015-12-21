@@ -50,7 +50,6 @@ export default class LayoutSplit extends Component {
         percentDelta = percentDelta < 0.0 ? 0.0 : percentDelta;
 
     this.props.setRatio(percentDelta);
-    window.dispatchEvent(new Event('resize'));
   }
 
   handleDrop(e) {
@@ -65,9 +64,12 @@ export default class LayoutSplit extends Component {
   }
 
   render() {
-    var scrollPosition = {
-      top: 100*this.props.splitRatio+'%'
-    };
+    if( this.props.splitRatio < 0.2 )
+      var scrollPosition = { top: 45 };
+    else if( this.props.splitRatio > 0.8 )
+      var scrollPosition = { bottom: 45 - 4 };
+    else
+      var scrollPosition = { top: (this.props.splitRatio * 100) + '%' };
 
     return (
       <div className="layout-console-split">
