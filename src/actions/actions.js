@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------
 // Layout Navigation Actions
 // ----------------------------------------------------------------------------
-export const LAYOUT_CONSOLE_TOGGLE        = 'LAYOUT_CONSOLE_TOGGLE';
+export const LAYOUT_CONSOLE_EMBED         = 'LAYOUT_CONSOLE_EMBED';
 export const LAYOUT_CONSOLE_SPLIT         = 'LAYOUT_CONSOLE_SPLIT';
-export var layoutConsoleToggle            = () => ({type: LAYOUT_CONSOLE_TOGGLE});
+export var layoutConsoleEmbedded          = () => ({type: LAYOUT_CONSOLE_EMBED});
 export var layoutConsoleSplit             = (ratio) => ({type: LAYOUT_CONSOLE_SPLIT, ratio});
 
 // ----------------------------------------------------------------------------

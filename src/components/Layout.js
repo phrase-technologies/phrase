@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { layoutConsoleToggle,
+import { layoutConsoleEmbedded,
          layoutConsoleSplit } from '../actions/actions.js';
 
 import CursorProvider from './CursorProvider.js';
@@ -19,24 +19,8 @@ export default class Layout extends Component {
   }
 
   render() {
-    if( this.props.consoleSplit < 0.2 )
-    {
-      var mixerSplit = { height: 45 };
-      var clipSplit  = { top:    45 };
-    }
-    else if( this.props.consoleSplit > 0.8 )
-    {
-      var mixerSplit = { bottom: 45 };
-      var clipSplit  = { height: 45 };
-    }
-    else
-    {
-      var mixerSplit = { bottom: ((1 - this.props.consoleSplit) * 100) + '%' };
-      var clipSplit  = { top:    (     this.props.consoleSplit  * 100) + '%' };
-    }
-  
     var layoutConsoleClasses = 'layout-console';
-        layoutConsoleClasses += this.props.console ? '' : ' layout-console-embedded';
+        layoutConsoleClasses += this.props.consoleEmbedded ? ' layout-console-embedded' : '';
 
     return (
       <CursorProvider>
@@ -49,16 +33,17 @@ export default class Layout extends Component {
               <Transport />
             </div>
             <div className="layout-console-body">
-              <div className="layout-console-main">
-                <div className="layout-console-mixer" style={mixerSplit}>
+              <div className="layout-console-main" style={this.getMainSplit()}>
+                <div className="layout-console-mixer" style={this.getMixerSplit()}>
                   {this.renderMixer()}
                 </div>
-                <LayoutSplit splitRatio={this.props.consoleSplit} setRatio={this.handleConsoleSplitDrag} />
-                <div className="layout-console-clip" style={clipSplit}>
+                <LayoutSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.handleConsoleSplitDrag} />
+                <div className="layout-console-clip" style={this.getClipSplit()}>
                   {this.renderClip()}
                 </div>
               </div>
-              <div className="layout-console-effects-chain">
+              <div className="layout-console-effects-chain" style={this.getSidebarSplit()}>
+                {this.renderEffectsChain()}
               </div>
             </div>
             {this.renderPageOverlay()}
@@ -69,7 +54,7 @@ export default class Layout extends Component {
   }
 
   renderMixer() {
-    if( this.props.consoleSplit < 0.2 )
+    if( this.props.consoleSplitRatio < 0.2 )
     {
       return (
         <h2 className="layout-console-heading" onClick={() => this.handleConsoleSplitDrag(0.5)}>
@@ -83,7 +68,7 @@ export default class Layout extends Component {
   }
 
   renderClip() {
-    if( this.props.consoleSplit > 0.8 )
+    if( this.props.consoleSplitRatio > 0.8 )
     {
       return (
         <h2 className="layout-console-heading" onClick={() => this.handleConsoleSplitDrag(0.5)}>
@@ -96,12 +81,28 @@ export default class Layout extends Component {
       return ( <PianoRoll /> );
   }
 
+  renderEffectsChain() {
+    if( !this.props.sidebar )
+    {
+      return (
+        <h2 className="layout-console-heading">
+          <span className="layout-console-heading-vertical">
+            <span>Effects Chain </span>
+            <span className="fa fa-plus-square" />
+          </span>
+        </h2>
+      );
+    }
+    else
+      return null;
+  }
+
   renderPageOverlay() {
-    var pageOverlayClasses = this.props.console
-                           ? 'layout-page-overlay'
-                           : 'layout-page-overlay layout-overlay-hidden';
+    var pageOverlayClasses = this.props.consoleEmbedded
+                           ? 'layout-page-overlay layout-overlay-hidden'
+                           : 'layout-page-overlay';
     return (
-      <div className={pageOverlayClasses} onClick={() => this.props.dispatch(layoutConsoleToggle())} />
+      <div className={pageOverlayClasses} onClick={() => this.props.dispatch(layoutConsoleEmbedded())} />
     );
   }
 
@@ -109,14 +110,34 @@ export default class Layout extends Component {
     this.props.dispatch(layoutConsoleSplit(ratio));
     window.dispatchEvent(new Event('resize'));
   }
-}
 
+  getMixerSplit() {
+    if     ( this.props.consoleSplitRatio < 0.2 ) return { height: 45 };
+    else if( this.props.consoleSplitRatio > 0.8 ) return { bottom: 45 };
+    else                                     return { bottom: ((1 - this.props.consoleSplitRatio) * 100) + '%' };
+  }
+
+  getClipSplit() {
+    if     ( this.props.consoleSplitRatio < 0.2 ) return { top:    45 };
+    else if( this.props.consoleSplitRatio > 0.8 ) return { height: 45 };
+    else                                     return { top: (this.props.consoleSplitRatio  * 100) + '%' };
+  }
+
+  getMainSplit() {
+    if( this.props.sidebar ) return { right: 300 };
+    else                     return { right: 45 };
+  }
+
+  getSidebarSplit() {
+    if( this.props.sidebar ) return { width: 300 };
+    else                     return { width: 45 };
+  }
+}
 
 function mapStateToProps(state) {
   return {
-    console: state.navigation.console,
-    consoleSplit: state.navigation.consoleSplit,
-    cursor: state.cursor
+    consoleEmbedded:   state.navigation.consoleEmbedded,
+    consoleSplitRatio: state.navigation.consoleSplitRatio
   };
 }
 

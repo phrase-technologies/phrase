@@ -2,24 +2,24 @@
 // Layout Navigation
 // ============================================================================
 
-import { LAYOUT_CONSOLE_TOGGLE,
+import { LAYOUT_CONSOLE_EMBED,
          LAYOUT_CONSOLE_SPLIT } from '../actions/actions.js';
 
 let defaultState = {
-  console: true,
-  consoleSplit: 0.500
+  consoleEmbedded: false,
+  consoleSplitRatio: 0.500
 };
 
 export default function navigation(state = defaultState, action) {
   switch (action.type)
   {
-    case LAYOUT_CONSOLE_TOGGLE:
-      return Object.assign({}, state, {console: !state.console});
+    case LAYOUT_CONSOLE_EMBED:
+      return Object.assign({}, state, {consoleEmbedded: !state.consoleEmbedded});
 
     case LAYOUT_CONSOLE_SPLIT:
       var stateChanges = {};
-      stateChanges.consoleSplit = action.ratio < 0.0 ? null : action.ratio;
-      stateChanges.consoleSplit = action.ratio > 1.0 ? null : stateChanges.consoleSplit;
+      stateChanges.consoleSplitRatio = action.ratio < 0.0 ? null : action.ratio;
+      stateChanges.consoleSplitRatio = action.ratio > 1.0 ? null : stateChanges.consoleSplitRatio;
       return Object.assign({}, state, stateChanges);
 
     default:
