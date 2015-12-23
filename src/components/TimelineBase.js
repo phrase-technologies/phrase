@@ -7,7 +7,7 @@
 // and provides some helper methods for grid calculations to translate
 // between grid coordinates and pixels.
 //
-// Simply extend this component and pass down prop.dispatch, and 1 or both of:
+// Simply extend this component and pass down props.dispatch, and 1 or both of:
 //
 //   Horizontal Windowing              Vertical Windowing
 //   -> this.props.barMin   ...OR...   -> this.props.keyMin

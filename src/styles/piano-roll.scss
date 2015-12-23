@@ -70,6 +70,14 @@ $piano-roll-options-width:    0px;//30px;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
   }
 }
+.piano-roll-notes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;  
+}
 .piano-roll-notes-overlay {
   position: absolute;
   top: $piano-roll-timeline;
@@ -290,9 +298,10 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 .piano-roll-scroll-zone {
   position: absolute;
   height: 30px;
-  left: 1px;
-  right: $piano-roll-keyboard-width + 1px;
-  bottom: 1px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
 
   padding: 10px;
   background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);

@@ -3,7 +3,7 @@
 // ============================================================================
 // This is a custom-rolled base component which you should use if you are
 // building a canvas component. It takes care of the canvas rendering lifecycle.
-// and All you have to do is extend it and define a renderFrame() method on the
+// and all you have to do is extend it and define a renderFrame() method on the
 // child.
 // 
 // See also: TimelineBase.js

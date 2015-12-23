@@ -7,7 +7,8 @@ import { zoomInterval } from '../helpers/helpers.js';
 import { PIANOROLL_SCROLL_X,
          PIANOROLL_SCROLL_Y,
          PIANOROLL_WIDTH,
-         PIANOROLL_HEIGHT } from '../actions/actions.js';
+         PIANOROLL_HEIGHT,
+         PIANOROLL_NEW_NOTE } from '../actions/actions.js';
 
 let defaultState = {
   width: 1000,
@@ -15,7 +16,8 @@ let defaultState = {
   barMin: 0.000,
   barMax: 0.250,
   keyMin: 0.500,
-  keyMax: 1.000
+  keyMax: 1.000,
+  notes: []
 };
 
 const maxBarWidth = 1000;
@@ -25,6 +27,25 @@ const maxKeyboardHeight = 1275;
 export default function pianoRoll(state = defaultState, action) {
   switch (action.type)
   {
+    // ========================================================================
+    // Create Note
+    // ========================================================================
+    case PIANOROLL_NEW_NOTE:
+    {
+      var snappedKey = Math.floor(action.key);
+      var snappedBar = Math.floor(action.bar);
+      var stateChanges = {
+        notes: [
+          ...state.notes,
+          {
+            key: snappedKey,
+            bar: snappedBar
+          }
+        ]
+      };
+      return Object.assign({}, state, stateChanges);
+    }
+
     // ========================================================================
     // Width (pixels)
     // ========================================================================

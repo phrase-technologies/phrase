@@ -21,16 +21,18 @@ export var transportTempo                 = () => ({type: TRANSPORT_TEMPO});
 export var transportTempo                 = () => ({type: TRANSPORT_TEMPO});
 
 // ----------------------------------------------------------------------------
-// Transport Actions
+// Piano Roll Actions
 // ----------------------------------------------------------------------------
 export const PIANOROLL_SCROLL_X           = 'PIANOROLL_SCROLL_X';
 export const PIANOROLL_SCROLL_Y           = 'PIANOROLL_SCROLL_Y';
 export const PIANOROLL_WIDTH              = 'PIANOROLL_WIDTH';
 export const PIANOROLL_HEIGHT             = 'PIANOROLL_HEIGHT';
+export const PIANOROLL_NEW_NOTE           = 'PIANOROLL_NEW_NOTE';
 export var pianoRollScrollX               = (min, max) => ({type: PIANOROLL_SCROLL_X, min, max});
 export var pianoRollScrollY               = (min, max) => ({type: PIANOROLL_SCROLL_Y, min, max});
 export var pianoRollWidth                 = (width) => ({type: PIANOROLL_WIDTH, width });
 export var pianoRollHeight                = (height) => ({type: PIANOROLL_HEIGHT, height });
+export var pianoRollNewNote               = (key, bar) => ({type: PIANOROLL_NEW_NOTE, key, bar});
 
 // ----------------------------------------------------------------------------
 // Mouse Cursor

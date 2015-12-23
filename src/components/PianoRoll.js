@@ -38,31 +38,31 @@ export default class PianoRoll extends Component {
           barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
           keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
           dispatch={this.props.dispatch}
-         />
-        <PianoRollNotes />
+        >
+          <div className="piano-roll-scroll-zone"
+            onMouseEnter={(e) => this.handleScrollZone(e, true)}
+            onMouseLeave={(e) => this.handleScrollZone(e, false)}
+            >
+            <Scrollbar draggableEndpoints
+              min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
+              max={this.props.barMax} forceHover={this.data.scrollZoneHover}
+              />
+          </div>        
+          <PianoRollNotes />
+        </PianoRollWindow>
         <PianoRollKeyboard
           keyMin={this.props.keyMin}
           keyMax={this.props.keyMax}
           dispatch={this.props.dispatch}
           />
         <div className="piano-roll-keyboard-overlay" />
-        <div className="piano-roll-scroll-zone"
-          onMouseEnter={(e) => this.handleScrollZone(e, true)}
-          onMouseLeave={(e) => this.handleScrollZone(e, false)}
-          >
-          <Scrollbar draggableEndpoints
-            min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
-            max={this.props.barMax} forceHover={this.data.scrollZoneHover}
-            />
-        </div>
       </div>
     );
   }
 }
 
-class Note {}
 PianoRoll.propTypes = {
-  notes:    React.PropTypes.arrayOf(React.PropTypes.instanceOf(Note)),
+  notes:    React.PropTypes.array,
   cursor:   React.PropTypes.number,
   playHead: React.PropTypes.number,
   barMin:   React.PropTypes.number,
