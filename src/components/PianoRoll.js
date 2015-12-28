@@ -48,7 +48,11 @@ export default class PianoRoll extends Component {
               max={this.props.barMax} forceHover={this.data.scrollZoneHover}
               />
           </div>        
-          <PianoRollNotes notes={this.props.notes} dispatch={this.props.dispatch} />
+          <PianoRollNotes
+            notes={this.props.notes} dispatch={this.props.dispatch}
+            barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
+            keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
+          />
         </PianoRollWindow>
         <PianoRollKeyboard
           keyMin={this.props.keyMin}

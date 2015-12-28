@@ -76,7 +76,17 @@ $piano-roll-options-width:    0px;//30px;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1;  
+  z-index: 1;
+
+  overflow: hidden;
+}
+.piano-roll-note {
+  position: absolute;
+
+  border: 1px solid #000;
+  border-radius: 2px;
+  background: #F80;
+  background-image: linear-gradient(to bottom, #F80 0%, #840 100%);
 }
 .piano-roll-notes-overlay {
   position: absolute;
