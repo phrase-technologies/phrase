@@ -1,27 +1,20 @@
 // ============================================================================
-// Canvas Base Component
+// Canvas Child Component
 // ============================================================================
-// This is a custom-rolled base component which you should use if you are
-// building a canvas component. It takes care of the canvas rendering lifecycle.
-// and all you have to do is extend it and define a renderFrame() method on the
-// child.
+// This component automatically fills it's parent container DOM element,
+// updating on window.resize to fit the parent's dimensions and the
+// devices' pixel ratio. It takes care of the canvas rendering lifecycle.
+// and all you have to do pass it a "renderFrame" callback prop which will
+// be passed an instance of CanvasRenderingContext2D() to update
 // 
-// See also: TimelineBase.js
+// See also: TimelineBase.js (great to use in conjunction with!)
 
 import React, { Component } from 'react';
 
-// This is an Abstract Class.
-// Please extend it and define this.className + this.renderFrame
 export default class CanvasComponent extends Component {
-
-  // --------------------------------------------------------------------------
-  // Canvas Initialization
-  // --------------------------------------------------------------------------
 
   constructor() {
     super();
-    if( this.renderFrame === undefined )
-      throw new TypeError("CanvasComponent.renderFrame() is an abstract method and must be defined by a descendant.");
 
     this.handleResize = this.handleResize.bind(this);
     this.renderFrame = this.renderFrame.bind(this);
@@ -30,9 +23,8 @@ export default class CanvasComponent extends Component {
   componentDidMount() {
     // Initialize DOM
     this.data = this.data || {};
-    this.data.canvas = document.createElement('canvas');
-    this.data.container = React.findDOMNode(this);
-    this.data.container.appendChild(this.data.canvas);
+    this.data.canvas = React.findDOMNode(this);
+    this.data.container = React.findDOMNode(this).parentElement;
     this.data.canvasContext = this.data.canvas.getContext("2d");
 
     // Set Scaling
@@ -55,6 +47,10 @@ export default class CanvasComponent extends Component {
     return true;
   }
 
+  renderFrame() {
+    this.props.renderFrame( this.data.canvasContext );
+  }
+
   newAnimationFrame() {
     cancelAnimationFrame(this.renderFrame);
     requestAnimationFrame(this.renderFrame);    
@@ -69,9 +65,7 @@ export default class CanvasComponent extends Component {
 
   render() {
     return (
-      <div className={this.className}>
-        {this.props.children}
-      </div>
+      <canvas/>
     );
   }
 }

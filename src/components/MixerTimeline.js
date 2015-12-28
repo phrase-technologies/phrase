@@ -1,39 +1,47 @@
 import React, { Component } from 'react';
+import TimelineBase from './TimelineBase';
 
 import { closestHalfPixel,
-         canvasReset,
          drawLine } from '../helpers/helpers.js';
 
-import TimelineBase from './TimelineBase';
+import CanvasComponent from './CanvasComponent';
 
 export default class MixerTimeline extends TimelineBase {
 
   constructor() {
     super(...arguments);
-    this.className = "mixer-timeline";
     this.data.marginLeft   = 11;
     this.data.marginRight  = 12;
   }
 
-  renderFrame() {
-    if( this.componentUnmounted )
-      debugger;
-    
-    canvasReset(this.data.canvasContext, this.data.canvas, "#282828");
-    this.calculateZoomThreshold();
-    this.renderBarLines();
+  render() {
+    return (
+      <div className="mixer-timeline">
+        <CanvasComponent renderFrame={this.renderFrame()} />
+        {this.props.children}
+      </div>
+    );
   }
 
-  renderBarLines() {
+  renderFrame() {
+    return function(canvasContext) {
+      canvasContext.fillStyle = "#282828";
+      canvasContext.fillRect( 0, 0, this.data.width, this.data.height );
+      this.calculateZoomThreshold();
+      this.renderBarLines(canvasContext, this.props.barMin, this.props.barMax);
+    }.bind(this);
+  }
+
+  renderBarLines(canvasContext, barMin, barMax) {
     // Styles
-    this.data.canvasContext.lineWidth = 1.0;
-    this.data.canvasContext.font = 11*this.data.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif";
-    this.data.canvasContext.fillStyle = "#AAAAAA";
-    this.data.canvasContext.textAlign = "start";
+    canvasContext.lineWidth = 1.0;
+    canvasContext.font = 11*this.data.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif";
+    canvasContext.fillStyle = "#AAAAAA";
+    canvasContext.textAlign = "start";
 
     // Draw lines for each beat
-    var minBar = this.percentToBar( this.props.barMin ) - 1;
-    var maxBar = this.percentToBar( this.props.barMax );
+    var minBar = this.percentToBar( barMin ) - 1;
+    var maxBar = this.percentToBar( barMax );
     var majorIncrement = this.data.lineThresholdsNoKeys.majorLine;
     var minorIncrement = this.data.lineThresholdsNoKeys.minorLine || this.data.lineThresholdsNoKeys.middleLine;
 
@@ -55,28 +63,28 @@ export default class MixerTimeline extends TimelineBase {
         let barNumber = Math.floor( bar + 1 );
         let barBeat = ((bar + 1) % 1) * 4 + 1;
         let outputText = (majorIncrement < 1.0) ? (barNumber + '.' + barBeat) : barNumber;
-        this.data.canvasContext.fillText(outputText, leftEdge, topEdge);
+        canvasContext.fillText(outputText, leftEdge, topEdge);
 
         // Bar line style
-        this.data.canvasContext.strokeStyle = "#555555";
+        canvasContext.strokeStyle = "#555555";
       }
       // Intermediary Bar lines
       else if( bar % this.data.lineThresholdsNoKeys.middleLine === 0 )
       {
-        this.data.canvasContext.strokeStyle = "#383838";
+        canvasContext.strokeStyle = "#383838";
         yPosition = 18 * this.data.pixelScale;
       }
       // Minor lines
       else if( this.data.lineThresholdsNoKeys.minorLine )
       {
-        this.data.canvasContext.strokeStyle = "#333333";
+        canvasContext.strokeStyle = "#333333";
         yPosition = 20 * this.data.pixelScale;
       }
 
       // Draw each line
-      this.data.canvasContext.beginPath();
-      drawLine( this.data.canvasContext, xPosition, yPosition, xPosition, this.data.height );
-      this.data.canvasContext.stroke();
+      canvasContext.beginPath();
+      drawLine( canvasContext, xPosition, yPosition, xPosition, this.data.height );
+      canvasContext.stroke();
     }    
   }
 }

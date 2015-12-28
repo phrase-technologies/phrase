@@ -72,9 +72,3 @@ export function drawLine(context, x1, y1, x2, y2, xyFlip, color) {
   if( color )
     context.stroke();
 };
-
-export function canvasReset(context, canvas, color) {
-  context.fillStyle = color;
-  context.fillRect( 0, 0, canvas.width, canvas.height );
-};
-

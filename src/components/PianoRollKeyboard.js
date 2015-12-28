@@ -1,37 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
+import TimelineBase from './TimelineBase';
 import { connect } from 'react-redux';
 
-import { shiftInterval,
-         zoomInterval } from '../helpers/helpers.js';
+import { pianoRollHeight } from '../actions/actions.js';
 
-import { pianoRollScrollY,
-         pianoRollHeight } from '../actions/actions.js';
-
-export default class PianoRollKeyboard extends Component {
+export default class PianoRollKeyboard extends TimelineBase {
 
   constructor() {
     super();
-    this.data = {};
-    this.handleResize = this.handleResize.bind(this);
-    this.handleScrollWheel = this.handleScrollWheel.bind(this);
+    this.data.marginTop = 30;
   }
-
-  componentDidMount() {
-    // Initialize the DOM
-    this.data.container = React.findDOMNode(this);
-
-    // Set Scaling
-    this.data.container.addEventListener("wheel", this.handleScrollWheel);
-    window.addEventListener('resize', this.handleResize);
-    this.handleResize();
-  }
-
-  componentWillUnmount() {
-    this.data.container.removeEventListener("wheel", this.handleScrollWheel);
-    this.data.container = null;
-    this.data = null;
-    window.removeEventListener('resize', this.handleResize);
-  }  
 
   shouldComponentUpdate(nextProps, nextState) {
     if( nextProps.keyMin == this.props.keyMin
@@ -41,38 +19,7 @@ export default class PianoRollKeyboard extends Component {
     else
       return true;
   }
-
-  handleResize() {
-    this.data.height = this.data.container.clientHeight - 30;
-    this.props.dispatch(pianoRollHeight(this.data.height));
-    this.forceUpdate();
-  }
-
-  // Scrolling and zooming within the timeline
-  handleScrollWheel(e) {
-    e.preventDefault();
-
-    // Zoom when CTRL or META key pressed
-    if( e.ctrlKey || e.metaKey )
-      this.handleZoom(e);
-
-    // Scroll otherwise
-    else
-      this.handleScrollY(e);
-  }
-  handleZoom(e) {
-    var zoomFactor = (e.deltaY + 500) / 500;
-    var fulcrumY = (e.clientY - this.data.container.getBoundingClientRect().top)  / this.data.container.clientHeight;
-    var [newKeyMin, newKeyMax] = zoomInterval([this.props.keyMin, this.props.keyMax], zoomFactor, fulcrumY);
-    this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
-  }
-  handleScrollY(e) {
-    var keyWindow = this.props.keyMax - this.props.keyMin;
-    var keyStepSize = e.deltaY / this.data.container.clientHeight * keyWindow;
-    var [newKeyMin, newKeyMax] = shiftInterval([this.props.keyMin, this.props.keyMax], keyStepSize);
-    this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
-  }
-
+  
   renderKeys(isCompact) {
     var octave = 8;
     var octaves = [];
@@ -110,8 +57,8 @@ export default class PianoRollKeyboard extends Component {
 
   render() {
     var keyWindow = this.props.keyMax - this.props.keyMin;
-    var keybedHeight = this.data.height / keyWindow;
-    var keybedOffset = this.data.height / keyWindow * this.props.keyMin;
+    var keybedHeight = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow;
+    var keybedOffset = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow * this.props.keyMin;
     var keybedWidth = keybedHeight / 12.5;
 
     var isCompact = keybedWidth < 80;
@@ -129,6 +76,12 @@ export default class PianoRollKeyboard extends Component {
         </div>
       </div>
     );
+  }
+
+  handleResize() {
+    super.handleResize();
+    this.props.dispatch(pianoRollHeight(this.data.height / this.data.pixelScale - this.data.marginTop));
+    this.forceUpdate();
   }
 }
 

@@ -15,7 +15,7 @@ let defaultState = {
   height: 500,
   barMin: 0.000,
   barMax: 0.250,
-  keyMin: 0.500,
+  keyMin: 0.750,
   keyMax: 1.000,
   notes: []
 };

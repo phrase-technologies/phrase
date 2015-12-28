@@ -18,9 +18,10 @@
 // - Will be necessary when we decouple the pianoroll timeline from
 //   the arrangment timeline. 
 // - Update the above docs when done!
+//
+// See also: CanvasComponent.js (great to use in conjunction with!)
 
-import React from 'react';
-import CanvasComponent from './CanvasComponent';
+import React, { Component } from 'react';
 
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
@@ -28,7 +29,7 @@ import { pianoRollScrollX,
          pianoRollScrollY,
          timelineCursor } from '../actions/actions.js';
 
-export default class TimelineBase extends CanvasComponent {
+export default class TimelineBase extends Component {
   constructor(){
     super();
 
@@ -38,20 +39,25 @@ export default class TimelineBase extends CanvasComponent {
     this.data.marginLeft   = 0;
     this.data.marginRight  = 0;
 
+    this.handleResize = this.handleResize.bind(this);
     this.handleScrollWheel = this.handleScrollWheel.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
   }
 
   componentDidMount() {
-    super.componentDidMount();
+    this.data.container = React.findDOMNode(this);
     this.data.container.addEventListener("wheel", this.handleScrollWheel);
     this.data.container.addEventListener("mousemove", this.handleMouseMove);
+
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();    
   }
 
   componentWillUnmount() {
     this.data.container.removeEventListener("wheel", this.handleScrollWheel);
     this.data.container.removeEventListener("mousemove", this.handleMouseMove);
-    super.componentWillUnmount();
+
+    window.removeEventListener('resize', this.handleResize);
   }
 
   // Calculate thresholds at which to draw barline thicknesses
@@ -103,6 +109,12 @@ export default class TimelineBase extends CanvasComponent {
   percentToBar(percent){ return Math.ceil( percent * this.props.barCount ); }; // Where percent is between 0.000 and 1.000
   getMouseYPercent(e){ return this.data.pixelScale * (e.clientY - this.data.container.getBoundingClientRect().top - this.data.marginTop)  / this.getActiveHeight(); }
   getMouseXPercent(e){ return this.data.pixelScale * (e.clientX - this.data.container.getBoundingClientRect().left - this.data.marginLeft) / this.getActiveWidth(); }
+
+  handleResize() {
+    this.data.pixelScale = window.devicePixelRatio || 1;
+    this.data.width  = this.data.container.clientWidth  * this.data.pixelScale;
+    this.data.height = this.data.container.clientHeight * this.data.pixelScale;
+  }
 
   // Scrolling and zooming within the timeline
   handleScrollWheel(e) {
