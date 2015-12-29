@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 
 export default class PianoRollNote extends Component {
   render() {
+
     var noteStyle = {
       top: this.props.top,
       left: this.props.left,
-      width: this.props.width,
-      height: this.props.height,
+      right: this.props.right,
+      bottom: this.props.bottom
     };
 
     return (

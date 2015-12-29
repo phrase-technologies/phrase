@@ -14,30 +14,45 @@ export default class PianoRollNotes extends TimelineBase {
   }
 
   render() {
+    let xWindowPercent = (this.props.barMax - this.props.barMin);
+    let activeWidth = this.getActiveWidth() / this.data.pixelScale;
+    var sliderStyle = {
+      left:  -1 * (    this.props.barMin) / xWindowPercent * activeWidth + this.data.marginLeft,
+      right: -1 * (1 - this.props.barMax) / xWindowPercent * activeWidth + this.data.marginRight
+    };
+
     return (
-      <div className="piano-roll-notes">
-        {this.props.notes.map(function(note){
+      <div className="piano-roll-notes-wrapper">
+        <div className="piano-roll-notes-slider" style={sliderStyle}>
+          {this.props.notes.map(function(note){
 
-          let id     = note.id;
-          let top    = this.keyToYCoord(note.keyNum) / this.data.pixelScale;
-          let left   = this.barToXCoord(note.start) / this.data.pixelScale;
-          let right  = this.barToXCoord(note.end) / this.data.pixelScale
-          let bottom = this.keyToYCoord(note.keyNum+1) / this.data.pixelScale;
-          let width  = right - left;
-          let height = bottom - top;
-          let props  = {id, top, height, left, width};
+            let id     = note.id;
+            let top    = (    (note.keyNum+1) / this.props.keyCount ) * 100 + '%';
+            let bottom = (1 -  note.keyNum    / this.props.keyCount ) * 100 + '%';
+            let left   = (     note.start     / this.props.barCount ) * 100 + '%';
+            let right  = (1 -  note.end       / this.props.barCount ) * 100 + '%';
+            let props  = {id, top, left, right, bottom};
 
-          if( left < this.data.width && right > 0 )
             return (<PianoRollNote key={note.id} {...props} />);
-          else
-            return null;
 
-        }.bind(this))}
+          }.bind(this))}
+        </div>
       </div>
     );
+  }
+
+  handleResize() {
+    super.handleResize();
+    this.forceUpdate();
   }
 }
 
 PianoRollNotes.propTypes = {
-  notes: React.PropTypes.array
+  barCount:     React.PropTypes.number.isRequired,
+  keyCount:     React.PropTypes.number.isRequired,
+  barMin:       React.PropTypes.number.isRequired,
+  barMax:       React.PropTypes.number.isRequired,
+  keyMin:       React.PropTypes.number.isRequired,
+  keyMax:       React.PropTypes.number.isRequired,
+  notes:        React.PropTypes.array
 };

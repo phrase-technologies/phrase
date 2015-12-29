@@ -70,7 +70,8 @@ $piano-roll-options-width:    0px;//30px;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
   }
 }
-.piano-roll-notes {
+.piano-roll-notes-wrapper,
+.piano-roll-notes-slider {
   position: absolute;
   top: 0;
   left: 0;
