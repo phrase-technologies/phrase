@@ -124,12 +124,11 @@ export default class TimelineBase extends Component {
     if( e.ctrlKey || e.metaKey )
       this.handleZoom(e);
 
-    // Scroll otherwise
-    else
-    {
+    // Scroll otherwise - snap the scroll to either X or Y direction, feels too jumpy when dual XY scrolling
+    else if( Math.abs(e.deltaX) >= Math.abs(e.deltaY) )
       this.handleScrollX(e);
+    else
       this.handleScrollY(e);
-    }
   }
   handleZoom(e) {
     var zoomFactor = (e.deltaY + 500) / 500;
