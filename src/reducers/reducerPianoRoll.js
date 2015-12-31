@@ -13,10 +13,10 @@ import { PIANOROLL_SCROLL_X,
 let defaultState = {
   width: 1000,
   height: 500,
-  barMin: 0.000,
-  barMax: 0.250,
-  keyMin: 0.750,
-  keyMax: 1.000,
+  barMin: 0.009765625,
+  barMax: 0.109765625,
+  keyMin: 0.040,
+  keyMax: 0.140,
   notes: []
 };
 

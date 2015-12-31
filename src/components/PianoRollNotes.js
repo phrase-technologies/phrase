@@ -1,58 +1,41 @@
-import React from 'react';
-import TimelineBase from './TimelineBase';
+import React, { Component } from 'react';
 
 import PianoRollNote from './PianoRollNote';
 
-export default class PianoRollNotes extends TimelineBase {
-
-  constructor() {
-    super();
-    this.data.marginTop    =  0;
-    this.data.marginBottom = 30;
-    this.data.marginLeft   = 10;
-    this.data.marginRight  = 10;
-  }
-
+export default class PianoRollNotes extends Component {
   render() {
-    let xWindowPercent = (this.props.barMax - this.props.barMin);
-    let activeWidth = this.getActiveWidth() / this.data.pixelScale;
-    var sliderStyle = {
-      left:  -1 * (    this.props.barMin) / xWindowPercent * activeWidth + this.data.marginLeft,
-      right: -1 * (1 - this.props.barMax) / xWindowPercent * activeWidth + this.data.marginRight
-    };
-
     return (
-      <div className="piano-roll-notes-wrapper">
-        <div className="piano-roll-notes-slider" style={sliderStyle}>
-          {this.props.notes.map(function(note){
+      <div className="piano-roll-notes">
+        {this.props.notes.map(function(note){
 
-            let id     = note.id;
-            let top    = (    (note.keyNum+1) / this.props.keyCount ) * 100 + '%';
-            let bottom = (1 -  note.keyNum    / this.props.keyCount ) * 100 + '%';
-            let left   = (     note.start     / this.props.barCount ) * 100 + '%';
-            let right  = (1 -  note.end       / this.props.barCount ) * 100 + '%';
-            let props  = {id, top, left, right, bottom};
+          let id     = note.id;
+          let top    = (note.keyNum+1) / this.props.keyCount * 100 + 0.15;
+          let bottom =  note.keyNum    / this.props.keyCount * 100 + 0.35;
+          let left   =  note.start     / this.props.barCount * 100;
+          let right  =  note.end       / this.props.barCount * 100;
+          let width  = right - left;
+          let height = top - bottom;
+          let dispatch = this.props.dispatch
+          let props  = {id, top, left, width, height, dispatch};
 
-            return (<PianoRollNote key={note.id} {...props} />);
+          return (<PianoRollNote key={note.id} {...props} />);
 
-          }.bind(this))}
-        </div>
+        }.bind(this))}
       </div>
     );
   }
 
-  handleResize() {
-    super.handleResize();
-    this.forceUpdate();
+  shouldComponentUpdate(nextProps) {
+    return false;
+    if(nextProps.notes === this.props.notes )
+      return false;
+    else
+      return true;
   }
 }
 
 PianoRollNotes.propTypes = {
   barCount:     React.PropTypes.number.isRequired,
   keyCount:     React.PropTypes.number.isRequired,
-  barMin:       React.PropTypes.number.isRequired,
-  barMax:       React.PropTypes.number.isRequired,
-  keyMin:       React.PropTypes.number.isRequired,
-  keyMax:       React.PropTypes.number.isRequired,
   notes:        React.PropTypes.array
 };

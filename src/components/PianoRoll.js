@@ -7,7 +7,7 @@ import { pianoRollScrollX,
 import EffectsModule        from './EffectsModule.js';
 import PianoRollTimeline    from './PianoRollTimeline.js';
 import PianoRollWindow      from './PianoRollWindow.js';
-import PianoRollNotes       from './PianoRollNotes.js';
+import PianoRollNotesSlider from './PianoRollNotesSlider.js';
 import PianoRollKeyboard    from './PianoRollKeyboard.js';
 import Scrollbar            from './Scrollbar.js';
 
@@ -48,7 +48,7 @@ export default class PianoRoll extends Component {
               max={this.props.barMax} forceHover={this.data.scrollZoneHover}
               />
           </div>        
-          <PianoRollNotes
+          <PianoRollNotesSlider
             notes={this.props.notes} dispatch={this.props.dispatch}
             barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
             keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}

@@ -119,6 +119,7 @@ export default class TimelineBase extends Component {
   // Scrolling and zooming within the timeline
   handleScrollWheel(e) {
     e.preventDefault();
+    // e.stopPropagation(); propogation is needed for vertical scrolling on the mixer
 
     // Zoom when CTRL or META key pressed
     if( e.ctrlKey || e.metaKey )
