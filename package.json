@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "bootstrap-sass": "3.3.5",
+    "css-element-queries": "0.3.0",
     "font-awesome": "4.4.0",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",

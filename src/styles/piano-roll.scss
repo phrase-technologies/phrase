@@ -13,8 +13,8 @@ $piano-roll-options-width:    0px;//30px;
 .piano-roll-timeline {
   position: absolute;
   top: 0;
-  left: 0;
-  right: $piano-roll-keyboard-width;
+  left: $piano-roll-keyboard-width;
+  right: 0;
   height: $piano-roll-timeline;
 
   border: 1px solid #000;
@@ -37,8 +37,8 @@ $piano-roll-options-width:    0px;//30px;
 .piano-roll-timeline-overlay {
   position: absolute;
   top: 0;
-  left: 0;
-  right: $piano-roll-keyboard-width;
+  left: $piano-roll-keyboard-width;
+  right: 0;
   height: $piano-roll-timeline;
 
   border-radius: $piano-roll-corner $piano-roll-corner 0 0;
@@ -50,12 +50,12 @@ $piano-roll-options-width:    0px;//30px;
 .piano-roll-window {
   position: absolute;
   top: $piano-roll-timeline;
-  left: 0;
-  right: $piano-roll-keyboard-width;
+  left: $piano-roll-keyboard-width;
+  right: 0;
   bottom: 0;
 
   border: 1px solid #000;
-  border-radius: 0 0 0 $piano-roll-corner;
+  border-radius: 0 0 $piano-roll-corner 0;
   background: #333;
 
   overflow: hidden;
@@ -89,6 +89,30 @@ $piano-roll-options-width:    0px;//30px;
   bottom: 0;
   z-index: 1;
 }
+.piano-roll-notes-slider {
+  &[min-height~="1350"] {
+    .piano-roll-note {
+      font-size: 10px;
+      padding: 2px;
+    }
+  }
+  &[min-height~="1450"] {
+    .piano-roll-note {
+      font-size: 11px;
+      padding: 3px;
+    }
+  }
+  &[max-height~="1275"] {
+    .piano-roll-note {
+      color: transparent;
+    }
+  }
+  &[max-height~="1000"] {
+    .piano-roll-note {
+      border-radius: 1px;
+    }
+  }
+}
 .piano-roll-note {
   position: absolute;
   top: 0;
@@ -98,7 +122,13 @@ $piano-roll-options-width:    0px;//30px;
   border-radius: 2px;
   background: #F80;
   background-image: linear-gradient(to bottom, #F80 0%, #C60 100%);
-  box-shadow: 0 0 1px #000;
+  box-shadow: 0 0 3px #000;
+
+  padding: 1px 2px;
+  font-size: 9px;
+  line-height: 1;
+  color: #000;
+  overflow: hidden;
 
   &:hover {
     background: #FC8;
@@ -108,15 +138,22 @@ $piano-roll-options-width:    0px;//30px;
 .piano-roll-notes-overlay {
   position: absolute;
   top: $piano-roll-timeline;
-  left: 0;
-  right: $piano-roll-keyboard-width;
+  left: $piano-roll-keyboard-width;
+  right: 0;
   bottom: 0;
 
   border-top: 1px solid #000;
-  border-radius: 0 0 0 $piano-roll-corner;
+  border-radius: 0 0 $piano-roll-corner 0;
   box-shadow: inset 0 -1px 5px 1px #000;
-  z-index: 2; // Above scroll-zone
+  z-index: 3; // Above scroll-zone
   pointer-events: none;
+}
+.piano-roll-selection-box {
+  position: absolute;
+
+  border: 1px solid rgba(255,255,255,0.500);
+  background: rgba(255,255,255,0.050);
+  box-shadow: 0 0 3px #000;
 }
 .piano-roll-options {
   position: absolute;
@@ -144,33 +181,34 @@ $piano-roll-options-width:    0px;//30px;
 .piano-roll-keyboard {
   position: absolute;
   top: $piano-roll-timeline;
+  left: 0;
   width: $piano-roll-keyboard-width - 1px;
-  right: 0;
   bottom: 0;
   box-sizing: content-box;
 
   border: 1px solid #000;
-  border-left: 0;
-  border-radius: 0 $piano-roll-corner $piano-roll-corner 0;
+  border-right: 0;
+  border-radius: $piano-roll-corner 0 0 $piano-roll-corner;
   z-index: 5; // Above the timeline
-  background: #333;
+  background: #777;
   overflow: hidden;
 }
 .piano-roll-keyboard-overlay {
   position: absolute;
   top: $piano-roll-timeline;
+  left: 0;
   width: $piano-roll-keyboard-width;
-  right: 0;
   bottom: 0;
 
-  border-radius: 0 $piano-roll-corner $piano-roll-corner 0;
-  box-shadow: inset -1px  2px 2px rgba(0,0,0,0.5),
-              inset -1px -2px 2px rgba(0,0,0,0.5);
+  border-radius: $piano-roll-corner 0 0 $piano-roll-corner;
+  box-shadow: inset 2px  3px 2px rgba(0,0,0,0.64),
+              inset 2px -3px 2px rgba(0,0,0,0.64);
   z-index: 6; // Above keyboard
   pointer-events: none;
 }
 .piano-roll-keybed {
-  position: relative;
+  position: absolute;
+  right: 0;
   height: 1047px;
   width: 104.7px;
 }
@@ -190,7 +228,7 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 
   &.white {
     border: 1px solid #000;
-    border-left: 0;
+    border-right: 0;
     border-top: 0;
     background: #CCC;
     background-image: linear-gradient(90deg, #999 20%, #CCC 21%, #999 100%);
@@ -235,6 +273,17 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
       border-radius: 0 20% 20% 0;
       background: #555;
     }
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: -1px;
+      left: 100%;
+      width: 50%;
+      bottom: -2px;
+
+      background-image: linear-gradient(left, rgba(0,0,0,0.25) 0%, transparent 100%);
+    }
 
     // Overlap the adjacent white keys (different amounts depending on where they are on the scale)
     margin: -0.5*$key-thickness-margin 0px -0.5*$key-thickness-margin 0px;
@@ -267,6 +316,18 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
     .piano-roll-key-label {
       font-size: 9px;
     }
+
+    &:last-child {
+      .piano-roll-key-label {
+        visibility: hidden;
+      }
+    }
+  }
+
+  &:last-child {
+    > .piano-roll-key-label {
+      visibility: visible;
+    }
   }
 }
 .piano-roll-octave {
@@ -280,7 +341,6 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 
     .piano-roll-key {
       height: 100%;
-      border-radius: 0 3px 0 0;
     }
   }
 
@@ -288,14 +348,22 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
     .piano-roll-key {
       &:last-child {
         height: 1.250 * $key-thickness;
-        border-radius: 0 0 3px 0;
+        border-radius: 0 0 0 3px;
+        border-bottom: 1px solid #000;
       }
     }
   }
 
   &:hover {
     .piano-roll-key-label {
-      visibility: visible;
+      visibility: visible !important;
+    }
+    .piano-roll-key {
+      &.black {
+        &:before {
+          display: none;
+        }
+      }
     }
   }
 }
@@ -303,22 +371,21 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
   position: absolute;
   top: -1px;
   bottom: 0px;
-  left: 100%;
+  right: 100%;
   width: 100px;
 
   border: 1px solid #000;
-  border-left: 0;
-  background: #555;
+  border-right: 0;
 
-  font-size: 10px;
-  color: #AAA;
+  font-size: 12px;
+  color: #000;
   display: flex;
   > * {
     align-self: flex-end;
     width: 100%;
-    padding-left: 4px;
+    padding-right: 4px;
     padding-bottom: 2px;
-    text-align: left;
+    text-align: right;
   }
 }
 

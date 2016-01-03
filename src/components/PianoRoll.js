@@ -52,6 +52,8 @@ export default class PianoRoll extends Component {
             notes={this.props.notes} dispatch={this.props.dispatch}
             barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
             keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
+            selectionStartX={this.props.selectionStartX} selectionEndX={this.props.selectionEndX}
+            selectionStartY={this.props.selectionStartY} selectionEndY={this.props.selectionEndY}
           />
         </PianoRollWindow>
         <PianoRollKeyboard
@@ -72,7 +74,11 @@ PianoRoll.propTypes = {
   barMin:   React.PropTypes.number,
   barMax:   React.PropTypes.number,
   keyMin:   React.PropTypes.number,
-  keyMax:   React.PropTypes.number
+  keyMax:   React.PropTypes.number,
+  selectionStartX: React.PropTypes.number,
+  selectionStartY: React.PropTypes.number,
+  selectionEndX: React.PropTypes.number,
+  selectionEndY: React.PropTypes.number
 };
 PianoRoll.defaultProps = {
   notes:    [
@@ -161,7 +167,11 @@ function mapStateToProps(state) {
     barMin: state.pianoRoll.barMin,
     barMax: state.pianoRoll.barMax,
     keyMin: state.pianoRoll.keyMin,
-    keyMax: state.pianoRoll.keyMax
+    keyMax: state.pianoRoll.keyMax,
+    selectionStartX: state.pianoRoll.selectionStartX,
+    selectionStartY: state.pianoRoll.selectionStartY,
+    selectionEndX: state.pianoRoll.selectionEndX,
+    selectionEndY: state.pianoRoll.selectionEndY
   };
 }
 

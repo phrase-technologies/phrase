@@ -42,11 +42,8 @@ export default class PianoRollKeyboard extends TimelineBase {
       if( key % 12 === 4 || key == 1 )
       {
         // Add Octave Label for full octaves
-        if( key < 83 && key > 1 )
-        {
-          let label = 'C' + octave;
-          keys.unshift(<div className="piano-roll-octave-label" key={label}><div>{label}</div></div>);
-        }
+        let label = isCompact ? 'C' + octave : '';
+        keys.unshift(<div className="piano-roll-octave-label" key={label}><div>{label}</div></div>);
         octaves.push(<div className="piano-roll-octave" key={octave}>{keys}</div>);
         keys = [];
         octave--;
@@ -58,10 +55,10 @@ export default class PianoRollKeyboard extends TimelineBase {
   render() {
     var keyWindow = this.props.keyMax - this.props.keyMin;
     var keybedHeight = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow;
-    var keybedOffset = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow * this.props.keyMin;
+    var keybedOffset = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow * this.props.keyMin - 0.5; // 0.5 to fix alignment with grid (possibly due to closestHalfPixel)
     var keybedWidth = keybedHeight / 12.5;
 
-    var isCompact = keybedWidth < 80;
+    var isCompact = keybedWidth < 100;
 
     var style = {
       top: -keybedOffset+'px',

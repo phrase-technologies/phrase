@@ -8,21 +8,28 @@ import { PIANOROLL_SCROLL_X,
          PIANOROLL_SCROLL_Y,
          PIANOROLL_WIDTH,
          PIANOROLL_HEIGHT,
+         PIANOROLL_SELECTION_START,
+         PIANOROLL_SELECTION_END,
          PIANOROLL_NEW_NOTE } from '../actions/actions.js';
 
 let defaultState = {
   width: 1000,
   height: 500,
-  barMin: 0.009765625,
-  barMax: 0.109765625,
-  keyMin: 0.040,
-  keyMax: 0.140,
-  notes: []
+  barMin: 0.000,
+  barMax: 0.0625,
+  keyMin: 0.250,
+  keyMax: 0.750,
+  selectionStartX: null,
+  selectionStartY: null,
+  selectionEndX: null,
+  selectionEndY: null,
+  notes: [],
+  noteLengthLast: 0.25
 };
 
 const maxBarWidth = 1000;
 const minKeyboardHeight =  800;
-const maxKeyboardHeight = 1275;
+const maxKeyboardHeight = 1275 + 300;
 
 export default function pianoRoll(state = defaultState, action) {
   switch (action.type)
@@ -38,8 +45,9 @@ export default function pianoRoll(state = defaultState, action) {
         notes: [
           ...state.notes,
           {
-            key: snappedKey,
-            bar: snappedBar
+            key:   snappedKey,
+            start: snappedBar,
+            end:   snappedBar + state.noteLengthLast
           }
         ]
       };
@@ -101,6 +109,22 @@ export default function pianoRoll(state = defaultState, action) {
 
       // Restrict min/max zoom against the piano-roll's height (ensure keyboard doesn't get too small or large)
       return restrictKeyboardZoom(newState);
+    }
+
+    // ========================================================================
+    // Selection Box Start Position
+    // ========================================================================
+    case PIANOROLL_SELECTION_START:
+    {
+      return Object.assign({}, state, {selectionStartX: action.x, selectionStartY: action.y});
+    }
+
+    // ========================================================================
+    // Selection Box End Position
+    // ========================================================================
+    case PIANOROLL_SELECTION_END:
+    {
+      return Object.assign({}, state, {selectionEndX: action.x, selectionEndY: action.y});
     }
 
     // ========================================================================

@@ -18,7 +18,9 @@ export default class MixerTrackWindow extends TimelineBase {
   render() {
     return (
       <div className="mixer-track-window">
+        {/* // Causes Jank. Shouldn't be needed when we can to CSS translate3d of divs
         <CanvasComponent renderFrame={this.renderFrame()} />
+        */}
         {this.props.children}
       </div>
     );

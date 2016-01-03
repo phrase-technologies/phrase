@@ -19,16 +19,24 @@ export default class PianoRollNotesSlider extends Component {
 
     return (
       <div className="piano-roll-notes-wrapper">
-        <div className="piano-roll-notes-slider" style={sliderStyle}>
+        <div className="piano-roll-notes-slider" style={sliderStyle} ref={(ref) => this.slider = ref}>
           <PianoRollNotes
             notes={this.props.notes}
             dispatch={this.props.dispatch}
             barCount={this.props.barCount}
             keyCount={this.props.keyCount}
+            selectionStartX={this.props.selectionStartX} selectionEndX={this.props.selectionEndX}
+            selectionStartY={this.props.selectionStartY} selectionEndY={this.props.selectionEndY}
           />
         </div>
       </div>
     );
+  }
+
+  componentDidMount() {
+    // Element Queries (global) used to hide/show note labels depending on zoom
+    if(ElementQueries)
+      ElementQueries.init();
   }
 }
 
