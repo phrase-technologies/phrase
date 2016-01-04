@@ -12,6 +12,8 @@ import { PIANOROLL_SCROLL_X,
          PIANOROLL_SELECTION_END,
          PIANOROLL_NEW_NOTE } from '../actions/actions.js';
 
+import marioNotes from '../helpers/marioNotes.js';
+
 let defaultState = {
   width: 1000,
   height: 500,
@@ -23,7 +25,7 @@ let defaultState = {
   selectionStartY: null,
   selectionEndX: null,
   selectionEndY: null,
-  notes: [],
+  notes: marioNotes,
   noteLengthLast: 0.25
 };
 
@@ -39,17 +41,17 @@ export default function pianoRoll(state = defaultState, action) {
     // ========================================================================
     case PIANOROLL_NEW_NOTE:
     {
-      var snappedKey = Math.floor(action.key);
-      var snappedBar = Math.floor(action.bar);
+      // Snap to the same length as the most previously created note
+      var snappedBar = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast;
       var stateChanges = {
         notes: [
           ...state.notes,
           {
-            key:   snappedKey,
-            start: snappedBar,
-            end:   snappedBar + state.noteLengthLast
+            keyNum: action.key,
+            start:  snappedBar,
+            end:    snappedBar + state.noteLengthLast
           }
-        ]
+        ].sort(noteSortComparison)  // Keep notes sorted - important for efficiency, rendering appearance, and success of later algorithms
       };
       return Object.assign({}, state, stateChanges);
     }
@@ -137,6 +139,11 @@ export default function pianoRoll(state = defaultState, action) {
   }  
 }
 
+// Comparison function for sorting notes a and b by their start time. Usage: note.sort(noteSortComparison);
+function noteSortComparison(a, b) {
+  return a.start - b.start;
+}
+
 // Restrict min/max zoom against the piano-roll's height (ensure keyboard doesn't get too small or large)
 function restrictKeyboardZoom(newState) {
   var keyboardHeight = newState.height / (newState.keyMax - newState.keyMin);
@@ -158,4 +165,3 @@ function restrictTimelineZoom(newState) {
     [newState.barMin, newState.barMax] = zoomInterval([newState.barMin, newState.barMax], barWidth/maxBarWidth);
   return newState;
 }
-

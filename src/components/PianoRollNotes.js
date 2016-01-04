@@ -8,7 +8,8 @@
 import React, { Component } from 'react';
 
 import { pianoRollSelectionStart,
-         pianoRollSelectionEnd } from '../actions/actions.js';
+         pianoRollSelectionEnd,
+         pianoRollNewNote } from '../actions/actions.js';
 
 import PianoRollNote from './PianoRollNote';
 
@@ -126,7 +127,9 @@ export default class PianoRollNotes extends Component {
     // Add NOTE (no drag - this is basically a click!)
     else
     {
-      // TODO
+      let bar = this.getMouseBar(e) * this.props.barCount;
+      let key = Math.ceil(this.props.keyCount - this.getMouseKey(e)*this.props.keyCount);
+      this.props.dispatch( pianoRollNewNote(key,bar) );
     }
 
     this.data.isDragging = false;
