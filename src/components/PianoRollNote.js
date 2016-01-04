@@ -13,7 +13,9 @@ export default class PianoRollNote extends Component {
 
     return (
       <div className="piano-roll-note" style={noteStyle}>
-        {label}
+        <div className="piano-roll-note-label">
+          {label}
+        </div>
       </div>
     );
   }

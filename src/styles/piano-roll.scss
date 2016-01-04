@@ -91,32 +91,48 @@ $piano-roll-options-width:    0px;//30px;
 }
 .piano-roll-notes-slider {
   &[min-height~="1350"] {
-    .piano-roll-note {
+    .piano-roll-note-label {
       font-size: 10px;
       padding: 2px;
     }
   }
   &[min-height~="1450"] {
-    .piano-roll-note {
+    .piano-roll-note-label {
       font-size: 11px;
       padding: 3px;
     }
   }
   &[max-height~="1275"] {
-    .piano-roll-note {
+    .piano-roll-note-label {
       color: transparent;
     }
   }
   &[max-height~="1000"] {
-    .piano-roll-note {
+    .piano-roll-note-label {
       border-radius: 1px;
     }
   }
 }
+// Each note consists of 2 elements: .piano-roll-note and .piano-roll-note-label.
+// This is necessary to have accurate percentage position on the wrapper and 1px offset on the child.
 .piano-roll-note {
   position: absolute;
   top: 0;
   left: 0;
+
+  &:hover {
+    > .piano-roll-note-label {
+      background: #FC8;
+      background-image: linear-gradient(to bottom, #FC8 0%, #F80 100%);
+    }
+  }
+}
+.piano-roll-note-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 1px; // Leave 1px gap between notes that are exactly adjacent
+  bottom: 0;
 
   // border: 1px solid #000;
   border-radius: 2px;
@@ -129,11 +145,6 @@ $piano-roll-options-width:    0px;//30px;
   line-height: 1;
   color: #000;
   overflow: hidden;
-
-  &:hover {
-    background: #FC8;
-    background-image: linear-gradient(to bottom, #FC8 0%, #F80 100%);
-  }
 }
 .piano-roll-notes-overlay {
   position: absolute;
@@ -369,12 +380,13 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 }
 .piano-roll-octave-label {
   position: absolute;
-  top: -1px;
+  top: 0px;
   bottom: 0px;
   right: 100%;
   width: 100px;
 
   border: 1px solid #000;
+  border-top: 0;
   border-right: 0;
 
   font-size: 12px;

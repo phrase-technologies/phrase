@@ -55,13 +55,13 @@ export default class PianoRollKeyboard extends TimelineBase {
   render() {
     var keyWindow = this.props.keyMax - this.props.keyMin;
     var keybedHeight = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow;
-    var keybedOffset = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow * this.props.keyMin - 0.5; // 0.5 to fix alignment with grid (possibly due to closestHalfPixel)
+    var keybedOffset = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow * this.props.keyMin;
     var keybedWidth = keybedHeight / 12.5;
 
     var isCompact = keybedWidth < 100;
 
     var style = {
-      top: -keybedOffset+'px',
+      transform: 'translate3d(0,'+(-keybedOffset)+'px,0)',
       height: keybedHeight+'px',
       width: keybedWidth+'px'
     };
