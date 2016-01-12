@@ -161,6 +161,7 @@ $piano-roll-options-width:    0px;//30px;
 }
 .piano-roll-selection-box {
   position: absolute;
+  z-index: 2;   // Above notes
 
   border: 1px solid rgba(255,255,255,0.500);
   background: rgba(255,255,255,0.050);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import PianoRollSelectionBox from './PianoRollSelectionBox';
 import PianoRollNotes from './PianoRollNotes';
 
 export default class PianoRollNotesSlider extends Component {
@@ -25,8 +26,12 @@ export default class PianoRollNotesSlider extends Component {
             dispatch={this.props.dispatch}
             barCount={this.props.barCount}
             keyCount={this.props.keyCount}
-            selectionStartX={this.props.selectionStartX} selectionEndX={this.props.selectionEndX}
-            selectionStartY={this.props.selectionStartY} selectionEndY={this.props.selectionEndY}
+          />
+          <PianoRollSelectionBox
+            selectionStartX={this.props.selectionStartX}
+            selectionStartY={this.props.selectionStartY}
+            selectionEndX={this.props.selectionEndX}
+            selectionEndY={this.props.selectionEndY}
           />
         </div>
       </div>
@@ -47,5 +52,9 @@ PianoRollNotesSlider.propTypes = {
   barMax:       React.PropTypes.number.isRequired,
   keyMin:       React.PropTypes.number.isRequired,
   keyMax:       React.PropTypes.number.isRequired,
+  selectionStartX: React.PropTypes.number,
+  selectionStartY: React.PropTypes.number,
+  selectionEndX: React.PropTypes.number,
+  selectionEndY: React.PropTypes.number,
   notes:        React.PropTypes.array
 };
