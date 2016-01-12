@@ -2,7 +2,9 @@
 // PianoRoll Controls
 // ============================================================================
 
+import u from 'updeep';
 import { zoomInterval } from '../helpers/helpers.js';
+import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
 import { PIANOROLL_SCROLL_X,
          PIANOROLL_SCROLL_Y,
@@ -25,8 +27,11 @@ let defaultState = {
   selectionStartY: null,
   selectionEndX: null,
   selectionEndY: null,
-  notes: marioNotes,
-  noteLengthLast: 0.25
+  // notes: marioNotes,
+  clips: [],
+  noteLengthLast: 0.25,
+  noteAutoIncrement: 0,
+  clipAutoIncrement: 0
 };
 
 const maxBarWidth = 1000;
@@ -41,19 +46,52 @@ export default function pianoRoll(state = defaultState, action) {
     // ========================================================================
     case PIANOROLL_NEW_NOTE:
     {
-      // Snap to the same length as the most previously created note
-      var snappedBar = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast;
-      var stateChanges = {
-        notes: [
-          ...state.notes,
-          {
-            keyNum: action.key,
-            start:  snappedBar,
-            end:    snappedBar + state.noteLengthLast
-          }
-        ].sort(noteSortComparison)  // Keep notes sorted - important for efficiency, rendering appearance, and success of later algorithms
-      };
-      return Object.assign({}, state, stateChanges);
+      // Existing clip matching?
+      var foundClip = state.clips.find((clip) => {
+        return action.bar >= clip.start && action.bar < clip.end
+      })
+
+      // Note instantiation - snap to the same length as the most previously created note
+      var snappedClipStart = Math.floor(action.bar);
+      var snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast;
+
+      // Create new clip
+      if (! foundClip) {
+        var newNote = {
+          id:     state.noteAutoIncrement,
+          keyNum: action.key,
+          start:  snappedNoteStart - snappedClipStart,
+          end:    snappedNoteStart - snappedClipStart + state.noteLengthLast
+        }
+
+        var newClip = {
+          id:         state.clipAutoIncrement,
+          start:      snappedClipStart,
+          end:        snappedClipStart + 1,
+          offset:     0.00,
+          loopLength: 1.00,
+          notes:      [newNote]
+        }
+        var newState = u.updateIn(['clips'], uAppend(newClip, clipSortComparison), state)
+            newState = u({noteAutoIncrement: uIncrement(1)}, newState)
+            newState = u({clipAutoIncrement: uIncrement(1)}, newState)
+        return newState
+      }
+
+      // Insert note into existing clip
+      else {
+        var newNote = {
+          id:     state.noteAutoIncrement,
+          keyNum: action.key,
+          start:  snappedNoteStart - foundClip.start,
+          end:    snappedNoteStart - foundClip.start + state.noteLengthLast
+        }
+
+        var updatedClip = u.updateIn(['notes'], uAppend(newNote, noteSortComparison), foundClip)
+        var newState = u.updateIn(['clips'], uReplace(foundClip, updatedClip), state)
+            newState = u({noteAutoIncrement: uIncrement(1)}, newState)
+        return newState
+      }
     }
 
     // ========================================================================
@@ -142,6 +180,14 @@ export default function pianoRoll(state = defaultState, action) {
 // Comparison function for sorting notes a and b by their start time. Usage: note.sort(noteSortComparison);
 function noteSortComparison(a, b) {
   return a.start - b.start;
+}
+
+function clipSortComparison(a, b) {
+  return a.start - b.start;
+}
+
+export function findClipForNewNote(clips, barCount, note) {
+  return clips[0] || {};
 }
 
 // Restrict min/max zoom against the piano-roll's height (ensure keyboard doesn't get too small or large)

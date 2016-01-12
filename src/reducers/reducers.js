@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+
 import navigation from './reducerNavigation.js';
 import transport from './reducerTransport.js';
 import timeline from './reducerTimeline.js';

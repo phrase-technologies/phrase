@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
+import { pianorollSelector } from '../selectors/selectorPianoRoll.js';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
 import { pianoRollScrollX,
          pianoRollScrollY } from '../actions/actions.js';
+
 import EffectsModule        from './EffectsModule.js';
 import PianoRollTimeline    from './PianoRollTimeline.js';
 import PianoRollWindow      from './PianoRollWindow.js';
@@ -49,7 +52,8 @@ export default class PianoRoll extends Component {
               />
           </div>        
           <PianoRollNotesSlider
-            notes={this.props.notes} dispatch={this.props.dispatch}
+            dispatch={this.props.dispatch}
+            clips={this.props.clips} notes={this.props.notes} 
             barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
             keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
             selectionStartX={this.props.selectionStartX} selectionEndX={this.props.selectionEndX}
@@ -68,6 +72,7 @@ export default class PianoRoll extends Component {
 }
 
 PianoRoll.propTypes = {
+  clips:    React.PropTypes.array,
   notes:    React.PropTypes.array,
   cursor:   React.PropTypes.number,
   playHead: React.PropTypes.number,
@@ -87,19 +92,4 @@ PianoRoll.defaultProps = {
   keyCount: 88,
 };
 
-
-function mapStateToProps(state) {
-  return {
-    notes: state.pianoRoll.notes,
-    barMin: state.pianoRoll.barMin,
-    barMax: state.pianoRoll.barMax,
-    keyMin: state.pianoRoll.keyMin,
-    keyMax: state.pianoRoll.keyMax,
-    selectionStartX: state.pianoRoll.selectionStartX,
-    selectionStartY: state.pianoRoll.selectionStartY,
-    selectionEndX: state.pianoRoll.selectionEndX,
-    selectionEndY: state.pianoRoll.selectionEndY
-  };
-}
-
-export default connect(mapStateToProps)(PianoRoll);
+export default connect(pianorollSelector)(PianoRoll);

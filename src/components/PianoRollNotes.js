@@ -14,6 +14,7 @@ import { pianoRollSelectionStart,
 import PianoRollNote from './PianoRollNote';
 
 export default class PianoRollNotes extends Component {
+
   constructor() {
     super();
     this.data = {};
@@ -124,8 +125,8 @@ export default class PianoRollNotes extends Component {
       this.props.dispatch( pianoRollSelectionEnd(null,null) );      
     }
 
-    // Add NOTE (no drag - this is basically a click!)
-    else
+    // Add New Note
+    else if( this.data.isDragging ) // no extended drag - this is basically a click!
     {
       let bar = this.getMouseBar(e) * this.props.barCount;
       let key = Math.ceil(this.props.keyCount - this.getMouseKey(e)*this.props.keyCount);
