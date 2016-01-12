@@ -7,12 +7,12 @@ import { shiftInterval,
 import { pianoRollScrollX,
          pianoRollScrollY } from '../actions/actions.js';
 
-import EffectsModule        from './EffectsModule.js';
-import PianoRollTimeline    from './PianoRollTimeline.js';
-import PianoRollWindow      from './PianoRollWindow.js';
-import PianoRollNotesSlider from './PianoRollNotesSlider.js';
-import PianoRollKeyboard    from './PianoRollKeyboard.js';
-import Scrollbar            from './Scrollbar.js';
+import EffectsModule          from './EffectsModule.js';
+import PianoRollTimeline      from './PianoRollTimeline.js';
+import PianoRollWindow        from './PianoRollWindow.js';
+import PianoRollWindowSlider  from './PianoRollWindowSlider.js';
+import PianoRollKeyboard      from './PianoRollKeyboard.js';
+import Scrollbar              from './Scrollbar.js';
 
 export default class PianoRoll extends Component {
 
@@ -42,16 +42,7 @@ export default class PianoRoll extends Component {
           keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
           dispatch={this.props.dispatch}
         >
-          <div className="piano-roll-scroll-zone"
-            onMouseEnter={(e) => this.handleScrollZone(e, true)}
-            onMouseLeave={(e) => this.handleScrollZone(e, false)}
-            >
-            <Scrollbar draggableEndpoints
-              min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
-              max={this.props.barMax} forceHover={this.data.scrollZoneHover}
-              />
-          </div>        
-          <PianoRollNotesSlider
+          <PianoRollWindowSlider
             dispatch={this.props.dispatch}
             clips={this.props.clips} notes={this.props.notes} 
             barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
@@ -59,6 +50,15 @@ export default class PianoRoll extends Component {
             selectionStartX={this.props.selectionStartX} selectionEndX={this.props.selectionEndX}
             selectionStartY={this.props.selectionStartY} selectionEndY={this.props.selectionEndY}
           />
+          <div className="piano-roll-scroll-zone"
+            onMouseEnter={(e) => this.handleScrollZone(e, true)}
+            onMouseLeave={(e) => this.handleScrollZone(e, false)}
+          >
+            <Scrollbar draggableEndpoints
+              min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
+              max={this.props.barMax} forceHover={this.data.scrollZoneHover}
+              />
+          </div>        
         </PianoRollWindow>
         <PianoRollKeyboard
           keyMin={this.props.keyMin}

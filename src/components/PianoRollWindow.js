@@ -18,7 +18,7 @@ export default class PianoRollWindow extends TimelineBase {
 
   render() {
     return (
-      <div className="piano-roll-window">
+      <div className="piano-roll-window-frame">
         <CanvasComponent renderFrame={this.renderFrame()} />
         {this.props.children}
       </div>

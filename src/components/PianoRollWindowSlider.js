@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PianoRollSelectionBox from './PianoRollSelectionBox';
 import PianoRollNotes from './PianoRollNotes';
 
-export default class PianoRollNotesSlider extends Component {
+export default class PianoRollWindowSlider extends Component {
   render() {
     let xWindowPercent = (this.props.barMax - this.props.barMin);
     let yWindowPercent = (this.props.keyMax - this.props.keyMin);
@@ -19,8 +19,8 @@ export default class PianoRollNotesSlider extends Component {
     };
 
     return (
-      <div className="piano-roll-notes-wrapper">
-        <div className="piano-roll-notes-slider" style={sliderStyle} ref={(ref) => this.slider = ref}>
+      <div className="piano-roll-window">
+        <div className="piano-roll-window-slider" style={sliderStyle} ref={(ref) => this.slider = ref}>
           <PianoRollNotes
             notes={this.props.notes}
             dispatch={this.props.dispatch}
@@ -45,7 +45,7 @@ export default class PianoRollNotesSlider extends Component {
   }
 }
 
-PianoRollNotesSlider.propTypes = {
+PianoRollWindowSlider.propTypes = {
   barCount:     React.PropTypes.number.isRequired,
   keyCount:     React.PropTypes.number.isRequired,
   barMin:       React.PropTypes.number.isRequired,
