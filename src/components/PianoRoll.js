@@ -21,54 +21,45 @@ export default class PianoRoll extends Component {
     this.data = {};
   }
 
-  handleScrollZone(e, hover) {
-    this.data.scrollZoneHover = hover;
-    this.forceUpdate();
-  }
-
   render() {
+    let dispatchProp = {
+      dispatch: this.props.dispatch
+    }
+    let keyboardProps = {
+      keyMin: this.props.keyMin,
+      keyMax: this.props.keyMax,
+      keyCount: this.props.keyCount
+    }
+    let timelineProps = {
+      barMin: this.props.barMin,
+      barMax: this.props.barMax,
+      barCount: this.props.barCount
+    }
     return (
       <div className="piano-roll">
-        <PianoRollTimeline ref={(ref) => this.timeline = ref}
-          barMin={this.props.barMin}
-          barMax={this.props.barMax}
-          barCount={this.props.barCount} 
-          dispatch={this.props.dispatch}
-          />
-        <div className="piano-roll-timeline-overlay" />
-        <div className="piano-roll-notes-overlay" />
-        <PianoRollWindow
-          barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
-          keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
-          dispatch={this.props.dispatch}
-        >
-          <PianoRollWindowSlider
-            dispatch={this.props.dispatch}
-            clips={this.props.clips} notes={this.props.notes} 
-            barCount={this.props.barCount} barMin={this.props.barMin} keyMin={this.props.keyMin}
-            keyCount={this.props.keyCount} barMax={this.props.barMax} keyMax={this.props.keyMax}
-            selectionStartX={this.props.selectionStartX} selectionEndX={this.props.selectionEndX}
-            selectionStartY={this.props.selectionStartY} selectionEndY={this.props.selectionEndY}
-          />
-          <div className="piano-roll-scroll-zone"
+        <PianoRollKeyboard {...dispatchProp} {...keyboardProps} />
+        <PianoRollTimeline {...dispatchProp} {...timelineProps} ref={(ref) => this.timeline = ref} />
+        <PianoRollWindow {...dispatchProp} {...keyboardProps} {...timelineProps} >
+          <PianoRollWindowSlider {...this.props} />
+          <div className="piano-roll-window-scroll-zone"
             onMouseEnter={(e) => this.handleScrollZone(e, true)}
             onMouseLeave={(e) => this.handleScrollZone(e, false)}
           >
             <Scrollbar draggableEndpoints
               min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
               max={this.props.barMax} forceHover={this.data.scrollZoneHover}
-              />
+            />
           </div>        
         </PianoRollWindow>
-        <PianoRollKeyboard
-          keyMin={this.props.keyMin}
-          keyMax={this.props.keyMax}
-          dispatch={this.props.dispatch}
-          />
-        <div className="piano-roll-keyboard-overlay" />
       </div>
     );
   }
+
+  handleScrollZone(e, hover) {
+    this.data.scrollZoneHover = hover;
+    this.forceUpdate();
+  }
+
 }
 
 PianoRoll.propTypes = {

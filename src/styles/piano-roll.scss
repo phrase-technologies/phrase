@@ -2,7 +2,10 @@ $piano-roll-corner:           4px;
 $piano-roll-timeline:          40px;
 $piano-roll-spacing:         15px;
 $piano-roll-keyboard-width: 125px;
-$piano-roll-options-width:    0px;//30px;
+
+// ----------------------------------------------------------------------------
+// Piano Roll
+// ----------------------------------------------------------------------------
 .piano-roll {
   position: absolute;
   top: 15px;
@@ -10,6 +13,10 @@ $piano-roll-options-width:    0px;//30px;
   right: 15px;
   bottom: 15px;
 }
+
+// ----------------------------------------------------------------------------
+// Timeline
+// ----------------------------------------------------------------------------
 .piano-roll-timeline {
   position: absolute;
   top: 0;
@@ -33,20 +40,27 @@ $piano-roll-options-width:    0px;//30px;
     border-radius: $piano-roll-corner $piano-roll-corner 0 0;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
   }
-}
-.piano-roll-timeline-overlay {
-  position: absolute;
-  top: 0;
-  left: $piano-roll-keyboard-width;
-  right: 0;
-  height: $piano-roll-timeline;
 
-  border-radius: $piano-roll-corner $piano-roll-corner 0 0;
-  box-shadow: inset  1px 1px 2px #000,
-              inset -1px 1px 2px #000;
-  z-index: 2; // Above scroll-zone
-  pointer-events: none;
+  // Inner shadows must be applied in a pseudoelement to cast over the contents
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    border-radius: $piano-roll-corner $piano-roll-corner 0 0;
+    box-shadow: inset 1px  1px 3px -1px #000,
+                inset -1px 1px 3px -1px #000;
+    z-index: 2; // Above scroll-zone
+    pointer-events: none;
+  }
 }
+
+// ----------------------------------------------------------------------------
+// Window - Central Editing Area
+// ----------------------------------------------------------------------------
 .piano-roll-window-frame {
   position: absolute;
   top: $piano-roll-timeline;
@@ -68,8 +82,23 @@ $piano-roll-options-width:    0px;//30px;
     bottom: 0;
     width: 100%;
 
-    border-radius: 0 0 0 $piano-roll-corner;
+    border-radius: 0 0 $piano-roll-corner 0;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
+  }
+
+  // Inner shadows must be applied in a pseudoelement to cast over the contents
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    border-radius: 0 0 $piano-roll-corner 0;
+    box-shadow: inset 0 0 5px 1px #000;
+    z-index: 3; // Above scroll-zone
+    pointer-events: none;
   }
 }
 .piano-roll-window {
@@ -80,21 +109,40 @@ $piano-roll-options-width:    0px;//30px;
   bottom: 30px;
   z-index: 1;
 }
-.piano-roll-window-slider,
+.piano-roll-window-slider {
+  position: absolute;  
+}
+.piano-roll-window-scroll-zone {
+  position: absolute;
+  height: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+
+  border-radius: 0 0 $piano-roll-corner 0;
+  padding: 10px;
+  background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);
+
+  transition: height 0.5s, padding 0.5s;
+  transition-delay: 1s;
+
+  &:hover {
+    padding-top: 4px;
+    transition: height 0.125s, padding 0.125s;
+    transition-delay: 0s;
+  }  
+}
+
+// ----------------------------------------------------------------------------
+// Clips
+// ----------------------------------------------------------------------------
 .piano-roll-clips {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-}
-.piano-roll-notes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1; // Above Clips
 }
 .piano-roll-clip {
   position: absolute;
@@ -110,6 +158,18 @@ $piano-roll-options-width:    0px;//30px;
 
   box-shadow: 0 0 0 1px #000;
   background: rgba(255, 127, 0, 0.125);
+}
+
+// ----------------------------------------------------------------------------
+// Notes
+// ----------------------------------------------------------------------------
+.piano-roll-notes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1; // Above Clips
 }
 .piano-roll-notes {
   &[min-height~="1350"] {
@@ -175,19 +235,10 @@ only screen and ( min-resolution:         120dpi ) {
     box-shadow: 0 0 2px 0.5px #000;
   }
 }
-.piano-roll-notes-overlay {
-  position: absolute;
-  top: $piano-roll-timeline;
-  left: $piano-roll-keyboard-width;
-  right: 0;
-  bottom: 0;
 
-  border-top: 1px solid #000;
-  border-radius: 0 0 $piano-roll-corner 0;
-  box-shadow: inset 0 -1px 5px 1px #000;
-  z-index: 3; // Above scroll-zone
-  pointer-events: none;
-}
+// ----------------------------------------------------------------------------
+// Selection Box
+// ----------------------------------------------------------------------------
 .piano-roll-selection-box {
   position: absolute;
   z-index: 2;   // Above notes
@@ -196,29 +247,10 @@ only screen and ( min-resolution:         120dpi ) {
   background: rgba(255,255,255,0.050);
   box-shadow: 0 0 3px #000;
 }
-.piano-roll-options {
-  position: absolute;
-  top:    $piano-roll-spacing + $piano-roll-timeline;
-  left:   $piano-roll-spacing;
-  width:  $piano-roll-options-width;
-  bottom: $piano-roll-spacing;
 
-  border: 1px solid #000;
-  border-right: 0;
-  border-radius: $piano-roll-corner 0 0 $piano-roll-corner;
-  background: #444;
-  box-shadow: inset  1px  1px  2px rgba( 0, 0, 0, 0.25),
-              inset  1px -1px  2px rgba( 0, 0, 0, 0.25);
-  z-index: 2; // Above timeline's shadow
-
-  display: flex;
-  span {
-    display: block;
-    width: 100%;
-    text-align: center;
-    align-self: center;
-  }
-}
+// ----------------------------------------------------------------------------
+// Keyboard
+// ----------------------------------------------------------------------------
 .piano-roll-keyboard {
   position: absolute;
   top: $piano-roll-timeline;
@@ -233,19 +265,22 @@ only screen and ( min-resolution:         120dpi ) {
   z-index: 5; // Above the timeline
   background: #777;
   overflow: hidden;
-}
-.piano-roll-keyboard-overlay {
-  position: absolute;
-  top: $piano-roll-timeline;
-  left: 0;
-  width: $piano-roll-keyboard-width;
-  bottom: 0;
 
-  border-radius: $piano-roll-corner 0 0 $piano-roll-corner;
-  box-shadow: inset 2px  3px 2px rgba(0,0,0,0.64),
-              inset 2px -3px 2px rgba(0,0,0,0.64);
-  z-index: 6; // Above keyboard
-  pointer-events: none;
+  // Inner shadows must be applied in a pseudoelement to cast over the contents
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    border-radius: $piano-roll-corner 0 0 $piano-roll-corner;
+    box-shadow: inset 2px  3px 3px -1px rgba(0,0,0,0.64),
+                inset 2px -3px 3px -1px rgba(0,0,0,0.64);
+    z-index: 2; // Above keyboard
+    pointer-events: none;
+  }
 }
 .piano-roll-keybed {
   position: absolute;
@@ -323,7 +358,7 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
       width: 50%;
       bottom: -2px;
 
-      background-image: linear-gradient(left, rgba(0,0,0,0.25) 0%, transparent 100%);
+      background-image: linear-gradient(left, rgba(0,0,0,0.25) 0%, transparent 50%);
     }
 
     // Overlap the adjacent white keys (different amounts depending on where they are on the scale)
@@ -429,27 +464,4 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
     padding-bottom: 2px;
     text-align: right;
   }
-}
-
-.piano-roll-scroll-zone {
-  position: absolute;
-  height: 30px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-
-  padding: 10px;
-  background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);
-  border-radius: 0 0 0 4px;
-
-  transition: height 0.5s, padding 0.5s;
-  transition-delay: 1s;
-
-  &:hover {
-    padding-top: 14px;
-    height: 40px;
-    transition: height 0.125s, padding 0.125s;
-    transition-delay: 0s;
-  }  
 }
