@@ -1,12 +1,12 @@
-$piano-roll-corner:           4px;
-$piano-roll-timeline:          40px;
-$piano-roll-spacing:         15px;
-$piano-roll-keyboard-width: 125px;
+$pianoroll-corner:           4px;
+$pianoroll-timeline:          40px;
+$pianoroll-spacing:         15px;
+$pianoroll-keyboard-width: 125px;
 
 // ----------------------------------------------------------------------------
 // Piano Roll
 // ----------------------------------------------------------------------------
-.piano-roll {
+.pianoroll {
   position: absolute;
   top: 15px;
   left: 15px;
@@ -17,16 +17,16 @@ $piano-roll-keyboard-width: 125px;
 // ----------------------------------------------------------------------------
 // Timeline
 // ----------------------------------------------------------------------------
-.piano-roll-timeline {
+.pianoroll-timeline {
   position: absolute;
   top: 0;
-  left: $piano-roll-keyboard-width;
+  left: $pianoroll-keyboard-width;
   right: 0;
-  height: $piano-roll-timeline;
+  height: $pianoroll-timeline;
 
   border: 1px solid #000;
   border-bottom: 0;
-  border-radius: $piano-roll-corner $piano-roll-corner 0 0;
+  border-radius: $pianoroll-corner $pianoroll-corner 0 0;
   background: #333;
 
   > canvas {
@@ -37,7 +37,7 @@ $piano-roll-keyboard-width: 125px;
     bottom: 0;
     width: 100%;
 
-    border-radius: $piano-roll-corner $piano-roll-corner 0 0;
+    border-radius: $pianoroll-corner $pianoroll-corner 0 0;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
   }
 
@@ -50,7 +50,7 @@ $piano-roll-keyboard-width: 125px;
     right: 0;
     bottom: 0;
 
-    border-radius: $piano-roll-corner $piano-roll-corner 0 0;
+    border-radius: $pianoroll-corner $pianoroll-corner 0 0;
     box-shadow: inset 1px  1px 3px -1px #000,
                 inset -1px 1px 3px -1px #000;
     z-index: 2; // Above scroll-zone
@@ -61,15 +61,15 @@ $piano-roll-keyboard-width: 125px;
 // ----------------------------------------------------------------------------
 // Window - Central Editing Area
 // ----------------------------------------------------------------------------
-.piano-roll-window-frame {
+.pianoroll-window-frame {
   position: absolute;
-  top: $piano-roll-timeline;
-  left: $piano-roll-keyboard-width;
+  top: $pianoroll-timeline;
+  left: $pianoroll-keyboard-width;
   right: 0;
   bottom: 0;
 
   border: 1px solid #000;
-  border-radius: 0 0 $piano-roll-corner 0;
+  border-radius: 0 0 $pianoroll-corner 0;
   background: #333;
 
   overflow: hidden;
@@ -82,7 +82,7 @@ $piano-roll-keyboard-width: 125px;
     bottom: 0;
     width: 100%;
 
-    border-radius: 0 0 $piano-roll-corner 0;
+    border-radius: 0 0 $pianoroll-corner 0;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
   }
 
@@ -95,13 +95,13 @@ $piano-roll-keyboard-width: 125px;
     right: 0;
     bottom: 0;
 
-    border-radius: 0 0 $piano-roll-corner 0;
+    border-radius: 0 0 $pianoroll-corner 0;
     box-shadow: inset 0 0 5px 1px #000;
     z-index: 3; // Above scroll-zone
     pointer-events: none;
   }
 }
-.piano-roll-window {
+.pianoroll-window {
   position: absolute;
   top: 0;
   left: 10px;
@@ -109,10 +109,10 @@ $piano-roll-keyboard-width: 125px;
   bottom: 30px;
   z-index: 1;
 }
-.piano-roll-window-slider {
+.pianoroll-window-slider {
   position: absolute;  
 }
-.piano-roll-window-scroll-zone {
+.pianoroll-window-scroll-zone {
   position: absolute;
   height: 30px;
   left: 0;
@@ -120,7 +120,7 @@ $piano-roll-keyboard-width: 125px;
   bottom: 0;
   z-index: 2;
 
-  border-radius: 0 0 $piano-roll-corner 0;
+  border-radius: 0 0 $pianoroll-corner 0;
   padding: 10px;
   background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);
 
@@ -137,19 +137,19 @@ $piano-roll-keyboard-width: 125px;
 // ----------------------------------------------------------------------------
 // Clips
 // ----------------------------------------------------------------------------
-.piano-roll-clips {
+.pianoroll-clips {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
 }
-.piano-roll-clip {
+.pianoroll-clip {
   position: absolute;
   top: -1px;
   bottom: -1px;
 }
-.piano-roll-clip-label {
+.pianoroll-clip-label {
   position: absolute;
   top: 0;
   left: 0;
@@ -163,7 +163,7 @@ $piano-roll-keyboard-width: 125px;
 // ----------------------------------------------------------------------------
 // Notes
 // ----------------------------------------------------------------------------
-.piano-roll-notes {
+.pianoroll-notes {
   position: absolute;
   top: 0;
   left: 0;
@@ -171,45 +171,45 @@ $piano-roll-keyboard-width: 125px;
   bottom: 0;
   z-index: 1; // Above Clips
 }
-.piano-roll-notes {
+.pianoroll-notes {
   &[min-height~="1350"] {
-    .piano-roll-note-label {
+    .pianoroll-note-label {
       font-size: 10px;
       padding: 2px;
     }
   }
   &[min-height~="1450"] {
-    .piano-roll-note-label {
+    .pianoroll-note-label {
       font-size: 11px;
       padding: 3px;
     }
   }
   &[max-height~="1275"] {
-    .piano-roll-note-label {
+    .pianoroll-note-label {
       color: transparent;
     }
   }
   &[max-height~="1000"] {
-    .piano-roll-note-label {
+    .pianoroll-note-label {
       border-radius: 1px;
     }
   }
 }
-// Each note consists of 2 elements: .piano-roll-note and .piano-roll-note-label.
+// Each note consists of 2 elements: .pianoroll-note and .pianoroll-note-label.
 // This is necessary to have accurate percentage position on the wrapper and 1px offset on the child.
-.piano-roll-note {
+.pianoroll-note {
   position: absolute;
   top: 0;
   left: 0;
 
   &:hover {
-    > .piano-roll-note-label {
+    > .pianoroll-note-label {
       background: #FC8;
       background-image: linear-gradient(to bottom, #FC8 0%, #F80 100%);
     }
   }
 }
-.piano-roll-note-label {
+.pianoroll-note-label {
   position: absolute;
   top: 0;
   left: 0;
@@ -231,7 +231,7 @@ $piano-roll-keyboard-width: 125px;
 @media
 only screen and ( min-device-pixel-ratio: 1.3    ),
 only screen and ( min-resolution:         120dpi ) {
-  .piano-roll-note-label {
+  .pianoroll-note-label {
     box-shadow: 0 0 2px 0.5px #000;
   }
 }
@@ -239,7 +239,7 @@ only screen and ( min-resolution:         120dpi ) {
 // ----------------------------------------------------------------------------
 // Selection Box
 // ----------------------------------------------------------------------------
-.piano-roll-selection-box {
+.pianoroll-selection-box {
   position: absolute;
   z-index: 2;   // Above notes
 
@@ -251,17 +251,17 @@ only screen and ( min-resolution:         120dpi ) {
 // ----------------------------------------------------------------------------
 // Keyboard
 // ----------------------------------------------------------------------------
-.piano-roll-keyboard {
+.pianoroll-keyboard {
   position: absolute;
-  top: $piano-roll-timeline;
+  top: $pianoroll-timeline;
   left: 0;
-  width: $piano-roll-keyboard-width - 1px;
+  width: $pianoroll-keyboard-width - 1px;
   bottom: 0;
   box-sizing: content-box;
 
   border: 1px solid #000;
   border-right: 0;
-  border-radius: $piano-roll-corner 0 0 $piano-roll-corner;
+  border-radius: $pianoroll-corner 0 0 $pianoroll-corner;
   z-index: 5; // Above the timeline
   background: #777;
   overflow: hidden;
@@ -275,14 +275,14 @@ only screen and ( min-resolution:         120dpi ) {
     right: 0;
     bottom: 0;
 
-    border-radius: $piano-roll-corner 0 0 $piano-roll-corner;
+    border-radius: $pianoroll-corner 0 0 $pianoroll-corner;
     box-shadow: inset 2px  3px 3px -1px rgba(0,0,0,0.64),
                 inset 2px -3px 3px -1px rgba(0,0,0,0.64);
     z-index: 2; // Above keyboard
     pointer-events: none;
   }
 }
-.piano-roll-keybed {
+.pianoroll-keybed {
   position: absolute;
   right: 0;
   height: 1047px;
@@ -293,7 +293,7 @@ $octave-keys: 12.00;
 $octave-thickness: percentage($octave-keys/$total-keys);
 $key-thickness: percentage(1/$octave-keys);
 $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, which are are calculated based off of width rather than height.
-.piano-roll-key {
+.pianoroll-key {
   display: block;
   position: relative;
   box-sizing: border-box;
@@ -312,7 +312,7 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 
     display: flex;
     padding-right: 5%; 
-    .piano-roll-key-label {
+    .pianoroll-key-label {
       visibility: hidden;
       font-size: 10px;
       color: #000;
@@ -389,24 +389,24 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
   }
 
   &.compact {
-    .piano-roll-key-label {
+    .pianoroll-key-label {
       font-size: 9px;
     }
 
     &:last-child {
-      .piano-roll-key-label {
+      .pianoroll-key-label {
         visibility: hidden;
       }
     }
   }
 
   &:last-child {
-    > .piano-roll-key-label {
+    > .pianoroll-key-label {
       visibility: visible;
     }
   }
 }
-.piano-roll-octave {
+.pianoroll-octave {
   position: relative;
   height: $octave-thickness;
   //width: 100px; // Fixed width will 
@@ -415,13 +415,13 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
     margin-top: 1px;
     height: percentage(1.0/$total-keys);
 
-    .piano-roll-key {
+    .pianoroll-key {
       height: 100%;
     }
   }
 
   &:last-child {
-    .piano-roll-key {
+    .pianoroll-key {
       &:last-child {
         height: 1.250 * $key-thickness;
         border-radius: 0 0 0 3px;
@@ -431,10 +431,10 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
   }
 
   &:hover {
-    .piano-roll-key-label {
+    .pianoroll-key-label {
       visibility: visible !important;
     }
-    .piano-roll-key {
+    .pianoroll-key {
       &.black {
         &:before {
           display: none;
@@ -443,7 +443,7 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
     }
   }
 }
-.piano-roll-octave-label {
+.pianoroll-octave-label {
   position: absolute;
   top: 0px;
   bottom: 0px;

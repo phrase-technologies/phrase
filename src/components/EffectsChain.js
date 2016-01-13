@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class PianoRoll extends Component {
+export default class Pianoroll extends Component {
 
   render() {
     return (

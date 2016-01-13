@@ -49,8 +49,8 @@ export default class LayoutPage extends Component {
 
 function mapStateToProps(state) {
   return {
-    barMin: state.pianoRoll.barMin,
-    barMax: state.pianoRoll.barMax
+    barMin: state.pianoroll.barMin,
+    barMax: state.pianoroll.barMax
   };
 }
 

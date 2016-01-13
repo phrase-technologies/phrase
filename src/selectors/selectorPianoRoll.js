@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
-const defaultSelector = state => state.pianoRoll
-const clipsSelector = state => state.pianoRoll.clips
+const defaultSelector = state => state.pianoroll
+const clipsSelector = state => state.pianoroll.clips
 
 export const allTrackNotesSelector = createSelector(
   clipsSelector,

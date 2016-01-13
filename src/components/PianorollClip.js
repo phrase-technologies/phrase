@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class PianoRollClip extends Component {
+export default class PianorollClip extends Component {
   render() {
     let clipStyle = {
       left: this.props.left+'%',
@@ -8,14 +8,14 @@ export default class PianoRollClip extends Component {
     };
 
     return (
-      <div className="piano-roll-clip" style={clipStyle}>
-        <div className="piano-roll-clip-label"/>
+      <div className="pianoroll-clip" style={clipStyle}>
+        <div className="pianoroll-clip-label"/>
       </div>
     );
   }
 }
 
-PianoRollClip.propTypes = {
+PianorollClip.propTypes = {
   id:       React.PropTypes.number.isRequired,
   left:     React.PropTypes.number.isRequired,
   width:    React.PropTypes.number.isRequired,

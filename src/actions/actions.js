@@ -30,13 +30,13 @@ export const PIANOROLL_HEIGHT             = 'PIANOROLL_HEIGHT';
 export const PIANOROLL_SELECTION_START    = 'PIANOROLL_SELECTION_START';
 export const PIANOROLL_SELECTION_END      = 'PIANOROLL_SELECTION_END';
 export const PIANOROLL_NEW_NOTE           = 'PIANOROLL_NEW_NOTE';
-export var pianoRollScrollX               = (min, max) => ({type: PIANOROLL_SCROLL_X, min, max});
-export var pianoRollScrollY               = (min, max) => ({type: PIANOROLL_SCROLL_Y, min, max});
-export var pianoRollWidth                 = (width ) => ({type: PIANOROLL_WIDTH,  width });
-export var pianoRollHeight                = (height) => ({type: PIANOROLL_HEIGHT, height });
-export var pianoRollSelectionStart        = (x, y) => ({type: PIANOROLL_SELECTION_START, x, y});
-export var pianoRollSelectionEnd          = (x, y) => ({type: PIANOROLL_SELECTION_END,   x, y});
-export var pianoRollNewNote               = (key, bar) => ({type: PIANOROLL_NEW_NOTE, key, bar});
+export var pianorollScrollX               = (min, max) => ({type: PIANOROLL_SCROLL_X, min, max});
+export var pianorollScrollY               = (min, max) => ({type: PIANOROLL_SCROLL_Y, min, max});
+export var pianorollWidth                 = (width ) => ({type: PIANOROLL_WIDTH,  width });
+export var pianorollHeight                = (height) => ({type: PIANOROLL_HEIGHT, height });
+export var pianorollSelectionStart        = (x, y) => ({type: PIANOROLL_SELECTION_START, x, y});
+export var pianorollSelectionEnd          = (x, y) => ({type: PIANOROLL_SELECTION_END,   x, y});
+export var pianorollNewNote               = (key, bar) => ({type: PIANOROLL_NEW_NOTE, key, bar});
 
 // ----------------------------------------------------------------------------
 // Mouse Cursor

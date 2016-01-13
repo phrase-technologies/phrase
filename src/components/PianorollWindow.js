@@ -6,7 +6,7 @@ import { closestHalfPixel,
 
 import CanvasComponent from './CanvasComponent';
 
-export default class PianoRollWindow extends TimelineBase {
+export default class PianorollWindow extends TimelineBase {
 
   constructor() {
     super();
@@ -18,7 +18,7 @@ export default class PianoRollWindow extends TimelineBase {
 
   render() {
     return (
-      <div className="piano-roll-window-frame">
+      <div className="pianoroll-window-frame">
         <CanvasComponent renderFrame={this.renderFrame()} />
         {this.props.children}
       </div>
@@ -117,7 +117,7 @@ export default class PianoRollWindow extends TimelineBase {
   }  
 }
 
-PianoRollWindow.propTypes = {
+PianorollWindow.propTypes = {
   barCount:     React.PropTypes.number.isRequired,
   keyCount:     React.PropTypes.number.isRequired,
   barMin:       React.PropTypes.number.isRequired,

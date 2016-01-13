@@ -3,17 +3,17 @@
 // ============================================================================
 // This Component renders the notes in the piano roll. This component takes
 // care of multiple selection of notes. Each note is a separate child component,
-// with it's own handlers for dragging and resizing (see PianoRollNotes).
+// with it's own handlers for dragging and resizing (see PianorollNotes).
 
 import React, { Component } from 'react';
 
-import { pianoRollSelectionStart,
-         pianoRollSelectionEnd,
-         pianoRollNewNote } from '../actions/actions.js';
+import { pianorollSelectionStart,
+         pianorollSelectionEnd,
+         pianorollNewNote } from '../actions/actions.js';
 
-import PianoRollNote from './PianoRollNote';
+import PianorollNote from './PianorollNote';
 
-export default class PianoRollNotes extends Component {
+export default class PianorollNotes extends Component {
 
   constructor() {
     super();
@@ -26,7 +26,7 @@ export default class PianoRollNotes extends Component {
 
   render() {
     return (
-      <div className="piano-roll-notes">
+      <div className="pianoroll-notes">
         {this.props.notes.map(function(note){
 
           let id     = note.id;
@@ -40,7 +40,7 @@ export default class PianoRollNotes extends Component {
           let dispatch = this.props.dispatch
           let props  = {id, keyNum, top, left, width, height, dispatch};
 
-          return (<PianoRollNote key={note.id} {...props} />);
+          return (<PianorollNote key={note.id} {...props} />);
 
         }.bind(this))}
       </div>
@@ -69,7 +69,7 @@ export default class PianoRollNotes extends Component {
 
     let x = this.getMouseBar(e);
     let y = this.getMouseKey(e);
-    this.props.dispatch( pianoRollSelectionStart(x,y) );
+    this.props.dispatch( pianorollSelectionStart(x,y) );
   }
 
   handleDrag(e) {
@@ -82,7 +82,7 @@ export default class PianoRollNotes extends Component {
     {
       let x = this.getMouseBar(e);
       let y = this.getMouseKey(e);
-      this.props.dispatch( pianoRollSelectionEnd(x,y) );
+      this.props.dispatch( pianorollSelectionEnd(x,y) );
     }
 
     // Track minimum required movement
@@ -93,8 +93,8 @@ export default class PianoRollNotes extends Component {
     // Remove selection box
     if( this.data.isDragging > 2 )
     {
-      this.props.dispatch( pianoRollSelectionEnd(null,null) );
-      this.props.dispatch( pianoRollSelectionEnd(null,null) );      
+      this.props.dispatch( pianorollSelectionEnd(null,null) );
+      this.props.dispatch( pianorollSelectionEnd(null,null) );      
     }
 
     // Add New Note
@@ -102,7 +102,7 @@ export default class PianoRollNotes extends Component {
     {
       let bar = this.getMouseBar(e) * this.props.barCount;
       let key = Math.ceil(this.props.keyCount - this.getMouseKey(e)*this.props.keyCount);
-      this.props.dispatch( pianoRollNewNote(key,bar) );
+      this.props.dispatch( pianorollNewNote(key,bar) );
     }
 
     this.data.isDragging = false;
@@ -117,7 +117,7 @@ export default class PianoRollNotes extends Component {
   }
 }
 
-PianoRollNotes.propTypes = {
+PianorollNotes.propTypes = {
   barCount:     React.PropTypes.number.isRequired,
   keyCount:     React.PropTypes.number.isRequired,
   notes:        React.PropTypes.array

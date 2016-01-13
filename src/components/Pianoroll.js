@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { pianorollSelector } from '../selectors/selectorPianoRoll.js';
+import { pianorollSelector } from '../selectors/selectorPianoroll.js';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
-import { pianoRollScrollX,
-         pianoRollScrollY } from '../actions/actions.js';
+import { pianorollScrollX,
+         pianorollScrollY } from '../actions/actions.js';
 
 import EffectsModule          from './EffectsModule.js';
-import PianoRollTimeline      from './PianoRollTimeline.js';
-import PianoRollWindow        from './PianoRollWindow.js';
-import PianoRollWindowSlider  from './PianoRollWindowSlider.js';
-import PianoRollKeyboard      from './PianoRollKeyboard.js';
+import PianorollTimeline      from './PianorollTimeline.js';
+import PianorollWindow        from './PianorollWindow.js';
+import PianorollWindowSlider  from './PianorollWindowSlider.js';
+import PianorollKeyboard      from './PianorollKeyboard.js';
 import Scrollbar              from './Scrollbar.js';
 
-export default class PianoRoll extends Component {
+export default class Pianoroll extends Component {
 
   constructor() {
     super();
@@ -36,21 +36,21 @@ export default class PianoRoll extends Component {
       barCount: this.props.barCount
     }
     return (
-      <div className="piano-roll">
-        <PianoRollKeyboard {...dispatchProp} {...keyboardProps} />
-        <PianoRollTimeline {...dispatchProp} {...timelineProps} ref={(ref) => this.timeline = ref} />
-        <PianoRollWindow {...dispatchProp} {...keyboardProps} {...timelineProps} >
-          <PianoRollWindowSlider {...this.props} />
-          <div className="piano-roll-window-scroll-zone"
+      <div className="pianoroll">
+        <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
+        <PianorollTimeline {...dispatchProp} {...timelineProps} ref={(ref) => this.timeline = ref} />
+        <PianorollWindow {...dispatchProp} {...keyboardProps} {...timelineProps} >
+          <PianorollWindowSlider {...this.props} />
+          <div className="pianoroll-window-scroll-zone"
             onMouseEnter={(e) => this.handleScrollZone(e, true)}
             onMouseLeave={(e) => this.handleScrollZone(e, false)}
           >
             <Scrollbar draggableEndpoints
-              min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianoRollScrollX(min,max))}
+              min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianorollScrollX(min,max))}
               max={this.props.barMax} forceHover={this.data.scrollZoneHover}
             />
           </div>        
-        </PianoRollWindow>
+        </PianorollWindow>
       </div>
     );
   }
@@ -62,7 +62,7 @@ export default class PianoRoll extends Component {
 
 }
 
-PianoRoll.propTypes = {
+Pianoroll.propTypes = {
   clips:    React.PropTypes.array,
   notes:    React.PropTypes.array,
   cursor:   React.PropTypes.number,
@@ -76,11 +76,11 @@ PianoRoll.propTypes = {
   selectionEndX: React.PropTypes.number,
   selectionEndY: React.PropTypes.number
 };
-PianoRoll.defaultProps = {
+Pianoroll.defaultProps = {
   cursor:   0.000,
   playHead: 0.000,
   barCount: 64,
   keyCount: 88,
 };
 
-export default connect(pianorollSelector)(PianoRoll);
+export default connect(pianorollSelector)(Pianoroll);

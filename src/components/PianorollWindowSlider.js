@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-import PianoRollSelectionBox from './PianoRollSelectionBox';
-import PianoRollClips from './PianoRollClips';
-import PianoRollNotes from './PianoRollNotes';
+import PianorollSelectionBox from './PianorollSelectionBox';
+import PianorollClips from './PianorollClips';
+import PianorollNotes from './PianorollNotes';
 
-export default class PianoRollWindowSlider extends Component {
+export default class PianorollWindowSlider extends Component {
   render() {
     let xWindowPercent = (this.props.barMax - this.props.barMin);
     let yWindowPercent = (this.props.keyMax - this.props.keyMin);
@@ -20,20 +20,20 @@ export default class PianoRollWindowSlider extends Component {
     };
 
     return (
-      <div className="piano-roll-window">
-        <div className="piano-roll-window-slider" style={sliderStyle} ref={(ref) => this.slider = ref}>
-          <PianoRollClips
+      <div className="pianoroll-window">
+        <div className="pianoroll-window-slider" style={sliderStyle} ref={(ref) => this.slider = ref}>
+          <PianorollClips
             clips={this.props.clips}
             dispatch={this.props.dispatch}
             barCount={this.props.barCount}
           />
-          <PianoRollNotes
+          <PianorollNotes
             notes={this.props.notes}
             dispatch={this.props.dispatch}
             barCount={this.props.barCount}
             keyCount={this.props.keyCount}
           />
-          <PianoRollSelectionBox
+          <PianorollSelectionBox
             selectionStartX={this.props.selectionStartX}
             selectionStartY={this.props.selectionStartY}
             selectionEndX={this.props.selectionEndX}
@@ -51,7 +51,7 @@ export default class PianoRollWindowSlider extends Component {
   }
 }
 
-PianoRollWindowSlider.propTypes = {
+PianorollWindowSlider.propTypes = {
   barCount:     React.PropTypes.number.isRequired,
   keyCount:     React.PropTypes.number.isRequired,
   barMin:       React.PropTypes.number.isRequired,

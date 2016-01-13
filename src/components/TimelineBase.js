@@ -25,8 +25,8 @@ import React, { Component } from 'react';
 
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
-import { pianoRollScrollX,
-         pianoRollScrollY,
+import { pianorollScrollX,
+         pianorollScrollY,
          timelineCursor } from '../actions/actions.js';
 
 export default class TimelineBase extends Component {
@@ -138,14 +138,14 @@ export default class TimelineBase extends Component {
     {
       var fulcrumX = this.getMouseXPercent(e);
       var [newBarMin, newBarMax] = zoomInterval([this.props.barMin, this.props.barMax], zoomFactor, fulcrumX);
-      this.props.dispatch(pianoRollScrollX(newBarMin, newBarMax));
+      this.props.dispatch(pianorollScrollX(newBarMin, newBarMax));
     }
 
     if( this.props.keyMin || this.props.keyMax )
     {
       var fulcrumY = this.getMouseYPercent(e);
       var [newKeyMin, newKeyMax] = zoomInterval([this.props.keyMin, this.props.keyMax], zoomFactor, fulcrumY);
-      this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
+      this.props.dispatch(pianorollScrollY(newKeyMin, newKeyMax));
     }
   }
   handleScrollX(e) {
@@ -154,7 +154,7 @@ export default class TimelineBase extends Component {
       var barWindow = this.props.barMax - this.props.barMin;
       var barStepSize = e.deltaX / this.data.container.clientWidth * barWindow;    
       var [newBarMin, newBarMax] = shiftInterval([this.props.barMin, this.props.barMax], barStepSize);
-      this.props.dispatch(pianoRollScrollX(newBarMin, newBarMax));
+      this.props.dispatch(pianorollScrollX(newBarMin, newBarMax));
     }
   }
   handleScrollY(e) {
@@ -163,7 +163,7 @@ export default class TimelineBase extends Component {
       var keyWindow = this.props.keyMax - this.props.keyMin;
       var keyStepSize = e.deltaY / this.data.container.clientHeight * keyWindow;
       var [newKeyMin, newKeyMax] = shiftInterval([this.props.keyMin, this.props.keyMax], keyStepSize);
-      this.props.dispatch(pianoRollScrollY(newKeyMin, newKeyMax));
+      this.props.dispatch(pianorollScrollY(newKeyMin, newKeyMax));
     }
   }
   handleMouseMove(e) {

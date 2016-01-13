@@ -9,7 +9,7 @@ import LayoutPage from './LayoutPage.js';
 import LayoutSplit from './LayoutSplit.js';
 import MixerArrangement from './MixerArrangement.js';
 import Transport from './Transport.js';
-import PianoRoll from './PianoRoll.js';
+import Pianoroll from './Pianoroll.js';
 
 export default class Layout extends Component {
 
@@ -78,7 +78,7 @@ export default class Layout extends Component {
       );
     }
     else
-      return ( <PianoRoll /> );
+      return ( <Pianoroll /> );
   }
 
   renderEffectsChain() {

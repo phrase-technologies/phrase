@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 
-export default class PianoRollNotes extends Component {
+export default class PianorollNotes extends Component {
   
   render() {
     if( this.props.selectionStartX == null || this.props.selectionEndX == null ||
@@ -23,13 +23,13 @@ export default class PianoRollNotes extends Component {
     let style = {top, left, width, height};
 
     return (
-      <div className='piano-roll-selection-box' style={style} />
+      <div className='pianoroll-selection-box' style={style} />
     );
   }
 
 }
 
-PianoRollNotes.propTypes = {
+PianorollNotes.propTypes = {
   selectionStartX: React.PropTypes.number,
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,

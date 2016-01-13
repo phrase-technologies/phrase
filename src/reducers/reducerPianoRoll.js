@@ -1,5 +1,5 @@
 // ============================================================================
-// PianoRoll Controls
+// Pianoroll Controls
 // ============================================================================
 
 import u from 'updeep';
@@ -38,7 +38,7 @@ const maxBarWidth = 1000;
 const minKeyboardHeight =  800;
 const maxKeyboardHeight = 1275 + 300;
 
-export default function pianoRoll(state = defaultState, action) {
+export default function pianoroll(state = defaultState, action) {
   switch (action.type)
   {
     // ========================================================================
@@ -147,7 +147,7 @@ export default function pianoRoll(state = defaultState, action) {
         stateChanges.keyMax = action.max > 1.0 ? 1.0 : action.max;
       var newState = Object.assign({}, state, stateChanges);
 
-      // Restrict min/max zoom against the piano-roll's height (ensure keyboard doesn't get too small or large)
+      // Restrict min/max zoom against the pianoroll's height (ensure keyboard doesn't get too small or large)
       return restrictKeyboardZoom(newState);
     }
 
@@ -190,7 +190,7 @@ export function findClipForNewNote(clips, barCount, note) {
   return clips[0] || {};
 }
 
-// Restrict min/max zoom against the piano-roll's height (ensure keyboard doesn't get too small or large)
+// Restrict min/max zoom against the pianoroll's height (ensure keyboard doesn't get too small or large)
 function restrictKeyboardZoom(newState) {
   var keyboardHeight = newState.height / (newState.keyMax - newState.keyMin);
   if( keyboardHeight < minKeyboardHeight )

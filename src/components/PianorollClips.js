@@ -6,17 +6,17 @@
 
 import React, { Component } from 'react';
 
-// import { pianoRollSelectionStart,
-//          pianoRollSelectionEnd,
-//          pianoRollNewNote } from '../actions/actions.js';
+// import { pianorollSelectionStart,
+//          pianorollSelectionEnd,
+//          pianorollNewNote } from '../actions/actions.js';
 
-import PianoRollClip from './PianoRollClip';
+import PianorollClip from './PianorollClip';
 
-export default class PianoRollClips extends Component {
+export default class PianorollClips extends Component {
 
   render() {
     return (
-      <div className="piano-roll-clips">
+      <div className="pianoroll-clips">
         {this.props.clips.map(function(clip){
 
           let id     = clip.id;
@@ -26,7 +26,7 @@ export default class PianoRollClips extends Component {
           let dispatch = this.props.dispatch
           let props  = {id, left, width, dispatch};
 
-          return (<PianoRollClip key={clip.id} {...props} />);
+          return (<PianorollClip key={clip.id} {...props} />);
 
         }.bind(this))}
       </div>
@@ -38,7 +38,7 @@ export default class PianoRollClips extends Component {
   }
 }
 
-PianoRollClips.propTypes = {
+PianorollClips.propTypes = {
   barCount:     React.PropTypes.number.isRequired,
   clips:        React.PropTypes.array
 };

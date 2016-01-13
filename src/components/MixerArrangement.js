@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
-import { pianoRollScrollX,
+import { pianorollScrollX,
          timelineCursor } from '../actions/actions.js';
 
 import MixerTimeline from './MixerTimeline.js';
@@ -191,7 +191,7 @@ export default class MixerArrangement extends Component {
   }
 
   setHorizontalScroll(min, max) {
-    this.props.dispatch(pianoRollScrollX(min,max));
+    this.props.dispatch(pianorollScrollX(min,max));
   }
 
   renderScrollbarVertical() {
@@ -227,8 +227,8 @@ MixerArrangement.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    barMin: state.pianoRoll.barMin,
-    barMax: state.pianoRoll.barMax,
+    barMin: state.pianoroll.barMin,
+    barMax: state.pianoroll.barMax,
     timelineCursor: state.timeline.cursor
   };
 }

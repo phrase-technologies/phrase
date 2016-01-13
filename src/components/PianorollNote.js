@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class PianoRollNote extends Component {
+export default class PianorollNote extends Component {
   render() {
     let noteStyle = {
       top: this.props.top+'%',
@@ -12,8 +12,8 @@ export default class PianoRollNote extends Component {
     let label = keyLetter + Math.floor((this.props.keyNum+8)/12);
 
     return (
-      <div className="piano-roll-note" style={noteStyle}>
-        <div className="piano-roll-note-label">
+      <div className="pianoroll-note" style={noteStyle}>
+        <div className="pianoroll-note-label">
           {label}
         </div>
       </div>
@@ -21,7 +21,7 @@ export default class PianoRollNote extends Component {
   }
 }
 
-PianoRollNote.propTypes = {
+PianorollNote.propTypes = {
   id:       React.PropTypes.number.isRequired,
   keyNum:   React.PropTypes.number.isRequired,
   top:      React.PropTypes.number.isRequired,
