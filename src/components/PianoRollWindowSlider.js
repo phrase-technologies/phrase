@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import PianoRollSelectionBox from './PianoRollSelectionBox';
+import PianoRollClips from './PianoRollClips';
 import PianoRollNotes from './PianoRollNotes';
 
 export default class PianoRollWindowSlider extends Component {
@@ -21,6 +22,11 @@ export default class PianoRollWindowSlider extends Component {
     return (
       <div className="piano-roll-window">
         <div className="piano-roll-window-slider" style={sliderStyle} ref={(ref) => this.slider = ref}>
+          <PianoRollClips
+            clips={this.props.clips}
+            dispatch={this.props.dispatch}
+            barCount={this.props.barCount}
+          />
           <PianoRollNotes
             notes={this.props.notes}
             dispatch={this.props.dispatch}

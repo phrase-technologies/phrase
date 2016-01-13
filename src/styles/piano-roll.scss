@@ -81,15 +81,37 @@ $piano-roll-options-width:    0px;//30px;
   z-index: 1;
 }
 .piano-roll-window-slider,
+.piano-roll-clips {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 .piano-roll-notes {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1;
+  z-index: 1; // Above Clips
 }
-.piano-roll-window-slider {
+.piano-roll-clip {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+}
+.piano-roll-clip-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 1px;
+  bottom: 0;
+
+  box-shadow: 0 0 0 0.5px #000;
+  background: rgba(255, 127, 0, 0.125);
+}
+.piano-roll-notes {
   &[min-height~="1350"] {
     .piano-roll-note-label {
       font-size: 10px;
@@ -138,7 +160,7 @@ $piano-roll-options-width:    0px;//30px;
   border-radius: 2px;
   background: #F80;
   background-image: linear-gradient(to bottom, #F80 0%, #C60 100%);
-  box-shadow: 0 0 3px #000;
+  box-shadow: 0 0 2px 0.5px #000;
 
   padding: 1px 2px;
   font-size: 9px;

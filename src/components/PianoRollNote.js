@@ -22,5 +22,11 @@ export default class PianoRollNote extends Component {
 }
 
 PianoRollNote.propTypes = {
-  notes: React.PropTypes.array
+  id:       React.PropTypes.number.isRequired,
+  keyNum:   React.PropTypes.number.isRequired,
+  top:      React.PropTypes.number.isRequired,
+  left:     React.PropTypes.number.isRequired,
+  width:    React.PropTypes.number.isRequired,
+  height:   React.PropTypes.number.isRequired,
+  dispatch: React.PropTypes.func.isRequired
 };
