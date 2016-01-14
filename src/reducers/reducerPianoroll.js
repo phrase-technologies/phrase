@@ -12,6 +12,7 @@ import { PIANOROLL_SCROLL_X,
          PIANOROLL_HEIGHT,
          PIANOROLL_SELECTION_START,
          PIANOROLL_SELECTION_END,
+         PIANOROLL_CURSOR,
          PIANOROLL_NEW_NOTE } from '../actions/actions.js';
 
 import marioNotes from '../helpers/marioNotes.js';
@@ -27,6 +28,7 @@ let defaultState = {
   selectionStartY: null,
   selectionEndX: null,
   selectionEndY: null,
+  cursor: null,
   // notes: marioNotes,
   clips: [],
   noteLengthLast: 0.25,
@@ -165,6 +167,20 @@ export default function pianoroll(state = defaultState, action) {
     case PIANOROLL_SELECTION_END:
     {
       return Object.assign({}, state, {selectionEndX: action.x, selectionEndY: action.y});
+    }
+
+    // ========================================================================
+    // Cursor
+    // ========================================================================
+    case PIANOROLL_CURSOR:
+    {
+      var stateChanges = {};
+
+      stateChanges.cursor = action.percent < 0.0 ? null : action.percent;
+      stateChanges.cursor = action.percent > 1.0 ? null : stateChanges.cursor;
+
+      // Make sure new state exceeds minimum positive range
+      return Object.assign({}, state, stateChanges);
     }
 
     // ========================================================================

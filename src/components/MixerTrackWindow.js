@@ -5,9 +5,9 @@ import provideGridScroll from './GridScrollProvider'
 import _ from 'lodash';
 import { closestHalfPixel,
          drawLine } from '../helpers/helpers.js';
-import { pianorollScrollX,
-         pianorollScrollY,
-         timelineCursor } from '../actions/actions.js';
+import { mixerScrollX,
+         mixerScrollY,
+         mixerCursor } from '../actions/actions.js';
 
 import CanvasComponent from './CanvasComponent';
 
@@ -83,9 +83,9 @@ export default provideGridSystem(
   provideGridScroll(
     MixerTrackWindow,
     {
-      scrollXActionCreator: pianorollScrollX,
-      scrollYActionCreator: pianorollScrollY,
-      cursorActionCreator: timelineCursor
+      scrollXActionCreator: mixerScrollX,
+      scrollYActionCreator: mixerScrollY,
+      cursorActionCreator: mixerCursor
     }
   )
 )

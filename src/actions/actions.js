@@ -21,7 +21,27 @@ export var transportTempo                 = () => ({type: TRANSPORT_TEMPO});
 export var transportTempo                 = () => ({type: TRANSPORT_TEMPO});
 
 // ----------------------------------------------------------------------------
-// Piano Roll Actions
+// Mixer Actions
+// ----------------------------------------------------------------------------
+export const MIXER_SCROLL_X               = 'MIXER_SCROLL_X';
+export const MIXER_SCROLL_Y               = 'MIXER_SCROLL_Y';
+export const MIXER_WIDTH                  = 'MIXER_WIDTH';
+export const MIXER_SELECTION_START        = 'MIXER_SELECTION_START';
+export const MIXER_SELECTION_END          = 'MIXER_SELECTION_END';
+export const MIXER_CURSOR                 = 'MIXER_CURSOR';
+export const MIXER_PLAYHEAD               = 'MIXER_PLAYHEAD';
+export const MIXER_NEW_CLIP               = 'MIXER_NEW_NOTE';
+export var mixerScrollX                   = (min, max) => ({type: MIXER_SCROLL_X, min, max});
+export var mixerScrollY                   = (min, max) => ({type: MIXER_SCROLL_Y, min, max});
+export var mixerWidth                     = (width ) => ({type: MIXER_WIDTH,  width });
+export var mixerSelectionStart            = (x, y) => ({type: MIXER_SELECTION_START, x, y});
+export var mixerSelectionEnd              = (x, y) => ({type: MIXER_SELECTION_END,   x, y});
+export var mixerCursor                    = (percent) => ({type: MIXER_CURSOR, percent});
+export var mixerPlayhead                  = (bar) => ({type: MIXER_PLAYHEAD, bar});
+export var mixerNewClip                   = (key, bar) => ({type: MIXER_NEW_CLIP, key, bar});
+
+// ----------------------------------------------------------------------------
+// Pianoroll Actions
 // ----------------------------------------------------------------------------
 export const PIANOROLL_SCROLL_X           = 'PIANOROLL_SCROLL_X';
 export const PIANOROLL_SCROLL_Y           = 'PIANOROLL_SCROLL_Y';
@@ -29,6 +49,7 @@ export const PIANOROLL_WIDTH              = 'PIANOROLL_WIDTH';
 export const PIANOROLL_HEIGHT             = 'PIANOROLL_HEIGHT';
 export const PIANOROLL_SELECTION_START    = 'PIANOROLL_SELECTION_START';
 export const PIANOROLL_SELECTION_END      = 'PIANOROLL_SELECTION_END';
+export const PIANOROLL_CURSOR             = 'PIANOROLL_CURSOR';
 export const PIANOROLL_NEW_NOTE           = 'PIANOROLL_NEW_NOTE';
 export var pianorollScrollX               = (min, max) => ({type: PIANOROLL_SCROLL_X, min, max});
 export var pianorollScrollY               = (min, max) => ({type: PIANOROLL_SCROLL_Y, min, max});
@@ -36,6 +57,7 @@ export var pianorollWidth                 = (width ) => ({type: PIANOROLL_WIDTH,
 export var pianorollHeight                = (height) => ({type: PIANOROLL_HEIGHT, height });
 export var pianorollSelectionStart        = (x, y) => ({type: PIANOROLL_SELECTION_START, x, y});
 export var pianorollSelectionEnd          = (x, y) => ({type: PIANOROLL_SELECTION_END,   x, y});
+export var pianorollCursor                = (percent) => ({type: PIANOROLL_CURSOR, percent});
 export var pianorollNewNote               = (key, bar) => ({type: PIANOROLL_NEW_NOTE, key, bar});
 
 // ----------------------------------------------------------------------------
@@ -60,10 +82,3 @@ export const CURSOR_TYPES = {
   'bottom':   'bottom'
 };
 
-// ----------------------------------------------------------------------------
-// Timeline Cursor (where you are within a music timeline)
-// ----------------------------------------------------------------------------
-export const TIMELINE_CURSOR              = 'TIMELINE_CURSOR';
-export const TIMELINE_PLAYHEAD            = 'TIMELINE_PLAYHEAD';
-export var timelineCursor                 = (percent) => ({type: TIMELINE_CURSOR, percent});
-export var timelinePlayhead               = (bar) => ({type: TIMELINE_PLAYHEAD, bar});

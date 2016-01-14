@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
-import { pianorollScrollX,
-         timelineCursor } from '../actions/actions.js';
+import { pianorollScrollX } from '../actions/actions.js';
 
 import MixerTimeline from './MixerTimeline.js';
 import MixerTrack from './MixerTrack.js';
@@ -227,9 +226,9 @@ MixerArrangement.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    barMin: state.pianoroll.barMin,
-    barMax: state.pianoroll.barMax,
-    timelineCursor: state.timeline.cursor
+    barMin: state.mixer.barMin,
+    barMax: state.mixer.barMax,
+    timelineCursor: state.mixer.cursor
   };
 }
 
