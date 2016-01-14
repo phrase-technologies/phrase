@@ -1,17 +1,19 @@
-import React from 'react';
-import TimelineBase from './TimelineBase';
+import React, { Component } from 'react'
+import provideGridSystem from './GridSystemProvider'
+import provideGridScroll from './GridScrollProvider'
 
 import { closestHalfPixel,
          drawLine } from '../helpers/helpers.js';
+import { pianorollScrollX,
+         timelineCursor } from '../actions/actions.js';
 
 import CanvasComponent from './CanvasComponent';
 
-export default class PianorollTimeline extends TimelineBase {
+export class PianorollTimeline extends Component {
 
-  constructor() {
-    super();
-    this.data.marginLeft   = 10;
-    this.data.marginRight  = 10;
+  componentDidMount() {
+    this.props.grid.marginLeft   = 10;
+    this.props.grid.marginRight  = 10;
   }
 
   render() {
@@ -26,8 +28,8 @@ export default class PianorollTimeline extends TimelineBase {
   renderFrame() {
     return function(canvasContext) {
       canvasContext.fillStyle = "#282828";
-      canvasContext.fillRect( 0, 0, this.data.width, this.data.height );
-      this.calculateZoomThreshold();
+      canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height );
+      this.props.grid.calculateZoomThreshold();
       this.renderBarLines(canvasContext, this.props.barMin, this.props.barMax);
     }.bind(this);
   }
@@ -35,15 +37,15 @@ export default class PianorollTimeline extends TimelineBase {
   renderBarLines(canvasContext, barMin, barMax) {
     // Styles
     canvasContext.lineWidth = 1.0;
-    canvasContext.font = 11*this.data.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif";
+    canvasContext.font = 11*this.props.grid.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif";
     canvasContext.fillStyle = "#AAAAAA";
     canvasContext.textAlign = "start";
 
     // Draw lines for each beat
-    var minBar = this.percentToBar( barMin ) - 1;
-    var maxBar = this.percentToBar( barMax );
-    var majorIncrement = this.data.lineThresholdsWithKeys.majorLine;
-    var minorIncrement = this.data.lineThresholdsWithKeys.minorLine || this.data.lineThresholdsWithKeys.middleLine;
+    var minBar = this.props.grid.percentToBar( barMin ) - 1;
+    var maxBar = this.props.grid.percentToBar( barMax );
+    var majorIncrement = this.props.grid.lineThresholdsWithKeys.majorLine;
+    var minorIncrement = this.props.grid.lineThresholdsWithKeys.minorLine || this.props.grid.lineThresholdsWithKeys.middleLine;
 
     // Ensure we increment off a common denominator
     minBar = minBar - (minBar % minorIncrement);
@@ -51,15 +53,15 @@ export default class PianorollTimeline extends TimelineBase {
     for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
     {
       // Start each line as a separate path (different colors)
-      let xPosition = closestHalfPixel( this.barToXCoord( bar ) );
+      let xPosition = closestHalfPixel( this.props.grid.barToXCoord( bar ) );
       let yPosition = 0;
 
       // Bar Numbers + Major lines
-      if( bar % this.data.lineThresholdsWithKeys.majorLine === 0 )
+      if( bar % this.props.grid.lineThresholdsWithKeys.majorLine === 0 )
       {
         // Bar Number
-        let topEdge  = 14*this.data.pixelScale;
-        let leftEdge =  4*this.data.pixelScale + xPosition;
+        let topEdge  = 14*this.props.grid.pixelScale;
+        let leftEdge =  4*this.props.grid.pixelScale + xPosition;
         let barNumber = Math.floor( bar + 1 );
         let barBeat = ((bar + 1) % 1) * 4 + 1;
         let outputText = (majorIncrement < 1.0) ? (barNumber + '.' + barBeat) : barNumber;
@@ -69,28 +71,40 @@ export default class PianorollTimeline extends TimelineBase {
         canvasContext.strokeStyle = "#555555";
       }
       // Intermediary Bar lines
-      else if( bar % this.data.lineThresholdsWithKeys.middleLine === 0 )
+      else if( bar % this.props.grid.lineThresholdsWithKeys.middleLine === 0 )
       {
         canvasContext.strokeStyle = "#383838";
-        yPosition = 18 * this.data.pixelScale;
+        yPosition = 18 * this.props.grid.pixelScale;
       }
       // Minor lines
-      else if( this.data.lineThresholdsWithKeys.minorLine )
+      else if( this.props.grid.lineThresholdsWithKeys.minorLine )
       {
         canvasContext.strokeStyle = "#333333";
-        yPosition = 20 * this.data.pixelScale;
+        yPosition = 20 * this.props.grid.pixelScale;
       }
 
       // Draw each line
       canvasContext.beginPath();
-      drawLine( canvasContext, xPosition, yPosition, xPosition, this.data.height );
+      drawLine( canvasContext, xPosition, yPosition, xPosition, this.props.grid.height );
       canvasContext.stroke();
     }    
   }
 }
 
 PianorollTimeline.propTypes = {
+  dispatch:     React.PropTypes.func.isRequired,
+  grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
   barMin:       React.PropTypes.number.isRequired,
   barMax:       React.PropTypes.number.isRequired
 };
+
+export default provideGridSystem(
+  provideGridScroll(
+    PianorollTimeline,
+    {
+      scrollXActionCreator: pianorollScrollX,
+      cursorActionCreator: timelineCursor
+    }
+  )
+)

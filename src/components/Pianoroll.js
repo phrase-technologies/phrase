@@ -7,7 +7,6 @@ import { shiftInterval,
 import { pianorollScrollX,
          pianorollScrollY } from '../actions/actions.js';
 
-import EffectsModule          from './EffectsModule.js';
 import PianorollTimeline      from './PianorollTimeline.js';
 import PianorollWindow        from './PianorollWindow.js';
 import PianorollWindowSlider  from './PianorollWindowSlider.js';

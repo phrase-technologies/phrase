@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-import TimelineBase from './TimelineBase';
+import provideGridSystem from './GridSystemProvider'
+import provideGridScroll from './GridScrollProvider'
 
 import _ from 'lodash';
 import { closestHalfPixel,
          drawLine } from '../helpers/helpers.js';
+import { pianorollScrollX,
+         pianorollScrollY,
+         timelineCursor } from '../actions/actions.js';
 
 import CanvasComponent from './CanvasComponent';
 
-export default class MixerTrackWindow extends TimelineBase {
+export class MixerTrackWindow extends Component {
 
-  constructor() {
-    super(...arguments);
-    this.data.marginLeft   = 10;
-    this.data.marginRight  = 7;
+  componentDidUpdate() {
+    this.props.grid.marginLeft   = 10;
+    this.props.grid.marginRight  = 7;
   }
 
   render() {
@@ -29,19 +32,19 @@ export default class MixerTrackWindow extends TimelineBase {
   renderFrame() {
     return function(canvasContext) {
       canvasContext.fillStyle = "transparent";
-    //canvasContext.fillStyle = "#444444";
-      canvasContext.fillRect( 0, 0, this.data.width, this.data.height );
-      // this.calculateZoomThreshold();
-      // this.renderTimeline(canvasContext, this.props.barMin, this.props.barMax)
+      canvasContext.fillStyle = "#444444";
+      canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height );
+      this.props.grid.calculateZoomThreshold();
+      this.renderTimeline(canvasContext, this.props.barMin, this.props.barMax)
     }.bind(this);
   }
 
   renderTimeline(canvasContext, barMin, barMax) {
     // Draw lines for each beat
     canvasContext.lineWidth = 1.0;
-    var minBar = this.percentToBar( barMin ) - 1;
-    var maxBar = this.percentToBar( barMax );
-    var minorIncrement = this.data.lineThresholdsNoKeys.minorLine || this.data.lineThresholdsNoKeys.middleLine;
+    var minBar = this.props.grid.percentToBar( barMin ) - 1;
+    var maxBar = this.props.grid.percentToBar( barMax );
+    var minorIncrement = this.props.grid.lineThresholdsNoKeys.minorLine || this.props.grid.lineThresholdsNoKeys.middleLine;
 
     // Ensure we increment off a common denominator
     minBar = minBar - (minBar % minorIncrement);
@@ -49,20 +52,20 @@ export default class MixerTrackWindow extends TimelineBase {
     for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
     {
       // Draw each line as a separate path (different colors)
-      var xPosition = closestHalfPixel( this.barToXCoord( bar ) );
+      var xPosition = closestHalfPixel( this.props.grid.barToXCoord( bar ) );
 
       // Major Bar lines
-      if( bar % this.data.lineThresholdsNoKeys.majorLine === 0 )
+      if( bar % this.props.grid.lineThresholdsNoKeys.majorLine === 0 )
         canvasContext.strokeStyle = "#222222";
       // Intermediary Bar lines
-      else if( bar % this.data.lineThresholdsNoKeys.middleLine === 0 )
+      else if( bar % this.props.grid.lineThresholdsNoKeys.middleLine === 0 )
         canvasContext.strokeStyle = "#333333";
       // Minor Bar lines
-      else if( this.data.lineThresholdsNoKeys.minorLine )
+      else if( this.props.grid.lineThresholdsNoKeys.minorLine )
         canvasContext.strokeStyle = "#3C3C3C";
 
       canvasContext.beginPath();
-      drawLine( canvasContext, xPosition, 0, xPosition, this.data.height );
+      drawLine( canvasContext, xPosition, 0, xPosition, this.props.grid.height );
       canvasContext.stroke();
     }    
   }
@@ -70,7 +73,19 @@ export default class MixerTrackWindow extends TimelineBase {
 
 MixerTrackWindow.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
+  grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
   barMin:       React.PropTypes.number.isRequired,
   barMax:       React.PropTypes.number.isRequired
 };  
+
+export default provideGridSystem(
+  provideGridScroll(
+    MixerTrackWindow,
+    {
+      scrollXActionCreator: pianorollScrollX,
+      scrollYActionCreator: pianorollScrollY,
+      cursorActionCreator: timelineCursor
+    }
+  )
+)

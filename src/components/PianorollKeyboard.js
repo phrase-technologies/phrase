@@ -1,25 +1,35 @@
-import React from 'react';
-import TimelineBase from './TimelineBase';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
+import provideGridSystem from './GridSystemProvider'
+import provideGridScroll from './GridScrollProvider'
 
-import { pianorollHeight } from '../actions/actions.js';
+import { pianorollHeight,
+         pianorollScrollY } from '../actions/actions.js';
 
-export default class PianorollKeyboard extends TimelineBase {
+export class PianorollKeyboard extends Component {
 
-  constructor() {
-    super();
-    this.data.marginTop = 30;
+  render() {
+    var keyWindow = this.props.keyMax - this.props.keyMin;
+    var keybedHeight = ( this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ) / keyWindow;
+    var keybedOffset = ( this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ) / keyWindow * this.props.keyMin;
+    var keybedWidth = keybedHeight / 12.5;
+
+    var isCompact = keybedWidth < 100;
+
+    var style = {
+      transform: 'translate3d(0,'+(-keybedOffset)+'px,0)',
+      height: keybedHeight+'px',
+      width: keybedWidth+'px'
+    };
+
+    return (
+      <div className="pianoroll-keyboard">
+        <div className="pianoroll-keybed" style={style}>
+          { this.renderKeys(isCompact) }
+        </div>
+      </div>
+    );
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if( nextProps.keyMin == this.props.keyMin
-     && nextProps.keyMax == this.props.keyMax
-     && nextProps.keyCount == this.props.keyCount )
-      return false;
-    else
-      return true;
-  }
-  
   renderKeys(isCompact) {
     var octave = 8;
     var octaves = [];
@@ -52,39 +62,41 @@ export default class PianorollKeyboard extends TimelineBase {
     return octaves;
   }
 
-  render() {
-    var keyWindow = this.props.keyMax - this.props.keyMin;
-    var keybedHeight = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow;
-    var keybedOffset = ( this.data.height / this.data.pixelScale - this.data.marginTop ) / keyWindow * this.props.keyMin;
-    var keybedWidth = keybedHeight / 12.5;
+  constructor() {
+    super(...arguments)
 
-    var isCompact = keybedWidth < 100;
+    this.handleResize = this.handleResize.bind(this)
+  }
 
-    var style = {
-      transform: 'translate3d(0,'+(-keybedOffset)+'px,0)',
-      height: keybedHeight+'px',
-      width: keybedWidth+'px'
-    };
+  componentDidMount() {
+    this.props.grid.didMount()
+    this.props.grid.marginTop = 30;
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize()
+  }
 
-    return (
-      <div className="pianoroll-keyboard">
-        <div className="pianoroll-keybed" style={style}>
-          { this.renderKeys(isCompact) }
-        </div>
-      </div>
-    );
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize)
   }
 
   handleResize() {
-    super.handleResize();
-    this.props.dispatch(pianorollHeight(this.data.height / this.data.pixelScale - this.data.marginTop));
+    this.props.dispatch(pianorollHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop));
     this.forceUpdate();
   }
 }
 
 PianorollKeyboard.propTypes = {
+  dispatch:     React.PropTypes.func.isRequired,
+  grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   keyMin:       React.PropTypes.number.isRequired,
   keyMax:       React.PropTypes.number.isRequired
 };
 
-export default connect()(PianorollKeyboard);
+export default provideGridSystem(
+  provideGridScroll(
+    PianorollKeyboard,
+    {
+      scrollYActionCreator: pianorollScrollY
+    }
+  )
+)
