@@ -1,3 +1,10 @@
+// ============================================================================
+// Mixer Scroll Window
+// ============================================================================
+// This Component sits beneath the tracks in the mixer and renders vertical
+// barlines and provides horizontal scrolling. The tracks themselves also
+// provide horizontal scrolling but both are needed for the complete UX.
+
 import React, { Component } from 'react';
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'

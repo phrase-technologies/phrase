@@ -5,7 +5,8 @@
 // handling to the child component. It simply attaches event handlers and hooks
 // them up into the provided action creators.
 //
-// See also: GridScrollProvider.js
+// It is dependent on GridSystemProvider.
+// See: GridSystemProvider.js
 
 import React, { Component } from 'react';
 

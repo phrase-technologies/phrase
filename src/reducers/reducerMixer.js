@@ -28,7 +28,7 @@ let defaultState = {
   selectionEndX: null,
   selectionEndY: null,
   cursor: null,
-  playHead: 0.000
+  playhead: 0.000
 }
 
 const maxBarWidth = 1000

@@ -22,53 +22,9 @@ $mixer-footer-height: 30px;
 }
 
 // ============================================================================
-// Mixer Timeline
-// ============================================================================
-.mixer-timeline {
-  position: absolute;
-  top:    -35px - 1px;
-  left:     3px + $mixer-track-control + $mixer-track-tag;
-  right:   -1px;  // Negate the outside border
-  height:  35px;
-  z-index:  2;
-
-  border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
-  background: #222;
-
-  > canvas {
-    width: 100%;
-    border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top:    0;
-    left:   0;
-    right:  0;
-    bottom: 0;
-
-    border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
-    box-shadow: inset  5px 5px 5px -4px #000,
-                inset -5px 5px 5px -4px #000;
-    z-index: 2;   // Above Timeline Canvas
-    pointer-events: none;
-  }
-}
-.timeline-cursor-window {
-  position: absolute;
-  top:    0px;
-  left:   3px - 1px + $mixer-track-control + $mixer-track-tag + 10px;
-  right:  3px + 10px;
-  bottom: 0px;
-
-  pointer-events: none;
-}
-
-// ============================================================================
 // Mixer Console
 // ============================================================================
-.mixer-arrangement {
+.mixer {
   position: absolute;
   top:    15px + 35px;
   left:   15px;
@@ -103,8 +59,14 @@ $mixer-footer-height: 30px;
     border-bottom: 1px solid #555;
     box-shadow: inset 0 -10px 10px -8px #000;
   }  
+
+  > .timeline-playhead-window,
+  > .timeline-cursor-window {
+    left:   3px - 1px + $mixer-track-control + $mixer-track-tag + 10px;
+    right:  3px + 10px;
+  }
 }
-.mixer-arrangement-overflow {
+.mixer-overflow {
   right:  15px;
 
   border-radius: $mixer-corner+3px;
@@ -141,6 +103,45 @@ $mixer-footer-height: 30px;
     background: rgba(17,17,17,0.5);
   }
 }
+
+// ============================================================================
+// Mixer Timeline
+// ============================================================================
+.mixer-timeline {
+  position: absolute;
+  top:    -35px - 1px;
+  left:     3px + $mixer-track-control + $mixer-track-tag;
+  right:   -1px;  // Negate the outside border
+  height:  35px;
+  z-index:  2;
+
+  border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
+  background: #222;
+
+  > canvas {
+    width: 100%;
+    border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top:    0;
+    left:   0;
+    right:  0;
+    bottom: 0;
+
+    border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
+    box-shadow: inset  5px 5px 5px -4px #000,
+                inset -5px 5px 5px -4px #000;
+    z-index: 2;   // Above Timeline Canvas
+    pointer-events: none;
+  }
+}
+
+// ============================================================================
+// Mixer Tracks
+// ============================================================================
 .mixer-track-list {
   position: relative;
   padding-left: 0;
@@ -248,7 +249,7 @@ $mixer-footer-height: 30px;
   left: 0;
   bottom: 0;
   height: $mixer-footer-height + 1px;
-  width: 3px + $mixer-track-control + $mixer-track-tag + 1px;
+  width: 3px + $mixer-track-control + $mixer-track-tag;
   z-index: 4; // Above .mixer-arrangement:after shadow
 
   border-top: 1px solid #666;

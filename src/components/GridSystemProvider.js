@@ -75,8 +75,6 @@ var provideGridSystem = (ChildComponent) => {
       this.grid.height = this.grid.container.clientHeight * this.grid.pixelScale
     }
 
-
-
     // Grid Calculations
     getBarRange(){ return this.props.xMax - this.props.xMin }
     getKeyRange(){ return this.props.yMax - this.props.yMin }

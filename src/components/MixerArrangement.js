@@ -1,3 +1,17 @@
+// ============================================================================
+// Mixer
+// ============================================================================
+// This is the top-level Component rendering the entire mixing console. 
+// It is responsible for composing all the mixer's child components together.
+//
+// Unfortunately, it is ALSO responsible for coordinating the scrolling and
+// overflow behaviours. This is the best solution we have so far, as vertical
+// scrolling within the tracks is not transferrable between clients and should
+// not be stored in the application state. So for now, everything in this
+// convoluted component is tightly coupled.
+//
+// TODO: de-spaghetti this component...
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
@@ -11,58 +25,66 @@ import MixerTimeline from './MixerTimeline.js';
 import MixerTrack from './MixerTrack.js';
 import MixerTrackNew from './MixerTrackNew.js';
 import MixerScrollWindow from './MixerScrollWindow.js';
+import TimelinePlayhead from './TimelinePlayhead.js';
+import TimelineCursor from './TimelineCursor.js';
 import ScrollBar from './Scrollbar.js';
 
 export default class MixerArrangement extends Component {
 
   render() {
-    var mixerWindowClasses  = 'mixer-arrangement';
-        mixerWindowClasses += this.state.scroll ? ' mixer-arrangement-overflow' : '';
     var scrollOffset = this.state.scroll
                      ? this.state.scroll.min * this.data.scrollTarget.scrollHeight * -1
                      : 0;
-    var scrollOffsetStyles = {marginTop: scrollOffset};
-    var emptyAreaStyle = {top: this.state.emptyAreaOffset};
-    var timelineCursorStyles = {
-      display: this.props.timelineCursor === null ? 'none' : 'block',
-      left: this.props.timelineCursor === null ? 0 : 100*this.props.timelineCursor + '%'
-    };
 
-    let dispatchProp = {
-      dispatch: this.props.dispatch
-    }
     let timelineProps = {
+      dispatch: this.props.dispatch,
       xMin: this.props.xMin,
       xMax: this.props.xMax,
       barCount: this.props.barCount
     }
 
     return (
-      <div className={mixerWindowClasses}>
-        <MixerTimeline {...dispatchProp} {...timelineProps} />
+      <div className={'mixer' + (this.state.scroll ? ' mixer-overflow' : '')} >
+        <MixerTimeline {...timelineProps} />
         <div className="mixer-track-list-gutter">
-          <ul className="mixer-track-list" ref={(ref) => this.mixerList = ref} style={scrollOffsetStyles}>
+          <ul className="mixer-track-list" ref={(ref) => this.mixerList = ref} style={{marginTop: scrollOffset}}>
             {this.state.tracks.map(function(track){ return (
-              <MixerTrack key={track} track={track} {...dispatchProp} {...timelineProps} />
+              <MixerTrack key={track} track={track} {...timelineProps} />
             )}.bind(this))}
             <MixerTrackNew handleClickNew={this.addNewTrack} />
           </ul>
-          <div className="mixer-empty-area" ref={(ref) => this.emptyArea = ref} style={emptyAreaStyle} />
+          <div className="mixer-empty-area" style={{top: this.state.emptyAreaOffset}} />
         </div>
-        <MixerScrollWindow {...dispatchProp} {...timelineProps} >
+        <MixerScrollWindow {...timelineProps} >
           <div className="mixer-settings-center">
-            {this.renderScrollbarHorizontal()}
+            <div className="mixer-scroll-horizontal">
+              <ScrollBar draggableEndpoints min={this.props.xMin} max={this.props.xMax} setScroll={this.setHorizontalScroll} />
+            </div>
           </div>
         </MixerScrollWindow>
-        <div className="timeline-play-head" />
-        <div className="timeline-cursor-window">
-          <div className="timeline-cursor" style={timelineCursorStyles} />
-        </div>
+        {this.renderScrollbarVertical()}
+        {/*
+        <TimelinePlayhead playhead={this.props.playhead} />
+        */}
+        <TimelineCursor     cursor={this.props.cursor} />
         <div className="mixer-settings-left" />
         <div className="mixer-settings-right" />
-        {this.renderScrollbarVertical()}
       </div>
     );
+  }
+
+  renderScrollbarVertical() {
+    if( this.state.scroll )
+      return (
+        <div className="mixer-scroll-vertical">
+          <ScrollBar vertical
+            min={this.state.scroll.min}
+            max={this.state.scroll.max}
+            setScroll={this.setVerticalScroll}
+          />
+        </div>
+      );
+    return null;
   }
 
   constructor() {
@@ -97,7 +119,7 @@ export default class MixerArrangement extends Component {
   }
 
   componentDidUpdate() {
-    // Treat new tracks as resize events.
+    // We fire resize events when new tracks are created to trigger vertical scroll adjustments
     // Use dirtyHeight flag to ensure only a single check - risk of infinite loops!
     if( this.data.dirtyHeight )
     {
@@ -175,31 +197,6 @@ export default class MixerArrangement extends Component {
     this.props.dispatch(mixerScrollX(min,max));
   }
 
-  renderScrollbarVertical() {
-    if( this.state.scroll )
-      return (
-        <div className="mixer-scroll-vertical">
-          <ScrollBar vertical
-            min={this.state.scroll.min}
-            max={this.state.scroll.max}
-            setScroll={this.setVerticalScroll}
-          />
-        </div>
-      );
-    return null;
-  }
-
-  renderScrollbarHorizontal() {
-    return (
-      <div className="mixer-scroll-horizontal">
-        <ScrollBar draggableEndpoints
-          min={this.props.xMin}
-          max={this.props.xMax}
-          setScroll={this.setHorizontalScroll}
-        />
-      </div>
-    );
-  }
 }
 
 MixerArrangement.defaultProps = {
@@ -210,7 +207,8 @@ function mapStateToProps(state) {
   return {
     xMin: state.mixer.xMin,
     xMax: state.mixer.xMax,
-    timelineCursor: state.mixer.cursor
+    playhead: state.mixer.playhead,
+    cursor: state.mixer.cursor
   };
 }
 
