@@ -8,7 +8,7 @@ export default class MixerTrack extends Component {
         <div className="mixer-track-tag" />
         <div className="mixer-track-control">
           <h3 className="mixer-track-name">
-            Track Name
+            {"Track Name"}
           </h3>
           <span className="mixer-track-caret fa fa-ellipsis-h" />
           <div className="mixer-track-gain" />
@@ -25,8 +25,8 @@ export default class MixerTrack extends Component {
         </div>
         <MixerTrackWindow
           barCount={this.props.barCount}
-          barMin={this.props.barMin}
-          barMax={this.props.barMax}
+          xMin={this.props.xMin}
+          xMax={this.props.xMax}
           dispatch={this.props.dispatch}
         />
       </div>
@@ -37,6 +37,6 @@ export default class MixerTrack extends Component {
 MixerTrack.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   barCount:     React.PropTypes.number.isRequired,
-  barMin:       React.PropTypes.number.isRequired,
-  barMax:       React.PropTypes.number.isRequired
+  xMin:       React.PropTypes.number.isRequired,
+  xMax:       React.PropTypes.number.isRequired
 };  

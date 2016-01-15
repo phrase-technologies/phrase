@@ -39,19 +39,21 @@ $mixer-footer-height: 30px;
     width: 100%;
     border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
   }
-}
-.mixer-timeline-overlay {
-  position: absolute;
-  top:    0;
-  left:   0;
-  right:  0;
-  bottom: 0;
 
-  border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
-  box-shadow: inset  5px 5px 5px -4px #000,
-              inset -5px 5px 5px -4px #000;
-  z-index: 2;   // Above Timeline Canvas
-  pointer-events: none;
+  &::after {
+    content: '';
+    position: absolute;
+    top:    0;
+    left:   0;
+    right:  0;
+    bottom: 0;
+
+    border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
+    box-shadow: inset  5px 5px 5px -4px #000,
+                inset -5px 5px 5px -4px #000;
+    z-index: 2;   // Above Timeline Canvas
+    pointer-events: none;
+  }
 }
 .timeline-cursor-window {
   position: absolute;

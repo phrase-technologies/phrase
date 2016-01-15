@@ -25,13 +25,13 @@ export default class Pianoroll extends Component {
       dispatch: this.props.dispatch
     }
     let keyboardProps = {
-      keyMin: this.props.keyMin,
-      keyMax: this.props.keyMax,
+      yMin: this.props.yMin,
+      yMax: this.props.yMax,
       keyCount: this.props.keyCount
     }
     let timelineProps = {
-      barMin: this.props.barMin,
-      barMax: this.props.barMax,
+      xMin: this.props.xMin,
+      xMax: this.props.xMax,
       barCount: this.props.barCount
     }
     return (
@@ -45,8 +45,8 @@ export default class Pianoroll extends Component {
             onMouseLeave={(e) => this.handleScrollZone(e, false)}
           >
             <Scrollbar draggableEndpoints
-              min={this.props.barMin} setScroll={(min,max) => this.props.dispatch(pianorollScrollX(min,max))}
-              max={this.props.barMax} forceHover={this.data.scrollZoneHover}
+              min={this.props.xMin} setScroll={(min,max) => this.props.dispatch(pianorollScrollX(min,max))}
+              max={this.props.xMax} forceHover={this.data.scrollZoneHover}
             />
           </div>        
         </PianorollWindow>
@@ -66,10 +66,10 @@ Pianoroll.propTypes = {
   notes:    React.PropTypes.array,
   cursor:   React.PropTypes.number,
   playHead: React.PropTypes.number,
-  barMin:   React.PropTypes.number,
-  barMax:   React.PropTypes.number,
-  keyMin:   React.PropTypes.number,
-  keyMax:   React.PropTypes.number,
+  xMin:   React.PropTypes.number,
+  xMax:   React.PropTypes.number,
+  yMin:   React.PropTypes.number,
+  yMax:   React.PropTypes.number,
   selectionStartX: React.PropTypes.number,
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,

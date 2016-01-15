@@ -20,10 +20,10 @@ import marioNotes from '../helpers/marioNotes.js';
 let defaultState = {
   width: 1000,
   height: 500,
-  barMin: 0.000,
-  barMax: 0.0625,
-  keyMin: 0.250,
-  keyMax: 0.750,
+  xMin: 0.000,
+  xMax: 0.0625,
+  yMin: 0.250,
+  yMax: 0.750,
   selectionStartX: null,
   selectionStartY: null,
   selectionEndX: null,
@@ -116,9 +116,9 @@ export default function pianoroll(state = defaultState, action) {
 
       // Ensure each limit is valid
       if( action.min !== null )
-        stateChanges.barMin = action.min < 0.0 ? 0.0 : action.min;
+        stateChanges.xMin = action.min < 0.0 ? 0.0 : action.min;
       if( action.max !== null )
-        stateChanges.barMax = action.max > 1.0 ? 1.0 : action.max;
+        stateChanges.xMax = action.max > 1.0 ? 1.0 : action.max;
       var newState = Object.assign({}, state, stateChanges);
 
       // Make sure timeline doesn't zoom too close
@@ -144,11 +144,10 @@ export default function pianoroll(state = defaultState, action) {
 
       // Ensure each limit is valid
       if( action.min !== null )
-        stateChanges.keyMin = action.min < 0.0 ? 0.0 : action.min;
+        stateChanges.yMin = action.min < 0.0 ? 0.0 : action.min;
       if( action.max !== null )
-        stateChanges.keyMax = action.max > 1.0 ? 1.0 : action.max;
+        stateChanges.yMax = action.max > 1.0 ? 1.0 : action.max;
       var newState = Object.assign({}, state, stateChanges);
-
       // Restrict min/max zoom against the pianoroll's height (ensure keyboard doesn't get too small or large)
       return restrictKeyboardZoom(newState);
     }
@@ -208,22 +207,22 @@ export function findClipForNewNote(clips, barCount, note) {
 
 // Restrict min/max zoom against the pianoroll's height (ensure keyboard doesn't get too small or large)
 function restrictKeyboardZoom(newState) {
-  var keyboardHeight = newState.height / (newState.keyMax - newState.keyMin);
+  var keyboardHeight = newState.height / (newState.yMax - newState.yMin);
   if( keyboardHeight < minKeyboardHeight )
-    [newState.keyMin, newState.keyMax] = zoomInterval([newState.keyMin, newState.keyMax], keyboardHeight/minKeyboardHeight);
+    [newState.yMin, newState.yMax] = zoomInterval([newState.yMin, newState.yMax], keyboardHeight/minKeyboardHeight);
   if( keyboardHeight > maxKeyboardHeight )
-    [newState.keyMin, newState.keyMax] = zoomInterval([newState.keyMin, newState.keyMax], keyboardHeight/maxKeyboardHeight);
+    [newState.yMin, newState.yMax] = zoomInterval([newState.yMin, newState.yMax], keyboardHeight/maxKeyboardHeight);
   return newState;
 }
 
 // Make sure timeline doesn't zoom too close
 function restrictTimelineZoom(newState) {
-  var timelineWidth = newState.width / (newState.barMax - newState.barMin);
+  var timelineWidth = newState.width / (newState.xMax - newState.xMin);
 
   // TODO: This is hardcoded to 64 bars.
   // Use Reselect https://github.com/rackt/reselect#motivation-for-memoized-selectors 
   var barWidth = timelineWidth / 64;
   if( barWidth > maxBarWidth )
-    [newState.barMin, newState.barMax] = zoomInterval([newState.barMin, newState.barMax], barWidth/maxBarWidth);
+    [newState.xMin, newState.xMax] = zoomInterval([newState.xMin, newState.xMax], barWidth/maxBarWidth);
   return newState;
 }

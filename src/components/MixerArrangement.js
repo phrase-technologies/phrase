@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
-import { pianorollScrollX } from '../actions/actions.js';
+import { mixerScrollX,
+         mixerScrollY } from '../actions/actions.js';
 
 import MixerTimeline from './MixerTimeline.js';
 import MixerTrack from './MixerTrack.js';
@@ -27,29 +28,28 @@ export default class MixerArrangement extends Component {
       left: this.props.timelineCursor === null ? 0 : 100*this.props.timelineCursor + '%'
     };
 
+    let dispatchProp = {
+      dispatch: this.props.dispatch
+    }
+    let timelineProps = {
+      xMin: this.props.xMin,
+      xMax: this.props.xMax,
+      barCount: this.props.barCount
+    }
+
     return (
       <div className={mixerWindowClasses}>
-        <MixerTimeline
-          barMin={this.props.barMin}
-          barMax={this.props.barMax}
-          barCount={64}
-          dispatch={this.props.dispatch}
-        >
-          <div className="mixer-timeline-overlay" />
-        </MixerTimeline>
+        <MixerTimeline {...dispatchProp} {...timelineProps} />
         <div className="mixer-track-list-gutter">
           <ul className="mixer-track-list" ref={(ref) => this.mixerList = ref} style={scrollOffsetStyles}>
-            {this.getTracks()}
+            {this.state.tracks.map(function(track){ return (
+              <MixerTrack key={track} track={track} {...dispatchProp} {...timelineProps} />
+            )}.bind(this))}
             <MixerTrackNew handleClickNew={this.addNewTrack} />
           </ul>
           <div className="mixer-empty-area" ref={(ref) => this.emptyArea = ref} style={emptyAreaStyle} />
         </div>
-        <MixerScrollWindow
-          barMin={this.props.barMin}
-          barMax={this.props.barMax}
-          barCount={this.props.barCount}
-          dispatch={this.props.dispatch}
-        >
+        <MixerScrollWindow {...dispatchProp} {...timelineProps} >
           <div className="mixer-settings-center">
             {this.renderScrollbarHorizontal()}
           </div>
@@ -160,24 +160,6 @@ export default class MixerArrangement extends Component {
     this.setVerticalScroll(newMin, newMax);
   }
 
-  getTracks() {
-    var trackComponents = [];
-    this.state.tracks.forEach(function(element){
-      trackComponents.push(
-        <MixerTrack
-          key={element}
-          track={element}
-          barCount={this.props.barCount}
-          barMin={this.props.barMin}
-          barMax={this.props.barMax}
-          dispatch={this.props.dispatch}
-        />
-      );
-    }.bind(this));
-
-    return trackComponents;
-  }
-
   addNewTrack() {
     var newTrackState = this.state.tracks.slice();
         newTrackState.push( newTrackState.length + 1 );
@@ -186,11 +168,11 @@ export default class MixerArrangement extends Component {
   }
 
   setVerticalScroll(min, max) {
-    this.setState({scroll: {min: min, max: max}});
+    this.setState({scroll: {min, max}});
   }
 
   setHorizontalScroll(min, max) {
-    this.props.dispatch(pianorollScrollX(min,max));
+    this.props.dispatch(mixerScrollX(min,max));
   }
 
   renderScrollbarVertical() {
@@ -211,8 +193,8 @@ export default class MixerArrangement extends Component {
     return (
       <div className="mixer-scroll-horizontal">
         <ScrollBar draggableEndpoints
-          min={this.props.barMin}
-          max={this.props.barMax}
+          min={this.props.xMin}
+          max={this.props.xMax}
           setScroll={this.setHorizontalScroll}
         />
       </div>
@@ -226,8 +208,8 @@ MixerArrangement.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    barMin: state.mixer.barMin,
-    barMax: state.mixer.barMax,
+    xMin: state.mixer.xMin,
+    xMax: state.mixer.xMax,
     timelineCursor: state.mixer.cursor
   };
 }

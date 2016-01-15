@@ -32,15 +32,15 @@ export class MixerScrollWindow extends Component {
       canvasContext.fillStyle = "#444444";
       canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height );
       this.props.grid.calculateZoomThreshold();
-      this.renderTimeline(canvasContext, this.props.barMin, this.props.barMax)
+      this.renderTimeline(canvasContext, this.props.xMin, this.props.xMax)
     }.bind(this);
   }
 
-  renderTimeline(canvasContext, barMin, barMax) {
+  renderTimeline(canvasContext, xMin, xMax) {
     // Draw lines for each beat
     canvasContext.lineWidth = 1.0;
-    var minBar = this.props.grid.percentToBar( barMin ) - 1;
-    var maxBar = this.props.grid.percentToBar( barMax );
+    var minBar = this.props.grid.percentToBar( xMin ) - 1;
+    var maxBar = this.props.grid.percentToBar( xMax );
     var minorIncrement = this.props.grid.lineThresholdsNoKeys.minorLine || this.props.grid.lineThresholdsNoKeys.middleLine;
 
     // Ensure we increment off a common denominator
@@ -73,9 +73,9 @@ MixerScrollWindow.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
-  barMin:       React.PropTypes.number.isRequired,
-  barMax:       React.PropTypes.number.isRequired
-};  
+  xMin:       React.PropTypes.number.isRequired,
+  xMax:       React.PropTypes.number.isRequired
+}
 
 export default provideGridSystem(
   provideGridScroll(

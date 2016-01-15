@@ -30,11 +30,11 @@ export class MixerTimeline extends Component {
       canvasContext.fillStyle = "#282828";
       canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height );
       this.props.grid.calculateZoomThreshold();
-      this.renderBarLines(canvasContext, this.props.barMin, this.props.barMax);
+      this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax);
     }.bind(this);
   }
 
-  renderBarLines(canvasContext, barMin, barMax) {
+  renderBarLines(canvasContext, xMin, xMax) {
     // Styles
     canvasContext.lineWidth = 1.0;
     canvasContext.font = 11*this.props.grid.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif";
@@ -42,8 +42,8 @@ export class MixerTimeline extends Component {
     canvasContext.textAlign = "start";
 
     // Draw lines for each beat
-    var minBar = this.props.grid.percentToBar( barMin ) - 1;
-    var maxBar = this.props.grid.percentToBar( barMax );
+    var minBar = this.props.grid.percentToBar( xMin ) - 1;
+    var maxBar = this.props.grid.percentToBar( xMax );
     var majorIncrement = this.props.grid.lineThresholdsNoKeys.majorLine;
     var minorIncrement = this.props.grid.lineThresholdsNoKeys.minorLine || this.props.grid.lineThresholdsNoKeys.middleLine;
 
@@ -95,8 +95,8 @@ MixerTimeline.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
-  barMin:       React.PropTypes.number.isRequired,
-  barMax:       React.PropTypes.number.isRequired
+  xMin:       React.PropTypes.number.isRequired,
+  xMax:       React.PropTypes.number.isRequired
 };  
 
 export default provideGridSystem(

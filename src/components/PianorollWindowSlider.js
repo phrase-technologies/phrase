@@ -6,10 +6,10 @@ import PianorollNotes from './PianorollNotes';
 
 export default class PianorollWindowSlider extends Component {
   render() {
-    let xWindowPercent = (this.props.barMax - this.props.barMin);
-    let yWindowPercent = (this.props.keyMax - this.props.keyMin);
-    let top  = -100 * this.props.keyMin;
-    let left = -100 * this.props.barMin;
+    let xWindowPercent = (this.props.xMax - this.props.xMin);
+    let yWindowPercent = (this.props.yMax - this.props.yMin);
+    let top  = -100 * this.props.yMin;
+    let left = -100 * this.props.xMin;
     let xScale = 100 / xWindowPercent + '%';
     let yScale = 100 / yWindowPercent + '%';
     var sliderStyle = {
@@ -52,15 +52,15 @@ export default class PianorollWindowSlider extends Component {
 }
 
 PianorollWindowSlider.propTypes = {
-  barCount:     React.PropTypes.number.isRequired,
-  keyCount:     React.PropTypes.number.isRequired,
-  barMin:       React.PropTypes.number.isRequired,
-  barMax:       React.PropTypes.number.isRequired,
-  keyMin:       React.PropTypes.number.isRequired,
-  keyMax:       React.PropTypes.number.isRequired,
+  barCount: React.PropTypes.number.isRequired,
+  keyCount: React.PropTypes.number.isRequired,
+  xMin: React.PropTypes.number.isRequired,
+  xMax: React.PropTypes.number.isRequired,
+  yMin: React.PropTypes.number.isRequired,
+  yMax: React.PropTypes.number.isRequired,
   selectionStartX: React.PropTypes.number,
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,
   selectionEndY: React.PropTypes.number,
-  notes:        React.PropTypes.array
+  notes: React.PropTypes.array
 };

@@ -8,9 +8,9 @@ import { pianorollHeight,
 export class PianorollKeyboard extends Component {
 
   render() {
-    var keyWindow = this.props.keyMax - this.props.keyMin;
+    var keyWindow = this.props.yMax - this.props.yMin;
     var keybedHeight = ( this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ) / keyWindow;
-    var keybedOffset = ( this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ) / keyWindow * this.props.keyMin;
+    var keybedOffset = ( this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ) / keyWindow * this.props.yMin;
     var keybedWidth = keybedHeight / 12.5;
 
     var isCompact = keybedWidth < 100;
@@ -88,8 +88,8 @@ export class PianorollKeyboard extends Component {
 PianorollKeyboard.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
-  keyMin:       React.PropTypes.number.isRequired,
-  keyMax:       React.PropTypes.number.isRequired
+  yMin:       React.PropTypes.number.isRequired,
+  yMax:       React.PropTypes.number.isRequired
 };
 
 export default provideGridSystem(

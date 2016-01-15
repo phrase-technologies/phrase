@@ -65,35 +65,35 @@ var provideGridScroll = function(
     handleZoom(e) {
       var zoomFactor = (e.deltaY + 500) / 500
 
-      if( scrollXActionCreator && ( this.props.barMin || this.props.barMax ) )
+      if( scrollXActionCreator )
       {
         var fulcrumX = this.props.grid.getMouseXPercent(e)
-        var [newBarMin, newBarMax] = zoomInterval([this.props.barMin, this.props.barMax], zoomFactor, fulcrumX)
+        var [newBarMin, newBarMax] = zoomInterval([this.props.xMin, this.props.xMax], zoomFactor, fulcrumX)
         this.props.dispatch(scrollXActionCreator(newBarMin, newBarMax))
       }
 
-      if( scrollYActionCreator && ( this.props.keyMin || this.props.keyMax ) )
+      if( scrollYActionCreator )
       {
         var fulcrumY = this.props.grid.getMouseYPercent(e)
-        var [newKeyMin, newKeyMax] = zoomInterval([this.props.keyMin, this.props.keyMax], zoomFactor, fulcrumY)
+        var [newKeyMin, newKeyMax] = zoomInterval([this.props.yMin, this.props.yMax], zoomFactor, fulcrumY)
         this.props.dispatch(scrollYActionCreator(newKeyMin, newKeyMax))
       }
     }
     handleScrollX(e) {
-      if( scrollXActionCreator && ( this.props.barMin || this.props.barMax ) )
+      if( scrollXActionCreator )
       {
-        var barWindow = this.props.barMax - this.props.barMin
+        var barWindow = this.props.xMax - this.props.xMin
         var barStepSize = e.deltaX / this.props.grid.container.clientWidth * barWindow
-        var [newBarMin, newBarMax] = shiftInterval([this.props.barMin, this.props.barMax], barStepSize)
+        var [newBarMin, newBarMax] = shiftInterval([this.props.xMin, this.props.xMax], barStepSize)
         this.props.dispatch(scrollXActionCreator(newBarMin, newBarMax))
       }
     }
     handleScrollY(e) {
-      if( scrollYActionCreator && ( this.props.keyMin || this.props.keyMax ) )
+      if( scrollYActionCreator )
       {
-        var keyWindow = this.props.keyMax - this.props.keyMin
+        var keyWindow = this.props.yMax - this.props.yMin
         var keyStepSize = e.deltaY / this.props.grid.container.clientHeight * keyWindow
-        var [newKeyMin, newKeyMax] = shiftInterval([this.props.keyMin, this.props.keyMax], keyStepSize)
+        var [newKeyMin, newKeyMax] = shiftInterval([this.props.yMin, this.props.yMax], keyStepSize)
         this.props.dispatch(scrollYActionCreator(newKeyMin, newKeyMax))
       }
     }

@@ -78,12 +78,12 @@ var provideGridSystem = (ChildComponent) => {
 
 
     // Grid Calculations
-    getBarRange(){ return this.props.barMax - this.props.barMin }
-    getKeyRange(){ return this.props.keyMax - this.props.keyMin }
+    getBarRange(){ return this.props.xMax - this.props.xMin }
+    getKeyRange(){ return this.props.yMax - this.props.yMin }
     getActiveHeight(){ return this.grid.height - this.grid.pixelScale*(this.grid.marginTop  + this.grid.marginBottom) }
     getActiveWidth (){ return this.grid.width  - this.grid.pixelScale*(this.grid.marginLeft + this.grid.marginRight ) }
-    keyToYCoord(key){ return ( ( key / this.props.keyCount ) - this.props.keyMin ) / this.grid.getKeyRange() * this.grid.getActiveHeight() + this.grid.pixelScale*this.grid.marginTop  }
-    barToXCoord(bar){ return ( ( bar / this.props.barCount ) - this.props.barMin ) / this.grid.getBarRange() * this.grid.getActiveWidth()  + this.grid.pixelScale*this.grid.marginLeft }
+    keyToYCoord(key){ return ( ( key / this.props.keyCount ) - this.props.yMin ) / this.grid.getKeyRange() * this.grid.getActiveHeight() + this.grid.pixelScale*this.grid.marginTop  }
+    barToXCoord(bar){ return ( ( bar / this.props.barCount ) - this.props.xMin ) / this.grid.getBarRange() * this.grid.getActiveWidth()  + this.grid.pixelScale*this.grid.marginLeft }
     percentToKey(percent){ return Math.ceil( percent * this.props.keyCount ) } // Where percent is between 0.000 and 1.000
     percentToBar(percent){ return Math.ceil( percent * this.props.barCount ) } // Where percent is between 0.000 and 1.000
     getMouseYPercent(e){ return this.grid.pixelScale * (e.clientY - this.grid.container.getBoundingClientRect().top  - this.grid.marginTop)  / this.grid.getActiveHeight() }
@@ -91,7 +91,7 @@ var provideGridSystem = (ChildComponent) => {
 
     // Calculate thresholds at which to draw barline thicknesses
     calculateZoomThreshold() {
-      if( this.props.barMin || this.props.barMax )
+      if( this.props.xMin || this.props.xMax )
       {
         var pixelsPerBar = this.grid.getActiveWidth() / (this.props.barCount*this.grid.getBarRange()) / this.grid.pixelScale
 
