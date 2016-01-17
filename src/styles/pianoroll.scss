@@ -423,8 +423,7 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
   //width: 100px; // Fixed width will 
 
   &:first-child {
-    margin-top: 1px;
-    height: percentage(1.0/$total-keys);
+    height: percentage(1.0625/$total-keys);
 
     .pianoroll-key {
       height: 100%;

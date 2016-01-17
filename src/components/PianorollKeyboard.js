@@ -70,7 +70,7 @@ export class PianorollKeyboard extends Component {
 
   componentDidMount() {
     this.props.grid.didMount()
-    this.props.grid.marginTop = 30;
+    this.props.grid.marginTop = 0;
     window.addEventListener('resize', this.handleResize)
     this.handleResize()
   }
