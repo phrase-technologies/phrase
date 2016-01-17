@@ -174,7 +174,8 @@ export default class Mixer extends Component {
 
   // Scrolling and zooming within the timeline
   handleScrollWheel(e) {
-    if(!this.state.scroll || e.ctrlKey || e.metaKey )
+    // Ignore horizontal scrolls or CTRL/CMD+scrolls (handled by MixerScrollWindow, UX is jagged if simultaneous X&Y scrolling)
+    if(!this.state.scroll || e.ctrlKey || e.metaKey || (Math.abs(e.deltaX) > Math.abs(e.deltaY)) )
       return;
     var scrollWindow = this.state.scroll.max - this.state.scroll.min;
     var stepSize = e.deltaY / this.data.scrollTarget.clientHeight * scrollWindow;
