@@ -30,8 +30,7 @@ export class PianorollWindow extends Component {
 
   renderFrame() {
     return function(canvasContext) {
-      canvasContext.fillStyle = "#444444"
-      canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height )
+      canvasContext.clearRect( 0, 0, this.props.grid.width, this.props.grid.height )
       this.props.grid.calculateZoomThreshold();
       this.renderKeyLines(canvasContext, this.props.yMin, this.props.yMax)
       this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax)

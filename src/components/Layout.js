@@ -7,7 +7,7 @@ import { layoutConsoleEmbedded,
 import CursorProvider from './CursorProvider.js';
 import LayoutPage from './LayoutPage.js';
 import LayoutSplit from './LayoutSplit.js';
-import MixerArrangement from './MixerArrangement.js';
+import Mixer from './Mixer.js';
 import Transport from './Transport.js';
 import Pianoroll from './Pianoroll.js';
 
@@ -64,7 +64,7 @@ export default class Layout extends Component {
       );
     }
     else
-      return ( <MixerArrangement /> );
+      return ( <Mixer /> );
   }
 
   renderClip() {

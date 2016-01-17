@@ -29,7 +29,7 @@ import TimelinePlayhead from './TimelinePlayhead.js';
 import TimelineCursor from './TimelineCursor.js';
 import ScrollBar from './Scrollbar.js';
 
-export default class MixerArrangement extends Component {
+export default class Mixer extends Component {
 
   render() {
     var scrollOffset = this.state.scroll
@@ -199,7 +199,7 @@ export default class MixerArrangement extends Component {
 
 }
 
-MixerArrangement.defaultProps = {
+Mixer.defaultProps = {
   barCount: 64
 };
 
@@ -212,4 +212,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(MixerArrangement);
+export default connect(mapStateToProps)(Mixer);

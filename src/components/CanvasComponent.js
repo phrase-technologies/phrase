@@ -42,9 +42,10 @@ export default class CanvasComponent extends Component {
     cancelAnimationFrame(this.renderFrame);
   }  
 
-  shouldComponentUpdate() {
-    this.newAnimationFrame();
-    return true;
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.renderFrame !== this.props.renderFrame)
+      this.newAnimationFrame();
+    return false;
   }
 
   renderFrame() {
