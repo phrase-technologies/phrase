@@ -1,7 +1,8 @@
-$pianoroll-corner:           4px;
+$pianoroll-corner:             4px;
 $pianoroll-timeline:          40px;
-$pianoroll-spacing:         15px;
-$pianoroll-keyboard-width: 125px;
+$pianoroll-spacing:           15px;
+$pianoroll-keyboard-width:   125px;
+$pianoroll-scroll-horizontal: 30px;
 
 // ----------------------------------------------------------------------------
 // Piano Roll
@@ -12,6 +13,13 @@ $pianoroll-keyboard-width: 125px;
   left: 15px;
   right: 15px;
   bottom: 15px;
+
+  > .timeline-cursor-window {
+    top: 1px;
+    left: $pianoroll-keyboard-width + 10px - 1px;
+    right: 10px + 3px;
+    bottom: $pianoroll-scroll-horizontal + 1px;
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -69,7 +77,7 @@ $pianoroll-keyboard-width: 125px;
   bottom: 0;
 
   border: 1px solid #000;
-  border-radius: 0 0 $pianoroll-corner 0;
+  border-radius: 0 0 $pianoroll-corner $pianoroll-corner;
   background: #444;
 
   overflow: hidden;
@@ -93,9 +101,9 @@ $pianoroll-keyboard-width: 125px;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: $pianoroll-scroll-horizontal - 1px;
 
-    border-radius: 0 0 $pianoroll-corner - 1px 0;
+    border-radius: 0 0 0 0;
     box-shadow: inset 0 0 5px 1px #000;
     z-index: 3; // Above scroll-zone
     pointer-events: none;
@@ -104,34 +112,49 @@ $pianoroll-keyboard-width: 125px;
 .pianoroll-window {
   position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
+  bottom: $pianoroll-scroll-horizontal;
+  z-index: 1;
+  overflow: hidden;
+}
+.pianoroll-window-sill {
+  position: absolute;
+  top: 0;
   left: 10px;
   right: 10px;
-  bottom: 30px;
-  z-index: 1;
+  bottom: 0;
 }
 .pianoroll-window-slider {
   position: absolute;  
 }
-.pianoroll-window-scroll-zone {
+.pianoroll-scrollbar-horizontal {
   position: absolute;
-  height: 30px;
+  height: $pianoroll-scroll-horizontal;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 2;
 
-  border-radius: 0 0 $pianoroll-corner 0;
+  border-radius: 0 0 $pianoroll-corner $pianoroll-corner;
   padding: 10px;
-  background-image: linear-gradient(to bottom, transparent 0%, #464646 50%);
 
-  transition: height 0.5s, padding 0.5s;
-  transition-delay: 1s;
+  pointer-events: none;
 
-  &:hover {
-    padding-top: 4px;
-    transition: height 0.125s, padding 0.125s;
-    transition-delay: 0s;
-  }  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    border-radius: 0 0 $pianoroll-corner - 1px $pianoroll-corner - 1px;
+    box-shadow: inset 1px  -1px 3px -1px #000,
+                inset -1px -1px 3px -1px #000;
+    z-index: 2; // Above scroll-bar
+    pointer-events: none;
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -237,18 +260,6 @@ only screen and ( min-resolution:         120dpi ) {
 }
 
 // ----------------------------------------------------------------------------
-// Selection Box
-// ----------------------------------------------------------------------------
-.pianoroll-selection-box {
-  position: absolute;
-  z-index: 2;   // Above notes
-
-  border: 1px solid rgba(255,255,255,0.500);
-  background: rgba(255,255,255,0.050);
-  box-shadow: 0 0 3px #000;
-}
-
-// ----------------------------------------------------------------------------
 // Keyboard
 // ----------------------------------------------------------------------------
 .pianoroll-keyboard {
@@ -256,7 +267,7 @@ only screen and ( min-resolution:         120dpi ) {
   top: $pianoroll-timeline;
   left: 0;
   width: $pianoroll-keyboard-width - 1px;
-  bottom: 0;
+  bottom: $pianoroll-scroll-horizontal;
   box-sizing: content-box;
 
   border: 1px solid #000;

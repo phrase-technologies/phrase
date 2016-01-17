@@ -1,4 +1,5 @@
 $mixer-corner: 3px;
+$mixer-timeline: 35px;
 $mixer-track-height: 50px;
 $mixer-track-tag: 8px;
 $mixer-track-control: 200px;
@@ -26,7 +27,7 @@ $mixer-footer-height: 30px;
 // ============================================================================
 .mixer {
   position: absolute;
-  top:    15px + 35px;
+  top:    15px + $mixer-timeline;
   left:   15px;
   right:  29px;
   bottom: 15px;
@@ -62,8 +63,10 @@ $mixer-footer-height: 30px;
 
   > .timeline-playhead-window,
   > .timeline-cursor-window {
+    top: -$mixer-timeline;
     left:   3px - 1px + $mixer-track-control + $mixer-track-tag + 10px;
     right:  3px + 10px;
+    bottom: $mixer-footer-height + 1px + 1px;
   }
 }
 .mixer-overflow {
@@ -109,10 +112,10 @@ $mixer-footer-height: 30px;
 // ============================================================================
 .mixer-timeline {
   position: absolute;
-  top:    -35px - 1px;
+  top:   -$mixer-timeline - 1px;
   left:     3px + $mixer-track-control + $mixer-track-tag;
   right:   -1px;  // Negate the outside border
-  height:  35px;
+  height:  $mixer-timeline;
   z-index:  2;
 
   border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
@@ -227,15 +230,7 @@ $mixer-footer-height: 30px;
   left:   10px;
   right:  10px;
   bottom: 10px;
-
-  transition: bottom 0.5s;
-  transition-delay: 1s;
-
-  &:hover {
-    transition: bottom 0.125s;
-    transition-delay: 0s;
-    bottom: 7px;
-  }
+  height: 10px;
 }
 .mixer-scroll-vertical {
   position: absolute;

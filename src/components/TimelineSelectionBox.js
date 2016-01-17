@@ -1,11 +1,11 @@
 // ============================================================================
-// Piano Roll Selection Box
+// Timeline Selection Box
 // ============================================================================
 // This Component renders the selection box in the piano roll. 
 
 import React, { Component } from 'react';
 
-export default class PianorollNotes extends Component {
+export default class TimelineSelectionBox extends Component {
   
   render() {
     if( this.props.selectionStartX == null || this.props.selectionEndX == null ||
@@ -23,13 +23,13 @@ export default class PianorollNotes extends Component {
     let style = {top, left, width, height};
 
     return (
-      <div className='pianoroll-selection-box' style={style} />
+      <div className='timeline-selection-box' style={style} />
     );
   }
 
 }
 
-PianorollNotes.propTypes = {
+TimelineSelectionBox.propTypes = {
   selectionStartX: React.PropTypes.number,
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,

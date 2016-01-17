@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import PianorollSelectionBox from './PianorollSelectionBox';
 import PianorollClips from './PianorollClips';
 import PianorollNotes from './PianorollNotes';
+import TimelineSelectionBox from './TimelineSelectionBox';
 
 export default class PianorollWindowSlider extends Component {
   render() {
@@ -21,24 +21,26 @@ export default class PianorollWindowSlider extends Component {
 
     return (
       <div className="pianoroll-window">
-        <div className="pianoroll-window-slider" style={sliderStyle} ref={(ref) => this.slider = ref}>
-          <PianorollClips
-            clips={this.props.clips}
-            dispatch={this.props.dispatch}
-            barCount={this.props.barCount}
-          />
-          <PianorollNotes
-            notes={this.props.notes}
-            dispatch={this.props.dispatch}
-            barCount={this.props.barCount}
-            keyCount={this.props.keyCount}
-          />
-          <PianorollSelectionBox
-            selectionStartX={this.props.selectionStartX}
-            selectionStartY={this.props.selectionStartY}
-            selectionEndX={this.props.selectionEndX}
-            selectionEndY={this.props.selectionEndY}
-          />
+        <div className="pianoroll-window-sill">
+          <div className="pianoroll-window-slider" style={sliderStyle} ref={(ref) => this.slider = ref}>
+            <PianorollClips
+              clips={this.props.clips}
+              dispatch={this.props.dispatch}
+              barCount={this.props.barCount}
+            />
+            <PianorollNotes
+              notes={this.props.notes}
+              dispatch={this.props.dispatch}
+              barCount={this.props.barCount}
+              keyCount={this.props.keyCount}
+            />
+            <TimelineSelectionBox
+              selectionStartX={this.props.selectionStartX}
+              selectionStartY={this.props.selectionStartY}
+              selectionEndX={this.props.selectionEndX}
+              selectionEndY={this.props.selectionEndY}
+            />
+          </div>
         </div>
       </div>
     );

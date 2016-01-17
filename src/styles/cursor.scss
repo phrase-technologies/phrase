@@ -1,3 +1,6 @@
+// ----------------------------------------------------------------------------
+// Mouse Cursor
+// ----------------------------------------------------------------------------
 // Prevent user text selection of non form elements
 .disable-select {
   -webkit-touch-callout: none;
@@ -34,6 +37,11 @@
 .cursor-top          * { @include cursor-top();    }
 .cursor-bottom       * { @include cursor-bottom(); }
 
+
+// ----------------------------------------------------------------------------
+// Timeline Cursors
+// ----------------------------------------------------------------------------
+// Playhead
 .timeline-playhead-window {
   position: absolute;
   top:    0;
@@ -67,6 +75,8 @@
   }
   &:after { left: -6px; }
 }
+
+// Cursor
 .timeline-cursor-window {
   position: absolute;
   top:    0;
@@ -80,13 +90,24 @@
   display: none;
 
   position: absolute;
-  top: -35px;
-  bottom: 32px;
-  left: 320px;
+  top: 0;
+  bottom: 0;
   width: 1px;
   z-index: 4;  // Above all other track layers
 
-  background: #666;
+  background: #777;
 
   pointer-events: none;
 }
+
+// ----------------------------------------------------------------------------
+// Selection Box
+// ----------------------------------------------------------------------------
+.timeline-selection-box {
+  position: absolute;
+  z-index: 2;   // Above notes
+
+  border: 1px solid rgba(255,255,255,0.500);
+  background: rgba(255,255,255,0.050);
+}
+

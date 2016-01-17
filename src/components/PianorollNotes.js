@@ -31,7 +31,7 @@ export default class PianorollNotes extends Component {
 
           let id     = note.id;
           let keyNum = note.keyNum
-          let top    = (this.props.keyCount - note.keyNum    ) / this.props.keyCount * 100 + 0.15;
+          let top    = (this.props.keyCount - note.keyNum    ) / this.props.keyCount * 100 + 0.10;
           let bottom = (this.props.keyCount - note.keyNum - 1) / this.props.keyCount * 100 + 0.30;
           let left   = note.start / this.props.barCount * 100;
           let right  = note.end   / this.props.barCount * 100;
@@ -93,7 +93,8 @@ export default class PianorollNotes extends Component {
     // Remove selection box
     if( this.data.isDragging > 2 )
     {
-      this.props.dispatch( pianorollSelectionEnd(null,null) );
+      // TODO: Batch these actions
+      this.props.dispatch( pianorollSelectionStart(null,null) );
       this.props.dispatch( pianorollSelectionEnd(null,null) );      
     }
 
@@ -102,7 +103,9 @@ export default class PianorollNotes extends Component {
     {
       let bar = this.getMouseBar(e) * this.props.barCount;
       let key = Math.ceil(this.props.keyCount - this.getMouseKey(e)*this.props.keyCount);
+      // TODO: Batch these actions
       this.props.dispatch( pianorollNewNote(key,bar) );
+      this.props.dispatch( pianorollSelectionStart(null,null) );
     }
 
     this.data.isDragging = false;

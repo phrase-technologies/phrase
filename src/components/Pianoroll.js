@@ -12,6 +12,7 @@ import PianorollWindow        from './PianorollWindow.js';
 import PianorollWindowSlider  from './PianorollWindowSlider.js';
 import PianorollKeyboard      from './PianorollKeyboard.js';
 import Scrollbar              from './Scrollbar.js';
+import TimelineCursor from './TimelineCursor.js'
 
 export default class Pianoroll extends Component {
 
@@ -30,26 +31,26 @@ export default class Pianoroll extends Component {
       keyCount: this.props.keyCount
     }
     let timelineProps = {
+      cursor: this.props.cursor,
       xMin: this.props.xMin,
       xMax: this.props.xMax,
       barCount: this.props.barCount
     }
+    var cursor = this.props.selectionStartX ? null: this.props.cursor // Hide cursor if selection going down
     return (
       <div className="pianoroll">
         <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
         <PianorollTimeline {...dispatchProp} {...timelineProps} ref={(ref) => this.timeline = ref} />
         <PianorollWindow {...dispatchProp} {...keyboardProps} {...timelineProps} >
           <PianorollWindowSlider {...this.props} />
-          <div className="pianoroll-window-scroll-zone"
-            onMouseEnter={(e) => this.handleScrollZone(e, true)}
-            onMouseLeave={(e) => this.handleScrollZone(e, false)}
-          >
+          <div className="pianoroll-scrollbar-horizontal">
             <Scrollbar draggableEndpoints
               min={this.props.xMin} setScroll={(min,max) => this.props.dispatch(pianorollScrollX(min,max))}
-              max={this.props.xMax} forceHover={this.data.scrollZoneHover}
+              max={this.props.xMax}
             />
           </div>        
         </PianorollWindow>
+        <TimelineCursor cursor={cursor} />
       </div>
     );
   }
@@ -76,7 +77,6 @@ Pianoroll.propTypes = {
   selectionEndY: React.PropTypes.number
 };
 Pianoroll.defaultProps = {
-  cursor:   0.000,
   playHead: 0.000,
   barCount: 64,
   keyCount: 88,

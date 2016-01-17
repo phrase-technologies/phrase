@@ -88,10 +88,12 @@ export class PianorollWindow extends Component {
     // Each edge + black key fills
     var minKey = this.props.grid.percentToKey( yMin )
     var maxKey = this.props.grid.percentToKey( yMax )
+    var bottomLimit = closestHalfPixel( this.props.grid.height - (30 * this.props.grid.pixelScale) )
     for( var key = minKey; key - 1 <= maxKey; key++ )
     {
       var prevEdge = closestHalfPixel( this.props.grid.keyToYCoord( key - 1 ) ) + 1   // Extra pixel to account for stroke width
       var nextEdge = closestHalfPixel( this.props.grid.keyToYCoord( key     ) ) + 1   // Extra pixel to account for stroke width
+          nextEdge = Math.min(nextEdge, bottomLimit)
 
       // Stroke the edge between rows
       drawLine( canvasContext, 0, prevEdge, this.props.grid.width, prevEdge, false )
@@ -113,9 +115,14 @@ export class PianorollWindow extends Component {
         canvasContext.beginPath()
         canvasContext.strokeStyle = "#393939";
       }
+
+      // Don't draw keys into the horizontal scrollbar
+      if( nextEdge == bottomLimit )
+        break
     }
+
     // One final stroke to end the last octave!
-     canvasContext.stroke()
+    canvasContext.stroke()
   }  
 }
 

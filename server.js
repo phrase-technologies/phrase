@@ -8,10 +8,10 @@ new WebpackDevServer(webpack(config), {
   noInfo: true, // Surpress excessively verbose logs
   hot: true,
   historyApiFallback: true
-}).listen(1234, 'localhost', function (err, result) {
+}).listen(1234, 'ansonkao.local', function (err, result) {
   if (err) {
     console.log(err);
   }
 
-  console.log('Listening at localhost:1234');
+  console.log('Listening at ansonkao.local:1234');
 });

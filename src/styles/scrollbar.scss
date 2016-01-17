@@ -8,6 +8,11 @@ $scroll-corner-radius: 6px;
   border-radius: $scroll-corner-radius;
   background: #222;
 
+  pointer-events: all;
+
+  transition: margin 0.5s, height 0.5s, border-radius 0.5s;
+  transition-delay: 1s;
+
   &.scroll-draggable-endpoints {
     &.hover,
     &:hover {
@@ -33,14 +38,12 @@ $scroll-corner-radius: 6px;
   height: 10px;
   width: 100%;
 
-  transition: height 0.5s, border-radius 0.5s;
-  transition-delay: 1s;
-
   &.scroll-draggable-endpoints {
     &.hover,
     &:hover {
+      margin-top: -4px;
       height: 16px;
-      transition: height 0.125s, border-radius 0.125s;
+      transition: margin 0.125s, height 0.125s, border-radius 0.125s;
     }
   }
 }
@@ -48,14 +51,12 @@ $scroll-corner-radius: 6px;
   height: 100%;
   width: 10px;
 
-  transition: width 0.5s, border-radius 0.5s;
-  transition-delay: 1s;
-
   &.scroll-draggable-endpoints {
     &.hover,
     &:hover {
+      margin-right: -4px;
       width: 16px;
-      transition: width 0.125s, border-radius 0.125s;
+      transition: margin 0.125s, width 0.125s, border-radius 0.125s;
     }
   }
 }
