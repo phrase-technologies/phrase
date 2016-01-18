@@ -22,7 +22,6 @@ let defaultState = {
   selectionEndX: null,
   selectionEndY: null,
   cursor: null,
-  // notes: marioNotes,
   clips: [],
   noteLengthLast: 0.25,
   noteAutoIncrement: 0,
@@ -36,150 +35,88 @@ const maxKeyboardHeight = 1275 + 300;
 export default function reducePianoroll(state = defaultState, action) {
   switch (action.type)
   {
-    // ========================================================================
-    // Create Note
-    // ========================================================================
+    // ------------------------------------------------------------------------
+    case pianoroll.CREATE_CLIP:
+      return reduceCreateClip(
+        state,
+        action
+      )
+
+    // ------------------------------------------------------------------------
     case pianoroll.CREATE_NOTE:
-    {
-      // Existing clip matching?
-      var foundClip = state.clips.find((clip) => {
-        return action.bar >= clip.start && action.bar < clip.end
-      })
+      // Create Clip first if necessary
+      var newState = reduceCreateClip(
+        state,
+        action
+      )
+      // Create Note
+      return reduceCreateNote(
+        newState,
+        action
+      )
 
-      // Note instantiation - snap to the same length as the most previously created note
-      var snappedClipStart = Math.floor(action.bar);
-      var snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast;
-
-      // Create new clip
-      if (! foundClip) {
-        var newNote = {
-          id:     state.noteAutoIncrement,
-          keyNum: action.key,
-          start:  snappedNoteStart - snappedClipStart,
-          end:    snappedNoteStart - snappedClipStart + state.noteLengthLast
-        }
-
-        var newClip = {
-          id:         state.clipAutoIncrement,
-          start:      snappedClipStart,
-          end:        snappedClipStart + 1,
-          offset:     0.00,
-          loopLength: 1.00,
-          notes:      [newNote]
-        }
-        var newState = u.updateIn(['clips'], uAppend(newClip, clipSortComparison), state)
-            newState = u({noteAutoIncrement: uIncrement(1)}, newState)
-            newState = u({clipAutoIncrement: uIncrement(1)}, newState)
-        return newState
-      }
-
-      // Insert note into existing clip
-      else {
-        var newNote = {
-          id:     state.noteAutoIncrement,
-          keyNum: action.key,
-          start:  snappedNoteStart - foundClip.start,
-          end:    snappedNoteStart - foundClip.start + state.noteLengthLast
-        }
-
-        var updatedClip = u.updateIn(['notes'], uAppend(newNote, noteSortComparison), foundClip)
-        var newState = u.updateIn(['clips'], uReplace(foundClip, updatedClip), state)
-            newState = u({noteAutoIncrement: uIncrement(1)}, newState)
-        return newState
-      }
-    }
-
-    // ========================================================================
-    // Width (pixels)
-    // ========================================================================
+    // ------------------------------------------------------------------------
     // Used to ensure the timeline doesn't zoom too close
     // (looks awkward when a single quarter note takes the entire screen)
     case pianoroll.RESIZE_WIDTH:
-    {
-      var newState = Object.assign({}, state, {width: action.width});
-      return restrictTimelineZoom(newState);
-    }
+      return restrictTimelineZoom(
+        Object.assign({}, state, {
+          width: action.width
+        })
+      );
 
-    // ========================================================================
-    // Scroll X
-    // ========================================================================
-    case pianoroll.SCROLL_X:
-    {
-      var stateChanges = {};
-
-      // Ensure each limit is valid
-      if( action.min !== null )
-        stateChanges.xMin = action.min < 0.0 ? 0.0 : action.min;
-      if( action.max !== null )
-        stateChanges.xMax = action.max > 1.0 ? 1.0 : action.max;
-      var newState = Object.assign({}, state, stateChanges);
-
-      // Make sure timeline doesn't zoom too close
-      return restrictTimelineZoom(newState);
-    }
-
-    // ========================================================================
-    // Height (pixels)
-    // ========================================================================
-    // Used to ensure the keyboard doesn't get too small or large
+    // ------------------------------------------------------------------------
+    // Track absolute height to ensure the keyboard doesn't get too small or large
     case pianoroll.RESIZE_HEIGHT:
-    {
-      var newState = Object.assign({}, state, {height: action.height});
-      return restrictKeyboardZoom(newState);
-    }
+      return restrictKeyboardZoom(
+        Object.assign({}, state, {
+          height: action.height
+        })
+      );
 
-    // ========================================================================
-    // Scroll Y
-    // ========================================================================
+    // ------------------------------------------------------------------------
+    case pianoroll.SCROLL_X:
+      return restrictTimelineZoom(
+        Object.assign({}, state,
+          action.min === null ? {} : {xMin: Math.max(0.0, action.min)},
+          action.max === null ? {} : {xMax: Math.min(1.0, action.max)}
+        )
+      );
+
+    // ------------------------------------------------------------------------
     case pianoroll.SCROLL_Y:
-    {
-      var stateChanges = {};
+      return restrictKeyboardZoom(
+        Object.assign({}, state,
+          action.min === null ? {} : {yMin: Math.max(0.0, action.min)},
+          action.max === null ? {} : {yMax: Math.min(1.0, action.max)}
+        )
+      );
 
-      // Ensure each limit is valid
-      if( action.min !== null )
-        stateChanges.yMin = action.min < 0.0 ? 0.0 : action.min;
-      if( action.max !== null )
-        stateChanges.yMax = action.max > 1.0 ? 1.0 : action.max;
-      var newState = Object.assign({}, state, stateChanges);
-      // Restrict min/max zoom against the pianoroll's height (ensure keyboard doesn't get too small or large)
-      return restrictKeyboardZoom(newState);
-    }
-
-    // ========================================================================
-    // Selection Box Start Position
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case pianoroll.SELECTION_START:
-    {
-      return Object.assign({}, state, {selectionStartX: action.x, selectionStartY: action.y});
-    }
+      return Object.assign({}, state, {
+        selectionStartX: action.x,
+        selectionStartY: action.y
+      });
 
-    // ========================================================================
-    // Selection Box End Position
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case pianoroll.SELECTION_END:
-    {
-      return Object.assign({}, state, {selectionEndX: action.x, selectionEndY: action.y});
-    }
+      return Object.assign({}, state, {
+        selectionEndX: action.x,
+        selectionEndY: action.y
+      });
 
-    // ========================================================================
-    // Cursor
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case pianoroll.MOVE_CURSOR:
-    {
-      var stateChanges = {};
+      var newCursor = action.percent < 0.0 ? null : action.percent;
+          newCursor = action.percent > 1.0 ? null : newCursor;
 
-      stateChanges.cursor = action.percent < 0.0 ? null : action.percent;
-      stateChanges.cursor = action.percent > 1.0 ? null : stateChanges.cursor;
+      return Object.assign({}, state, {
+        cursor: newCursor
+      });
 
-      // Make sure new state exceeds minimum positive range
-      return Object.assign({}, state, stateChanges);
-    }
-
-    // ========================================================================
-    // Note Selected
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case pianoroll.SELECT_NOTE:
-    {
       return u.updateIn(
         ['clips', '*', 'notes', '*'],
         u.ifElse(
@@ -189,16 +126,71 @@ export default function reducePianoroll(state = defaultState, action) {
         ),
         state
       )
-    }
 
-    // ========================================================================
-    // DEFAULT
-    // ========================================================================
     default:
-    {
       return state;
-    }
   }  
+}
+
+function reduceCreateClip(state, action) {
+  // Skip if clip already exists
+  var foundClip = state.clips.find((clip) => {
+    return action.bar >= clip.start && action.bar < clip.end
+  })
+  if (foundClip)
+    return state
+
+  // Create new clip
+  var snappedClipStart = Math.floor(action.bar);
+  var newClip = {
+    id:         state.clipAutoIncrement,
+    start:      snappedClipStart,
+    end:        snappedClipStart + 1,
+    offset:     0.00,
+    loopLength: 1.00,
+    notes:      []
+  }
+
+  return u({
+    clips: uAppend(newClip, clipSortComparison),
+    clipAutoIncrement: uIncrement(1)
+  }, state)  
+}
+
+function reduceCreateNote(state, action) {
+  // Skip if no clip available
+  var foundClip = state.clips.find((clip) => {
+    return action.bar >= clip.start && action.bar < clip.end
+  })
+  if (!foundClip)
+    return state
+
+  // Skip if note already exists
+  // TODO - NEED TO ACCOUNT FOR LOOPING
+  var foundNote = foundClip.notes.find((note) => {
+    return action.bar >= note.start && action.bar < note.end
+  })
+  if (foundNote)
+    return state
+  
+  // Insert note, snap to same length as most previously created note
+  // TODO - NEED TO ACCOUNT FOR LOOPING
+  var snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast;
+  var newNote = {
+    id:     state.noteAutoIncrement,
+    keyNum: action.key,
+    start:  snappedNoteStart - foundClip.start,
+    end:    snappedNoteStart - foundClip.start + state.noteLengthLast
+  }
+
+  var updatedClip = u({
+    notes: uAppend(newNote, noteSortComparison)
+  }, foundClip)
+
+  return u({
+    clips: uReplace(foundClip, updatedClip),
+    noteAutoIncrement: uIncrement(1)
+  }, state)
 }
 
 // Comparison function for sorting notes a and b by their start time. Usage: note.sort(noteSortComparison);
@@ -208,10 +200,6 @@ function noteSortComparison(a, b) {
 
 function clipSortComparison(a, b) {
   return a.start - b.start;
-}
-
-export function findClipForNewNote(clips, barCount, note) {
-  return clips[0] || {};
 }
 
 // Restrict min/max zoom against the pianoroll's height (ensure keyboard doesn't get too small or large)

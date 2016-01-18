@@ -29,98 +29,65 @@ const maxBarWidth = 1000
 export default function reduceMixer(state = defaultState, action) {
   switch (action.type)
   {
-    // ========================================================================
-    // Width (pixels)
-    // ========================================================================
+    // ------------------------------------------------------------------------
     // Used to ensure the timeline doesn't zoom too close
     // (looks awkward when a single quarter note takes the entire screen)
     case mixer.RESIZE_WIDTH:
-    {
-      var newState = Object.assign({}, state, {width: action.width})
-      return restrictTimelineZoom(newState)
-    }
+      return restrictTimelineZoom(
+        Object.assign({}, state, {
+          width: action.width
+        })
+      )
 
-    // ========================================================================
-    // Scroll X
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case mixer.SCROLL_X:
-    {
-      var stateChanges = {}
+      return restrictTimelineZoom(
+        Object.assign({}, state,
+          action.min === null ? {} : {xMin: Math.max(0.0, action.min)},
+          action.max === null ? {} : {xMax: Math.min(1.0, action.max)}
+        )
+      );
 
-      // Ensure each limit is valid
-      if( action.min !== null )
-        stateChanges.xMin = action.min < 0.0 ? 0.0 : action.min
-      if( action.max !== null )
-        stateChanges.xMax = action.max > 1.0 ? 1.0 : action.max
-      var newState = Object.assign({}, state, stateChanges)
-
-      // Make sure timeline doesn't zoom too close
-      return restrictTimelineZoom(newState)
-    }
-
-    // ========================================================================
-    // Scroll Y
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case mixer.SCROLL_Y:
-    {
-      var stateChanges = {}
+      return Object.assign({}, state,
+        action.min === null ? {} : {yMin: Math.max(0.0, action.min)},
+        action.max === null ? {} : {yMax: Math.min(1.0, action.max)}
+      )
 
-      // Ensure each limit is valid
-      if( action.min !== null )
-        stateChanges.yMin = action.min < 0.0 ? 0.0 : action.min
-      if( action.max !== null )
-        stateChanges.yMax = action.max > 1.0 ? 1.0 : action.max
-      var newState = Object.assign({}, state, stateChanges)
-
-      // Restrict min/max zoom against the mixer's height (ensure keyboard doesn't get too small or large)
-      return newState
-    }
-
-    // ========================================================================
-    // Selection Box Start Position
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case mixer.SELECTION_START:
-    {
-      return Object.assign({}, state, {selectionStartX: action.x, selectionStartY: action.y})
-    }
+      return Object.assign({}, state, {
+        selectionStartX: action.x,
+        selectionStartY: action.y
+      })
 
-    // ========================================================================
-    // Selection Box End Position
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case mixer.SELECTION_END:
-    {
-      return Object.assign({}, state, {selectionEndX: action.x, selectionEndY: action.y})
-    }
+      return Object.assign({}, state, {
+        selectionEndX: action.x,
+        selectionEndY: action.y
+      })
 
-    // ========================================================================
-    // Cursor
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case mixer.MOVE_CURSOR:
-    {
-      var stateChanges = {};
+      var newCursor = action.percent < 0.0 ? null : action.percent;
+          newCursor = action.percent > 1.0 ? null : newCursor;
 
-      stateChanges.cursor = action.percent < 0.0 ? null : action.percent;
-      stateChanges.cursor = action.percent > 1.0 ? null : stateChanges.cursor;
+      return Object.assign({}, state, {
+        cursor: newCursor
+      });
 
-      // Make sure new state exceeds minimum positive range
-      return Object.assign({}, state, stateChanges);
-    }
-
-    // ========================================================================
-    // Playhead
-    // ========================================================================
+    // ------------------------------------------------------------------------
     case mixer.MOVE_PLAYHEAD:
       // TODO
       // TODO
       // TODO
 
-    // ========================================================================
-    // DEFAULT
-    // ========================================================================
+    // ------------------------------------------------------------------------
     default:
-    {
       return state
-    }
+
   }  
 }
 

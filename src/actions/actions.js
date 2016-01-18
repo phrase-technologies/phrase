@@ -44,6 +44,7 @@ export const pianoroll = namespaceActions(
     'SELECTION_END',
     'MOVE_CURSOR',
     'MOVE_PLAYHEAD',
+    'CREATE_CLIP',
     'CREATE_NOTE',
     'SELECT_NOTE'
   ]

@@ -1,7 +1,6 @@
 import expect from 'expect';
 
-import pianoroll,
-       { findClipForNewNote } from '../src/reducers/reducePianoroll.js';
+import pianoroll from '../src/reducers/reducePianoroll.js';
 import allTrackNotesSelector from '../src/selectors/selectorPianoroll.js';
 import { pianorollCreateNote } from '../src/actions/actionsPianoroll.js';
 

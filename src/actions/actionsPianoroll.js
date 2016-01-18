@@ -8,5 +8,6 @@ export var pianorollSelectionStart        = (x, y)     => ({type: pianoroll.SELE
 export var pianorollSelectionEnd          = (x, y)     => ({type: pianoroll.SELECTION_END,   x, y})
 export var pianorollMoveCursor            = (percent)  => ({type: pianoroll.MOVE_CURSOR, percent})
 export var pianorollPlayhead              = (percent)  => ({type: pianoroll.MOVE_PLAYHEAD, percent})
+export var pianorollCreateClip            = (bar)      => ({type: pianoroll.CREATE_CLIP, bar})
 export var pianorollCreateNote            = (key, bar) => ({type: pianoroll.CREATE_NOTE, key, bar})
 export var pianorollSelectNote            = (id)       => ({type: pianoroll.SELECT_NOTE, id})

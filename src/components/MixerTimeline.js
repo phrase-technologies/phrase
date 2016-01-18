@@ -5,7 +5,7 @@ import provideGridScroll from './GridScrollProvider'
 import { closestHalfPixel,
          drawLine } from '../helpers/helpers.js';
 import { mixerScrollX,
-         mixerCursor } from '../actions/actionsMixer.js';
+         mixerMoveCursor } from '../actions/actionsMixer.js';
 
 import CanvasComponent from './CanvasComponent';
 
@@ -104,7 +104,7 @@ export default provideGridSystem(
     MixerTimeline,
     {
       scrollXActionCreator: mixerScrollX,
-      cursorActionCreator: mixerCursor
+      cursorActionCreator: mixerMoveCursor
     }
   )
 )
