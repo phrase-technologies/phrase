@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { layoutConsoleEmbedded,
-         layoutConsoleSplit } from '../actions/actions.js';
+         layoutConsoleSplit } from '../actions/actionsLayout.js';
 
 import CursorProvider from './CursorProvider.js';
 import LayoutPage from './LayoutPage.js';

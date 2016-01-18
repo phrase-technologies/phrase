@@ -5,7 +5,7 @@ import { pianorollSelector } from '../selectors/selectorPianoroll.js';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
 import { pianorollScrollX,
-         pianorollScrollY } from '../actions/actions.js';
+         pianorollScrollY } from '../actions/actionsPianoroll.js';
 
 import PianorollTimeline      from './PianorollTimeline.js';
 import PianorollWindow        from './PianorollWindow.js';

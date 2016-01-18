@@ -11,10 +11,8 @@ export default class CursorProvider extends Component {
   getCursorClass() {
     var resultClass = "";
 
-    if( this.props.cursor.explicit )
-      resultClass = "cursor-"+this.props.cursor.explicit;
-    else if( this.props.cursor.implicit )
-      resultClass = "cursor-"+this.props.cursor.implicit;
+    if( this.props.cursor.icon )
+      resultClass = "cursor-"+this.props.cursor.icon;
 
     return resultClass;
   }

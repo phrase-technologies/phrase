@@ -2,22 +2,18 @@
 // Transport Controls
 // ============================================================================
 
-import { TRANSPORT_PLAY,
-         TRANSPORT_STOP,
-         TRANSPORT_REWIND,
-         TRANSPORT_RECORD,
-         TRANSPORT_TEMPO } from '../actions/actions.js';
+import { transport } from '../actions/actions.js';
 
-export default function transport(state = {}, action) {
+export default function reduceTransport(state = {}, action) {
   switch (action.type)
   {
-    case TRANSPORT_PLAY:
+    case transport.PLAY:
       return Object.assign({}, state, {playing: true});
-    case TRANSPORT_STOP:
+    case transport.STOP:
       return Object.assign({}, state, {playing: false});
-    case TRANSPORT_RECORD:
+    case transport.RECORD:
       return Object.assign({}, state, {recording: !state.recording});
-    case TRANSPORT_TEMPO:
+    case transport.SET_TEMPO:
       return Object.assign({}, state, {tempo: action.tempo});
     default:
       return state;

@@ -19,7 +19,7 @@ import _ from 'lodash';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
 import { mixerScrollX,
-         mixerScrollY } from '../actions/actions.js';
+         mixerScrollY } from '../actions/actionsMixer.js';
 
 import MixerTimeline from './MixerTimeline.js';
 import MixerTrack from './MixerTrack.js';

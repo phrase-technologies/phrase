@@ -2,8 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { shiftInterval } from '../helpers/helpers.js';
-import { cursorSetExplicit,
-         CURSOR_TYPES } from '../actions/actions.js';
+import { cursorResizeX,
+         cursorResizeY,
+         cursorResizeLeft,
+         cursorResizeRight,
+         cursorResizeTop,
+         cursorResizeBottom,
+         cursorClear } from '../actions/actionsCursor.js';
 
 export default class Scrollbar extends Component {
 
@@ -70,18 +75,18 @@ export default class Scrollbar extends Component {
     {
       // MIN-end of the Bar
       case React.findDOMNode(this.min):
-        var cursor_type = this.props.vertical ? CURSOR_TYPES.top : CURSOR_TYPES.left;
+        var cursorType = this.props.vertical ? cursorResizeTop : cursorResizeLeft
         break;
       // Middle of the Bar
       case React.findDOMNode(this.bar):
-        var cursor_type = this.props.vertical ? CURSOR_TYPES.yresize : CURSOR_TYPES.xresize;
+        var cursorType = this.props.vertical ? cursorResizeY : cursorResizeX
         break;
       // MAX-end of the Bar
       case React.findDOMNode(this.max):
-        var cursor_type = this.props.vertical ? CURSOR_TYPES.bottom : CURSOR_TYPES.right;
+        var cursorType = this.props.vertical ? cursorResizeBottom : cursorResizeRight
         break;
     }
-    this.props.dispatch(cursorSetExplicit(cursor_type));
+    this.props.dispatch(cursorType);
   }
 
   handleDrag(e) {
@@ -133,7 +138,7 @@ export default class Scrollbar extends Component {
     // End the drag
     this.data.isDragging = false;
     this.forceUpdate();
-    this.props.dispatch(cursorSetExplicit(CURSOR_TYPES.default));    
+    this.props.dispatch(cursorClear);    
   }
 
   handlePaging(e) {

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 
-import { pianorollHeight,
-         pianorollScrollY } from '../actions/actions.js';
+import { pianorollResizeHeight,
+         pianorollScrollY } from '../actions/actionsPianoroll.js';
 
 export class PianorollKeyboard extends Component {
 
@@ -80,7 +80,7 @@ export class PianorollKeyboard extends Component {
   }
 
   handleResize() {
-    this.props.dispatch(pianorollHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop));
+    this.props.dispatch(pianorollResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop));
     this.forceUpdate();
   }
 }

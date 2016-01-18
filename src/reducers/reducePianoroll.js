@@ -6,15 +6,7 @@ import u from 'updeep';
 import { zoomInterval } from '../helpers/helpers.js';
 import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
-import { PIANOROLL_SCROLL_X,
-         PIANOROLL_SCROLL_Y,
-         PIANOROLL_WIDTH,
-         PIANOROLL_HEIGHT,
-         PIANOROLL_SELECTION_START,
-         PIANOROLL_SELECTION_END,
-         PIANOROLL_CURSOR,
-         PIANOROLL_NEW_NOTE,
-         PIANOROLL_NOTE_SELECT } from '../actions/actions.js';
+import { pianoroll } from '../actions/actions.js';
 
 import marioNotes from '../helpers/marioNotes.js';
 
@@ -41,13 +33,13 @@ const maxBarWidth = 1000;
 const minKeyboardHeight =  800;
 const maxKeyboardHeight = 1275 + 300;
 
-export default function pianoroll(state = defaultState, action) {
+export default function reducePianoroll(state = defaultState, action) {
   switch (action.type)
   {
     // ========================================================================
     // Create Note
     // ========================================================================
-    case PIANOROLL_NEW_NOTE:
+    case pianoroll.CREATE_NOTE:
     {
       // Existing clip matching?
       var foundClip = state.clips.find((clip) => {
@@ -102,7 +94,7 @@ export default function pianoroll(state = defaultState, action) {
     // ========================================================================
     // Used to ensure the timeline doesn't zoom too close
     // (looks awkward when a single quarter note takes the entire screen)
-    case PIANOROLL_WIDTH:
+    case pianoroll.RESIZE_WIDTH:
     {
       var newState = Object.assign({}, state, {width: action.width});
       return restrictTimelineZoom(newState);
@@ -111,7 +103,7 @@ export default function pianoroll(state = defaultState, action) {
     // ========================================================================
     // Scroll X
     // ========================================================================
-    case PIANOROLL_SCROLL_X:
+    case pianoroll.SCROLL_X:
     {
       var stateChanges = {};
 
@@ -130,7 +122,7 @@ export default function pianoroll(state = defaultState, action) {
     // Height (pixels)
     // ========================================================================
     // Used to ensure the keyboard doesn't get too small or large
-    case PIANOROLL_HEIGHT:
+    case pianoroll.RESIZE_HEIGHT:
     {
       var newState = Object.assign({}, state, {height: action.height});
       return restrictKeyboardZoom(newState);
@@ -139,7 +131,7 @@ export default function pianoroll(state = defaultState, action) {
     // ========================================================================
     // Scroll Y
     // ========================================================================
-    case PIANOROLL_SCROLL_Y:
+    case pianoroll.SCROLL_Y:
     {
       var stateChanges = {};
 
@@ -156,7 +148,7 @@ export default function pianoroll(state = defaultState, action) {
     // ========================================================================
     // Selection Box Start Position
     // ========================================================================
-    case PIANOROLL_SELECTION_START:
+    case pianoroll.SELECTION_START:
     {
       return Object.assign({}, state, {selectionStartX: action.x, selectionStartY: action.y});
     }
@@ -164,7 +156,7 @@ export default function pianoroll(state = defaultState, action) {
     // ========================================================================
     // Selection Box End Position
     // ========================================================================
-    case PIANOROLL_SELECTION_END:
+    case pianoroll.SELECTION_END:
     {
       return Object.assign({}, state, {selectionEndX: action.x, selectionEndY: action.y});
     }
@@ -172,7 +164,7 @@ export default function pianoroll(state = defaultState, action) {
     // ========================================================================
     // Cursor
     // ========================================================================
-    case PIANOROLL_CURSOR:
+    case pianoroll.MOVE_CURSOR:
     {
       var stateChanges = {};
 
@@ -186,7 +178,7 @@ export default function pianoroll(state = defaultState, action) {
     // ========================================================================
     // Note Selected
     // ========================================================================
-    case PIANOROLL_NOTE_SELECT:
+    case pianoroll.SELECT_NOTE:
     {
       return u.updateIn(
         ['clips', '*', 'notes', '*'],

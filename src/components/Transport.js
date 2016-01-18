@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect, dispatch } from 'react-redux';
+
 import { transportPlay,
          transportStop,
-         transportRecord,
-       } from '../actions/actions.js';
+         transportRecord } from '../actions/actionsTransport.js';
+
 import TransportButton from './TransportButton';
 
 export default class Transport extends Component {

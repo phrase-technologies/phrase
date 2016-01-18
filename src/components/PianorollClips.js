@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 
 // import { pianorollSelectionStart,
 //          pianorollSelectionEnd,
-//          pianorollNewNote } from '../actions/actions.js';
+//          pianorollCreateNote } from '../actions/actionsPianoroll.js';
 
 import PianorollClip from './PianorollClip';
 

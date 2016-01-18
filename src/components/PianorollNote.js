@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { pianorollNoteSelect } from '../actions/actions.js'
+import { pianorollSelectNote } from '../actions/actionsPianoroll.js'
 
 export default class PianorollNote extends Component {
   render() {
@@ -55,7 +55,7 @@ export default class PianorollNote extends Component {
     this.startBar = this.getPercentX(e)
     this.startKey = this.getPercentY(e)
 
-    this.props.dispatch( pianorollNoteSelect(this.props.id) );
+    this.props.dispatch( pianorollSelectNote(this.props.id) );
   }
 
   handleDrag(e) {

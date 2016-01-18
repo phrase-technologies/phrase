@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 
-import navigation from './reducerNavigation.js'
-import transport from './reducerTransport.js'
-import mixer from './reducerMixer.js'
-import pianoroll from './reducerPianoroll.js'
-import cursor from './reducerCursor.js'
+import navigation from './reduceNavigation.js'
+import transport from './reduceTransport.js'
+import mixer from './reduceMixer.js'
+import pianoroll from './reducePianoroll.js'
+import cursor from './reduceCursor.js'
 
 const musicApp = combineReducers({
   navigation,

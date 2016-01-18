@@ -6,14 +6,7 @@ import u from 'updeep'
 import { zoomInterval } from '../helpers/helpers.js'
 import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
-import { MIXER_SCROLL_X,
-         MIXER_SCROLL_Y,
-         MIXER_WIDTH,
-         MIXER_SELECTION_START,
-         MIXER_SELECTION_END,
-         MIXER_CURSOR,
-         MIXER_PLAYHEAD,
-         MIXER_NEW_CLIP } from '../actions/actions.js'
+import { mixer } from '../actions/actions.js'
 
 import marioNotes from '../helpers/marioNotes.js'
 
@@ -33,7 +26,7 @@ let defaultState = {
 
 const maxBarWidth = 1000
 
-export default function mixer(state = defaultState, action) {
+export default function reduceMixer(state = defaultState, action) {
   switch (action.type)
   {
     // ========================================================================
@@ -41,7 +34,7 @@ export default function mixer(state = defaultState, action) {
     // ========================================================================
     // Used to ensure the timeline doesn't zoom too close
     // (looks awkward when a single quarter note takes the entire screen)
-    case MIXER_WIDTH:
+    case mixer.RESIZE_WIDTH:
     {
       var newState = Object.assign({}, state, {width: action.width})
       return restrictTimelineZoom(newState)
@@ -50,7 +43,7 @@ export default function mixer(state = defaultState, action) {
     // ========================================================================
     // Scroll X
     // ========================================================================
-    case MIXER_SCROLL_X:
+    case mixer.SCROLL_X:
     {
       var stateChanges = {}
 
@@ -68,7 +61,7 @@ export default function mixer(state = defaultState, action) {
     // ========================================================================
     // Scroll Y
     // ========================================================================
-    case MIXER_SCROLL_Y:
+    case mixer.SCROLL_Y:
     {
       var stateChanges = {}
 
@@ -86,7 +79,7 @@ export default function mixer(state = defaultState, action) {
     // ========================================================================
     // Selection Box Start Position
     // ========================================================================
-    case MIXER_SELECTION_START:
+    case mixer.SELECTION_START:
     {
       return Object.assign({}, state, {selectionStartX: action.x, selectionStartY: action.y})
     }
@@ -94,7 +87,7 @@ export default function mixer(state = defaultState, action) {
     // ========================================================================
     // Selection Box End Position
     // ========================================================================
-    case MIXER_SELECTION_END:
+    case mixer.SELECTION_END:
     {
       return Object.assign({}, state, {selectionEndX: action.x, selectionEndY: action.y})
     }
@@ -102,7 +95,7 @@ export default function mixer(state = defaultState, action) {
     // ========================================================================
     // Cursor
     // ========================================================================
-    case MIXER_CURSOR:
+    case mixer.MOVE_CURSOR:
     {
       var stateChanges = {};
 
@@ -116,7 +109,7 @@ export default function mixer(state = defaultState, action) {
     // ========================================================================
     // Playhead
     // ========================================================================
-    case MIXER_PLAYHEAD:
+    case mixer.MOVE_PLAYHEAD:
       // TODO
       // TODO
       // TODO

@@ -5,7 +5,7 @@ import provideGridScroll from './GridScrollProvider'
 import { closestHalfPixel,
          drawLine } from '../helpers/helpers.js';
 import { mixerScrollX,
-         mixerCursor } from '../actions/actions.js';
+         mixerCursor } from '../actions/actionsMixer.js';
 
 import CanvasComponent from './CanvasComponent';
 

@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 
 import { pianorollSelectionStart,
          pianorollSelectionEnd,
-         pianorollNewNote } from '../actions/actions.js';
+         pianorollCreateNote } from '../actions/actionsPianoroll.js';
 
 import PianorollNote from './PianorollNote';
 
@@ -106,7 +106,7 @@ export default class PianorollNotes extends Component {
       let bar = this.getPercentX(e) * this.props.barCount;
       let key = Math.ceil(this.props.keyCount - this.getPercentY(e)*this.props.keyCount);
       // TODO: Batch these actions
-      this.props.dispatch( pianorollNewNote(key,bar) );
+      this.props.dispatch( pianorollCreateNote(key,bar) );
       this.props.dispatch( pianorollSelectionStart(null,null) );
     }
 

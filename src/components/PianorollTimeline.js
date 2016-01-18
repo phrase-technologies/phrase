@@ -5,7 +5,7 @@ import provideGridScroll from './GridScrollProvider'
 import { closestHalfPixel,
          drawLine } from '../helpers/helpers.js'
 import { pianorollScrollX,
-         pianorollCursor } from '../actions/actions.js'
+         pianorollMoveCursor } from '../actions/actionsPianoroll.js'
 
 import CanvasComponent from './CanvasComponent'
 
@@ -104,7 +104,7 @@ export default provideGridSystem(
     PianorollTimeline,
     {
       scrollXActionCreator: pianorollScrollX,
-      cursorActionCreator: pianorollCursor
+      cursorActionCreator: pianorollMoveCursor
     }
   )
 )

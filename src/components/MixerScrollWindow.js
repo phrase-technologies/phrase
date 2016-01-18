@@ -14,7 +14,7 @@ import { closestHalfPixel,
          drawLine } from '../helpers/helpers.js';
 import { mixerScrollX,
          mixerScrollY,
-         mixerCursor } from '../actions/actions.js';
+         mixerCursor } from '../actions/actionsMixer.js';
 
 import CanvasComponent from './CanvasComponent';
 

@@ -19,13 +19,13 @@
   user-select: initial;
 }
 
-// Show explicit and implicit custom cursors
+// Show explicit custom cursors
 .cursor-default        { cursor: default;                                                     }
 .cursor-xresize      * { cursor: ew-resize !important;                                        }
 .cursor-yresize      * { cursor: ns-resize !important;                                        }
 .cursor-rowresize    * { cursor: row-resize !important;                                       }
 .cursor-colresize    * { cursor: col-resize !important;                                       }
-.cursor-grab         * { cursor: grab      !important;   cursor: -webkit-grab     !important; }
+.cursor-drag         * { cursor: grab      !important;   cursor: -webkit-grab     !important; }
 .cursor-grabbing     * { cursor: grabbing  !important;   cursor: -webkit-grabbing !important; }
 .cursor-move         * { cursor: move      !important;                                        }
 @mixin cursor-left()   { cursor: url(img/cursor-left-edge.ico)   0 8, ew-resize !important;   }
