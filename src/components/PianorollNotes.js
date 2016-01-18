@@ -17,8 +17,7 @@ export default class PianorollNotes extends Component {
 
   constructor() {
     super();
-    this.data = {};
-    this.data.isDragging = false;
+    this.isDragging = false;
     this.handleGrip = this.handleGrip.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
@@ -32,13 +31,14 @@ export default class PianorollNotes extends Component {
           let id     = note.id;
           let keyNum = note.keyNum
           let top    = (this.props.keyCount - note.keyNum    ) / this.props.keyCount * 100 + 0.10;
-          let bottom = (this.props.keyCount - note.keyNum - 1) / this.props.keyCount * 100 + 0.30;
+          let bottom = (this.props.keyCount - note.keyNum - 1) / this.props.keyCount * 100 + 0.25;
           let left   = note.start / this.props.barCount * 100;
           let right  = note.end   / this.props.barCount * 100;
           let width  = right - left;
           let height = top - bottom;
+          let selected = note.selected
           let dispatch = this.props.dispatch
-          let props  = {id, keyNum, top, left, width, height, dispatch};
+          let props  = {id, keyNum, top, left, width, height, selected, dispatch};
 
           return (<PianorollNote key={note.id} {...props} />);
 
@@ -52,46 +52,48 @@ export default class PianorollNotes extends Component {
   }
 
   componentDidMount() {
-    this.data.container = React.findDOMNode(this);
+    this.container = React.findDOMNode(this);
     document.addEventListener("mousemove", this.handleDrag);
     document.addEventListener("mouseup",   this.handleDrop);
-    this.data.container.addEventListener("mousedown", this.handleGrip);
+    this.container.addEventListener("mousedown", this.handleGrip);
   }
 
   componentWillUnmount() {
     document.removeEventListener("mousemove", this.handleDrag);
     document.removeEventListener("mouseup",   this.handleDrop);
-    this.data.container.removeEventListener("mousedown", this.handleGrip);
+    this.container.removeEventListener("mousedown", this.handleGrip);
   }
 
   handleGrip(e) {
-    this.data.isDragging = 1;
+    if (e.target !== this.container)
+      return
 
-    let x = this.getMouseBar(e);
-    let y = this.getMouseKey(e);
+    this.isDragging = 1;
+    let x = this.getPercentX(e);
+    let y = this.getPercentY(e);
     this.props.dispatch( pianorollSelectionStart(x,y) );
   }
 
   handleDrag(e) {
     // Ignore unrelated move events
-    if( !this.data.isDragging )
+    if( !this.isDragging )
       return;
 
     // Minimum movement before creating selection box
-    if( this.data.isDragging > 1)
+    if( this.isDragging > 1)
     {
-      let x = this.getMouseBar(e);
-      let y = this.getMouseKey(e);
+      let x = this.getPercentX(e);
+      let y = this.getPercentY(e);
       this.props.dispatch( pianorollSelectionEnd(x,y) );
     }
 
     // Track minimum required movement
-    this.data.isDragging++;
+    this.isDragging++;
   }
 
   handleDrop(e) {
     // Remove selection box
-    if( this.data.isDragging > 2 )
+    if( this.isDragging > 2 )
     {
       // TODO: Batch these actions
       this.props.dispatch( pianorollSelectionStart(null,null) );
@@ -99,24 +101,24 @@ export default class PianorollNotes extends Component {
     }
 
     // Add New Note
-    else if( this.data.isDragging ) // no extended drag - this is basically a click!
+    else if( this.isDragging ) // no extended drag - this is basically a click!
     {
-      let bar = this.getMouseBar(e) * this.props.barCount;
-      let key = Math.ceil(this.props.keyCount - this.getMouseKey(e)*this.props.keyCount);
+      let bar = this.getPercentX(e) * this.props.barCount;
+      let key = Math.ceil(this.props.keyCount - this.getPercentY(e)*this.props.keyCount);
       // TODO: Batch these actions
       this.props.dispatch( pianorollNewNote(key,bar) );
       this.props.dispatch( pianorollSelectionStart(null,null) );
     }
 
-    this.data.isDragging = false;
+    this.isDragging = false;
   }
 
-  getMouseBar(e) {
-    return (e.clientX - this.data.container.getBoundingClientRect().left) / this.data.container.getBoundingClientRect().width;
+  getPercentX(e) {
+    return (e.clientX - this.container.getBoundingClientRect().left) / this.container.getBoundingClientRect().width;
   }
 
-  getMouseKey(e) {
-    return (e.clientY - this.data.container.getBoundingClientRect().top) / this.data.container.getBoundingClientRect().height;
+  getPercentY(e) {
+    return (e.clientY - this.container.getBoundingClientRect().top) / this.container.getBoundingClientRect().height;
   }
 }
 

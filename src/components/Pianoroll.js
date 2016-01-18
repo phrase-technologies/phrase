@@ -36,7 +36,7 @@ export default class Pianoroll extends Component {
       xMax: this.props.xMax,
       barCount: this.props.barCount
     }
-    var cursor = this.props.selectionStartX ? null: this.props.cursor // Hide cursor if selection going down
+
     return (
       <div className="pianoroll">
         <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
@@ -50,7 +50,7 @@ export default class Pianoroll extends Component {
             />
           </div>        
         </PianorollWindow>
-        <TimelineCursor cursor={cursor} />
+        <TimelineCursor cursor={this.props.cursor} />
       </div>
     );
   }

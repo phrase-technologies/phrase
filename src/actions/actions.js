@@ -51,6 +51,7 @@ export const PIANOROLL_SELECTION_START    = 'PIANOROLL_SELECTION_START';
 export const PIANOROLL_SELECTION_END      = 'PIANOROLL_SELECTION_END';
 export const PIANOROLL_CURSOR             = 'PIANOROLL_CURSOR';
 export const PIANOROLL_NEW_NOTE           = 'PIANOROLL_NEW_NOTE';
+export const PIANOROLL_NOTE_SELECT        = 'PIANOROLL_NOTE_SELECT';
 export var pianorollScrollX               = (min, max) => ({type: PIANOROLL_SCROLL_X, min, max});
 export var pianorollScrollY               = (min, max) => ({type: PIANOROLL_SCROLL_Y, min, max});
 export var pianorollWidth                 = (width ) => ({type: PIANOROLL_WIDTH,  width });
@@ -59,6 +60,7 @@ export var pianorollSelectionStart        = (x, y) => ({type: PIANOROLL_SELECTIO
 export var pianorollSelectionEnd          = (x, y) => ({type: PIANOROLL_SELECTION_END,   x, y});
 export var pianorollCursor                = (percent) => ({type: PIANOROLL_CURSOR, percent});
 export var pianorollNewNote               = (key, bar) => ({type: PIANOROLL_NEW_NOTE, key, bar});
+export var pianorollNoteSelect            = (id) => ({type: PIANOROLL_NOTE_SELECT, id});
 
 // ----------------------------------------------------------------------------
 // Mouse Cursor

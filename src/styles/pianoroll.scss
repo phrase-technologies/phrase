@@ -198,13 +198,12 @@ $pianoroll-scroll-horizontal: 30px;
   &[min-height~="1350"] {
     .pianoroll-note-label {
       font-size: 10px;
-      padding: 2px;
     }
   }
   &[min-height~="1450"] {
     .pianoroll-note-label {
       font-size: 11px;
-      padding: 3px;
+      line-height: 13px;
     }
   }
   &[max-height~="1275"] {
@@ -226,7 +225,7 @@ $pianoroll-scroll-horizontal: 30px;
   left: 0;
 
   &:hover {
-    > .pianoroll-note-label {
+    > .pianoroll-note-label:not(.pianoroll-note-selected) {
       background: #FC8;
       background-image: linear-gradient(to bottom, #FC8 0%, #F80 100%);
     }
@@ -239,17 +238,28 @@ $pianoroll-scroll-horizontal: 30px;
   right: 1px; // Leave 1px gap between notes that are exactly adjacent
   bottom: 0;
 
-  // border: 1px solid #000;
   border-radius: 2px;
   background: #F80;
   background-image: linear-gradient(to bottom, #F80 0%, #C60 100%);
   box-shadow: 0 0 0 1px #000;
 
-  padding: 1px 2px;
+  padding: 2px 3px;
   font-size: 9px;
   line-height: 1;
   color: #000;
   overflow: hidden;
+
+  // Make sure the user clicks the
+  // parent .pianoroll-note <div>, not the label child.
+  // Important so that e.target handling works.
+  pointer-events: none;
+
+  &.pianoroll-note-selected {
+    border: 1px solid #F80;
+    background-image: linear-gradient(to bottom, #630 0%, #520 100%);
+    color: #F80;
+    padding: 1px 3px;
+  }
 }
 @media
 only screen and ( min-device-pixel-ratio: 1.3    ),

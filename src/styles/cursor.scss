@@ -95,7 +95,7 @@
   width: 1px;
   z-index: 4;  // Above all other track layers
 
-  background: #777;
+  background: rgba(255,255,255,0.125);
 
   pointer-events: none;
 }

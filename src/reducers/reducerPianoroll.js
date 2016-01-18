@@ -13,7 +13,8 @@ import { PIANOROLL_SCROLL_X,
          PIANOROLL_SELECTION_START,
          PIANOROLL_SELECTION_END,
          PIANOROLL_CURSOR,
-         PIANOROLL_NEW_NOTE } from '../actions/actions.js';
+         PIANOROLL_NEW_NOTE,
+         PIANOROLL_NOTE_SELECT } from '../actions/actions.js';
 
 import marioNotes from '../helpers/marioNotes.js';
 
@@ -180,6 +181,22 @@ export default function pianoroll(state = defaultState, action) {
 
       // Make sure new state exceeds minimum positive range
       return Object.assign({}, state, stateChanges);
+    }
+
+    // ========================================================================
+    // Note Selected
+    // ========================================================================
+    case PIANOROLL_NOTE_SELECT:
+    {
+      return u.updateIn(
+        ['clips', '*', 'notes', '*'],
+        u.ifElse(
+          (note) => note.id == action.id,
+          (note) => u({selected: true}, note),
+          (note) => u({selected: false}, note)          
+        ),
+        state
+      )
     }
 
     // ========================================================================
