@@ -1,9 +1,9 @@
 import expect from 'expect';
 
 import pianoroll,
-       { findClipForNewNote } from '../src/reducers/reducerPianoroll.js';
+       { findClipForNewNote } from '../src/reducers/reducePianoroll.js';
 import allTrackNotesSelector from '../src/selectors/selectorPianoroll.js';
-import { pianorollNewNote } from '../src/actions/actions.js';
+import { pianorollCreateNote } from '../src/actions/actionsPianoroll.js';
 
 describe("Pianoroll", () => {
 
@@ -24,10 +24,10 @@ describe("Pianoroll", () => {
     var stateSingleClip     = { noteLengthLast: 0.25, clips: [clip1] };
     var stateMultipleClips  = { noteLengthLast: 0.25, clips: [clip1, clip2half, clip3half] };
 
-    var actionBar1        = pianorollNewNote( 36, 0.00 );
-    var actionBar1Higher  = pianorollNewNote( 48, 0.00 );
-    var actionBar2        = pianorollNewNote( 36, 1.00 );
-    var actionBar3End     = pianorollNewNote( 36, 2.75 );
+    var actionBar1        = pianorollCreateNote( 36, 0.00 );
+    var actionBar1Higher  = pianorollCreateNote( 48, 0.00 );
+    var actionBar2        = pianorollCreateNote( 36, 1.00 );
+    var actionBar3End     = pianorollCreateNote( 36, 2.75 );
 
     it("should always add the note", () => {
       // Many different permutations
