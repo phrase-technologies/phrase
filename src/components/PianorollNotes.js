@@ -17,7 +17,10 @@ export default class PianorollNotes extends Component {
 
   constructor() {
     super();
+
     this.isDragging = false;
+    this.lastClickTimestamp = 0
+
     this.handleGrip = this.handleGrip.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
@@ -68,10 +71,24 @@ export default class PianorollNotes extends Component {
     if (e.target !== this.container)
       return
 
-    this.isDragging = 1;
-    let x = this.getPercentX(e);
-    let y = this.getPercentY(e);
-    this.props.dispatch( pianorollSelectionStart(x,y) );
+    var x = this.getPercentX(e);
+    var y = this.getPercentY(e);
+
+    // Doubleclick - Create Note
+    if (Date.now() - this.lastClickTimestamp < 640 && this.lastClickX == x && this.lastClickY == y) {
+      let bar = this.getPercentX(e) * this.props.barCount;
+      let key = Math.ceil(this.props.keyCount - this.getPercentY(e)*this.props.keyCount);
+      this.props.dispatch( pianorollCreateNote(key,bar) );
+
+    // Singleclick - Selection Box
+    } else {
+      this.props.dispatch( pianorollSelectionStart(x,y) );
+
+      this.isDragging = 1;
+      this.lastClickTimestamp = Date.now()
+      this.lastClickX = x
+      this.lastClickY = y
+    }
   }
 
   handleDrag(e) {
@@ -80,8 +97,7 @@ export default class PianorollNotes extends Component {
       return;
 
     // Minimum movement before creating selection box
-    if( this.isDragging > 1)
-    {
+    if (this.isDragging > 1) {
       let x = this.getPercentX(e);
       let y = this.getPercentY(e);
       this.props.dispatch( pianorollSelectionEnd(x,y) );
@@ -93,21 +109,10 @@ export default class PianorollNotes extends Component {
 
   handleDrop(e) {
     // Remove selection box
-    if( this.isDragging > 2 )
-    {
+    if (this.isDragging > 2) {
       // TODO: Batch these actions
       this.props.dispatch( pianorollSelectionStart(null,null) );
       this.props.dispatch( pianorollSelectionEnd(null,null) );      
-    }
-
-    // Add New Note
-    else if( this.isDragging ) // no extended drag - this is basically a click!
-    {
-      let bar = this.getPercentX(e) * this.props.barCount;
-      let key = Math.ceil(this.props.keyCount - this.getPercentY(e)*this.props.keyCount);
-      // TODO: Batch these actions
-      this.props.dispatch( pianorollCreateNote(key,bar) );
-      this.props.dispatch( pianorollSelectionStart(null,null) );
     }
 
     this.isDragging = false;

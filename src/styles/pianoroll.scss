@@ -208,7 +208,7 @@ $pianoroll-scroll-horizontal: 30px;
   }
   &[max-height~="1275"] {
     .pianoroll-note-label {
-      color: transparent;
+      color: transparent !important;
     }
   }
   &[max-height~="1000"] {
@@ -225,9 +225,15 @@ $pianoroll-scroll-horizontal: 30px;
   left: 0;
 
   &:hover {
-    > .pianoroll-note-label:not(.pianoroll-note-selected) {
-      background: #FC8;
-      background-image: linear-gradient(to bottom, #FC8 0%, #F80 100%);
+    > .pianoroll-note-label {
+      &:not(.pianoroll-note-selected) {
+        background: #FC8;
+        background-image: linear-gradient(to bottom, #FC8 0%, #F80 100%);
+      }
+      &.pianoroll-note-selected {
+        border-color: #FA4;
+        color: #FA4;
+      }
     }
   }
 }
