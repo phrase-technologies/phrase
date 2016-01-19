@@ -84,7 +84,7 @@ export default class PianorollNotes extends Component {
     } else {
       this.props.dispatch( pianorollSelectionStart(x,y) );
 
-      this.isDragging = 1;
+      this.isDragging = true;
       this.lastClickTimestamp = Date.now()
       this.lastClickX = x
       this.lastClickY = y
@@ -96,20 +96,14 @@ export default class PianorollNotes extends Component {
     if( !this.isDragging )
       return;
 
-    // Minimum movement before creating selection box
-    if (this.isDragging > 1) {
-      let x = this.getPercentX(e);
-      let y = this.getPercentY(e);
-      this.props.dispatch( pianorollSelectionEnd(x,y) );
-    }
-
-    // Track minimum required movement
-    this.isDragging++;
+    let x = this.getPercentX(e);
+    let y = this.getPercentY(e);
+    this.props.dispatch( pianorollSelectionEnd(x,y) );
   }
 
   handleDrop(e) {
     // Remove selection box
-    if (this.isDragging > 2) {
+    if (this.isDragging) {
       // TODO: Batch these actions
       this.props.dispatch( pianorollSelectionStart(null,null) );
       this.props.dispatch( pianorollSelectionEnd(null,null) );      
