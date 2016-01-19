@@ -134,6 +134,8 @@
   border-radius: 0 $mixer-corner $mixer-corner 0;
 
   pointer-events: all;
+  overflow: hidden;
+  z-index: 1; // Hack for getting rounded corners to mask content with overflow: hidden;
 
   &:before,
   &:after {
@@ -142,21 +144,106 @@
     top: 0;
     width: 20px;
     bottom: 0;
+    z-index: 2; // On top of track contents
   }
 
   &:before {
     left: 0;
-    box-shadow: inset 20px 0 20px -20px #333;
+    box-shadow:
+      inset 21px 0 20px -20px #333,
+      inset 11px 0  3px -10px #000;
   }
 
   &:after {
     right: 0;
-    border-radius: 0 $mixer-corner $mixer-corner 0;
-    box-shadow: inset -20px 0 20px -20px #333;
+    border-radius: 0 $mixer-corner - 1px $mixer-corner - 1px 0;
+    box-shadow:
+      inset -21px 0 20px -20px #333,
+      inset -11px 0  3px -10px #000;
   }
 
   > canvas {
     width: 100%;
+  }
+}
+.mixer-track-window-sill {
+  position: absolute;
+  top: 0;
+  left: 11px;
+  right: 6.5px;
+  bottom: 0;
+}
+.mixer-track-window-slider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+// ----------------------------------------------------------------------------
+// Mixer Track Clips
+// ----------------------------------------------------------------------------
+.mixer-track-clips {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+}
+// Each note consists of 2 elements: .pianoroll-note and .pianoroll-note-label.
+// This is necessary to have accurate percentage position on the wrapper and 1px offset on the child.
+.mixer-track-clip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+
+  &:hover {
+    > .mixer-track-clip-label {
+      &:not(.mixer-track-clip-selected) {
+        background: #FC8;
+        background-image: linear-gradient(to bottom, #FC8 0%, #F80 100%);
+      }
+      &.mixer-track-clip-selected {
+        border-color: #FA4;
+        color: #FA4;
+      }
+    }
+  }
+}
+.mixer-track-clip-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 1px; // Leave 1px gap between notes that are exactly adjacent
+  bottom: 0;
+
+  border-radius: 2px;
+  background: #F80;
+  background-image: linear-gradient(to bottom, #F80 0%, #C60 100%);
+  box-shadow: 0 0 0 1px #000;
+
+  padding: 4px 5px;
+  font-size: 11px;
+  line-height: 1;
+  color: #000;
+  overflow: hidden;
+
+  // Make sure the user clicks the
+  // parent .mixer-track-clip <div>, not the label child.
+  // Important so that e.target handling works.
+  pointer-events: none;
+
+  &.mixer-track-clip-selected {
+    border: 1px solid #F80;
+    background-image: linear-gradient(to bottom, #630 0%, #520 100%);
+    color: #F80;
+    padding: 1px 3px;
+  }
+}
+@media
+only screen and ( min-device-pixel-ratio: 1.3    ),
+only screen and ( min-resolution:         120dpi ) {
+  .mixer-track-clip-label {
+    box-shadow: 0 0 2px 0.5px #000;
   }
 }
 

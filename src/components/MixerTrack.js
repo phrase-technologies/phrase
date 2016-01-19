@@ -24,6 +24,7 @@ export default class MixerTrack extends Component {
           </button>
         </div>
         <MixerTrackWindow
+          clips={this.props.track.clips}
           barCount={this.props.barCount}
           xMin={this.props.xMin}
           xMax={this.props.xMax}
@@ -35,6 +36,7 @@ export default class MixerTrack extends Component {
 }
 
 MixerTrack.propTypes = {
+  track:        React.PropTypes.object.isRequired,
   dispatch:     React.PropTypes.func.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   xMin:       React.PropTypes.number.isRequired,

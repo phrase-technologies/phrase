@@ -104,5 +104,6 @@ PianorollNote.propTypes = {
   left:     React.PropTypes.number.isRequired,
   width:    React.PropTypes.number.isRequired,
   height:   React.PropTypes.number.isRequired,
+  select:   React.PropTypes.bool,
   dispatch: React.PropTypes.func.isRequired
 };

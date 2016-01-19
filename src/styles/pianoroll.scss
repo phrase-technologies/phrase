@@ -193,8 +193,7 @@ $pianoroll-scroll-horizontal: 30px;
   right: 0;
   bottom: 0;
   z-index: 1; // Above Clips
-}
-.pianoroll-notes {
+
   &[min-height~="1350"] {
     .pianoroll-note-label {
       font-size: 10px;

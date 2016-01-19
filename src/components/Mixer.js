@@ -49,7 +49,7 @@ export default class Mixer extends Component {
         <div className="mixer-track-list-gutter">
           <ul className="mixer-track-list" ref={(ref) => this.mixerList = ref} style={{marginTop: scrollOffset}}>
             {this.state.tracks.map(function(track){ return (
-              <MixerTrack key={track} track={track} {...timelineProps} />
+              <MixerTrack key={track.id} track={track} {...timelineProps} />
             )}.bind(this))}
             <MixerTrackNew handleClickNew={this.addNewTrack} />
           </ul>
@@ -91,7 +91,32 @@ export default class Mixer extends Component {
     super();
     this.state = {
       scroll: null,
-      tracks: [1,2,3],
+      tracks: [
+        {
+          id: 0,
+          clips:[]
+        },
+        {
+          id: 1,
+          clips:[
+            {
+              id: 0,
+              start: 0.000,
+              end: 4.000
+            },
+            {
+              id: 1,
+              start: 4.000,
+              end: 5.000
+            },
+            {
+              id: 2,
+              start: 63.000,
+              end: 64.000
+            }            
+          ]
+        }
+      ],
       emptyAreaOffset: 0
     };
 
@@ -185,7 +210,10 @@ export default class Mixer extends Component {
 
   addNewTrack() {
     var newTrackState = this.state.tracks.slice();
-        newTrackState.push( newTrackState.length + 1 );
+        newTrackState.push({
+          id: newTrackState.length + 1,
+          clips: []
+        });
     this.data.dirtyHeight = true;
     this.setState({tracks: newTrackState});
   }

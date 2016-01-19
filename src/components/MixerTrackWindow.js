@@ -9,7 +9,8 @@ import { mixerScrollX,
          mixerScrollY,
          mixerMoveCursor } from '../actions/actionsMixer.js';
 
-import CanvasComponent from './CanvasComponent';
+import CanvasComponent from './CanvasComponent.js';
+import MixerTrackClips from './MixerTrackClips.js';
 
 export class MixerTrackWindow extends Component {
 
@@ -19,61 +20,36 @@ export class MixerTrackWindow extends Component {
   }
 
   render() {
+    let xWindowPercent = (this.props.xMax - this.props.xMin);
+    let left = -100 * this.props.xMin;
+    let xScale = 100 / xWindowPercent + '%';
+    var sliderStyle = {
+      transform: 'translate3d('+left+'%,0px,1px)',
+      transformOrigin: '0 100 0',
+      width: xScale
+    };
+
     return (
       <div className="mixer-track-window">
-        {/* // Causes Jank. Shouldn't be needed when we can to CSS translate3d of divs
-        <CanvasComponent renderFrame={this.renderFrame()} />
-        */}
-        {this.props.children}
+        <div className="mixer-track-window-sill">
+          <div className="mixer-track-window-slider" style={sliderStyle}>
+            <MixerTrackClips
+              clips={this.props.clips}
+              barCount={this.props.barCount}
+              dispatch={this.props.dispatch}
+            />
+          </div>
+        </div>
       </div>
     );
   }
 
-  renderFrame() {
-    return function(canvasContext) {
-      canvasContext.fillStyle = "transparent";
-      canvasContext.fillStyle = "#444444";
-      canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height );
-      this.props.grid.calculateZoomThreshold();
-      this.renderTimeline(canvasContext, this.props.xMin, this.props.xMax)
-    }.bind(this);
-  }
-
-  renderTimeline(canvasContext, xMin, xMax) {
-    // Draw lines for each beat
-    canvasContext.lineWidth = 1.0;
-    var minBar = this.props.grid.percentToBar( xMin ) - 1;
-    var maxBar = this.props.grid.percentToBar( xMax );
-    var minorIncrement = this.props.grid.lineThresholdsNoKeys.minorLine || this.props.grid.lineThresholdsNoKeys.middleLine;
-
-    // Ensure we increment off a common denominator
-    minBar = minBar - (minBar % minorIncrement);
-
-    for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
-    {
-      // Draw each line as a separate path (different colors)
-      var xPosition = closestHalfPixel( this.props.grid.barToXCoord( bar ) );
-
-      // Major Bar lines
-      if( bar % this.props.grid.lineThresholdsNoKeys.majorLine === 0 )
-        canvasContext.strokeStyle = "#222222";
-      // Intermediary Bar lines
-      else if( bar % this.props.grid.lineThresholdsNoKeys.middleLine === 0 )
-        canvasContext.strokeStyle = "#333333";
-      // Minor Bar lines
-      else if( this.props.grid.lineThresholdsNoKeys.minorLine )
-        canvasContext.strokeStyle = "#3C3C3C";
-
-      canvasContext.beginPath();
-      drawLine( canvasContext, xPosition, 0, xPosition, this.props.grid.height );
-      canvasContext.stroke();
-    }    
-  }
 }
 
 MixerTrackWindow.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
+  clips:        React.PropTypes.array.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   xMin:       React.PropTypes.number.isRequired,
   xMax:       React.PropTypes.number.isRequired
