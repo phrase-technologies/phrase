@@ -10,7 +10,7 @@ import { pianoroll } from '../actions/actions.js';
 
 import marioNotes from '../helpers/marioNotes.js';
 
-let defaultState = {
+export const defaultState = {
   width: 1000,
   height: 500,
   xMin: 0.000,
@@ -44,9 +44,16 @@ export default function reducePianoroll(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case pianoroll.CREATE_NOTE:
+      // Deselect all existing notes
+      var newState = u.updateIn(
+        ['clips', '*', 'notes', '*', 'selected'],
+        false,
+        state
+      )
+
       // Create Clip first if necessary
-      var newState = reduceCreateClip(
-        state,
+      newState = reduceCreateClip(
+        newState,
         action
       )
       // Create Note
@@ -134,10 +141,7 @@ export default function reducePianoroll(state = defaultState, action) {
 
 function reduceCreateClip(state, action) {
   // Skip if clip already exists
-  var foundClip = state.clips.find((clip) => {
-    return action.bar >= clip.start && action.bar < clip.end
-  })
-  if (foundClip)
+  if (doesClipExistAtBar(state.clips, action.bar))
     return state
 
   // Create new clip
@@ -159,28 +163,23 @@ function reduceCreateClip(state, action) {
 
 function reduceCreateNote(state, action) {
   // Skip if no clip available
-  var foundClip = state.clips.find((clip) => {
-    return action.bar >= clip.start && action.bar < clip.end
-  })
+  var foundClip = doesClipExistAtBar(state.clips, action.bar)
   if (!foundClip)
     return state
 
   // Skip if note already exists
-  // TODO - NEED TO ACCOUNT FOR LOOPING
-  var foundNote = foundClip.notes.find((note) => {
-    return action.bar >= note.start && action.bar < note.end
-  })
-  if (foundNote)
+  if (doesNoteExistInClip(foundClip, action.key, action.bar))
     return state
   
   // Insert note, snap to same length as most previously created note
-  // TODO - NEED TO ACCOUNT FOR LOOPING
+  var snappedNoteKey   = Math.floor(action.key)
   var snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast;
   var newNote = {
     id:     state.noteAutoIncrement,
-    keyNum: action.key,
+    keyNum: snappedNoteKey,
     start:  snappedNoteStart - foundClip.start,
-    end:    snappedNoteStart - foundClip.start + state.noteLengthLast
+    end:    snappedNoteStart - foundClip.start + state.noteLengthLast,
+    selected: true
   }
 
   var updatedClip = u({
@@ -191,6 +190,30 @@ function reduceCreateNote(state, action) {
     clips: uReplace(foundClip, updatedClip),
     noteAutoIncrement: uIncrement(1)
   }, state)
+}
+
+function doesClipExistAtBar(clips, bar) {
+  return clips.find((clip) => {
+    return bar >= clip.start && bar < clip.end
+  })
+}
+
+function doesNoteExistInClip(clip, key, bar) {
+  // Find the loop iteration of this clip that the note would fall into
+  var loopStart = clip.start + clip.offset - (!!clip.offset * clip.loopLength)
+  while(loopStart + clip.loopLength < bar) {
+    loopStart += clip.loopLength
+  }
+
+  // Search for existing notes in that loop iteration
+  var snappedNoteKey = Math.floor(key)
+  return clip.notes.find((note) => {
+    return (
+      note.keyNum == snappedNoteKey &&
+      bar >= loopStart + note.start &&
+      bar <  loopStart + note.end
+    )
+  })
 }
 
 // Comparison function for sorting notes a and b by their start time. Usage: note.sort(noteSortComparison);
