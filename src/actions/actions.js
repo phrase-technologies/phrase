@@ -19,6 +19,17 @@ export const transport = namespaceActions(
   ]
 )
 
+export const phrase = namespaceActions(
+  'phrase',
+  [
+    'CREATE_TRACK',
+    'CREATE_CLIP',
+    'CREATE_NOTE',
+    'SELECT_NOTE',
+    'MOVE_PLAYHEAD'
+  ]
+)
+
 export const mixer = namespaceActions(
   'mixer',
   [
@@ -28,8 +39,6 @@ export const mixer = namespaceActions(
     'SELECTION_START',
     'SELECTION_END',
     'MOVE_CURSOR',
-    'MOVE_PLAYHEAD',
-    'CREATE_CLIP'
   ]
 )
 
@@ -42,11 +51,7 @@ export const pianoroll = namespaceActions(
     'RESIZE_HEIGHT',
     'SELECTION_START',
     'SELECTION_END',
-    'MOVE_CURSOR',
-    'MOVE_PLAYHEAD',
-    'CREATE_CLIP',
-    'CREATE_NOTE',
-    'SELECT_NOTE'
+    'MOVE_CURSOR'
   ]
 )
 

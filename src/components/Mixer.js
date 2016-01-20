@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
+import { phraseCreateTrack } from '../actions/actionsPhrase.js'
 import { mixerScrollX,
          mixerScrollY } from '../actions/actionsMixer.js';
 
@@ -48,14 +49,14 @@ export default class Mixer extends Component {
         <MixerTimeline {...timelineProps} />
         <div className="mixer-track-list-gutter">
           <ul className="mixer-track-list" ref={(ref) => this.mixerList = ref} style={{marginTop: scrollOffset}}>
-            {this.state.tracks.map(function(track){ return (
+            {this.props.tracks.map(function(track){ return (
               <MixerTrack key={track.id} track={track} {...timelineProps} />
             )}.bind(this))}
             <MixerTrackNew handleClickNew={this.addNewTrack} />
           </ul>
           <div className="mixer-empty-area" style={{top: this.state.emptyAreaOffset}} />
         </div>
-        <MixerScrollWindow {...timelineProps} >
+        <MixerScrollWindow {...timelineProps}>
           <div className="mixer-settings-center">
             <div className="mixer-scroll-horizontal">
               <ScrollBar draggableEndpoints min={this.props.xMin} max={this.props.xMax} setScroll={this.setHorizontalScroll} />
@@ -91,32 +92,6 @@ export default class Mixer extends Component {
     super();
     this.state = {
       scroll: null,
-      tracks: [
-        {
-          id: 0,
-          clips:[]
-        },
-        {
-          id: 1,
-          clips:[
-            {
-              id: 0,
-              start: 0.000,
-              end: 4.000
-            },
-            {
-              id: 1,
-              start: 4.000,
-              end: 5.000
-            },
-            {
-              id: 2,
-              start: 63.000,
-              end: 64.000
-            }            
-          ]
-        }
-      ],
       emptyAreaOffset: 0
     };
 
@@ -209,13 +184,8 @@ export default class Mixer extends Component {
   }
 
   addNewTrack() {
-    var newTrackState = this.state.tracks.slice();
-        newTrackState.push({
-          id: newTrackState.length + 1,
-          clips: []
-        });
     this.data.dirtyHeight = true;
-    this.setState({tracks: newTrackState});
+    this.props.dispatch(phraseCreateTrack());
   }
 
   setVerticalScroll(min, max) {
@@ -234,6 +204,7 @@ Mixer.defaultProps = {
 
 function mapStateToProps(state) {
   return {
+    tracks: state.phrase.tracks,
     xMin: state.mixer.xMin,
     xMax: state.mixer.xMax,
     playhead: state.mixer.playhead,

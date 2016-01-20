@@ -8,8 +8,8 @@
 import React, { Component } from 'react';
 
 import { pianorollSelectionStart,
-         pianorollSelectionEnd,
-         pianorollCreateNote } from '../actions/actionsPianoroll.js';
+         pianorollSelectionEnd } from '../actions/actionsPianoroll.js';
+import { phraseCreateNote } from '../actions/actionsPhrase.js';
 
 import PianorollNote from './PianorollNote';
 
@@ -78,7 +78,7 @@ export default class PianorollNotes extends Component {
     if (Date.now() - this.lastClickTimestamp < 640 && this.lastClickX == x && this.lastClickY == y) {
       let bar = this.getPercentX(e) * this.props.barCount;
       let key = Math.ceil(this.props.keyCount - this.getPercentY(e)*this.props.keyCount);
-      this.props.dispatch( pianorollCreateNote(key,bar) );
+      this.props.dispatch( phraseCreateNote(0,key,bar) );
 
     // Singleclick - Selection Box
     } else {

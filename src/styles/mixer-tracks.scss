@@ -225,6 +225,8 @@
   font-size: 11px;
   line-height: 1;
   color: #000;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   overflow: hidden;
 
   // Make sure the user clicks the

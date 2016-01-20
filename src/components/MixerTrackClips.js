@@ -8,8 +8,8 @@
 import React, { Component } from 'react'
 
 import { mixerSelectionStart,
-         mixerSelectionEnd,
-         mixerCreateClip } from '../actions/actionsPianoroll.js'
+         mixerSelectionEnd } from '../actions/actionsMixer.js'
+import { phraseCreateClip } from '../actions/actionsPhrase.js'
 
 import MixerTrackClip from './MixerTrackClip.js'
 
@@ -46,10 +46,6 @@ export default class MixerTrackClips extends Component {
     )
   }
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.notes !== this.props.notes
-  }
-
   componentDidMount() {
     this.container = React.findDOMNode(this)
     document.addEventListener("mousemove", this.handleDrag)
@@ -74,7 +70,7 @@ export default class MixerTrackClips extends Component {
     if (Date.now() - this.lastClickTimestamp < 640 && this.lastClickX == x && this.lastClickY == y) {
       let bar = this.getPercentX(e) * this.props.barCount
       let key = Math.ceil(this.props.keyCount - this.getPercentY(e)*this.props.keyCount)
-      this.props.dispatch( mixerCreateClip(key,bar) )
+      this.props.dispatch( phraseCreateClip(0, bar) )
 
     // Singleclick - Selection Box
     } else {

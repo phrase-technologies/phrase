@@ -8,7 +8,7 @@ export default class MixerTrack extends Component {
         <div className="mixer-track-tag" />
         <div className="mixer-track-control">
           <h3 className="mixer-track-name">
-            {"Track Name"}
+            {this.props.track.name}
           </h3>
           <span className="mixer-track-caret fa fa-ellipsis-h" />
           <div className="mixer-track-gain" />
