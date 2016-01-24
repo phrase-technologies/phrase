@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import { connect } from 'react-redux'
 
 import { cursorResizeRow,
          cursorDrop } from '../actions/actionsCursor.js';
@@ -16,7 +17,7 @@ export default class LayoutSplit extends Component {
 
   componentDidMount() {
     this.data = this.data || {};
-    this.data.container = React.findDOMNode(this);
+    this.data.container = ReactDOM.findDOMNode(this);
     this.data.isDragging = false;
 
     this.data.container.addEventListener("mousedown", this.handleGrip);

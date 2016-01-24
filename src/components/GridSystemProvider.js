@@ -16,6 +16,7 @@
 // See also: GridScrollProvider.js
 
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 
 var provideGridSystem = (ChildComponent) => {
 
@@ -52,7 +53,7 @@ var provideGridSystem = (ChildComponent) => {
       this.grid.didMount = () => {
         if (!this.grid.init) {
           this.grid.init = true
-          this.grid.container = this.grid.container || React.findDOMNode(this)
+          this.grid.container = this.grid.container || ReactDOM.findDOMNode(this)
           this.handleResize()
         }
       }

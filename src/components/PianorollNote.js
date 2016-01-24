@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 
 import { phraseSelectNote } from '../actions/actionsPhrase.js'
 
@@ -33,7 +34,7 @@ export default class PianorollNote extends Component {
   }
 
   componentDidMount() {
-    this.container = React.findDOMNode(this)
+    this.container = ReactDOM.findDOMNode(this)
     this.parent = this.container.parentElement
     document.addEventListener("mousemove", this.handleDrag)
     document.addEventListener("mouseup",   this.handleDrop)

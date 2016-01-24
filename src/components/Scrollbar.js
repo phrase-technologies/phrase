@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import { connect } from 'react-redux'
 
 import { shiftInterval } from '../helpers/helpers.js';
 import { cursorResizeX,
@@ -32,19 +33,19 @@ export default class Scrollbar extends Component {
     window.addEventListener('resize', this.handleResize);
 
     // Scrollbar Click Handlers
-    this.bar.getDOMNode().addEventListener("mousedown", this.handleGrip);
+    this.bar.addEventListener("mousedown", this.handleGrip);
     document.addEventListener("mousemove", this.handleDrag);
     document.addEventListener("mouseup",   this.handleDrop);
     document.addEventListener("mousedown", this.handleDrop);
 
     // Gutter paging
-    this.gutter.getDOMNode().addEventListener("mousedown", this.handlePaging)
+    this.gutter.addEventListener("mousedown", this.handlePaging)
   }
 
   componentWillUnmount() {
     this.data = null;
 
-    this.bar.getDOMNode().removeEventListener("mousedown", this.handleGrip);
+    this.bar.removeEventListener("mousedown", this.handleGrip);
     document.removeEventListener("mousemove", this.handleDrag);
     document.removeEventListener("mouseup",   this.handleDrop);
     document.removeEventListener("mousedown", this.handleDrop);
@@ -53,8 +54,8 @@ export default class Scrollbar extends Component {
 
   handleResize() {
     this.data.length = this.props.vertical
-                     ? this.gutter.getDOMNode().clientHeight
-                     : this.gutter.getDOMNode().clientWidth;
+                     ? this.gutter.clientHeight
+                     : this.gutter.clientWidth;
   }
 
   handleGrip(e) {
@@ -69,20 +70,20 @@ export default class Scrollbar extends Component {
     // If no draggableEndpoints, treat min/max refs as bar
     var currentTarget = this.props.draggableEndpoints
                       ? this.data.startTarget
-                      : React.findDOMNode(this.bar);
+                      : ReactDOM.findDOMNode(this.bar);
 
     switch( currentTarget )
     {
       // MIN-end of the Bar
-      case React.findDOMNode(this.min):
+      case ReactDOM.findDOMNode(this.min):
         var cursorType = this.props.vertical ? cursorResizeTop : cursorResizeLeft
         break;
       // Middle of the Bar
-      case React.findDOMNode(this.bar):
+      case ReactDOM.findDOMNode(this.bar):
         var cursorType = this.props.vertical ? cursorResizeY : cursorResizeX
         break;
       // MAX-end of the Bar
-      case React.findDOMNode(this.max):
+      case ReactDOM.findDOMNode(this.max):
         var cursorType = this.props.vertical ? cursorResizeBottom : cursorResizeRight
         break;
     }
@@ -102,26 +103,26 @@ export default class Scrollbar extends Component {
     // If no draggableEndpoints, treat min/max refs as bar
     var currentTarget = this.props.draggableEndpoints
                       ? this.data.startTarget
-                      : React.findDOMNode(this.bar);
+                      : ReactDOM.findDOMNode(this.bar);
 
     switch( currentTarget )
     {
       // MIN-end of the Bar
-      case React.findDOMNode(this.min):
+      case ReactDOM.findDOMNode(this.min):
       {
         var newMin = Math.max( this.data.startMin + percentDelta, 0.0 );
         this.props.setScroll(newMin, null);
         break;
       }
       // Middle of the Bar
-      case React.findDOMNode(this.bar):
+      case ReactDOM.findDOMNode(this.bar):
       {
         var [newMin, newMax] = shiftInterval([this.data.startMin, this.data.startMax], percentDelta);
         this.props.setScroll(newMin, newMax);
         break;
       }
       // MAX-end of the Bar
-      case React.findDOMNode(this.max):
+      case ReactDOM.findDOMNode(this.max):
       {
         var newMax = Math.min( this.data.startMax + percentDelta, 1.0 );
         this.props.setScroll(null, newMax);
@@ -143,12 +144,12 @@ export default class Scrollbar extends Component {
 
   handlePaging(e) {
     // Ensure scrollbar wasn't clicked
-    if( e.target != this.gutter.getDOMNode() )
+    if( e.target != this.gutter )
       return false;
 
     var clickPosition = this.props.vertical
-                      ? (e.clientY - this.gutter.getDOMNode().getBoundingClientRect().top)  / this.data.length
-                      : (e.clientX - this.gutter.getDOMNode().getBoundingClientRect().left) / this.data.length;
+                      ? (e.clientY - this.gutter.getBoundingClientRect().top)  / this.data.length
+                      : (e.clientX - this.gutter.getBoundingClientRect().left) / this.data.length;
     
     // Page DOWN
     if( clickPosition < this.props.min )

@@ -9,7 +9,8 @@
 // 
 // See also: TimelineBase.js (great to use in conjunction with!)
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 
 export default class CanvasComponent extends Component {
 
@@ -23,8 +24,8 @@ export default class CanvasComponent extends Component {
   componentDidMount() {
     // Initialize DOM
     this.data = this.data || {};
-    this.data.canvas = React.findDOMNode(this);
-    this.data.container = React.findDOMNode(this).parentElement;
+    this.data.canvas = ReactDOM.findDOMNode(this);
+    this.data.container = ReactDOM.findDOMNode(this).parentElement;
     this.data.canvasContext = this.data.canvas.getContext("2d");
 
     // Set Scaling

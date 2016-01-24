@@ -6,6 +6,7 @@
 // with it's own handlers for dragging and resizing (see MixerTrackClip.js).
 
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 
 import { mixerSelectionStart,
          mixerSelectionEnd } from '../actions/actionsMixer.js'
@@ -47,7 +48,7 @@ export default class MixerTrackClips extends Component {
   }
 
   componentDidMount() {
-    this.container = React.findDOMNode(this)
+    this.container = ReactDOM.findDOMNode(this)
     document.addEventListener("mousemove", this.handleDrag)
     document.addEventListener("mouseup",   this.handleDrop)
     this.container.addEventListener("mousedown", this.handleGrip)

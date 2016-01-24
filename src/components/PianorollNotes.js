@@ -5,7 +5,8 @@
 // care of multiple selection of notes. Each note is a separate child component,
 // with it's own handlers for dragging and resizing (see PianorollNotes).
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 
 import { pianorollSelectionStart,
          pianorollSelectionEnd } from '../actions/actionsPianoroll.js';
@@ -55,7 +56,7 @@ export default class PianorollNotes extends Component {
   }
 
   componentDidMount() {
-    this.container = React.findDOMNode(this);
+    this.container = ReactDOM.findDOMNode(this);
     document.addEventListener("mousemove", this.handleDrag);
     document.addEventListener("mouseup",   this.handleDrop);
     this.container.addEventListener("mousedown", this.handleGrip);

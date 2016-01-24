@@ -12,8 +12,9 @@
 //
 // TODO: de-spaghetti this component...
 
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import { connect } from 'react-redux'
 
 import _ from 'lodash';
 import { shiftInterval,
@@ -104,9 +105,9 @@ export default class Mixer extends Component {
 
   componentDidMount() {
     this.data = this.data || {};
-    this.data.container = React.findDOMNode(this);
+    this.data.container = ReactDOM.findDOMNode(this);
     this.data.container.addEventListener("wheel", this.handleScrollWheel);
-    this.data.scrollTarget = React.findDOMNode(this.mixerList);
+    this.data.scrollTarget = ReactDOM.findDOMNode(this.mixerList);
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
   }
