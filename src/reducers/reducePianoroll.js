@@ -22,8 +22,7 @@ export const defaultState = {
   selectionStartY: null,
   selectionEndX: null,
   selectionEndY: null,
-  cursor: null,
-  clips: []
+  cursor: null
 };
 
 const maxBarWidth = 1000;

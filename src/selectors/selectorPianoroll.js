@@ -1,32 +1,30 @@
 import { createSelector } from 'reselect';
 
-const defaultSelector = state => state.pianoroll
-const clipsSelector = state => {
-  var trackId = state.pianoroll.currentTrack
-  var currentTrack = state.phrase.tracks.find(track => track.id == trackId)
-  return currentTrack ? currentTrack.clips : []
+const stateSelector = (state) => {
+  return state
 }
-
-export const allTrackNotesSelector = createSelector(
-  clipsSelector,
-  (clips) => {
-    var renderedTrackNotes = []
-    clips.forEach(clip => {
-      renderedTrackNotes.push(...renderClipNotes(clip))
-    })
-    return renderedTrackNotes
+const currentTrackSelector = createSelector(
+  stateSelector,
+  (state) => {
+    var trackId = state.pianoroll.currentTrack
+    return state.phrase.tracks.find(track => track.id == trackId)
   }
 )
+const clipsSelector = state => {
+  var trackId = state.pianoroll.currentTrack
+  return state.phrase.clips.filter(clip => clip.trackID == trackId)
+}
 
 export const pianorollSelector = createSelector(
-  defaultSelector,
+  stateSelector,
+  currentTrackSelector,
   clipsSelector,
-  allTrackNotesSelector,
-  (state, clips, notes) => {
+  (state, currentTrack, clips) => {
     return {
-      ...state,
+      ...state.pianoroll,
+      track: currentTrack,
       clips: clips,
-      notes: notes
+      notes: []
     }
   }
 )

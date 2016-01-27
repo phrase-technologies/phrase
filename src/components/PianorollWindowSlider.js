@@ -64,5 +64,6 @@ PianorollWindowSlider.propTypes = {
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,
   selectionEndY: React.PropTypes.number,
+  clips: React.PropTypes.array,
   notes: React.PropTypes.array
 };

@@ -60,6 +60,10 @@ export default class MixerTrackClips extends Component {
     this.container.removeEventListener("mousedown", this.handleGrip)
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.clips !== nextProps.clips || this.props.barCount !==  nextProps.barCount
+  }
+
   handleGrip(e) {
     if (e.target !== this.container)
       return
