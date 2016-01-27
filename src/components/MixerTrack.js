@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
 
 import MixerTrackWindow from './MixerTrackWindow.js';
 
@@ -26,7 +25,7 @@ export default class MixerTrack extends Component {
           </button>
         </div>
         <MixerTrackWindow
-          clips={this.props.clips}
+          track={this.props.track}
           barCount={this.props.barCount}
           xMin={this.props.xMin}
           xMax={this.props.xMax}
@@ -44,11 +43,3 @@ MixerTrack.propTypes = {
   xMin:       React.PropTypes.number.isRequired,
   xMax:       React.PropTypes.number.isRequired
 };  
-
-function mapStateToProps(state, ownProps) {
-  return {
-    clips: state.phrase.clips
-  }
-}
-
-export default connect(mapStateToProps)(MixerTrack)

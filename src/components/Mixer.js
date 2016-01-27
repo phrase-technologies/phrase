@@ -31,7 +31,7 @@ import TimelinePlayhead from './TimelinePlayhead.js';
 import TimelineCursor from './TimelineCursor.js';
 import ScrollBar from './Scrollbar.js';
 
-export default class Mixer extends Component {
+export class Mixer extends Component {
 
   render() {
     var scrollOffset = this.state.scroll

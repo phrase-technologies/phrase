@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { pianorollSelector } from '../selectors/selectorPianoroll.js';
+import { mapPianorollToProps } from '../selectors/selectorPianoroll.js';
 import { shiftInterval,
          zoomInterval } from '../helpers/helpers.js';
 import { pianorollScrollX,
@@ -82,4 +82,4 @@ Pianoroll.defaultProps = {
   keyCount: 88,
 };
 
-export default connect(pianorollSelector)(Pianoroll);
+export default connect(mapPianorollToProps)(Pianoroll);

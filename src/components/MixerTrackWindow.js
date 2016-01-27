@@ -34,7 +34,7 @@ export class MixerTrackWindow extends Component {
         <div className="mixer-track-window-sill">
           <div className="mixer-track-window-slider" style={sliderStyle}>
             <MixerTrackClips
-              clips={this.props.clips}
+              track={this.props.track}
               barCount={this.props.barCount}
               dispatch={this.props.dispatch}
             />
@@ -49,7 +49,7 @@ export class MixerTrackWindow extends Component {
 MixerTrackWindow.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
-  clips:        React.PropTypes.array.isRequired,
+  track:        React.PropTypes.object.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   xMin:       React.PropTypes.number.isRequired,
   xMax:       React.PropTypes.number.isRequired

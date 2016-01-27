@@ -7,14 +7,16 @@
 
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { connect } from 'react-redux'
 
 import { mixerSelectionStart,
          mixerSelectionEnd } from '../actions/actionsMixer.js'
 import { phraseCreateClip } from '../actions/actionsPhrase.js'
+import { mapClipsToTrack } from '../selectors/selectorTrack.js'
 
 import MixerTrackClip from './MixerTrackClip.js'
 
-export default class MixerTrackClips extends Component {
+export class MixerTrackClips extends Component {
 
   constructor() {
     super()
@@ -75,7 +77,7 @@ export default class MixerTrackClips extends Component {
     if (Date.now() - this.lastClickTimestamp < 640 && this.lastClickX == x && this.lastClickY == y) {
       let bar = this.getPercentX(e) * this.props.barCount
       let key = Math.ceil(this.props.keyCount - this.getPercentY(e)*this.props.keyCount)
-      this.props.dispatch( phraseCreateClip(0, bar) )
+      this.props.dispatch( phraseCreateClip(this.props.track.id, bar) )
 
     // Singleclick - Selection Box
     } else {
@@ -119,7 +121,10 @@ export default class MixerTrackClips extends Component {
 }
 
 MixerTrackClips.propTypes = {
-  barCount:     React.PropTypes.number.isRequired,
+  track:        React.PropTypes.object.isRequired,
   clips:        React.PropTypes.array,
+  barCount:     React.PropTypes.number.isRequired,
   dispatch:     React.PropTypes.func.isRequired
 }
+
+export default connect(mapClipsToTrack)(MixerTrackClips)
