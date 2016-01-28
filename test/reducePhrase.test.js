@@ -2,19 +2,20 @@ import expect from 'expect';
 import u from 'updeep';
 import { uIncrement, uAppend, uReplace } from '../src/helpers/arrayHelpers.js'
 
-import reducePhrase, { defaultState } from '../src/reducers/reducePhrase.js';
+import _ from 'lodash'
+import reducePhrase, { defaultState, getNoteAtKeyBar } from '../src/reducers/reducePhrase.js';
 import { phraseCreateClip,
          phraseCreateNote } from '../src/actions/actionsPhrase.js';
 
 describe("Phrase", () => {
 
-  var clip1             = { id: 0, start: 0.00, end: 1.00, offset: 0.00, loopLength: 1.00, notes: [] };
-  var clip2half         = { id: 1, start: 1.00, end: 2.50, offset: 0.00, loopLength: 2.50, notes: [] };
-  var clip3half         = { id: 2, start: 2.75, end: 3.50, offset: 0.50, loopLength: 1.00, notes: [] };
+  var clip1             = { id: 0, trackID: 0, start: 0.00, end: 1.00, offset: 0.00, loopLength: 1.00, notes: [] };
+  var clip2half         = { id: 1, trackID: 0, start: 1.00, end: 2.50, offset: 0.00, loopLength: 2.50, notes: [] };
+  var clip3half         = { id: 2, trackID: 0, start: 2.75, end: 3.50, offset: 0.50, loopLength: 1.00, notes: [] };
 
   var stateEmpty          = defaultState
-  var stateSingleClip     = u.updateIn(['tracks', 0, 'clips'], [clip1], defaultState)
-  var stateMultipleClips  = u.updateIn(['tracks', 0, 'clips'], [clip1, clip2half, clip3half], defaultState)
+  var stateSingleClip     = u({clips: uAppend(clip1)}, defaultState)
+  var stateMultipleClips  = u({clips: _.flow(uAppend(clip1), uAppend(clip3half))}, defaultState)
 
   var createClip1        = phraseCreateClip( 0, 0.00 )
   var createClip2        = phraseCreateClip( 0, 1.50 )
@@ -31,7 +32,7 @@ describe("Phrase", () => {
       // No clips at all to start with
       [createNote1, createNote1Again, createNote1Higher, createNote2, createNote3End].forEach((action) => {
         let newState = reducePhrase( stateEmpty, action );
-        expect( newState.tracks[0].clips.length ).toEqual( 1 );
+        expect( newState.clips.length ).toEqual( 1 );
       });
     });
 
@@ -39,7 +40,7 @@ describe("Phrase", () => {
       // 1 existing clip to start with, which doesn't fit the new note
       [createNote2, createNote3End].forEach((action) => {
         let newState = reducePhrase( stateSingleClip, action );
-        expect( newState.tracks[0].clips.length ).toEqual( 2 );
+        expect( newState.clips.length ).toEqual( 2 );
       });
     });
 
@@ -52,13 +53,13 @@ describe("Phrase", () => {
       actions.forEach((action) => {
         // Create a new note first
         state = reducePhrase( state, action )
-        currentClipCount = state.tracks[0].clips.length
+        currentClipCount = state.clips.length
         expect(currentClipCount).toEqual(priorClipCount + 1)
         priorClipCount = currentClipCount
 
         // Try creating the same note
         state = reducePhrase( state, action )
-        currentClipCount = state.tracks[0].clips.length
+        currentClipCount = state.clips.length
         expect(currentClipCount).toEqual(priorClipCount)
         priorClipCount = currentClipCount
       })
@@ -69,18 +70,17 @@ describe("Phrase", () => {
   describe("Create New Note", () => {
 
     it("should always create the note", () => {
-      // Many different permutations
+      // Many different permutations into existing empty clips with no notes
       [createNote1, createNote1Again, createNote1Higher, createNote2, createNote3End].forEach((action) => {
         [stateEmpty, stateSingleClip, stateMultipleClips].forEach((state) => {
           let newState = reducePhrase( state, action );
-          var allNotes = newState.tracks[0].clips.reduce((allNotes, clip) => allNotes.concat(clip.notes), [])
-          expect( allNotes.length ).toBeGreaterThan( 0 );
+          expect( newState.notes.length ).toBeGreaterThan( 0 );
         });
       });
     });
 
     it("should never create the same note twice", () => {
-      // Many different permutations
+      // Many different permutations into empty tracks with no clips or notes
       var state = stateEmpty
       var priorNoteCount = 0
       var currentNoteCount = 0
@@ -88,13 +88,13 @@ describe("Phrase", () => {
       actions.forEach((action) => {
         // Create a new note first
         state = reducePhrase( state, action )
-        currentNoteCount = state.tracks[0].clips.reduce((noteCount,clip) => noteCount += clip.notes.length, 0)
+        currentNoteCount = state.notes.length
         expect(currentNoteCount).toEqual(priorNoteCount + 1)
         priorNoteCount = currentNoteCount
 
         // Try creating the same note
         state = reducePhrase( state, action )
-        currentNoteCount = state.tracks[0].clips.reduce((noteCount,clip) => noteCount += clip.notes.length, 0)
+        currentNoteCount = state.notes.length
         expect(currentNoteCount).toEqual(priorNoteCount)
         priorNoteCount = currentNoteCount
       })

@@ -43,7 +43,6 @@ export default class PianorollNotes extends Component {
           let selected = note.selected
           let dispatch = this.props.dispatch
           let props  = {id, keyNum, top, left, width, height, selected, dispatch};
-
           return (<PianorollNote key={note.id} {...props} />);
 
         }.bind(this))}

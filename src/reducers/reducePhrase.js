@@ -77,7 +77,7 @@ export default function reducePhrase(state = defaultState, action) {
 
 function reduceCreateClip(state, action) {
   // Skip if clip already exists
-  if (getClipAtBar(state, action.trackID, action.bar))
+  if (getClipAtBar(state, action.bar, action.trackID))
     return state
 
   // Create new clip
@@ -118,11 +118,12 @@ function reduceCreateNote(state, action) {
   var snappedNoteKey   = Math.floor(action.key)
   var snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast;
   var newNote = u.freeze({
-    id:     state.noteAutoIncrement,
-    clipID: foundClip.id,
-    keyNum: snappedNoteKey,
-    start:  snappedNoteStart - foundClip.start,
-    end:    snappedNoteStart - foundClip.start + state.noteLengthLast,
+    id:       state.noteAutoIncrement,
+    trackID:  action.trackID,
+    clipID:   foundClip.id,
+    keyNum:   snappedNoteKey,
+    start:    snappedNoteStart - foundClip.start,
+    end:      snappedNoteStart - foundClip.start + state.noteLengthLast,
     selected: true
   })
 
@@ -133,15 +134,15 @@ function reduceCreateNote(state, action) {
   }, state)
 }
 
-function getClipAtBar(state, bar, trackID) {
+export function getClipAtBar(state, bar, trackID) {
   return state.clips.find((clip) => {
     return clip.trackID == trackID && bar >= clip.start && bar < clip.end
   })
 }
 
-function getNoteAtKeyBar(state, key, bar, trackID) {
+export function getNoteAtKeyBar(state, key, bar, trackID) {
   var snappedNoteKey = Math.floor(key)
-  state.notes.find(note => {
+  return state.notes.find(note => {
     // Ignore notes on different keys
     if (note.keyNum != snappedNoteKey)
       return false
@@ -155,13 +156,17 @@ function getNoteAtKeyBar(state, key, bar, trackID) {
     if (!clip)
       return false
 
+    // Ignore clips the end before or start after this point
+    if (bar < clip.start || clip.end <= bar)
+      return false
+
     // Find iteration of the clip's loops that the note would fall into
     var loopStart = clip.start + clip.offset - (!!clip.offset * clip.loopLength)
     while(loopStart + clip.loopLength < bar) {
       loopStart += clip.loopLength
     }
 
-    // Check if note matches
+    // Check if note matches exact timing
     return (
       bar >= loopStart + note.start &&
       bar <  loopStart + note.end
