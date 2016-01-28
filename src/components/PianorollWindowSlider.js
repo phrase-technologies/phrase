@@ -29,6 +29,7 @@ export default class PianorollWindowSlider extends Component {
               barCount={this.props.barCount}
             />
             <PianorollNotes
+              currentTrack={this.props.currentTrack}
               notes={this.props.notes}
               dispatch={this.props.dispatch}
               barCount={this.props.barCount}
@@ -64,6 +65,7 @@ PianorollWindowSlider.propTypes = {
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,
   selectionEndY: React.PropTypes.number,
+  currentTrack: React.PropTypes.object,
   clips: React.PropTypes.array,
   notes: React.PropTypes.array
 };

@@ -63,10 +63,11 @@ export default class Pianoroll extends Component {
 }
 
 Pianoroll.propTypes = {
+  currentTrack: React.PropTypes.object,
   clips:    React.PropTypes.array,
   notes:    React.PropTypes.array,
   cursor:   React.PropTypes.number,
-  playHead: React.PropTypes.number,
+  playhead: React.PropTypes.number,
   xMin:   React.PropTypes.number,
   xMax:   React.PropTypes.number,
   yMin:   React.PropTypes.number,
@@ -77,9 +78,7 @@ Pianoroll.propTypes = {
   selectionEndY: React.PropTypes.number
 };
 Pianoroll.defaultProps = {
-  playHead: 0.000,
-  barCount: 64,
-  keyCount: 88,
+  keyCount: 88
 };
 
 export default connect(mapPianorollToProps)(Pianoroll);

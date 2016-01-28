@@ -38,9 +38,10 @@ export class MixerTrackClips extends Component {
           let left   = clip.start / this.props.barCount * 100
           let right  = clip.end   / this.props.barCount * 100
           let width  = right - left
+          let trackID  = this.props.track.id
           let selected = clip.selected
           let dispatch = this.props.dispatch
-          let props  = {id, left, width, selected, dispatch}
+          let props  = {id, left, width, trackID, selected, dispatch}
 
           return (<MixerTrackClip key={clip.id} {...props} />)
 

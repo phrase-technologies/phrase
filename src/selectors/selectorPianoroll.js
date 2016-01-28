@@ -1,5 +1,11 @@
 import { createSelector } from 'reselect';
 
+const barCountSelector = (state) => {
+  return state.phrase.barCount
+}
+const playheadSelector = (state) => {
+  return state.phrase.playhead
+}
 const tracksSelector = (state) => {
   return state.phrase.tracks
 }
@@ -12,14 +18,11 @@ const notesSelector = (state) => {
 const pianorollSelector = (state) => {
   return state.pianoroll
 }
-const currentTrackSelector = createSelector(
-  tracksSelector,
-  pianorollSelector,
-  (tracks, pianoroll) => {
-    var trackId = pianoroll.currentTrack
-    return tracks.find(track => track.id == trackId)
-  }
-)
+const currentTrackSelector = (state) => {
+  return state.phrase.tracks.find(track => {
+    return track.id == state.pianoroll.currentTrack
+  })
+}
 const currentClipsSelector = createSelector(
   clipsSelector,
   pianorollSelector,
@@ -49,12 +52,16 @@ export const mapPianorollToProps = createSelector(
   currentTrackSelector,
   currentClipsSelector,
   currentNotesSelector,
-  (pianoroll, currentTrack, currentClips, currentNotes) => {
+  barCountSelector,
+  playheadSelector,
+  (pianoroll, currentTrack, currentClips, currentNotes, barCount, playhead) => {
     return {
       ...pianoroll,
-      track: currentTrack,
+      currentTrack: currentTrack,
       clips: currentClips,
-      notes: currentNotes
+      notes: currentNotes,
+      barCount: barCount,
+      playhead: playhead
     }
   }
 )

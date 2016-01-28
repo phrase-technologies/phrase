@@ -56,7 +56,7 @@ export default class PianorollNote extends Component {
     this.startBar = this.getPercentX(e)
     this.startKey = this.getPercentY(e)
 
-    this.props.dispatch( phraseSelectNote(0, this.props.id) );
+    this.props.dispatch( phraseSelectNote(this.props.trackID, this.props.id, e.shiftKey) );
   }
 
   handleDrag(e) {
@@ -105,6 +105,7 @@ PianorollNote.propTypes = {
   left:     React.PropTypes.number.isRequired,
   width:    React.PropTypes.number.isRequired,
   height:   React.PropTypes.number.isRequired,
+  trackID:  React.PropTypes.number.isRequired,
   select:   React.PropTypes.bool,
   dispatch: React.PropTypes.func.isRequired
 };

@@ -8,6 +8,8 @@ import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 import { phrase } from '../actions/actions.js';
 
 export const defaultState = {
+  barCount: 64.00,
+  playhead: 0.000,
   tracks: [
     {
       id: 0,
@@ -58,13 +60,25 @@ export default function reducePhrase(state = defaultState, action) {
       )
 
     // ------------------------------------------------------------------------
+    case phrase.SELECT_CLIP:
+      return u.updateIn(
+        ['clips', '*'],
+        u.ifElse(
+          (clip) => clip.id == action.clipID,
+          (clip) => u({selected: (action.union ? !clip.selected : true )}, clip),
+          (clip) => u({selected: (action.union ?  clip.selected : false)}, clip)          
+        ),
+        state
+      )
+
+    // ------------------------------------------------------------------------
     case phrase.SELECT_NOTE:
       return u.updateIn(
         ['notes', '*'],
         u.ifElse(
           (note) => note.id == action.noteID,
-          (note) => u({selected: true}, note),
-          (note) => u({selected: false}, note)          
+          (note) => u({selected: (action.union ? !note.selected : true )}, note),
+          (note) => u({selected: (action.union ?  note.selected : false)}, note)          
         ),
         state
       )
@@ -80,6 +94,13 @@ function reduceCreateClip(state, action) {
   if (getClipAtBar(state, action.bar, action.trackID))
     return state
 
+  // Deselect all existing clips
+  state = u.updateIn(
+    ['clips', '*', 'selected'],
+    false,
+    state
+  )
+
   // Create new clip
   var snappedClipStart = Math.floor(action.bar);
   var newClip = u.freeze({
@@ -88,7 +109,8 @@ function reduceCreateClip(state, action) {
     start:      snappedClipStart,
     end:        snappedClipStart + 1,
     offset:     0.00,
-    loopLength: 1.00
+    loopLength: 1.00,
+    selected:   true
   })
 
   // Insert

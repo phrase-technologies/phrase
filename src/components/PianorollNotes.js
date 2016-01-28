@@ -40,9 +40,10 @@ export default class PianorollNotes extends Component {
           let right  = note.end   / this.props.barCount * 100;
           let width  = right - left;
           let height = top - bottom;
+          let trackID  = this.props.currentTrack.id
           let selected = note.selected
           let dispatch = this.props.dispatch
-          let props  = {id, keyNum, top, left, width, height, selected, dispatch};
+          let props  = {id, keyNum, top, left, width, height, trackID, selected, dispatch};
           return (<PianorollNote key={note.id} {...props} />);
 
         }.bind(this))}
@@ -78,7 +79,7 @@ export default class PianorollNotes extends Component {
     if (Date.now() - this.lastClickTimestamp < 640 && this.lastClickX == x && this.lastClickY == y) {
       let bar = this.getPercentX(e) * this.props.barCount;
       let key = Math.ceil(this.props.keyCount - this.getPercentY(e)*this.props.keyCount);
-      this.props.dispatch( phraseCreateNote(0,key,bar) );
+      this.props.dispatch( phraseCreateNote(this.props.currentTrack.id, key, bar) );
 
     // Singleclick - Selection Box
     } else {
@@ -122,6 +123,7 @@ export default class PianorollNotes extends Component {
 }
 
 PianorollNotes.propTypes = {
+  currentTrack: React.PropTypes.object,
   barCount:     React.PropTypes.number.isRequired,
   keyCount:     React.PropTypes.number.isRequired,
   notes:        React.PropTypes.array

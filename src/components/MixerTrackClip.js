@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
-import { mixerSelectClip } from '../actions/actionsPianoroll.js'
+import { phraseSelectClip } from '../actions/actionsPhrase.js'
 
 export default class MixerTrackClip extends Component {
   render() {
@@ -52,7 +52,7 @@ export default class MixerTrackClip extends Component {
     this.startBar = this.getPercentX(e)
     this.startKey = this.getPercentY(e)
 
-    this.props.dispatch( pianorollSelectNote(this.props.id) )
+    this.props.dispatch( phraseSelectClip(this.props.trackID, this.props.id, e.shiftKey) )
   }
 
   handleDrag(e) {
@@ -96,6 +96,7 @@ export default class MixerTrackClip extends Component {
 
 MixerTrackClip.propTypes = {
   id:       React.PropTypes.number.isRequired,
+  trackID:  React.PropTypes.number.isRequired,
   left:     React.PropTypes.number.isRequired,
   width:    React.PropTypes.number.isRequired,
   select:   React.PropTypes.bool,

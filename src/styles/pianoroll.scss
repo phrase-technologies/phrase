@@ -270,7 +270,7 @@ $pianoroll-scroll-horizontal: 30px;
 only screen and ( min-device-pixel-ratio: 1.3    ),
 only screen and ( min-resolution:         120dpi ) {
   .pianoroll-note-label {
-    box-shadow: 0 0 2px 0.5px #000;
+    box-shadow: 0 0 1px 0.5px #000;
   }
 }
 

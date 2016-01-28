@@ -238,14 +238,14 @@
     border: 1px solid #F80;
     background-image: linear-gradient(to bottom, #630 0%, #520 100%);
     color: #F80;
-    padding: 1px 3px;
+    padding: 3px 4px;
   }
 }
 @media
 only screen and ( min-device-pixel-ratio: 1.3    ),
 only screen and ( min-resolution:         120dpi ) {
   .mixer-track-clip-label {
-    box-shadow: 0 0 2px 0.5px #000;
+    box-shadow: 0 0 1px 0.5px #000;
   }
 }
 
