@@ -5,4 +5,6 @@ export const phraseCreateClip             = (trackID, bar)            => ({type:
 export const phraseCreateNote             = (trackID, key, bar)       => ({type: phrase.CREATE_NOTE, trackID, key, bar})
 export const phraseSelectClip             = (trackID, clipID, union)  => ({type: phrase.SELECT_CLIP, trackID, clipID, union})
 export const phraseSelectNote             = (trackID, noteID, union)  => ({type: phrase.SELECT_NOTE, trackID, noteID, union})
+export const phraseDragClipSelection      = (bar, track)              => ({type: phrase.DRAG_CLIP_SELECTION, bar, track})
+export const phraseDragNoteSelection      = (key, bar)                => ({type: phrase.DRAG_NOTE_SELECTION, key, bar})
 export const phraseMovePlayhead           = (bar)                     => ({type: phrase.MOVE_PLAYHEAD, bar})

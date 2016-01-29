@@ -27,6 +27,8 @@ export const phrase = namespaceActions(
     'CREATE_NOTE',
     'SELECT_CLIP',
     'SELECT_NOTE',
+    'DRAG_CLIP_SELECTION',
+    'DRAG_NOTE_SELECTION',
     'MOVE_PLAYHEAD'
   ]
 )

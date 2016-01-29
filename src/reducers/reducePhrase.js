@@ -22,6 +22,8 @@ export const defaultState = {
   ],
   clips: [],
   notes: [],
+  clipSelectionOffsetBar:   null,
+  clipSelectionOffsetTrack: null,
   trackAutoIncrement: 2,
   noteAutoIncrement:  0,
   clipAutoIncrement:  0,
@@ -82,6 +84,13 @@ export default function reducePhrase(state = defaultState, action) {
         ),
         state
       )
+
+    // ------------------------------------------------------------------------
+    case phrase.DRAG_CLIP_SELECTION:
+      return u({
+        clipSelectionOffsetBar:   action.bar,
+        clipSelectionOffsetTrack: action.track
+      }, state)
 
     // ------------------------------------------------------------------------
     default:

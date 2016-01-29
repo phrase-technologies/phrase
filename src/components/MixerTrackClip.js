@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
-import { phraseSelectClip } from '../actions/actionsPhrase.js'
+import { phraseSelectClip,
+         phraseDragClipSelection } from '../actions/actionsPhrase.js'
 
 export default class MixerTrackClip extends Component {
   render() {
@@ -49,8 +50,8 @@ export default class MixerTrackClip extends Component {
 
     this.isDragging = 1
 
-    this.startBar = this.getPercentX(e)
-    this.startKey = this.getPercentY(e)
+    this.startBar   = this.getPercentX(e)
+    this.startTrack = this.getPercentY(e)
 
     this.props.dispatch( phraseSelectClip(this.props.trackID, this.props.id, e.shiftKey) )
   }
@@ -63,9 +64,9 @@ export default class MixerTrackClip extends Component {
     // Minimum movement before dragging note
     if( this.isDragging > 1)
     {
-      let barDelta = this.getPercentX(e) - this.startBar
-      let keyDelta = this.getPercentY(e) - this.startKey
-      //this.props.dispatch( pianorollSelectionEnd(x,y) )
+      let barDelta   = this.getPercentX(e) - this.startBar
+      let trackDelta = Math.round(this.getPercentY(e))
+      this.props.dispatch( phraseDragClipSelection(barDelta, trackDelta) )
     }
 
     // Track minimum required movement
@@ -78,7 +79,7 @@ export default class MixerTrackClip extends Component {
     {
       let barDelta = this.getPercentX(e) - this.startBar
       let keyDelta = this.getPercentY(e) - this.startKey
-      // this.props.dispatch( pianorollSelectionEnd(null,null) )      
+      this.props.dispatch( phraseDragClipSelection(null, null) )
     }
 
     this.isDragging = false
@@ -99,6 +100,6 @@ MixerTrackClip.propTypes = {
   trackID:  React.PropTypes.number.isRequired,
   left:     React.PropTypes.number.isRequired,
   width:    React.PropTypes.number.isRequired,
-  select:   React.PropTypes.bool,
+  selected: React.PropTypes.bool,
   dispatch: React.PropTypes.func.isRequired
 }
