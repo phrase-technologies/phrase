@@ -12,13 +12,15 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
+var canvasCounter = 0
+
 export default class CanvasComponent extends Component {
 
   constructor() {
     super();
 
+    this.canvasID = canvasCounter++
     this.handleResize = this.handleResize.bind(this);
-    this.renderFrame = this.renderFrame.bind(this);
   }
 
   componentDidMount() {
@@ -35,34 +37,34 @@ export default class CanvasComponent extends Component {
     this.handleResize();
 
     // Render
-    this.newAnimationFrame();
+    CanvasComponent.requestCanvasUpdate(
+      this.canvasID,
+      () => this.props.renderFrame(this.data.canvasContext)
+    )
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-    cancelAnimationFrame(this.renderFrame);
+    window.removeEventListener('resize', this.handleResize)
+    CanvasComponent.cancelCanvasUpdate(this.canvasID)
   }  
 
   shouldComponentUpdate(nextProps) {
     if (nextProps.renderFrame !== this.props.renderFrame)
-      this.newAnimationFrame();
-    return false;
-  }
-
-  renderFrame() {
-    this.props.renderFrame( this.data.canvasContext );
-  }
-
-  newAnimationFrame() {
-    cancelAnimationFrame(this.renderFrame);
-    requestAnimationFrame(this.renderFrame);    
+      CanvasComponent.requestCanvasUpdate(
+        this.canvasID,
+        () => nextProps.renderFrame(this.data.canvasContext)
+      )
+    return false
   }
 
   handleResize() {
     this.data.pixelScale = window.devicePixelRatio || 1;
     this.data.canvas.width  = this.data.width  = this.data.container.clientWidth  * this.data.pixelScale;
     this.data.canvas.height = this.data.height = this.data.container.clientHeight * this.data.pixelScale;
-    this.newAnimationFrame();
+    CanvasComponent.requestCanvasUpdate(
+      this.canvasID,
+      () => this.props.renderFrame(this.data.canvasContext)
+    )
   }
 
   render() {
@@ -70,4 +72,28 @@ export default class CanvasComponent extends Component {
       <canvas/>
     );
   }
+}
+
+CanvasComponent.canvasUpdates = null
+CanvasComponent.requestCanvasUpdate = function(canvasID, canvasUpdate) {
+  // Animation frame already requested, just add/update the specific canvas update
+  if (CanvasComponent.canvasUpdates) {
+    CanvasComponent.canvasUpdates[canvasID] = canvasUpdate
+  }
+  // Request brand new animation frame
+  else {
+    CanvasComponent.canvasUpdates = []
+    CanvasComponent.canvasUpdates[canvasID] = canvasUpdate
+    requestAnimationFrame(() => {
+      CanvasComponent.canvasUpdates.forEach(canvasUpdate => {
+        if (typeof canvasUpdate === 'function')
+          canvasUpdate()
+      })
+      CanvasComponent.canvasUpdates = null
+    });
+  }
+}
+CanvasComponent.cancelCanvasUpdate = function(canvasID) {
+  if (CanvasComponent.canvasUpdates)
+    CanvasComponent.canvasUpdates[canvasID] = null
 }
