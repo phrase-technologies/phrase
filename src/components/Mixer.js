@@ -18,7 +18,7 @@ import { connect } from 'react-redux'
 
 import _ from 'lodash';
 import { shiftInterval,
-         zoomInterval } from '../helpers/helpers.js';
+         zoomInterval } from '../helpers/intervalHelpers.js';
 import { phraseCreateTrack } from '../actions/actionsPhrase.js'
 import { mixerScrollX,
          mixerScrollY } from '../actions/actionsMixer.js';

@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 
+import _ from 'lodash'
 import { closestHalfPixel,
-         drawLine } from '../helpers/helpers.js'
+         drawLine,
+         drawRoundedRectangle } from '../helpers/canvasHelpers.js'
 import { pianorollScrollX,
          pianorollScrollY,
          pianorollMoveCursor } from '../actions/actionsPianoroll.js'
@@ -17,6 +19,22 @@ export class PianorollWindow extends Component {
     this.props.grid.marginBottom = 30
     this.props.grid.marginLeft   = 10
     this.props.grid.marginRight  = 10
+  }
+
+  shouldComponentUpdate(nextProps) {
+    var propsToCheck = [
+      'barCount',
+      'keyCount',
+      'xMin',
+      'xMax',
+      'yMin',
+      'yMax',
+      'notes'
+    ]
+    var changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] != this.props[prop]
+    })
+    return changeDetected
   }
 
   render() {
@@ -34,6 +52,13 @@ export class PianorollWindow extends Component {
       this.props.grid.calculateZoomThreshold();
       this.renderKeyLines(canvasContext, this.props.yMin, this.props.yMax)
       this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax)
+      this.renderNotes(canvasContext,
+        this.props.xMin,
+        this.props.xMax,
+        this.props.yMin,
+        this.props.yMax,
+        this.props.notes
+      )
     }.bind(this)
   }
 
@@ -44,7 +69,7 @@ export class PianorollWindow extends Component {
     // Styles
     canvasContext.lineWidth = 1.0
     canvasContext.setLineDash( key.alt ? [2,4] : [] )
-    canvasContext.font = 11*this.props.grid.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif"
+    canvasContext.font = 11*this.props.grid.pixelScale + "pleft Helvetica Neue, Helvetica, Arial, sans-serif"
     canvasContext.fillStyle = "#AAAAAA"
     canvasContext.textAlign = "start"
 
@@ -123,8 +148,82 @@ export class PianorollWindow extends Component {
 
     // One final stroke to end the last octave!
     canvasContext.stroke()
-  }  
+  }
+
+  renderNotes(canvasContext, xMin, xMax, yMin, yMax, notes) {
+    var keyboardHeight = this.props.grid.getActiveHeight() / this.props.grid.getKeyRange()
+    var keyHeight = keyboardHeight / this.props.keyCount
+    var fontSize = keyHeight - 8.5*this.props.grid.pixelScale + 2*this.props.grid.pixelScale
+    canvasContext.font = fontSize + "px Helvetica Neue, Helvetica, Arial, sans-serif"
+
+    notes.forEach(note => {
+      var top    = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum     ) ) + 1   // Extra pixel to account for stroke width
+      var bottom = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum + 1 ) ) + 1   // Extra pixel to account for stroke width
+      var left   = closestHalfPixel( this.props.grid.barToXCoord( note.start      ) )
+      var right  = closestHalfPixel( this.props.grid.barToXCoord( note.end        ) )
+      var label
+      if (keyboardHeight > 1275*this.props.grid.pixelScale) {
+        let keyLetter = {1:'A',2:'A#',3:'B',4:'C',5:'C#',6:'D',7:'D#',8:'E',9:'F',10:'F#',11:'G',0:'G#'}[note.keyNum % 12];
+        label = keyLetter + Math.floor((note.keyNum+8)/12);
+      }
+
+      this.renderNote(canvasContext, left, right, top, bottom, note.selected, label)
+    })
+  }
+
+  renderNote(canvasContext, left, right, top, bottom, selected, label, roundedCorners = true, gradient = true) {
+    // Gradient Fill
+    if (gradient) {
+      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
+          gradient.addColorStop(0, "#F80");
+          gradient.addColorStop(1, "#C60");
+      canvasContext.fillStyle = gradient
+    } else {
+      canvasContext.fillStyle = "#F80"
+    }
+
+    // Stroke
+    canvasContext.strokeStyle = "#000"
+
+    // Dimensions
+    var width = right - left
+    var height = bottom - top
+    var radius = height * 0.175
+
+    // Shape
+    drawRoundedRectangle(canvasContext, left, right, top, bottom, radius)
+
+    // Selected
+    if (selected) {
+      if (gradient) {
+        var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
+            gradient.addColorStop(0, "#630");
+            gradient.addColorStop(1, "#520");
+        canvasContext.fillStyle = gradient
+      } else {
+        canvasContext.fillStyle = "#520"
+      }
+      canvasContext.strokeStyle = 'transparent'
+      drawRoundedRectangle(canvasContext,
+        left   + 0.5 + 1.0*this.props.grid.pixelScale,
+        right  - 0.5 - 1.0*this.props.grid.pixelScale,
+        top    + 0.5 + 1.0*this.props.grid.pixelScale,
+        bottom - 0.5 - 1.0*this.props.grid.pixelScale,
+        radius - 1.0*this.props.grid.pixelScale
+      )
+    }
+
+    // Label
+    if (label && width > 30*this.props.grid.pixelScale) {
+      canvasContext.fillStyle = selected ? "#F80" : "#000"
+      canvasContext.textAlign = "start"
+      let x = left   + 3*this.props.grid.pixelScale
+      let y = bottom - 5*this.props.grid.pixelScale
+      canvasContext.fillText(label, x, y)
+    }
+  }
 }
+
 
 PianorollWindow.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
@@ -134,7 +233,8 @@ PianorollWindow.propTypes = {
   xMin:         React.PropTypes.number.isRequired,
   xMax:         React.PropTypes.number.isRequired,
   yMin:         React.PropTypes.number.isRequired,
-  yMax:         React.PropTypes.number.isRequired
+  yMax:         React.PropTypes.number.isRequired,
+  notes:        React.PropTypes.array.isRequired
 }
 
 export default provideGridSystem(

@@ -3,7 +3,7 @@
 // ============================================================================
 
 import u from 'updeep'
-import { zoomInterval } from '../helpers/helpers.js'
+import { zoomInterval } from '../helpers/intervalHelpers.js'
 import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
 import { mixer } from '../actions/actions.js'

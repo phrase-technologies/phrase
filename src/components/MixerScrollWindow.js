@@ -11,7 +11,7 @@ import provideGridScroll from './GridScrollProvider'
 
 import _ from 'lodash';
 import { closestHalfPixel,
-         drawLine } from '../helpers/helpers.js';
+         drawLine } from '../helpers/canvasHelpers.js';
 import { mixerScrollX,
          mixerScrollY,
          mixerMoveCursor } from '../actions/actionsMixer.js';

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { mapPianorollToProps } from '../selectors/selectorPianoroll.js';
 import { shiftInterval,
-         zoomInterval } from '../helpers/helpers.js';
+         zoomInterval } from '../helpers/intervalHelpers.js';
 import { pianorollScrollX,
          pianorollScrollY } from '../actions/actionsPianoroll.js';
 
@@ -41,7 +41,7 @@ export default class Pianoroll extends Component {
       <div className="pianoroll">
         <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
         <PianorollTimeline {...dispatchProp} {...timelineProps} ref={(ref) => this.timeline = ref} />
-        <PianorollWindow {...dispatchProp} {...keyboardProps} {...timelineProps} >
+        <PianorollWindow {...this.props} >
           <PianorollWindowSlider {...this.props} />
           <div className="pianoroll-scrollbar-horizontal">
             <Scrollbar draggableEndpoints

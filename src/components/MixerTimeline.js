@@ -3,7 +3,7 @@ import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 
 import { closestHalfPixel,
-         drawLine } from '../helpers/helpers.js';
+         drawLine } from '../helpers/canvasHelpers.js';
 import { mixerScrollX,
          mixerMoveCursor } from '../actions/actionsMixer.js';
 

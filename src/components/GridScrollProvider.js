@@ -11,7 +11,7 @@
 import React, { Component } from 'react';
 
 import { shiftInterval,
-         zoomInterval } from '../helpers/helpers.js';
+         zoomInterval } from '../helpers/intervalHelpers.js';
 
 var provideGridScroll = function(
   ChildComponent,

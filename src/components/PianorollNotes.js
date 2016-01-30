@@ -30,7 +30,7 @@ export default class PianorollNotes extends Component {
   render() {
     return (
       <div className="pianoroll-notes">
-        {this.props.notes.map(function(note){
+        {/*this.props.notes.map(function(note){
 
           let id     = note.id;
           let keyNum = note.keyNum
@@ -46,7 +46,7 @@ export default class PianorollNotes extends Component {
           let props  = {id, keyNum, top, left, width, height, trackID, selected, dispatch};
           return (<PianorollNote key={note.id} {...props} />);
 
-        }.bind(this))}
+        }.bind(this))*/}
       </div>
     );
   }

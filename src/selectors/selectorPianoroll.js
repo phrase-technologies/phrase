@@ -25,19 +25,17 @@ const currentTrackSelector = (state) => {
 }
 const currentClipsSelector = createSelector(
   clipsSelector,
-  pianorollSelector,
-  (clips, pianoroll) => {
-    var trackId = pianoroll.currentTrack
-    return clips.filter(clip => clip.trackID == trackId)
+  currentTrackSelector,
+  (clips, currentTrack) => {
+    return clips.filter(clip => clip.trackID == currentTrack.id)
   }
 )
 const currentNotesSelector = createSelector(
   currentClipsSelector,
   notesSelector,
-  pianorollSelector,
-  (currentClips, notes, pianoroll) => {
-    var trackId = pianoroll.currentTrack
-    var currentNotes = notes.filter(note => note.trackID == trackId)
+  currentTrackSelector,
+  (currentClips, notes, currentTrack) => {
+    var currentNotes = notes.filter(note => note.trackID == currentTrack.id)
 
     // Render a copy of each note for each loop iteration of it's respective clip
     return currentNotes.reduce((allLoopedNotes, note) => {

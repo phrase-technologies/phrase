@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import { shiftInterval } from '../helpers/helpers.js';
+import { shiftInterval } from '../helpers/intervalHelpers.js';
 import { cursorResizeX,
          cursorResizeY,
          cursorResizeLeft,
