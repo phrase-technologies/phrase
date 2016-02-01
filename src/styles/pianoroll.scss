@@ -1,5 +1,5 @@
 $pianoroll-corner:             4px;
-$pianoroll-timeline:          40px;
+$pianoroll-timeline:          50px;
 $pianoroll-spacing:           15px;
 $pianoroll-keyboard-width:   125px;
 $pianoroll-scroll-horizontal: 30px;
@@ -69,10 +69,55 @@ $pianoroll-scroll-horizontal: 30px;
 // ----------------------------------------------------------------------------
 // Window - Central Editing Area
 // ----------------------------------------------------------------------------
-.pianoroll-window-frame {
+.pianoroll-window {
   position: absolute;
   top: $pianoroll-timeline;
   left: $pianoroll-keyboard-width;
+  right: 0;
+  bottom: 0;
+
+  > .timeline-selection-window {
+    top: 0;
+    left: 0;
+    right: 0px;
+    bottom: $pianoroll-scroll-horizontal;
+
+    > .timeline-selection-area {
+      top: -1px;
+      left: -1px;
+      right: 0px;
+      bottom: -$pianoroll-scroll-horizontal;
+    }
+  }
+
+  // Inner shadows must be applied in a pseudoelement to cast over the contents
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: $pianoroll-scroll-horizontal;
+
+    border-radius: 0 0 0 0;
+    box-shadow: inset 0 0 5px 1px #000;
+    z-index: 3; // Above scroll-zone
+    pointer-events: none;
+  }
+}
+.pianoroll-window-control {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: none;
+}
+.pianoroll-window-display {
+  position: absolute;
+  top: 0;
+  left: 0;
   right: 0;
   bottom: 0;
 
@@ -81,6 +126,7 @@ $pianoroll-scroll-horizontal: 30px;
   background: #444;
 
   overflow: hidden;
+  pointer-events: none;
 
   > canvas {
     position: absolute;
@@ -93,40 +139,6 @@ $pianoroll-scroll-horizontal: 30px;
     border-radius: 0 0 $pianoroll-corner 0;
   //height: 100%; // For some reason, causes skewed aspect ratio in chrome Nov 10th 2015 (AK)
   }
-
-  // Inner shadows must be applied in a pseudoelement to cast over the contents
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: $pianoroll-scroll-horizontal - 1px;
-
-    border-radius: 0 0 0 0;
-    box-shadow: inset 0 0 5px 1px #000;
-    z-index: 3; // Above scroll-zone
-    pointer-events: none;
-  }
-}
-.pianoroll-window {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: $pianoroll-scroll-horizontal;
-  z-index: 1;
-  overflow: hidden;
-}
-.pianoroll-window-sill {
-  position: absolute;
-  top: 0;
-  left: 10px;
-  right: 10px;
-  bottom: 0;
-}
-.pianoroll-window-slider {
-  position: absolute;  
 }
 .pianoroll-scrollbar-horizontal {
   position: absolute;
@@ -181,97 +193,6 @@ $pianoroll-scroll-horizontal: 30px;
 
   box-shadow: 0 0 0 1px #000;
   background: rgba(255, 127, 0, 0.125);
-}
-
-// ----------------------------------------------------------------------------
-// Notes
-// ----------------------------------------------------------------------------
-.pianoroll-notes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1; // Above Clips
-
-  &[min-height~="1350"] {
-    .pianoroll-note-label {
-      font-size: 10px;
-    }
-  }
-  &[min-height~="1450"] {
-    .pianoroll-note-label {
-      font-size: 11px;
-      line-height: 13px;
-    }
-  }
-  &[max-height~="1275"] {
-    .pianoroll-note-label {
-      color: transparent !important;
-    }
-  }
-  &[max-height~="1000"] {
-    .pianoroll-note-label {
-      border-radius: 1px;
-    }
-  }
-}
-// Each note consists of 2 elements: .pianoroll-note and .pianoroll-note-label.
-// This is necessary to have accurate percentage position on the wrapper and 1px offset on the child.
-.pianoroll-note {
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  &:hover {
-    > .pianoroll-note-label {
-      &:not(.pianoroll-note-selected) {
-        background: #FC8;
-        background-image: linear-gradient(to bottom, #FC8 0%, #F80 100%);
-      }
-      &.pianoroll-note-selected {
-        border-color: #FA4;
-        color: #FA4;
-      }
-    }
-  }
-}
-.pianoroll-note-label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 1px; // Leave 1px gap between notes that are exactly adjacent
-  bottom: 0;
-
-  border-radius: 2px;
-  background: #F80;
-  background-image: linear-gradient(to bottom, #F80 0%, #C60 100%);
-  box-shadow: 0 0 0 1px #000;
-
-  padding: 2px 3px;
-  font-size: 9px;
-  line-height: 1;
-  color: #000;
-  overflow: hidden;
-
-  // Make sure the user clicks the
-  // parent .pianoroll-note <div>, not the label child.
-  // Important so that e.target handling works.
-  pointer-events: none;
-
-  &.pianoroll-note-selected {
-    border: 1px solid #F80;
-    background-image: linear-gradient(to bottom, #630 0%, #520 100%);
-    color: #F80;
-    padding: 1px 3px;
-  }
-}
-@media
-only screen and ( min-device-pixel-ratio: 1.3    ),
-only screen and ( min-resolution:         120dpi ) {
-  .pianoroll-note-label {
-    box-shadow: 0 0 1px 0.5px #000;
-  }
 }
 
 // ----------------------------------------------------------------------------

@@ -1,14 +1,10 @@
 import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider'
-import provideGridScroll from './GridScrollProvider'
 
 import _ from 'lodash'
 import { closestHalfPixel,
          drawLine,
          drawRoundedRectangle } from '../helpers/canvasHelpers.js'
-import { pianorollScrollX,
-         pianorollScrollY,
-         pianorollMoveCursor } from '../actions/actionsPianoroll.js'
 
 import CanvasComponent from './CanvasComponent'
 
@@ -39,9 +35,8 @@ export class PianorollWindow extends Component {
 
   render() {
     return (
-      <div className="pianoroll-window-frame">
+      <div className="pianoroll-window-display">
         <CanvasComponent renderFrame={this.renderFrame()} />
-        {this.props.children}
       </div>
     );
   }
@@ -52,6 +47,11 @@ export class PianorollWindow extends Component {
       this.props.grid.calculateZoomThreshold();
       this.renderKeyLines(canvasContext, this.props.yMin, this.props.yMax)
       this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax)
+      this.renderClips(canvasContext,
+        this.props.xMin,
+        this.props.xMax,
+        this.props.clips
+      )
       this.renderNotes(canvasContext,
         this.props.xMin,
         this.props.xMax,
@@ -150,17 +150,47 @@ export class PianorollWindow extends Component {
     canvasContext.stroke()
   }
 
+  renderClips(canvasContext, xMin, xMax, clips) {
+    canvasContext.lineWidth = this.props.grid.pixelScale
+    canvasContext.strokeStyle = "#000"
+    canvasContext.fillStyle   = "rgba(255, 127, 0, 0.125)"
+
+    canvasContext.beginPath()
+    clips.forEach(clip => {
+      var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
+      var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
+      // Don't waste CPU cycles drawing stuff that's not visible
+      if (right < 0 || left > this.props.grid.width)
+        return
+
+      drawLine( canvasContext, left,  0, left,  this.props.grid.height - 30*this.props.grid.pixelScale )
+      drawLine( canvasContext, right, 0, right, this.props.grid.height - 30*this.props.grid.pixelScale )
+      canvasContext.fillRect(   left, 0, right - left, this.props.grid.height - 30*this.props.grid.pixelScale )
+    })
+    canvasContext.closePath()
+    canvasContext.stroke()
+  }
+
   renderNotes(canvasContext, xMin, xMax, yMin, yMax, notes) {
     var keyboardHeight = this.props.grid.getActiveHeight() / this.props.grid.getKeyRange()
     var keyHeight = keyboardHeight / this.props.keyCount
     var fontSize = keyHeight - 8.5*this.props.grid.pixelScale + 2*this.props.grid.pixelScale
     canvasContext.font = fontSize + "px Helvetica Neue, Helvetica, Arial, sans-serif"
+    canvasContext.lineWidth = this.props.grid.pixelScale
 
     notes.forEach(note => {
-      var top    = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum     ) ) + 1   // Extra pixel to account for stroke width
-      var bottom = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum + 1 ) ) + 1   // Extra pixel to account for stroke width
-      var left   = closestHalfPixel( this.props.grid.barToXCoord( note.start      ) )
-      var right  = closestHalfPixel( this.props.grid.barToXCoord( note.end        ) )
+      var top    = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum     ), this.props.grid.pixelScale ) + 1   // Extra pixel to account for stroke width
+      var bottom = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum + 1 ), this.props.grid.pixelScale ) + 1   // Extra pixel to account for stroke width
+      // Don't waste CPU cycles drawing stuff that's not visible
+      if (bottom < 0 || top > this.props.grid.height)
+        return
+
+      var left   = closestHalfPixel( this.props.grid.barToXCoord( note.start      ), this.props.grid.pixelScale )
+      var right  = closestHalfPixel( this.props.grid.barToXCoord( note.end        ), this.props.grid.pixelScale )
+      // Don't waste CPU cycles drawing stuff that's not visible
+      if (right < 0 || left > this.props.grid.width)
+        return
+
       var label
       if (keyboardHeight > 1275*this.props.grid.pixelScale) {
         let keyLetter = {1:'A',2:'A#',3:'B',4:'C',5:'C#',6:'D',7:'D#',8:'E',9:'F',10:'F#',11:'G',0:'G#'}[note.keyNum % 12];
@@ -171,7 +201,7 @@ export class PianorollWindow extends Component {
     })
   }
 
-  renderNote(canvasContext, left, right, top, bottom, selected, label, roundedCorners = true, gradient = true) {
+  renderNote(canvasContext, left, right, top, bottom, selected, label, gradient = true) {
     // Gradient Fill
     if (gradient) {
       var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
@@ -205,10 +235,10 @@ export class PianorollWindow extends Component {
       }
       canvasContext.strokeStyle = 'transparent'
       drawRoundedRectangle(canvasContext,
-        left   + 0.5 + 1.0*this.props.grid.pixelScale,
-        right  - 0.5 - 1.0*this.props.grid.pixelScale,
-        top    + 0.5 + 1.0*this.props.grid.pixelScale,
-        bottom - 0.5 - 1.0*this.props.grid.pixelScale,
+        left   + closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
+        right  - closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
+        top    + closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
+        bottom - closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
         radius - 1.0*this.props.grid.pixelScale
       )
     }
@@ -217,7 +247,7 @@ export class PianorollWindow extends Component {
     if (label && width > 30*this.props.grid.pixelScale) {
       canvasContext.fillStyle = selected ? "#F80" : "#000"
       canvasContext.textAlign = "start"
-      let x = left   + 3*this.props.grid.pixelScale
+      let x = left   + 4*this.props.grid.pixelScale
       let y = bottom - 5*this.props.grid.pixelScale
       canvasContext.fillText(label, x, y)
     }
@@ -237,13 +267,4 @@ PianorollWindow.propTypes = {
   notes:        React.PropTypes.array.isRequired
 }
 
-export default provideGridSystem(
-  provideGridScroll(
-    PianorollWindow,
-    {
-      scrollXActionCreator: pianorollScrollX,
-      scrollYActionCreator: pianorollScrollY,
-      cursorActionCreator: pianorollMoveCursor
-    }
-  )
-)
+export default provideGridSystem(PianorollWindow)

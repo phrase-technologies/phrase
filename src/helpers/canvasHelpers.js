@@ -2,11 +2,21 @@
 // Canvas/Calculation helpers
 // --------------------------------------------------------------------------
 
-// In 2D vector graphics, single-pixel stroke width must be drawn at a half-pixel position, otherwise it gets sub-pixel blurring
-export function closestHalfPixel(pixels){
-  // parseInt is a hack for efficient rounding 
-  return parseInt( 0.5 + pixels ) - 0.5;
-}; 
+// In 2D vector graphics:
+// This function helps us manage sub-pixel rendering accuracy of edges
+export function closestHalfPixel(pixels, pixelScale = 1){
+  // Single-pixel stroke width must be drawn at a half-pixel position,
+  // otherwise it gets sub-pixel blurring. 
+  if (pixelScale == 1)
+    return parseInt( 0.5 + pixels ) - 0.5; // parseInt is a hack for efficient rounding 
+  // On retina displays, 2 retina-pixels are the same as 1 normal pixel.
+  // In the case of drawing a 2-pixel stroke in Retina,
+  // we actually want full-pixel positioning to avoid sub-pixel rendering.
+  // If you actually want a 1-pixel stroke in Retina, simply leave 
+  // pixelScale unspecified.
+  else
+    return Math.round(pixels)
+}
 
 export function drawLine(context, x1, y1, x2, y2, xyFlip, color) {
   if( color )

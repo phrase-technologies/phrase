@@ -23,7 +23,11 @@ export default class TimelineSelectionBox extends Component {
     let style = {top, left, width, height};
 
     return (
-      <div className='timeline-selection-box' style={style} />
+      <div className='timeline-selection-window'>
+        <div className='timeline-selection-area'>
+          <div className='timeline-selection-box' style={style} />
+        </div>
+      </div>
     );
   }
 

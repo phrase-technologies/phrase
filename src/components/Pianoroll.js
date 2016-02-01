@@ -8,11 +8,12 @@ import { pianorollScrollX,
          pianorollScrollY } from '../actions/actionsPianoroll.js';
 
 import PianorollTimeline      from './PianorollTimeline.js';
-import PianorollWindow        from './PianorollWindow.js';
-import PianorollWindowSlider  from './PianorollWindowSlider.js';
+import PianorollWindowDisplay from './PianorollWindowDisplay.js';
+import PianorollWindowControl from './PianorollWindowControl.js';
 import PianorollKeyboard      from './PianorollKeyboard.js';
 import Scrollbar              from './Scrollbar.js';
-import TimelineCursor from './TimelineCursor.js'
+import TimelineCursor         from './TimelineCursor.js'
+import TimelineSelectionBox   from './TimelineSelectionBox'
 
 export default class Pianoroll extends Component {
 
@@ -40,16 +41,24 @@ export default class Pianoroll extends Component {
     return (
       <div className="pianoroll">
         <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
-        <PianorollTimeline {...dispatchProp} {...timelineProps} ref={(ref) => this.timeline = ref} />
-        <PianorollWindow {...this.props} >
-          <PianorollWindowSlider {...this.props} />
-          <div className="pianoroll-scrollbar-horizontal">
-            <Scrollbar draggableEndpoints
-              min={this.props.xMin} setScroll={(min,max) => this.props.dispatch(pianorollScrollX(min,max))}
-              max={this.props.xMax}
-            />
-          </div>        
-        </PianorollWindow>
+        <PianorollTimeline {...dispatchProp} {...timelineProps} clips={this.props.clips} ref={(ref) => this.timeline = ref} />
+        <div className="pianoroll-window">
+          <PianorollWindowDisplay {...this.props} />
+          <PianorollWindowControl {...this.props} >
+            <div className="pianoroll-scrollbar-horizontal">
+              <Scrollbar draggableEndpoints
+                min={this.props.xMin} setScroll={(min,max) => this.props.dispatch(pianorollScrollX(min,max))}
+                max={this.props.xMax}
+              />
+            </div>
+          </PianorollWindowControl>
+          <TimelineSelectionBox
+            selectionStartX={this.props.selectionStartX}
+            selectionStartY={this.props.selectionStartY}
+            selectionEndX={this.props.selectionEndX}
+            selectionEndY={this.props.selectionEndY}
+          />
+        </div>
         <TimelineCursor cursor={this.props.cursor} />
       </div>
     );
