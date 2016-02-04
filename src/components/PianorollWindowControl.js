@@ -65,8 +65,20 @@ export class PianorollWindowControl extends Component {
         shiftKey: e.shiftKey
       }
     })
+
     var emptyAreaAction$ = foundNote$.filter(e =>  !e.note)
     var noteAction$      = foundNote$.filter(e => !!e.note)
+
+    var emptyAreaAction$ = new Rx.Subject()
+    var noteAction$      = new Rx.Subject()
+    foundNote$
+      .groupBy(e => !e.note)
+      .subscribe(e => {
+        switch(e.key) {
+          case false: e.subscribe(e => noteAction$.onNext(e));      break;
+          case true:  e.subscribe(e => emptyAreaAction$.onNext(e)); break;
+        }
+      })
 
     this.setupEmptyAreaActions(emptyAreaAction$)
     this.setupNoteActions(noteAction$)
