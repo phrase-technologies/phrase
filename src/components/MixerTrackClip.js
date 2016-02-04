@@ -53,7 +53,7 @@ export default class MixerTrackClip extends Component {
     this.startBar   = this.getPercentX(e)
     this.startTrack = this.getPercentY(e)
 
-    this.props.dispatch( phraseSelectClip(this.props.trackID, this.props.id, e.shiftKey) )
+    this.props.dispatch( phraseSelectClip(this.props.id, e.shiftKey) )
   }
 
   handleDrag(e) {

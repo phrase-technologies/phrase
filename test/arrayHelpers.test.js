@@ -1,7 +1,10 @@
 import expect from 'expect'
 
 import u from 'updeep'
-import { uIncrement, uAppend, uReplace } from '../src/helpers/arrayHelpers.js'
+import { uIncrement,
+         uAppend,
+         uReplace,
+         uRemove } from '../src/helpers/arrayHelpers.js'
 
 describe("updeep arrayHelpers", () => {
 
@@ -53,6 +56,21 @@ describe("updeep arrayHelpers", () => {
 
     it("should be in the same position", () => {
       expect( obj2.fruits.indexOf(replacement) ).toEqual( obj1.fruits.indexOf(original) )
+    });
+
+  });
+
+  describe("uRemove", () => {
+
+    var elementToRemove = "Orange"
+    var obj2 = u.updateIn(['fruits'], uRemove(elementToRemove), obj1);
+
+    it("should have 1 less element after removal", () => {
+      expect( obj2.fruits.length ).toEqual( obj1.fruits.length - 1 )
+    });
+
+    it("should no longer contain the removed element", () => {
+      expect( obj2.fruits.indexOf(elementToRemove) ).toEqual( -1 )
     });
 
   });

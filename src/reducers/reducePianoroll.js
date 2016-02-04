@@ -70,14 +70,14 @@ export default function reducePianoroll(state = defaultState, action) {
       );
 
     // ------------------------------------------------------------------------
-    case pianoroll.SELECTION_START:
+    case pianoroll.SELECTION_BOX_START:
       return Object.assign({}, state, {
         selectionStartX: action.x,
         selectionStartY: action.y
       });
 
     // ------------------------------------------------------------------------
-    case pianoroll.SELECTION_END:
+    case pianoroll.SELECTION_BOX_END:
       return Object.assign({}, state, {
         selectionEndX: action.x,
         selectionEndY: action.y

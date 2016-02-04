@@ -11,7 +11,8 @@ import { pianorollScrollX,
          pianorollSelectionStart,
          pianorollSelectionEnd } from '../actions/actionsPianoroll.js';
 import { phraseCreateNote,
-         phraseSelectNote } from '../actions/actionsPhrase.js';
+         phraseSelectNote,
+         phraseDeleteNote } from '../actions/actionsPhrase.js';
 
 export class PianorollWindow extends Component {
 
@@ -31,11 +32,13 @@ export class PianorollWindow extends Component {
   }
 
   componentDidMount() {
+    // Setup Grid System
     this.props.grid.marginTop    =  0
     this.props.grid.marginBottom = 30
     this.props.grid.marginLeft   = 10
     this.props.grid.marginRight  = 10
 
+    // Event Stream Sources
     this.container = ReactDOM.findDOMNode(this);
     this.mousedown$ = Rx.Observable.fromEvent(this.container, "mousedown")
     this.mousemove$ = Rx.Observable.fromEvent(document, "mousemove")
@@ -62,17 +65,19 @@ export class PianorollWindow extends Component {
         shiftKey: e.shiftKey
       }
     })
-    var emptyAreaSelected$ = foundNote$.filter(e =>  !e.note)
-    var noteSelected$      = foundNote$.filter(e => !!e.note)
+    var emptyAreaAction$ = foundNote$.filter(e =>  !e.note)
+    var noteAction$      = foundNote$.filter(e => !!e.note)
 
-    this.setupEmptyAreaActions(emptyAreaSelected$)
-    this.setupNoteActions(noteSelected$)
+    this.setupEmptyAreaActions(emptyAreaAction$)
+    this.setupNoteActions(noteAction$)
   }
 
   // All actions that stem from an initial click in an empty part of the track
-  setupEmptyAreaActions(emptyAreaSelected$) {
+  setupEmptyAreaActions(emptyAreaAction$) {
+    // ------------------------------------------------------------------------
     // Event Stream Flows
-    var resizeSelectionBox$ = emptyAreaSelected$
+    // ------------------------------------------------------------------------
+    var resizeSelectionBox$ = emptyAreaAction$
       .flatMapLatest(() => this.mousemove$.takeUntil(this.mouseup$))
       .map(e => {
         var x = this.getPercentX(e);
@@ -86,7 +91,7 @@ export class PianorollWindow extends Component {
         var y = this.getPercentY(e);
         return { x, y, shiftKey: e.shiftKey }
       })
-    var createNote$ = emptyAreaSelected$
+    var createNote$ = emptyAreaAction$
       .timeInterval()
       .bufferWithCount(2, 1)
       .filter(buffer => {
@@ -96,9 +101,11 @@ export class PianorollWindow extends Component {
       })
       .map(buffer => buffer[1].value)
 
+    // ------------------------------------------------------------------------
     // Actions
+    // ------------------------------------------------------------------------
     let dispatch = this.props.dispatch
-    emptyAreaSelected$.subscribe(e => dispatch( pianorollSelectionStart(e.x, e.y) ) )
+    emptyAreaAction$.subscribe(e => dispatch( pianorollSelectionStart(e.x, e.y) ) )
     resizeSelectionBox$.subscribe(e => dispatch( pianorollSelectionEnd(e.x, e.y) ) )
     applySelectionBox$.subscribe(e => {
       this.props.dispatch( pianorollSelectionStart(null, null) );
@@ -108,20 +115,24 @@ export class PianorollWindow extends Component {
   }
 
   // All actions that stem from an initial click on an existing note
-  setupNoteActions(noteSelected$) {
+  setupNoteActions(noteAction$) {
+    // ------------------------------------------------------------------------
     // Event Stream Flows
-    var deleteNote$ = noteSelected$
+    // ------------------------------------------------------------------------
+    var selectNote$ = noteAction$
+      .filter(e => !e.note.selected)
+    var deleteNote$ = noteAction$
       .timeInterval()
       .bufferWithCount(2, 1)
       .filter(buffer => buffer[1].interval < 640 && buffer[0].value.note.id === buffer[1].value.note.id)
       .map(buffer => buffer[1].value)
 
+    // ------------------------------------------------------------------------
     // Actions
+    // ------------------------------------------------------------------------
     let dispatch = this.props.dispatch
-    noteSelected$.subscribe(e => dispatch( phraseSelectNote(this.props.currentTrack.id, e.note.id, e.shiftKey) ) )
-    deleteNote$.subscribe(deletedNote => {
-      console.log("deleteNote$:", deletedNote)
-    })
+    selectNote$.subscribe(e => dispatch( phraseSelectNote(e.note.id, e.shiftKey) ) )
+    deleteNote$.subscribe(e => dispatch( phraseDeleteNote(e.note.id) ) )
   }
 
   getPercentX(e) {

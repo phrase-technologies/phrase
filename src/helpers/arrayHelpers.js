@@ -33,3 +33,12 @@ export function uReplace(original, replacement) {
     return result
   }
 }
+
+export function uRemove(element) {
+  return (array) => {
+    var position = array.indexOf(element)
+    var result = [...array]
+        result.splice(position, 1)
+    return result
+  }
+}

@@ -27,6 +27,7 @@ export const phrase = namespaceActions(
     'CREATE_NOTE',
     'SELECT_CLIP',
     'SELECT_NOTE',
+    'DELETE_NOTE',
     'DRAG_CLIP_SELECTION',
     'DRAG_NOTE_SELECTION',
     'MOVE_PLAYHEAD'
@@ -39,8 +40,8 @@ export const mixer = namespaceActions(
     'SCROLL_X',
     'SCROLL_Y',
     'RESIZE_WIDTH',
-    'SELECTION_START',
-    'SELECTION_END',
+    'SELECTION_BOX_START',
+    'SELECTION_BOX_END',
     'MOVE_CURSOR',
   ]
 )
@@ -52,8 +53,8 @@ export const pianoroll = namespaceActions(
     'SCROLL_Y',
     'RESIZE_WIDTH',
     'RESIZE_HEIGHT',
-    'SELECTION_START',
-    'SELECTION_END',
+    'SELECTION_BOX_START',
+    'SELECTION_BOX_END',
     'MOVE_CURSOR'
   ]
 )

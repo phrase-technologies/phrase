@@ -86,6 +86,12 @@ export default function reducePhrase(state = defaultState, action) {
       )
 
     // ------------------------------------------------------------------------
+    case phrase.DELETE_NOTE:
+      return u({
+        notes: u.reject(x => x.id == action.noteID)
+      }, state)
+
+    // ------------------------------------------------------------------------
     case phrase.DRAG_CLIP_SELECTION:
       return u({
         clipSelectionOffsetBar:   action.bar,

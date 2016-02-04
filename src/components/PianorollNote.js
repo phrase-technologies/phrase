@@ -56,7 +56,7 @@ export default class PianorollNote extends Component {
     this.startBar = this.getPercentX(e)
     this.startKey = this.getPercentY(e)
 
-    this.props.dispatch( phraseSelectNote(this.props.trackID, this.props.id, e.shiftKey) );
+    this.props.dispatch( phraseSelectNote(this.props.id, e.shiftKey) );
   }
 
   handleDrag(e) {
