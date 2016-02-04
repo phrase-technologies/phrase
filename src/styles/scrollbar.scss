@@ -1,11 +1,11 @@
 @import './cursor.scss';
 
-$scroll-corner-radius: 6px;
-.scroll-gutter {
+$scrollbar-corner-radius: 6px;
+.scrollbar-gutter {
   position: relative;
   box-shadow: inset 0 2px 8px #000,
               0 0 10px rgba(0,0,0,0.25);
-  border-radius: $scroll-corner-radius;
+  border-radius: $scrollbar-corner-radius;
   background: #222;
 
   pointer-events: all;
@@ -13,13 +13,13 @@ $scroll-corner-radius: 6px;
   transition: margin 0.5s, height 0.5s, border-radius 0.5s;
   transition-delay: 1s;
 
-  &.scroll-draggable-endpoints {
+  &.scrollbar-draggable-endpoints {
     &.hover,
     &:hover {
       border-radius: 2px;
       transition-delay: 0s;
 
-      .scroll-bar {
+      .scrollbar-bar {
         border-radius: 2px;
         transition: border-radius 0.125s;
         transition-delay: 0s;
@@ -34,11 +34,11 @@ $scroll-corner-radius: 6px;
     }
   }
 }
-.scroll-horizontal {
+.scrollbar-horizontal {
   height: 10px;
   width: 100%;
 
-  &.scroll-draggable-endpoints {
+  &.scrollbar-draggable-endpoints {
     &.hover,
     &:hover {
       margin-top: -4px;
@@ -47,11 +47,11 @@ $scroll-corner-radius: 6px;
     }
   }
 }
-.scroll-vertical {
+.scrollbar-vertical {
   height: 100%;
   width: 10px;
 
-  &.scroll-draggable-endpoints {
+  &.scrollbar-draggable-endpoints {
     &.hover,
     &:hover {
       margin-right: -4px;
@@ -60,10 +60,10 @@ $scroll-corner-radius: 6px;
     }
   }
 }
-.scroll-bar {
+.scrollbar-bar {
   position: absolute;
 
-  border-radius: $scroll-corner-radius;
+  border-radius: $scrollbar-corner-radius;
   background: #555;
 
   transition: border-radius 0.5s;
@@ -82,16 +82,16 @@ $scroll-corner-radius: 6px;
     transition-delay: 1s;
   }
 }
-.scroll-draggable-endpoints {
-  .scroll-bar {
+.scrollbar-draggable-endpoints {
+  .scrollbar-bar {
     &:before,
     &:after {
       display: block;
     }
   }
 }
-.scroll-horizontal {
-  > .scroll-bar {
+.scrollbar-horizontal {
+  > .scrollbar-bar {
     top: 1px;
     bottom: 1px;
     min-width: 20px;
@@ -117,8 +117,8 @@ $scroll-corner-radius: 6px;
     &:after  { right: 2px; }
   }
 }
-.scroll-vertical {
-  > .scroll-bar {
+.scrollbar-vertical {
+  > .scrollbar-bar {
     left: 1px;
     right: 1px;
     min-height: 20px;
@@ -145,37 +145,37 @@ $scroll-corner-radius: 6px;
   }
 }
 
-.scroll-min,
-.scroll-max {
+.scrollbar-min,
+.scrollbar-max {
   display: none;
   position: absolute;
   z-index: 3;
 }
 
-.scroll-draggable-endpoints {
-  .scroll-min,
-  .scroll-max {
+.scrollbar-draggable-endpoints {
+  .scrollbar-min,
+  .scrollbar-max {
     display: block;
   }
 }
 
-.scroll-horizontal {
-  .scroll-min,
-  .scroll-max {
+.scrollbar-horizontal {
+  .scrollbar-min,
+  .scrollbar-max {
     top: 0;
     bottom: 0;
     width: 7px;
   }
-  .scroll-min { left:   0; @include cursor-left(); }
-  .scroll-max { right:  0; @include cursor-right(); }
+  .scrollbar-min { left:   0; @include cursor-left(); }
+  .scrollbar-max { right:  0; @include cursor-right(); }
 }
-.scroll-vertical {
-  .scroll-min,
-  .scroll-max {
+.scrollbar-vertical {
+  .scrollbar-min,
+  .scrollbar-max {
     left: 0;
     right: 0;
     height: 7px;
   }
-  .scroll-min { top:    0; @include cursor-top(); }
-  .scroll-max { bottom: 0; @include cursor-bottom(); }
+  .scrollbar-min { top:    0; @include cursor-top(); }
+  .scrollbar-max { bottom: 0; @include cursor-bottom(); }
 }

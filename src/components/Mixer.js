@@ -58,10 +58,8 @@ export class Mixer extends Component {
           <div className="mixer-empty-area" style={{top: this.state.emptyAreaOffset}} />
         </div>
         <MixerScrollWindow {...timelineProps}>
-          <div className="mixer-settings-center">
-            <div className="mixer-scroll-horizontal">
-              <ScrollBar draggableEndpoints min={this.props.xMin} max={this.props.xMax} setScroll={this.setHorizontalScroll} />
-            </div>
+          <div className="mixer-scroll-horizontal">
+            <ScrollBar draggableEndpoints min={this.props.xMin} max={this.props.xMax} setScroll={this.setHorizontalScroll} />
           </div>
         </MixerScrollWindow>
         {this.renderScrollbarVertical()}
@@ -69,8 +67,6 @@ export class Mixer extends Component {
         <TimelinePlayhead playhead={this.props.playhead} />
         */}
         <TimelineCursor     cursor={this.props.cursor} />
-        <div className="mixer-settings-left" />
-        <div className="mixer-settings-right" />
       </div>
     );
   }

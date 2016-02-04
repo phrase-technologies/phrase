@@ -12,7 +12,7 @@ export class PianorollWindowDisplay extends Component {
 
   componentDidMount() {
     this.props.grid.marginTop    =  0
-    this.props.grid.marginBottom = 30
+    this.props.grid.marginBottom =  0
     this.props.grid.marginLeft   = 10
     this.props.grid.marginRight  = 10
   }
@@ -113,12 +113,10 @@ export class PianorollWindowDisplay extends Component {
     // Each edge + black key fills
     var minKey = this.props.grid.percentToKey( yMin )
     var maxKey = this.props.grid.percentToKey( yMax )
-    var bottomLimit = closestHalfPixel( this.props.grid.height - (30 * this.props.grid.pixelScale) )
     for( var key = minKey; key - 1 <= maxKey; key++ )
     {
       var prevEdge = closestHalfPixel( this.props.grid.keyToYCoord( key - 1 ) ) + 1   // Extra pixel to account for stroke width
       var nextEdge = closestHalfPixel( this.props.grid.keyToYCoord( key     ) ) + 1   // Extra pixel to account for stroke width
-          nextEdge = Math.min(nextEdge, bottomLimit)
 
       // Stroke the edge between rows
       drawLine( canvasContext, 0, prevEdge, this.props.grid.width, prevEdge, false )
@@ -140,10 +138,6 @@ export class PianorollWindowDisplay extends Component {
         canvasContext.beginPath()
         canvasContext.strokeStyle = "#393939";
       }
-
-      // Don't draw keys into the horizontal scrollbar
-      if( nextEdge == bottomLimit )
-        break
     }
 
     // One final stroke to end the last octave!
@@ -163,9 +157,9 @@ export class PianorollWindowDisplay extends Component {
       if (right < 0 || left > this.props.grid.width)
         return
 
-      drawLine( canvasContext, left,  0, left,  this.props.grid.height - 30*this.props.grid.pixelScale )
-      drawLine( canvasContext, right, 0, right, this.props.grid.height - 30*this.props.grid.pixelScale )
-      canvasContext.fillRect(   left, 0, right - left, this.props.grid.height - 30*this.props.grid.pixelScale )
+      drawLine( canvasContext, left,  0, left,         this.props.grid.height )
+      drawLine( canvasContext, right, 0, right,        this.props.grid.height )
+      canvasContext.fillRect(   left, 0, right - left, this.props.grid.height )
     })
     canvasContext.closePath()
     canvasContext.stroke()

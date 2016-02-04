@@ -165,23 +165,22 @@ export default class Scrollbar extends Component {
   }
 
   gutterClass() {
-    var classes  = 'scroll-gutter';
+    var classes  = 'scrollbar-gutter';
         classes += (this.data && this.data.isDragging || this.props.forceHover) ? ' hover' : '';
-        classes += this.props.vertical ? ' scroll-vertical' : ' scroll-horizontal';
-        classes += this.props.draggableEndpoints ? ' scroll-draggable-endpoints' : '';
+        classes += this.props.vertical ? ' scrollbar-vertical' : ' scrollbar-horizontal';
+        classes += this.props.draggableEndpoints ? ' scrollbar-draggable-endpoints' : '';
     return classes;
   }
 
   render() {
-    var gutterClass = this.gutterClass();
     var scrollPosition = this.props.vertical
                        ? { top:  100*this.props.min+'%', bottom: 100*(1-this.props.max)+'%' }
                        : { left: 100*this.props.min+'%', right:  100*(1-this.props.max)+'%' };
     return (
-      <div className={gutterClass}    ref={(ref) => this.gutter = ref}>
-        <div className="scroll-bar"   ref={(ref) => this.bar    = ref} style={scrollPosition}>
-          <div className="scroll-min" ref={(ref) => this.min    = ref} />
-          <div className="scroll-max" ref={(ref) => this.max    = ref} />
+      <div className={this.gutterClass()} ref={(ref) => this.gutter = ref}>
+        <div className="scrollbar-bar"    ref={(ref) => this.bar    = ref} style={scrollPosition}>
+          <div className="scrollbar-min"  ref={(ref) => this.min    = ref} />
+          <div className="scrollbar-max"  ref={(ref) => this.max    = ref} />
         </div>
       </div>
     );

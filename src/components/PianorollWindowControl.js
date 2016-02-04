@@ -34,7 +34,7 @@ export class PianorollWindowControl extends Component {
   componentDidMount() {
     // Setup Grid System
     this.props.grid.marginTop    =  0
-    this.props.grid.marginBottom = 30
+    this.props.grid.marginBottom =  0
     this.props.grid.marginLeft   = 10
     this.props.grid.marginRight  = 10
 
