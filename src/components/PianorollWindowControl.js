@@ -14,7 +14,7 @@ import { phraseCreateNote,
          phraseSelectNote,
          phraseDeleteNote } from '../actions/actionsPhrase.js';
 
-export class PianorollWindow extends Component {
+export class PianorollWindowControl extends Component {
 
   constructor() {
     super();
@@ -108,8 +108,8 @@ export class PianorollWindow extends Component {
     emptyAreaAction$.subscribe(e => dispatch( pianorollSelectionStart(e.x, e.y) ) )
     resizeSelectionBox$.subscribe(e => dispatch( pianorollSelectionEnd(e.x, e.y) ) )
     applySelectionBox$.subscribe(e => {
-      this.props.dispatch( pianorollSelectionStart(null, null) );
-      this.props.dispatch( pianorollSelectionEnd(null, null) );
+      dispatch( pianorollSelectionStart(null, null) );
+      dispatch( pianorollSelectionEnd(null, null) );
     })
     createNote$.subscribe(e => dispatch( phraseCreateNote(this.props.currentTrack.id, e.key, e.bar) ) )
   }
@@ -144,7 +144,7 @@ export class PianorollWindow extends Component {
   }
 }
 
-PianorollWindow.propTypes = {
+PianorollWindowControl.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
@@ -159,7 +159,7 @@ PianorollWindow.propTypes = {
 
 export default provideGridSystem(
   provideGridScroll(
-    PianorollWindow,
+    PianorollWindowControl,
     {
       scrollXActionCreator: pianorollScrollX,
       scrollYActionCreator: pianorollScrollY,

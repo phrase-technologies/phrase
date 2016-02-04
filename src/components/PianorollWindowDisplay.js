@@ -8,7 +8,7 @@ import { closestHalfPixel,
 
 import CanvasComponent from './CanvasComponent'
 
-export class PianorollWindow extends Component {
+export class PianorollWindowDisplay extends Component {
 
   componentDidMount() {
     this.props.grid.marginTop    =  0
@@ -255,7 +255,7 @@ export class PianorollWindow extends Component {
 }
 
 
-PianorollWindow.propTypes = {
+PianorollWindowDisplay.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
@@ -267,4 +267,4 @@ PianorollWindow.propTypes = {
   notes:        React.PropTypes.array.isRequired
 }
 
-export default provideGridSystem(PianorollWindow)
+export default provideGridSystem(PianorollWindowDisplay)
