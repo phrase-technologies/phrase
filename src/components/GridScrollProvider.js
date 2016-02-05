@@ -18,7 +18,9 @@ var provideGridScroll = function(
   {
     scrollXActionCreator = null,
     scrollYActionCreator = null,
-    cursorActionCreator = null
+    cursorActionCreator = null,
+    enableZoomX = true,
+    enableZoomY = true
   }
 ) {
 
@@ -66,14 +68,13 @@ var provideGridScroll = function(
     handleZoom(e) {
       var zoomFactor = (e.deltaY + 500) / 500
 
-      if( scrollXActionCreator )
+      if( scrollXActionCreator && enableZoomX )
       {
         var fulcrumX = this.props.grid.getMouseXPercent(e)
         var [newBarMin, newBarMax] = zoomInterval([this.props.xMin, this.props.xMax], zoomFactor, fulcrumX)
         this.props.dispatch(scrollXActionCreator(newBarMin, newBarMax))
       }
-
-      if( scrollYActionCreator )
+      if( scrollYActionCreator && enableZoomY )
       {
         var fulcrumY = this.props.grid.getMouseYPercent(e)
         var [newKeyMin, newKeyMax] = zoomInterval([this.props.yMin, this.props.yMax], zoomFactor, fulcrumY)

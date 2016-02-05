@@ -28,7 +28,7 @@ $mixer-track-control: 200px;
   position: absolute;
   top:    15px + $mixer-timeline;
   left:   15px;
-  right:  29px;
+  right:  35px;
   bottom: 35px;
 
   border: 1px solid #000;
@@ -40,19 +40,17 @@ $mixer-track-control: 200px;
     content: '';
     position: absolute;
     left: 0;
-    right: 3px;
+    right: 0;
     height: 10px;
     z-index: 3; // Above .mixer-track-list
     pointer-events: none;
   }
-
   &:before {
     top: 0;
 
     border-radius: $mixer-corner+3px 0 0 0;
     box-shadow: inset 0 10px 10px -8px #000;
   }
-
   &:after {
     bottom: 0;
 
@@ -60,12 +58,37 @@ $mixer-track-control: 200px;
     box-shadow: inset 0 -10px 10px -8px #000;
   }  
 
-  > .timeline-playhead-window,
   > .timeline-cursor-window {
     top: -$mixer-timeline;
-    left:   3px - 1px + $mixer-track-control + $mixer-track-tag + 10px;
-    right:  3px + 10px;
-    bottom: 1px + 1px;
+    left:   3px + $mixer-track-control + $mixer-track-tag;
+    right:  0px;
+    bottom: 0px;
+
+    > .timeline-cursor-grid {
+      top:  0px;
+      left: 10px;
+      right: 10px + 2px;
+      bottom:  0px;
+    }
+  }
+
+  > .timeline-playhead-window {
+    top: -5px;
+    left:   3px + $mixer-track-control + $mixer-track-tag;
+    right:  0px;
+    bottom: 0px;
+
+    > .timeline-playhead-grid {
+      top:  0px;
+      left: 10px;
+      right: 10px + 2px;
+      bottom:  0px;
+    }
+  }
+}
+.mixer-disable-shadow {
+  &:after {
+    display: none;
   }
 }
 .mixer-overflow {
@@ -172,8 +195,8 @@ $mixer-track-control: 200px;
   position: absolute;
   top: 264px;
   left: 3px + $mixer-track-control + $mixer-track-tag;
-  right: 3px;
-  bottom: 0;
+  right: 0px;
+  bottom: 0px;
   z-index: 1; // Above mixer-tracks
 
   box-shadow: inset 0 0 20px 10px #111;
@@ -181,7 +204,14 @@ $mixer-track-control: 200px;
 
   pointer-events: none;
 }
-.mixer-scroll-window {
+.mixer-window-control {
+  position: absolute;
+  top: 0;
+  left: 3px + 1px + $mixer-track-control + $mixer-track-tag;
+  right: 0;
+  bottom: 0;
+}
+.mixer-window-display {
   position: absolute;
   top: 0;
   left: 3px + 1px + $mixer-track-control + $mixer-track-tag;
@@ -223,9 +253,10 @@ $mixer-track-control: 200px;
 }
 .mixer-scroll-vertical {
   position: absolute;
-  top: 3px;
-  right: 3px;
-  bottom: 3px;
-  z-index: 2; // Above .mixer-scroll-window
+  top: 0px;
+  right: -25px;
+  bottom: 0px;
+
+  padding: 0 0 0 10px;
 }
 

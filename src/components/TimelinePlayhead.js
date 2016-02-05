@@ -15,7 +15,9 @@ export default class TimelinePlayhead extends Component {
 
     return (
       <div className="timeline-playhead-window">
-        <div className="timeline-playhead" style={playheadStyles} />
+        <div className="timeline-playhead-grid">
+          <div className="timeline-playhead" style={playheadStyles} />
+        </div>
       </div>
     );
   }

@@ -40,6 +40,7 @@ export const mixer = namespaceActions(
     'SCROLL_X',
     'SCROLL_Y',
     'RESIZE_WIDTH',
+    'RESIZE_HEIGHT',
     'SELECTION_BOX_START',
     'SELECTION_BOX_END',
     'MOVE_CURSOR',

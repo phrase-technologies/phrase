@@ -12,13 +12,10 @@ import provideGridScroll from './GridScrollProvider'
 import _ from 'lodash';
 import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js';
-import { mixerScrollX,
-         mixerScrollY,
-         mixerMoveCursor } from '../actions/actionsMixer.js';
 
 import CanvasComponent from './CanvasComponent';
 
-export class MixerScrollWindow extends Component {
+export class MixerWindowDisplay extends Component {
 
   componentDidMount() {
     this.props.grid.marginLeft   = 10;
@@ -27,9 +24,8 @@ export class MixerScrollWindow extends Component {
 
   render() {
     return (
-      <div className="mixer-scroll-window">
+      <div className="mixer-window-display">
         <CanvasComponent renderFrame={this.renderFrame()} />
-        {this.props.children}
       </div>
     );
   }
@@ -76,21 +72,14 @@ export class MixerScrollWindow extends Component {
 
 }
 
-MixerScrollWindow.propTypes = {
+MixerWindowDisplay.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
-  xMin:       React.PropTypes.number.isRequired,
-  xMax:       React.PropTypes.number.isRequired
+  xMin:         React.PropTypes.number.isRequired,
+  xMax:         React.PropTypes.number.isRequired,
+  yMin:         React.PropTypes.number.isRequired,
+  yMax:         React.PropTypes.number.isRequired
 }
 
-export default provideGridSystem(
-  provideGridScroll(
-    MixerScrollWindow,
-    {
-      scrollXActionCreator: mixerScrollX,
-      scrollYActionCreator: mixerScrollY,
-      cursorActionCreator: mixerMoveCursor
-    }
-  )
-)
+export default provideGridSystem(MixerWindowDisplay)

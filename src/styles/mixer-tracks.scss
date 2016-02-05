@@ -7,6 +7,8 @@
   border: 3px solid #111;
   height: $mixer-track-height + 2px + 2px;  // Using borders as margins - account for it
 
+  pointer-events: none;
+
   + .mixer-track {
     margin-top: -2px;
   }
@@ -133,7 +135,7 @@
   border-left: 0;
   border-radius: 0 $mixer-corner $mixer-corner 0;
 
-  pointer-events: all;
+  pointer-events: none;
   overflow: hidden;
   z-index: 1; // Hack for getting rounded corners to mask content with overflow: hidden;
 
@@ -261,6 +263,8 @@ only screen and ( min-resolution:         120dpi ) {
   border: 1px dashed transparent;
   border-radius: $mixer-corner;
   height: $mixer-track-height;
+  width: 160px;
+  margin: auto;
 
   cursor: pointer;
   pointer-events: all;
@@ -271,6 +275,7 @@ only screen and ( min-resolution:         120dpi ) {
     border-color: #F80;
     box-shadow: 0 5px 10px #111;
     background: #111;
+    width: auto;
 
     .mixer-track-new-body {
       transition: border-color .1s, color .1s, background .1s;

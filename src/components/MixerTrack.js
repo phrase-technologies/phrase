@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import MixerTrackWindow from './MixerTrackWindow.js';
-
 export default class MixerTrack extends Component {
   render() {
     return (
@@ -24,22 +22,13 @@ export default class MixerTrack extends Component {
             <span>S</span>
           </button>
         </div>
-        <MixerTrackWindow
-          track={this.props.track}
-          barCount={this.props.barCount}
-          xMin={this.props.xMin}
-          xMax={this.props.xMax}
-          dispatch={this.props.dispatch}
-        />
+        <div className="mixer-track-window" />
       </div>
     );
   }
 }
 
 MixerTrack.propTypes = {
-  track:        React.PropTypes.object.isRequired,
   dispatch:     React.PropTypes.func.isRequired,
-  barCount:     React.PropTypes.number.isRequired,
-  xMin:       React.PropTypes.number.isRequired,
-  xMax:       React.PropTypes.number.isRequired
+  track:        React.PropTypes.object.isRequired
 };  

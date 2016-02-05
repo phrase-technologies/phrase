@@ -7,6 +7,8 @@ import _ from 'lodash'
 import Rx from 'rx'
 import { pianorollScrollX,
          pianorollScrollY,
+         pianorollResizeWidth,
+         pianorollResizeHeight,
          pianorollMoveCursor,
          pianorollSelectionStart,
          pianorollSelectionEnd } from '../actions/actionsPianoroll.js';
@@ -16,13 +18,6 @@ import { phraseCreateNote,
 
 export class PianorollWindowControl extends Component {
 
-  constructor() {
-    super();
-
-    this.isDragging = false;
-    this.lastClickTimestamp = 0
-  }
-
   render() {
     return (
       <div className="pianoroll-window-control">
@@ -31,12 +26,24 @@ export class PianorollWindowControl extends Component {
     );
   }
 
+  constructor() {
+    super(...arguments)
+    this.handleResize = this.handleResize.bind(this)
+
+    this.isDragging = false;
+    this.lastClickTimestamp = 0
+  }
+
   componentDidMount() {
     // Setup Grid System
     this.props.grid.marginTop    =  0
     this.props.grid.marginBottom =  0
     this.props.grid.marginLeft   = 10
     this.props.grid.marginRight  = 10
+    this.props.grid.didMount()
+
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
 
     // Event Stream Sources
     this.container = ReactDOM.findDOMNode(this);
@@ -82,6 +89,10 @@ export class PianorollWindowControl extends Component {
 
     this.setupEmptyAreaActions(emptyAreaAction$)
     this.setupNoteActions(noteAction$)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
   }
 
   // All actions that stem from an initial click in an empty part of the track
@@ -145,6 +156,11 @@ export class PianorollWindowControl extends Component {
     let dispatch = this.props.dispatch
     selectNote$.subscribe(e => dispatch( phraseSelectNote(e.note.id, e.shiftKey) ) )
     deleteNote$.subscribe(e => dispatch( phraseDeleteNote(e.note.id) ) )
+  }
+
+  handleResize() {
+    this.props.dispatch(pianorollResizeWidth( this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft));
+    this.props.dispatch(pianorollResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ));
   }
 
   getPercentX(e) {

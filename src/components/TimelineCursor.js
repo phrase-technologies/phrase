@@ -15,7 +15,9 @@ export default class TimelineCursor extends Component {
 
     return (
       <div className="timeline-cursor-window">
-        <div className="timeline-cursor" style={cursorStyles} />
+        <div className="timeline-cursor-grid">
+          <div className="timeline-cursor" style={cursorStyles} />
+        </div>
       </div>
     );
   }

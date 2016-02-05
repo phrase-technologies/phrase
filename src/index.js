@@ -12,12 +12,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import { createStore } from 'redux';
-import musicApp from './reducers/reducers.js';
+import reducer from './reducers/reduceAll.js';
 
 import { Provider } from 'react-redux';
 import Layout from './components/Layout.js';
 
-var store = createStore(musicApp);
+var store = createStore(reducer);
 
 ReactDOM.render(
   // The child must be wrapped in a function

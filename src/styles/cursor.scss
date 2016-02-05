@@ -39,10 +39,9 @@
 
 
 // ----------------------------------------------------------------------------
-// Timeline Cursors
+// Timeline Playhead
 // ----------------------------------------------------------------------------
-// Playhead
-.timeline-playhead-window {
+.timeline-playhead-window { // Used to set cutoff (overflow: hidden;)
   position: absolute;
   top:    0;
   left:   0;
@@ -50,34 +49,44 @@
   bottom: 0;
 
   pointer-events: none;
+  overflow: hidden;
+}
+.timeline-playhead-grid { // Used for aligning to the grid system
+  position: absolute;
+  top:    0;
+  left:   0;
+  right:  0;
+  bottom: 0;
 }
 .timeline-playhead {
   display: none;
 
   position: absolute;
-  top: -1px;
-  bottom: 32px;
+  top: 0;
+  bottom: 0;
   left: 300px;
   width: 1px;
   z-index: 4;  // Above all other track layers
 
-  background: #BBB;
+  background: rgba(255,255,255,0.75);
 
   &:before,
   &:after {
     content: '';
     display: block;
     position: absolute;
-    top: -5px;
+    top: 0px;
     border: 6px solid transparent;
     left: -5px;
-    border-top-color: #BBB;    
+    border-top-color: rgba(255,255,255,0.75);
   }
   &:after { left: -6px; }
 }
 
-// Cursor
-.timeline-cursor-window {
+// ----------------------------------------------------------------------------
+// Timeline Cursor
+// ----------------------------------------------------------------------------
+.timeline-cursor-window { // Used to set cutoff (overflow: hidden;)
   position: absolute;
   top:    0;
   left:   0;
@@ -85,6 +94,14 @@
   bottom: 0;
 
   pointer-events: none;
+  overflow: hidden;
+}
+.timeline-cursor-grid { // Used for aligning to the grid system
+  position: absolute;
+  top:    0;
+  left:   0;
+  right:  0;
+  bottom: 0;
 }
 .timeline-cursor {
   display: none;
@@ -96,8 +113,6 @@
   z-index: 4;  // Above all other track layers
 
   background: rgba(255,255,255,0.125);
-
-  pointer-events: none;
 }
 
 // ----------------------------------------------------------------------------

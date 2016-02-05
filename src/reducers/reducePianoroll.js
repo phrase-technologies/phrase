@@ -36,11 +36,9 @@ export default function reducePianoroll(state = defaultState, action) {
     // Used to ensure the timeline doesn't zoom too close
     // (looks awkward when a single quarter note takes the entire screen)
     case pianoroll.RESIZE_WIDTH:
-      return restrictTimelineZoom(
-        Object.assign({}, state, {
-          width: action.width
-        })
-      );
+      return Object.assign({}, state, {
+        width: action.width
+      })
 
     // ------------------------------------------------------------------------
     // Track absolute height to ensure the keyboard doesn't get too small or large
@@ -53,12 +51,10 @@ export default function reducePianoroll(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_X:
-      return restrictTimelineZoom(
-        Object.assign({}, state,
-          action.min === null ? {} : {xMin: Math.max(0.0, action.min)},
-          action.max === null ? {} : {xMax: Math.min(1.0, action.max)}
-        )
-      );
+      return Object.assign({}, state,
+        action.min === null ? {} : {xMin: Math.max(0.0, action.min)},
+        action.max === null ? {} : {xMax: Math.min(1.0, action.max)}
+      )
 
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_Y:
@@ -85,11 +81,8 @@ export default function reducePianoroll(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case pianoroll.MOVE_CURSOR:
-      var newCursor = action.percent < 0.0 ? null : action.percent;
-          newCursor = action.percent > 1.0 ? null : newCursor;
-
       return Object.assign({}, state, {
-        cursor: newCursor
+        cursor: action.percent
       });
 
     // ------------------------------------------------------------------------
@@ -108,14 +101,3 @@ function restrictKeyboardZoom(newState) {
   return newState;
 }
 
-// Make sure timeline doesn't zoom too close
-function restrictTimelineZoom(newState) {
-  var timelineWidth = newState.width / (newState.xMax - newState.xMin);
-
-  // TODO: This is hardcoded to 64 bars.
-  // Use Reselect https://github.com/rackt/reselect#motivation-for-memoized-selectors 
-  var barWidth = timelineWidth / 64;
-  if( barWidth > maxBarWidth )
-    [newState.xMin, newState.xMax] = zoomInterval([newState.xMin, newState.xMax], barWidth/maxBarWidth);
-  return newState;
-}
