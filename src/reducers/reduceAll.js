@@ -35,6 +35,7 @@ import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 import { mixer,
          pianoroll,
          phrase } from '../actions/actions.js'
+import { getTracksHeight } from '../helpers/trackHelpers.js'
 
 export default function(state = {}, action) {
 
@@ -60,9 +61,7 @@ export default function(state = {}, action) {
     // Track absolute height to control vertical scrollbar overflow
     case phrase.CREATE_TRACK:
     case mixer.RESIZE_HEIGHT:
-      var contentHeight = state.phrase.tracks.reduce((contentHeight, track) => {
-        return contentHeight + 52 // Each standard track is 54px tall
-      }, 55) // The "+Add Track" button is 56px tall
+      var contentHeight = getTracksHeight(state.phrase.tracks)
       if (contentHeight <= state.mixer.height) {
         return u({
           mixer: {

@@ -10,6 +10,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js';
+import { getTracksHeight } from '../helpers/trackHelpers.js'
 import { phraseCreateTrack } from '../actions/actionsPhrase.js'
 
 import MixerTrack from './MixerTrack.js';
@@ -23,9 +24,7 @@ export default class MixerTracks extends Component {
   }
 
   render() {
-    var contentHeight = this.props.tracks.reduce((contentHeight, track) => {
-      return contentHeight + 52 // Each standard track is 54px tall
-    }, 55) // The "+Add Track" button is 56px tall
+    var contentHeight = getTracksHeight(this.props.tracks)
     var scrollOffset = this.props.yMin * contentHeight * -1
     var emptyAreaOffset = contentHeight + scrollOffset - 54 - 2
 

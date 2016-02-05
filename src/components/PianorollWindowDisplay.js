@@ -258,6 +258,7 @@ PianorollWindowDisplay.propTypes = {
   xMax:         React.PropTypes.number.isRequired,
   yMin:         React.PropTypes.number.isRequired,
   yMax:         React.PropTypes.number.isRequired,
+  clips:        React.PropTypes.array.isRequired,
   notes:        React.PropTypes.array.isRequired
 }
 

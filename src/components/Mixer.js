@@ -33,6 +33,9 @@ import ScrollBar from './Scrollbar.js';
 export class Mixer extends Component {
 
   render() {
+    let mixerClasses = "mixer"
+        mixerClasses += (this.props.yMax > 0.99) ? " mixer-disable-shadow" : ""
+
     let timelineProps = {
       dispatch: this.props.dispatch,
       xMin: this.props.xMin,
@@ -47,16 +50,17 @@ export class Mixer extends Component {
       tracks: this.props.tracks
     }
 
-    let mixerClasses = "mixer"
-    if (this.props.yMax > 0.999)
-      mixerClasses += " mixer-disable-shadow"
+    let contentProps = {
+      tracks: this.props.tracks,
+      clips: this.props.clips
+    }
 
     return (
       <div className={mixerClasses}>
         <MixerTimeline {...timelineProps} />
         <MixerTracks {...trackRangeProps} />
-        <MixerWindowDisplay {...timelineProps} {...trackRangeProps} />
-        <MixerWindowControl {...timelineProps} {...trackRangeProps}>
+        <MixerWindowDisplay {...timelineProps} {...trackRangeProps} {...contentProps} />
+        <MixerWindowControl {...timelineProps} {...trackRangeProps} {...contentProps}>
           <div className="mixer-scroll-horizontal">
             <ScrollBar draggableEndpoints min={this.props.xMin} max={this.props.xMax} setScroll={this.setHorizontalScroll} />
           </div>
@@ -89,6 +93,7 @@ export class Mixer extends Component {
 function mapStateToProps(state) {
   return {
     tracks: state.phrase.tracks,
+    clips: state.phrase.clips,
     barCount: state.phrase.barCount,
     xMin: state.mixer.xMin,
     xMax: state.mixer.xMax,

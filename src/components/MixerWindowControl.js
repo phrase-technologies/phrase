@@ -56,6 +56,8 @@ export class MixerWindowControl extends Component {
 MixerWindowControl.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
+  tracks:       React.PropTypes.array.isRequired,
+  clips:        React.PropTypes.array.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   xMin:         React.PropTypes.number.isRequired,
   xMax:         React.PropTypes.number.isRequired,

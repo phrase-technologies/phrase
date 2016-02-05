@@ -9,11 +9,14 @@ import React, { Component } from 'react';
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 
-import _ from 'lodash';
+import _ from 'lodash'
 import { closestHalfPixel,
-         drawLine } from '../helpers/canvasHelpers.js';
+         drawLine,
+         drawRoundedRectangle } from '../helpers/canvasHelpers.js'
+import { getTrackHeight,
+         getTracksHeight } from '../helpers/trackHelpers.js'
 
-import CanvasComponent from './CanvasComponent';
+import CanvasComponent from './CanvasComponent'
 
 export class MixerWindowDisplay extends Component {
 
@@ -36,6 +39,14 @@ export class MixerWindowDisplay extends Component {
       canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height );
       this.props.grid.calculateZoomThreshold();
       this.renderTimeline(canvasContext, this.props.xMin, this.props.xMax)
+      this.renderClips(canvasContext,
+        this.props.xMin,
+        this.props.xMax,
+        this.props.yMin,
+        this.props.yMax,
+        this.props.tracks,
+        this.props.clips
+      )
     }.bind(this);
   }
 
@@ -70,11 +81,103 @@ export class MixerWindowDisplay extends Component {
     }    
   }
 
+  renderClips(canvasContext, xMin, xMax, yMin, yMax, tracks, clips) {
+    canvasContext.lineWidth = this.props.grid.pixelScale
+    canvasContext.strokeStyle = "#000"
+    canvasContext.font = 11*this.props.grid.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif"
+
+    var contentHeight = getTracksHeight(tracks)*this.props.grid.pixelScale
+    var startingEdge = 0 - contentHeight * yMin
+    var radius = 3
+
+    // Iterate through each track
+    tracks.reduce((currentEdge, track) => {
+      var trackHeight = getTrackHeight(track)*this.props.grid.pixelScale
+      var nextEdge = currentEdge + trackHeight
+
+      // Skip tracks that are out of view
+      if (nextEdge < 0 || currentEdge > this.props.grid.height)
+        return nextEdge
+
+      // Render all 
+      canvasContext.beginPath()
+      let top = currentEdge + 6 * this.props.grid.pixelScale
+      let bottom = nextEdge - 4 * this.props.grid.pixelScale
+      clips.forEach(clip => {
+        // Filter by current track
+        if (clip.trackID != track.id)
+          return
+
+        var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
+        var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
+        // Don't waste CPU cycles drawing stuff that's not visible
+        if (right < 0 || left > this.props.grid.width)
+          return
+
+        this.renderClip(canvasContext, clip, left, right, top, bottom, radius)
+      })
+      canvasContext.closePath()
+      canvasContext.stroke()
+
+      return nextEdge
+    }, startingEdge)
+  }
+
+  renderClip(canvasContext, clip, left, right, top, bottom, radius, gradient = true) {
+    // Shape + gradient fill
+    if (gradient) {
+      let gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
+          gradient.addColorStop(0, "#F80");
+          gradient.addColorStop(1, "#C60");
+      canvasContext.fillStyle = gradient
+    } else {
+      canvasContext.fillStyle = "#F80"
+    }
+    drawRoundedRectangle(
+      canvasContext,
+      left,
+      right,
+      top,
+      bottom,
+      radius * this.props.grid.pixelScale
+    )
+
+    // Selected
+    if (clip.selected) {
+      if (gradient) {
+        let gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
+            gradient.addColorStop(0, "#630");
+            gradient.addColorStop(1, "#520");
+        canvasContext.fillStyle = gradient
+      } else {
+        canvasContext.fillStyle = "#520"
+      }
+      canvasContext.strokeStyle = 'transparent'
+      drawRoundedRectangle(canvasContext,
+        left   + closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
+        right  - closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
+        top    + closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
+        bottom - closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
+        (radius - 1.0)*this.props.grid.pixelScale
+      )
+    }
+
+    // Label
+    if (right - left > 30*this.props.grid.pixelScale) {
+      canvasContext.fillStyle = clip.selected ? "#F80" : "#000"
+      canvasContext.textAlign = "start"
+      let x = left + 5*this.props.grid.pixelScale
+      let y = top  + 14*this.props.grid.pixelScale
+      canvasContext.fillText(`Clip ${clip.id}`, x, y)
+    }
+  }
 }
 
 MixerWindowDisplay.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
+  tracks:       React.PropTypes.array.isRequired,
+  clips:        React.PropTypes.array.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   xMin:         React.PropTypes.number.isRequired,
   xMax:         React.PropTypes.number.isRequired,
