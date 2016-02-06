@@ -83,7 +83,6 @@ export class MixerWindowDisplay extends Component {
 
   renderClips(canvasContext, xMin, xMax, yMin, yMax, tracks, clips) {
     canvasContext.lineWidth = this.props.grid.pixelScale
-    canvasContext.strokeStyle = "#000"
     canvasContext.font = 11*this.props.grid.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif"
 
     var contentHeight = getTracksHeight(tracks)*this.props.grid.pixelScale
@@ -100,7 +99,6 @@ export class MixerWindowDisplay extends Component {
         return nextEdge
 
       // Render all 
-      canvasContext.beginPath()
       let top = currentEdge + 6 * this.props.grid.pixelScale
       let bottom = nextEdge - 4 * this.props.grid.pixelScale
       clips.forEach(clip => {
@@ -116,8 +114,6 @@ export class MixerWindowDisplay extends Component {
 
         this.renderClip(canvasContext, clip, left, right, top, bottom, radius)
       })
-      canvasContext.closePath()
-      canvasContext.stroke()
 
       return nextEdge
     }, startingEdge)
@@ -125,6 +121,7 @@ export class MixerWindowDisplay extends Component {
 
   renderClip(canvasContext, clip, left, right, top, bottom, radius, gradient = true) {
     // Shape + gradient fill
+    canvasContext.strokeStyle = "#000"
     if (gradient) {
       let gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
           gradient.addColorStop(0, "#F80");
