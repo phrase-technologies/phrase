@@ -53,7 +53,16 @@ $pianoroll-scroll-horizontal: 20px;
 // ----------------------------------------------------------------------------
 // Timeline
 // ----------------------------------------------------------------------------
-.pianoroll-timeline {
+.pianoroll-timeline-control {
+  position: absolute;
+  top: 0;
+  left: $pianoroll-keyboard-width;
+  right: 0;
+  height: $pianoroll-timeline;
+
+  background: none;
+}
+.pianoroll-timeline-display {
   position: absolute;
   top: 0;
   left: $pianoroll-keyboard-width;
