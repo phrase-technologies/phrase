@@ -7,7 +7,8 @@ import { shiftInterval,
 import { pianorollScrollX,
          pianorollScrollY } from '../actions/actionsPianoroll.js';
 
-import PianorollTimeline      from './PianorollTimeline.js';
+import PianorollTimelineDisplay from './PianorollTimelineDisplay.js';
+import PianorollTimelineControl from './PianorollTimelineControl.js';
 import PianorollWindowDisplay from './PianorollWindowDisplay.js';
 import PianorollWindowControl from './PianorollWindowControl.js';
 import PianorollKeyboard      from './PianorollKeyboard.js';
@@ -48,7 +49,8 @@ export default class Pianoroll extends Component {
     return (
       <div className="pianoroll">
         <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
-        <PianorollTimeline {...dispatchProp} {...timelineProps} clips={this.props.clips} ref={(ref) => this.timeline = ref} />
+        <PianorollTimelineDisplay {...dispatchProp} {...timelineProps} clips={this.props.clips} />
+        <PianorollTimelineControl {...dispatchProp} {...timelineProps} clips={this.props.clips} />
         <PianorollWindowDisplay {...this.props} />
         <PianorollWindowControl {...this.props} >
           <div className="pianoroll-scrollbar-horizontal">

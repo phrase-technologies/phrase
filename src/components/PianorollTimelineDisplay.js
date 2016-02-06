@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider'
-import provideGridScroll from './GridScrollProvider'
 
 import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js'
@@ -9,7 +8,7 @@ import { pianorollScrollX,
 
 import CanvasComponent from './CanvasComponent'
 
-export class PianorollTimeline extends Component {
+export class PianorollTimelineDisplay extends Component {
 
   componentDidMount() {
     this.props.grid.marginLeft   = 10
@@ -18,9 +17,8 @@ export class PianorollTimeline extends Component {
 
   render() {
     return (
-      <div className="pianoroll-timeline">
+      <div className="pianoroll-timeline-display">
         <CanvasComponent renderFrame={this.renderFrame()} />
-        {this.props.children}
       </div>
     );
   }
@@ -196,8 +194,7 @@ export class PianorollTimeline extends Component {
   }
 }
 
-PianorollTimeline.propTypes = {
-  dispatch:     React.PropTypes.func.isRequired,
+PianorollTimelineDisplay.propTypes = {
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
   xMin:         React.PropTypes.number.isRequired,
@@ -205,12 +202,4 @@ PianorollTimeline.propTypes = {
   clips:        React.PropTypes.array.isRequired
 };
 
-export default provideGridSystem(
-  provideGridScroll(
-    PianorollTimeline,
-    {
-      scrollXActionCreator: pianorollScrollX,
-      cursorActionCreator: pianorollMoveCursor
-    }
-  )
-)
+export default provideGridSystem(PianorollTimelineDisplay)
