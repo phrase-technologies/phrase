@@ -65,6 +65,9 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseDownEvent(e) {
+    if (e.target !== this.container)
+      return
+
     switch(e.which) {
       default:
       case 1: 

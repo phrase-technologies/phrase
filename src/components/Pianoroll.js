@@ -65,6 +65,12 @@ export default class Pianoroll extends Component {
               max={this.props.xMax}
             />
           </div>
+          <div className="pianoroll-scrollbar-vertical">
+            <Scrollbar vertical
+              min={this.props.yMin} setScroll={(min,max) => this.props.dispatch(pianorollScrollY(min,max))}
+              max={this.props.yMax}
+            />
+          </div>
         </PianorollWindowControl>
         <TimelineSelectionBox {...selectionBoxProps} />
         <TimelineCursor cursor={this.props.cursor} />

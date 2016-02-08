@@ -3,6 +3,7 @@ $pianoroll-timeline:          50px;
 $pianoroll-spacing:           15px;
 $pianoroll-keyboard-width:   125px;
 $pianoroll-scroll-horizontal: 20px;
+$pianoroll-scroll-vertical: 20px;
 
 // ----------------------------------------------------------------------------
 // Piano Roll
@@ -17,7 +18,7 @@ $pianoroll-scroll-horizontal: 20px;
   > .timeline-cursor-window {
     top: 1px;
     left: $pianoroll-keyboard-width;
-    right: 0px;
+    right: $pianoroll-scroll-vertical;
     bottom: $pianoroll-scroll-horizontal + 1px;
 
     > .timeline-cursor-grid {
@@ -31,7 +32,7 @@ $pianoroll-scroll-horizontal: 20px;
   > .timeline-playhead-window {
     top: $pianoroll-timeline - 5px;
     left: $pianoroll-keyboard-width;
-    right: 0px;
+    right: $pianoroll-scroll-vertical;
     bottom: $pianoroll-scroll-horizontal + 1px;
 
     > .timeline-playhead-grid {
@@ -45,7 +46,7 @@ $pianoroll-scroll-horizontal: 20px;
   > .timeline-selection-window {
     top: $pianoroll-timeline;
     left: $pianoroll-keyboard-width;
-    right: 0px;
+    right: $pianoroll-scroll-vertical;
     bottom: $pianoroll-scroll-horizontal + 1px;
 
     > .timeline-selection-grid {
@@ -64,7 +65,7 @@ $pianoroll-scroll-horizontal: 20px;
   position: absolute;
   top: 0;
   left: $pianoroll-keyboard-width;
-  right: 0;
+  right: $pianoroll-scroll-vertical;
   height: $pianoroll-timeline;
 
   background: none;
@@ -73,7 +74,7 @@ $pianoroll-scroll-horizontal: 20px;
   position: absolute;
   top: 0;
   left: $pianoroll-keyboard-width;
-  right: 0;
+  right: $pianoroll-scroll-vertical;
   height: $pianoroll-timeline;
 
   border: 1px solid #000;
@@ -117,7 +118,7 @@ $pianoroll-scroll-horizontal: 20px;
   position: absolute;
   top: $pianoroll-timeline;
   left: $pianoroll-keyboard-width;
-  right: 0;
+  right: $pianoroll-scroll-vertical;
   bottom: $pianoroll-scroll-horizontal;
 
   background: none;
@@ -126,7 +127,7 @@ $pianoroll-scroll-horizontal: 20px;
   position: absolute;
   top: $pianoroll-timeline;
   left: $pianoroll-keyboard-width;
-  right: 0;
+  right: $pianoroll-scroll-vertical;
   bottom: $pianoroll-scroll-horizontal;
 
   border: 1px solid #000;
@@ -171,8 +172,17 @@ $pianoroll-scroll-horizontal: 20px;
   bottom: -$pianoroll-scroll-horizontal;
   z-index: 2;
 
-  border-radius: 0 0 $pianoroll-corner $pianoroll-corner;
   padding: 10px 0 0;
+}
+.pianoroll-scrollbar-vertical {
+  position: absolute;
+  width: $pianoroll-scroll-vertical;
+  top: 0;
+  bottom: 0;
+  right: -$pianoroll-scroll-vertical;
+  z-index: 2;
+
+  padding: 0 0 0 10px;
 }
 
 // ----------------------------------------------------------------------------
