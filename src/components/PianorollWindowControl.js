@@ -4,7 +4,6 @@ import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 
 import _ from 'lodash'
-import Rx from 'rx'
 import { pianorollScrollX,
          pianorollScrollY,
          pianorollResizeWidth,

@@ -68,7 +68,7 @@ export default class Pianoroll extends Component {
         </PianorollWindowControl>
         <TimelineSelectionBox {...selectionBoxProps} />
         <TimelineCursor cursor={this.props.cursor} />
-        <TimelinePlayhead playhead={this.props.playhead} />
+        <TimelinePlayhead {...timelineProps} playhead={this.props.playhead} />
       </div>
     );
   }

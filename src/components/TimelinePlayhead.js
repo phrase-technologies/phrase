@@ -8,9 +8,10 @@ import React, { Component } from 'react';
 export default class TimelinePlayhead extends Component {
   
   render() {
+    let left = (this.props.playhead/this.props.barCount - this.props.xMin) / (this.props.xMax - this.props.xMin)
     var playheadStyles = {
       display: this.props.playhead === null ? 'none' : 'block',
-      left: this.props.playhead === null ? 0 : 100*this.props.playhead + '%'
+      left: left*100 + '%'
     };
 
     return (
@@ -25,5 +26,8 @@ export default class TimelinePlayhead extends Component {
 }
 
 TimelinePlayhead.propTypes = {
+  barCount: React.PropTypes.number,
+  xMin: React.PropTypes.number,
+  xMax: React.PropTypes.number,
   playhead: React.PropTypes.number
 };

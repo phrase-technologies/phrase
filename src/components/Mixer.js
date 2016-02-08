@@ -69,7 +69,7 @@ export class Mixer extends Component {
           </div>
         </MixerWindowControl>
         <TimelineCursor     cursor={this.props.cursor} />
-        <TimelinePlayhead playhead={this.props.playhead} />
+        <TimelinePlayhead playhead={this.props.playhead} {...timelineProps} />
       </div>
     );
   }
