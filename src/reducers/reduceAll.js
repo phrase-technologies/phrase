@@ -32,6 +32,7 @@ import u from 'updeep'
 import { zoomInterval } from '../helpers/intervalHelpers.js'
 import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
+import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
 import { mixer,
          pianoroll,
          phrase } from '../actions/actions.js'
@@ -89,20 +90,33 @@ export default function(state = {}, action) {
 
     // ------------------------------------------------------------------------
     case pianoroll.SELECTION_BOX_APPLY:
+      // Outer Bounds
+      var left   = Math.min( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
+      var right  = Math.max( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
+      var top    = Math.max( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )
+      var bottom = Math.min( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )            
+
+      // Find selected notes, even in loop iterations
+      var selectedNoteIDs = currentNotesSelector(state)
+        .filter(note => {
+          return (
+            note.trackID == state.pianoroll.currentTrack &&
+            note.start  <  right &&
+            note.end    >= left &&
+            note.keyNum <= top + 1 &&
+            note.keyNum >= bottom
+          )
+        })
+        .map(note => note.id)
+      selectedNoteIDs = _.unique(selectedNoteIDs)
+
+      // Update selected status, clear selection box
       return u({
         phrase: {
           notes: notes => {
-            var left   = Math.min( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
-            var right  = Math.max( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
-            var top    = Math.max( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )
-            var bottom = Math.min( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )            
             return notes.map(note => {
               // Inside Selection Box
-              if (note.trackID == state.pianoroll.currentTrack &&
-                  note.start  <  right &&
-                  note.end    >= left &&
-                  note.keyNum <= top + 1 &&
-                  note.keyNum >= bottom) {
+              if (selectedNoteIDs.includes(note.id)) {
                 return u({
                   selected: action.union ? !note.selected : true
                 }, note)

@@ -30,7 +30,7 @@ const currentClipsSelector = createSelector(
     return clips.filter(clip => clip.trackID == currentTrack.id)
   }
 )
-const currentNotesSelector = createSelector(
+export const currentNotesSelector = createSelector(
   currentClipsSelector,
   notesSelector,
   currentTrackSelector,
