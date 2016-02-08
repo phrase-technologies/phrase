@@ -16,6 +16,13 @@ import { phraseCreateNote,
          phraseSelectNote,
          phraseDeleteNote } from '../actions/actionsPhrase.js';
 
+const SELECT_EMPTY_AREA = "SELECT_EMPTY_AREA"
+const CLICK_EMPTY_AREA  = "CLICK_EMPTY_AREA"
+const SELECT_NOTE       = "SELECT_NOTE"
+const CLICK_NOTE        = "CLICK_NOTE"
+const SELECTION_BOX     = "SELECTION_BOX"
+const DOUBLECLICK_DELAY = 360
+
 export class PianorollWindowControl extends Component {
 
   render() {
@@ -28,10 +35,10 @@ export class PianorollWindowControl extends Component {
 
   constructor() {
     super(...arguments)
-    this.handleResize = this.handleResize.bind(this)
-
-    this.isDragging = false;
-    this.lastClickTimestamp = 0
+    this.handleResize   = this.handleResize.bind(this)
+    this.mouseDownEvent = this.mouseDownEvent.bind(this)
+    this.mouseMoveEvent = this.mouseMoveEvent.bind(this)
+    this.mouseUpEvent   = this.mouseUpEvent.bind(this)
   }
 
   componentDidMount() {
@@ -42,120 +49,170 @@ export class PianorollWindowControl extends Component {
     this.props.grid.marginRight  = 10
     this.props.grid.didMount()
 
-    this.handleResize();
-    window.addEventListener('resize', this.handleResize);
-
-    // Event Stream Sources
+    // Event Sources
     this.container = ReactDOM.findDOMNode(this);
-    this.mousedown$ = Rx.Observable.fromEvent(this.container, "mousedown")
-    this.mousemove$ = Rx.Observable.fromEvent(document, "mousemove")
-    this.mouseup$   = Rx.Observable.fromEvent(document, "mouseup")
-
-    var foundNote$ = this.mousedown$.map(e => {
-      let x = this.getPercentX(e);
-      let y = this.getPercentY(e);
-      let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
-      let key = Math.ceil(this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount);
-      let foundNote = this.props.notes.find(note => {
-        return (
-          Math.round(key) == note.keyNum &&
-          bar >= note.start &&
-          bar <= note.end          
-        )
-      })
-      return {
-        note: foundNote,
-        bar: bar,
-        key: key,
-        x: x,
-        y: y,
-        shiftKey: e.shiftKey
-      }
-    })
-
-    var emptyAreaAction$ = foundNote$.filter(e =>  !e.note)
-    var noteAction$      = foundNote$.filter(e => !!e.note)
-
-    var emptyAreaAction$ = new Rx.Subject()
-    var noteAction$      = new Rx.Subject()
-    foundNote$
-      .groupBy(e => !e.note)
-      .subscribe(e => {
-        switch(e.key) {
-          case false: e.subscribe(e => noteAction$.onNext(e));      break;
-          case true:  e.subscribe(e => emptyAreaAction$.onNext(e)); break;
-        }
-      })
-
-    this.setupEmptyAreaActions(emptyAreaAction$)
-    this.setupNoteActions(noteAction$)
+    this.container.addEventListener("mousedown", this.mouseDownEvent)
+    document.addEventListener("mousemove", this.mouseMoveEvent)
+    document.addEventListener("mouseup",   this.mouseUpEvent)
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
   }
 
   componentWillUnmount() {
+    document.removeEventListener("mousemove", this.mouseMoveEvent)
+    document.removeEventListener("mouseup",   this.mouseUpEvent)
+    this.container.removeEventListener("mousedown", this.mouseDownEvent)
     window.removeEventListener('resize', this.handleResize);
   }
 
-  // All actions that stem from an initial click in an empty part of the track
-  setupEmptyAreaActions(emptyAreaAction$) {
-    // ------------------------------------------------------------------------
-    // Event Stream Flows
-    // ------------------------------------------------------------------------
-    var resizeSelectionBox$ = emptyAreaAction$
-      .flatMapLatest(() => this.mousemove$.takeUntil(this.mouseup$))
-      .map(e => {
-        var x = this.getPercentX(e);
-        var y = this.getPercentY(e);
-        return { x, y, shiftKey: e.shiftKey }
-      })
-    var applySelectionBox$ = resizeSelectionBox$
-      .flatMapLatest(() => this.mouseup$.take(1))
-      .map(e => {
-        var x = this.getPercentX(e);
-        var y = this.getPercentY(e);
-        return { x, y, shiftKey: e.shiftKey }
-      })
-    var createNote$ = emptyAreaAction$
-      .timeInterval()
-      .bufferWithCount(2, 1)
-      .filter(buffer => {
-        return buffer[1].interval < 640
-            && buffer[0].value.bar === buffer[1].value.bar
-            && buffer[0].value.key === buffer[1].value.key
-      })
-      .map(buffer => buffer[1].value)
-
-    // ------------------------------------------------------------------------
-    // Actions
-    // ------------------------------------------------------------------------
-    let dispatch = this.props.dispatch
-    emptyAreaAction$.subscribe(e => dispatch( pianorollSelectionStart(e.x, e.y) ) )
-    resizeSelectionBox$.subscribe(e => dispatch( pianorollSelectionEnd(e.x, e.y) ) )
-    applySelectionBox$.subscribe(e => {
-      dispatch( pianorollSelectionStart(null, null) );
-      dispatch( pianorollSelectionEnd(null, null) );
-    })
-    createNote$.subscribe(e => dispatch( phraseCreateNote(this.props.currentTrack.id, e.key, e.bar) ) )
+  mouseDownEvent(e) {
+    switch(e.which) {
+      default:
+      case 1: 
+      case 2: this.leftClickEvent(e);  break
+      case 3: this.rightClickEvent(e); break
+    }
   }
 
-  // All actions that stem from an initial click on an existing note
-  setupNoteActions(noteAction$) {
-    // ------------------------------------------------------------------------
-    // Event Stream Flows
-    // ------------------------------------------------------------------------
-    var selectNote$ = noteAction$
-      .filter(e => !e.note.selected)
-    var deleteNote$ = noteAction$
-      .timeInterval()
-      .bufferWithCount(2, 1)
-      .filter(buffer => buffer[1].interval < 640 && buffer[0].value.note.id === buffer[1].value.note.id)
-      .map(buffer => buffer[1].value)
+  leftClickEvent(e) {
+    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
+    var key = Math.ceil(this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount);
+    var foundNote = this.props.notes.find(note => {
+      return (
+        Math.round(key) == note.keyNum &&
+        bar >= note.start &&
+        bar <= note.end          
+      )
+    })
 
-    // ------------------------------------------------------------------------
-    // Actions
-    // ------------------------------------------------------------------------
-    let dispatch = this.props.dispatch
-    selectNote$.subscribe(e => dispatch( phraseSelectNote(e.note.id, e.shiftKey) ) )
-    deleteNote$.subscribe(e => dispatch( phraseDeleteNote(e.note.id) ) )
+    if (foundNote) {
+      this.noteEvent(e, bar, key, foundNote)
+    } else {
+      this.emptyAreaEvent(e, bar, key)
+    }
+  }
+
+  noteEvent(e, bar, key, foundNote) {
+    // Second Click - Note
+    if (this.lastEvent &&
+        this.lastEvent.action == CLICK_NOTE) {
+      // Double click - Delete Note
+      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
+        this.props.dispatch( phraseDeleteNote(foundNote.id) )
+        this.lastEvent = null
+        return
+      // Too slow, treat as new first click
+      } else {
+        this.lastEvent = null
+      }
+    }
+
+    // First Click - Start Selection
+    if (!this.lastEvent) {
+      this.lastEvent = {
+        action: SELECT_NOTE,
+        bar: bar,
+        key: key,
+        time: Date.now()
+      }
+      var noteLength = foundNote.end - foundNote.start
+      var threshold = Math.max(5, 0.25*noteLength)
+
+      if (!foundNote.selected) {
+        this.props.dispatch( phraseSelectNote(foundNote.id, e.shiftKey) )
+      }
+
+      if (bar < foundNote.start + threshold) {
+        this.lastEvent.grip = "MIN"
+      } else if (bar > foundNote.end - threshold) {
+        this.lastEvent.grip = "MAX"
+      } else {
+        this.lastEvent.grip = "MID"
+      }
+    }
+  }
+
+  emptyAreaEvent(e, bar, key) {
+    // Second Click - Empty Area
+    if (this.lastEvent &&
+        this.lastEvent.action == CLICK_EMPTY_AREA) {
+      // Double click - Create Note
+      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
+        this.props.dispatch( phraseCreateNote(this.props.currentTrack.id, bar, key) )
+        this.lastEvent = null
+        return
+      // Too slow, treat as new first click
+      } else {
+        this.lastEvent = null
+      }
+    }
+
+    // First Click - Start Selection
+    if (!this.lastEvent) {
+      this.props.dispatch( pianorollSelectionStart(bar, key) )
+      this.lastEvent = {
+        action: SELECT_EMPTY_AREA,
+        bar: bar,
+        key: key,
+        time: Date.now()
+      }
+      return
+    }
+  }
+
+  mouseMoveEvent(e) {
+    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
+    var key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount;
+
+    // Drag Note?
+    if (this.lastEvent &&
+        this.lastEvent.foundNote) {
+      // ...
+    }
+
+    // Selection Box?
+    if (this.lastEvent &&
+       (this.lastEvent.action == SELECT_EMPTY_AREA ||
+        this.lastEvent.action == SELECTION_BOX) ) {
+      // Resize Selection Box
+      this.props.dispatch( pianorollSelectionEnd(bar, key) )
+      this.lastEvent.action = SELECTION_BOX
+      return
+    }
+
+    // No Action - Clear the queue
+    this.lastEvent = null
+  }
+
+  mouseUpEvent(e) {
+    // First Click - Empty Area
+    if (this.lastEvent &&
+        this.lastEvent.action == SELECT_EMPTY_AREA) {
+      // Prepare for possibility of second click
+      this.lastEvent.action = CLICK_EMPTY_AREA
+      this.props.dispatch( pianorollSelectionStart(null, null) )
+      return
+    }
+
+    // First Click - Note
+    if (this.lastEvent &&
+        this.lastEvent.action == SELECT_NOTE) {
+      // Prepare for possibility of second click
+      this.lastEvent.action = CLICK_NOTE
+      return
+    }
+
+    // Selection Box Completed
+    if (this.lastEvent &&
+        this.lastEvent.action == SELECTION_BOX) {
+      this.props.dispatch( pianorollSelectionStart(null, null) )
+      this.props.dispatch( pianorollSelectionEnd(  null, null) )
+      this.lastEvent = null
+      return
+    }
+
+    // No Action - Clear the queue
+    this.lastEvent = null
   }
 
   handleResize() {

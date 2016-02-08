@@ -118,16 +118,22 @@
 // ----------------------------------------------------------------------------
 // Selection Box
 // ----------------------------------------------------------------------------
-.timeline-selection-window,
-.timeline-selection-area {
+.timeline-selection-window {
   position: absolute;
   top:    0;
   left:   0;
   right:  0;
   bottom: 0;
 
-  overflow: hidden;
   pointer-events: none;
+  overflow: hidden;
+}
+.timeline-selection-grid {
+  position: absolute;
+  top:    0;
+  left:   0;
+  right:  0;
+  bottom: 0;
 }
 .timeline-selection-box {
   position: absolute;

@@ -32,15 +32,15 @@ export class PianorollTimelineControl extends Component {
     this.props.grid.marginRight  = 10
 
     this.container = ReactDOM.findDOMNode(this);
+    this.container.addEventListener("mousedown", this.mouseDownEvent)
     document.addEventListener("mousemove", this.mouseMoveEvent)
     document.addEventListener("mouseup",   this.mouseUpEvent)
-    this.container.addEventListener("mousedown", this.mouseDownEvent)
   }
 
   componentWillUnmount() {
+    this.container.removeEventListener("mousedown", this.mouseDownEvent)
     document.removeEventListener("mousemove", this.mouseMoveEvent)
     document.removeEventListener("mouseup",   this.mouseUpEvent)
-    this.container.removeEventListener("mousedown", this.mouseDownEvent)
   }
 
   mouseDownEvent(e) {
@@ -52,42 +52,52 @@ export class PianorollTimelineControl extends Component {
     }
   }
 
-  mouseMoveEvent(e) {
-  }
-
-  mouseUpEvent(e) {
-  }
-
   leftClickEvent(e) {
     var top = e.clientY - this.container.getBoundingClientRect().top
     if (top >= 25) {
       var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
-      var foundClip = this.props.clips.find(clip => {
-        return (
-          clip.start <= bar &&
-          clip.end > bar
-        )
-      })
-      if (foundClip) {
-        this.clipEvent(e, foundClip)
-      }
+      var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar)
     }
 
-    this.emptyAreaEvent(e)
+    if (foundClip) {
+      this.clipEvent(e, bar, foundClip)
+    } else {
+      this.emptyAreaEvent(e)
+    }
+  }
+
+  clipEvent(e, bar, foundClip) {
+    this.lastEvent = {
+      action: "SELECT_CLIP",
+      bar: bar,
+      time: Date.now()
+    }
+
+    var clipLength = foundClip.end - foundClip.start
+    var threshold = Math.max(5, 0.25*clipLength)
+
+    if (!foundClip.selected) {
+      this.props.dispatch( phraseSelectClip(foundClip.id, e.shiftKey) )
+    }
+
+    if (bar < foundClip.start + threshold) {
+      this.lastEvent.grip = "MIN"
+    } else if (bar > foundClip.end - threshold) {
+      this.lastEvent.grip = "MAX"
+    } else {
+      this.lastEvent.grip = "MID"
+    }
   }
 
   emptyAreaEvent(e) {
 
   }
 
-  clipEvent(e, foundClip) {
-    this.selectClipEvent(e, foundClip)
+  mouseMoveEvent(e) {
   }
 
-  selectClipEvent(e, foundClip) {
-    this.props.dispatch( phraseSelectClip(foundClip.id, e.shiftKey) )
+  mouseUpEvent(e) {
   }
-
 }
 
 PianorollTimelineControl.propTypes = {

@@ -36,17 +36,24 @@ $pianoroll-scroll-horizontal: 20px;
 
     > .timeline-playhead-grid {
       top:  0px;
-      left: 10px - 1px;
+      left: 10px - 0px;
       right: 10px + 1px;
       bottom:  0px;
     }
   }
 
   > .timeline-selection-window {
-    top: $pianoroll-timeline - 1px;
-    left: $pianoroll-keyboard-width - 1px;
+    top: $pianoroll-timeline;
+    left: $pianoroll-keyboard-width;
     right: 0px;
     bottom: $pianoroll-scroll-horizontal + 1px;
+
+    > .timeline-selection-grid {
+      top:  0px;
+      left: 10px - 0px;
+      right: 10px + 1px;
+      bottom:  0px;
+    }
   }
 }
 
