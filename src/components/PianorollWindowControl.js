@@ -9,8 +9,9 @@ import { pianorollScrollX,
          pianorollResizeWidth,
          pianorollResizeHeight,
          pianorollMoveCursor,
-         pianorollSelectionStart,
-         pianorollSelectionEnd } from '../actions/actionsPianoroll.js';
+         pianorollSelectionBoxStart,
+         pianorollSelectionBoxResize,
+         pianorollSelectionBoxApply } from '../actions/actionsPianoroll.js';
 import { phraseCreateNote,
          phraseSelectNote,
          phraseDeleteNote } from '../actions/actionsPhrase.js';
@@ -65,6 +66,7 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseDownEvent(e) {
+    // Ensure clicks from the scrollbars don't interfere
     if (e.target !== this.container)
       return
 
@@ -78,10 +80,10 @@ export class PianorollWindowControl extends Component {
 
   leftClickEvent(e) {
     var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
-    var key = Math.ceil(this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount);
+    var key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount);
     var foundNote = this.props.notes.find(note => {
       return (
-        Math.round(key) == note.keyNum &&
+        Math.ceil(key) == note.keyNum &&
         bar >= note.start &&
         bar <= note.end          
       )
@@ -151,7 +153,7 @@ export class PianorollWindowControl extends Component {
 
     // First Click - Start Selection
     if (!this.lastEvent) {
-      this.props.dispatch( pianorollSelectionStart(bar, key) )
+      this.props.dispatch( pianorollSelectionBoxStart(bar, key) )
       this.lastEvent = {
         action: SELECT_EMPTY_AREA,
         bar: bar,
@@ -177,7 +179,7 @@ export class PianorollWindowControl extends Component {
        (this.lastEvent.action == SELECT_EMPTY_AREA ||
         this.lastEvent.action == SELECTION_BOX) ) {
       // Resize Selection Box
-      this.props.dispatch( pianorollSelectionEnd(bar, key) )
+      this.props.dispatch( pianorollSelectionBoxResize(bar, key) )
       this.lastEvent.action = SELECTION_BOX
       return
     }
@@ -192,7 +194,7 @@ export class PianorollWindowControl extends Component {
         this.lastEvent.action == SELECT_EMPTY_AREA) {
       // Prepare for possibility of second click
       this.lastEvent.action = CLICK_EMPTY_AREA
-      this.props.dispatch( pianorollSelectionStart(null, null) )
+      this.props.dispatch( pianorollSelectionBoxApply(e.shiftKey) )
       return
     }
 
@@ -207,8 +209,7 @@ export class PianorollWindowControl extends Component {
     // Selection Box Completed
     if (this.lastEvent &&
         this.lastEvent.action == SELECTION_BOX) {
-      this.props.dispatch( pianorollSelectionStart(null, null) )
-      this.props.dispatch( pianorollSelectionEnd(  null, null) )
+      this.props.dispatch( pianorollSelectionBoxApply(e.shiftKey) )
       this.lastEvent = null
       return
     }

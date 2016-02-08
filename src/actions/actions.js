@@ -42,7 +42,7 @@ export const mixer = namespaceActions(
     'RESIZE_WIDTH',
     'RESIZE_HEIGHT',
     'SELECTION_BOX_START',
-    'SELECTION_BOX_END',
+    'SELECTION_BOX_RESIZE',
     'MOVE_CURSOR',
   ]
 )
@@ -55,7 +55,8 @@ export const pianoroll = namespaceActions(
     'RESIZE_WIDTH',
     'RESIZE_HEIGHT',
     'SELECTION_BOX_START',
-    'SELECTION_BOX_END',
+    'SELECTION_BOX_RESIZE',
+    'SELECTION_BOX_APPLY',
     'MOVE_CURSOR'
   ]
 )

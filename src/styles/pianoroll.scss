@@ -50,10 +50,10 @@ $pianoroll-scroll-vertical: 20px;
     bottom: $pianoroll-scroll-horizontal + 1px;
 
     > .timeline-selection-grid {
-      top:  0px;
+      top:  1px;
       left: 10px - 0px;
       right: 10px + 1px;
-      bottom:  0px;
+      bottom:  -1px;
     }
   }
 }

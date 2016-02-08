@@ -69,11 +69,13 @@ export default function reducePianoroll(state = defaultState, action) {
     case pianoroll.SELECTION_BOX_START:
       return Object.assign({}, state, {
         selectionStartX: action.x,
-        selectionStartY: action.y
+        selectionStartY: action.y,
+        selectionEndX: action.x,
+        selectionEndY: action.y
       });
 
     // ------------------------------------------------------------------------
-    case pianoroll.SELECTION_BOX_END:
+    case pianoroll.SELECTION_BOX_RESIZE:
       return Object.assign({}, state, {
         selectionEndX: action.x,
         selectionEndY: action.y

@@ -88,6 +88,42 @@ export default function(state = {}, action) {
       }
 
     // ------------------------------------------------------------------------
+    case pianoroll.SELECTION_BOX_APPLY:
+      return u({
+        phrase: {
+          notes: notes => {
+            var left   = Math.min( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
+            var right  = Math.max( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
+            var top    = Math.max( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )
+            var bottom = Math.min( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )            
+            return notes.map(note => {
+              // Inside Selection Box
+              if (note.trackID == state.pianoroll.currentTrack &&
+                  note.start  <  right &&
+                  note.end    >= left &&
+                  note.keyNum <= top + 1 &&
+                  note.keyNum >= bottom) {
+                return u({
+                  selected: action.union ? !note.selected : true
+                }, note)
+              // Outside Selection Box
+              } else {
+                return u({
+                  selected: action.union ? note.selected : false
+                }, note)
+              }
+            })
+          }
+        },
+        pianoroll: {
+          selectionStartX: null,
+          selectionStartY: null,
+          selectionEndX: null,
+          selectionEndY: null
+        }
+      }, state);
+
+    // ------------------------------------------------------------------------
     default:
       return state
 

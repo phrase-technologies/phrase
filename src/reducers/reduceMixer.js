@@ -61,11 +61,13 @@ export default function reduceMixer(state = defaultState, action) {
     case mixer.SELECTION_BOX_START:
       return Object.assign({}, state, {
         selectionStartX: action.x,
-        selectionStartY: action.y
+        selectionStartY: action.y,
+        selectionEndX: action.x,
+        selectionEndY: action.y
       })
 
     // ------------------------------------------------------------------------
-    case mixer.SELECTION_BOX_END:
+    case mixer.SELECTION_BOX_RESIZE:
       return Object.assign({}, state, {
         selectionEndX: action.x,
         selectionEndY: action.y

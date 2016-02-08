@@ -152,7 +152,7 @@ function reduceCreateNote(state, action) {
   )
 
   // Insert note, snap to same length as most previously created note
-  var snappedNoteKey   = Math.floor(action.key)
+  var snappedNoteKey   = Math.ceil(action.key)
   var snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast;
   var newNote = u.freeze({
     id:       state.noteAutoIncrement,
@@ -178,7 +178,7 @@ export function getClipAtBar(state, bar, trackID) {
 }
 
 export function getNoteAtKeyBar(state, key, bar, trackID) {
-  var snappedNoteKey = Math.floor(key)
+  var snappedNoteKey = Math.ceil(key)
   return state.notes.find(note => {
     // Ignore notes on different keys
     if (note.keyNum != snappedNoteKey)
