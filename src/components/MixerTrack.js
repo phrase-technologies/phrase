@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 
 export default class MixerTrack extends Component {
   render() {
+    var mixerTrackClasses  = "mixer-track"
+        mixerTrackClasses += this.props.focused ? " mixer-track-focused" : ""
+
     return (
-      <div className="mixer-track">
+      <div className={mixerTrackClasses}>
         <div className="mixer-track-tag" />
         <div className="mixer-track-control">
           <h3 className="mixer-track-name">
@@ -30,5 +33,6 @@ export default class MixerTrack extends Component {
 
 MixerTrack.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
-  track:        React.PropTypes.object.isRequired
+  track:        React.PropTypes.object.isRequired,
+  focused:      React.PropTypes.bool
 };  

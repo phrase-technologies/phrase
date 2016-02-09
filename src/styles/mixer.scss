@@ -86,7 +86,12 @@ $mixer-track-control: 200px;
     }
   }
 }
-.mixer-disable-shadow {
+.mixer-disable-shadow-top {
+  &:before {
+    display: none;
+  }
+}
+.mixer-disable-shadow-bottom {
   &:after {
     display: none;
   }

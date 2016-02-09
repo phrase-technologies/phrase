@@ -34,7 +34,8 @@ export class Mixer extends Component {
 
   render() {
     let mixerClasses = "mixer"
-        mixerClasses += (this.props.yMax > 0.99) ? " mixer-disable-shadow" : ""
+        mixerClasses += (this.props.yMin < 0.01) ? " mixer-disable-shadow-top"    : ""
+        mixerClasses += (this.props.yMax > 0.99) ? " mixer-disable-shadow-bottom" : ""
 
     let timelineProps = {
       dispatch: this.props.dispatch,
@@ -47,7 +48,8 @@ export class Mixer extends Component {
       dispatch: this.props.dispatch,
       yMin: this.props.yMin,
       yMax: this.props.yMax,
-      tracks: this.props.tracks
+      tracks: this.props.tracks,
+      currentTrack: this.props.currentTrack
     }
 
     let contentProps = {
@@ -92,6 +94,7 @@ export class Mixer extends Component {
 
 function mapStateToProps(state) {
   return {
+    currentTrack: state.pianoroll.currentTrack,
     tracks: state.phrase.tracks,
     clips: state.phrase.clips,
     barCount: state.phrase.barCount,
