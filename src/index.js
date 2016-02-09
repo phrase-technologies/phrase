@@ -11,18 +11,12 @@ import './index.scss';
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import { createStore } from 'redux';
-import reducer from './reducers/reduceAll.js';
-
-import { Provider } from 'react-redux';
-import Layout from './components/Layout.js';
-
-var store = createStore(reducer);
+import { Provider } from 'react-redux'
+import STORE from './reducers/createStore.js'
+import Layout from './components/Layout.js'
 
 ReactDOM.render(
-  // The child must be wrapped in a function
-  // to work around an issue in React 0.13.
-  <Provider store={store}>
+  <Provider store={STORE}>
     <Layout />
   </Provider>,
   document.getElementById('root')

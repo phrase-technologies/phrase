@@ -1,33 +1,9 @@
 // ============================================================================
-// Combine Reducer Branches
-// ============================================================================
-// We use combineReducers to organize state into decoupled branches, where each
-// branch represents a different module within the app. Much cleaner this way.
-import reduceNavigation from './reduceNavigation.js'
-import reduceTransport from './reduceTransport.js'
-import reducePhrase from './reducePhrase.js'
-import reduceMixer from './reduceMixer.js'
-import reducePianoroll from './reducePianoroll.js'
-import reduceCursor from './reduceCursor.js'
-
-import { combineReducers } from 'redux'
-
-var combinedReducer = combineReducers({
-  navigation: reduceNavigation,
-  transport: reduceTransport,
-  phrase: reducePhrase,
-  mixer: reduceMixer,
-  pianoroll: reducePianoroll,
-  cursor: reduceCursor
-})
-
-
-// ============================================================================
 // Top Level Reducers
 // ============================================================================
 // However, there are certain actions that are dependent on data from more than
-// one branch of the state. Below is a "Top Level Reducer" with access to the 
-// ENTIRE state, for those reductions that need it.
+// one branch of the state. We will call these "Top Level Reducers," and they
+// will be given access to the ENTIRE state, for those reductions that need it.
 import u from 'updeep'
 import { zoomInterval } from '../helpers/intervalHelpers.js'
 import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
@@ -38,9 +14,7 @@ import { mixer,
          phrase } from '../actions/actions.js'
 import { getTracksHeight } from '../helpers/trackHelpers.js'
 
-export default function(state = {}, action) {
-
-  state = combinedReducer(state, action)
+export default function reduceAll(state = {}, action) {
 
   switch (action.type) {
 
