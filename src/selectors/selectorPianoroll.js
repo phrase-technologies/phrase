@@ -107,7 +107,7 @@ export function renderClipNotes(note, clips) {
   while( currentLoopStart < clip.end ) {
     // Notes that are entirely out of view - skip them
     if (note.end < currentLoopStartCutoff || note.start > currentLoopEndCutoff)
-      return
+      break
 
     // Extrapolate the note to the current loop iteration
     let renderedNote = Object.assign({}, note, {
