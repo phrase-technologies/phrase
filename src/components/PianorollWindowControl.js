@@ -14,12 +14,15 @@ import { pianorollScrollX,
          pianorollSelectionBoxApply } from '../actions/actionsPianoroll.js';
 import { phraseCreateNote,
          phraseSelectNote,
-         phraseDeleteNote } from '../actions/actionsPhrase.js';
+         phraseDeleteNote,
+         phraseDragNoteSelection,
+         phraseDropNoteSelection } from '../actions/actionsPhrase.js';
 
 const SELECT_EMPTY_AREA = "SELECT_EMPTY_AREA"
 const CLICK_EMPTY_AREA  = "CLICK_EMPTY_AREA"
 const SELECT_NOTE       = "SELECT_NOTE"
 const CLICK_NOTE        = "CLICK_NOTE"
+const DRAG_NOTE         = "DRAG_NOTE"
 const SELECTION_BOX     = "SELECTION_BOX"
 const DOUBLECLICK_DELAY = 360
 
@@ -120,7 +123,10 @@ export class PianorollWindowControl extends Component {
         time: Date.now()
       }
       var noteLength = foundNote.end - foundNote.start
-      var threshold = Math.max(5, 0.25*noteLength)
+      var threshold = Math.min(
+        8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
+        0.25*noteLength
+      )
 
       if (!foundNote.selected) {
         this.props.dispatch( phraseSelectNote(foundNote.id, e.shiftKey) )
@@ -168,10 +174,20 @@ export class PianorollWindowControl extends Component {
     var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
     var key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount;
 
-    // Drag Note?
+    // Drag Selected Note(s)?
     if (this.lastEvent &&
-        this.lastEvent.foundNote) {
-      // ...
+       (this.lastEvent.action == SELECT_NOTE ||
+        this.lastEvent.action == DRAG_NOTE)) {
+      // Adjust Note
+      let offsetBar = bar - this.lastEvent.bar
+      switch (this.lastEvent.grip) {
+        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; var offsetKey = 0; break;
+        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; var offsetKey = key - this.lastEvent.key; break;
+        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; var offsetKey = 0; break;
+      }
+      this.props.dispatch( phraseDragNoteSelection(offsetStart, offsetEnd, offsetKey) )
+      this.lastEvent.action = DRAG_NOTE
+      return
     }
 
     // Selection Box?
@@ -210,6 +226,14 @@ export class PianorollWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action == SELECTION_BOX) {
       this.props.dispatch( pianorollSelectionBoxApply(e.shiftKey) )
+      this.lastEvent = null
+      return
+    }
+
+    // Selected Notes Dragged
+    if (this.lastEvent &&
+        this.lastEvent.action == DRAG_NOTE) {
+      this.props.dispatch( phraseDropNoteSelection() )
       this.lastEvent = null
       return
     }

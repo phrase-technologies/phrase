@@ -24,6 +24,9 @@ export const defaultState = {
   notes: [],
   clipSelectionOffsetBar:   null,
   clipSelectionOffsetTrack: null,
+  noteSelectionOffsetStart: null,
+  noteSelectionOffsetEnd: null,
+  noteSelectionOffsetKey: null,
   trackAutoIncrement: 2,
   noteAutoIncrement:  0,
   clipAutoIncrement:  0,
@@ -96,6 +99,35 @@ export default function reducePhrase(state = defaultState, action) {
       return u({
         clipSelectionOffsetBar:   action.bar,
         clipSelectionOffsetTrack: action.track
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.DRAG_NOTE_SELECTION:
+      return u({
+        noteSelectionOffsetStart: action.start,
+        noteSelectionOffsetEnd:   action.end,
+        noteSelectionOffsetKey:   action.key
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.DROP_NOTE_SELECTION:
+      return u({
+        notes: notes => {
+          return notes.map(note => {
+            if (note.selected) {
+              return u({
+                start:  note.start  + state.noteSelectionOffsetStart,
+                end:    note.end    + state.noteSelectionOffsetEnd,
+                keyNum: Math.round(note.keyNum + state.noteSelectionOffsetKey)
+              }, note)
+            } else {
+              return note
+            }
+          })
+        },
+        noteSelectionOffsetStart: null,
+        noteSelectionOffsetEnd:   null,
+        noteSelectionOffsetKey:   null
       }, state)
 
     // ------------------------------------------------------------------------

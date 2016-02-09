@@ -18,6 +18,15 @@ const notesSelector = (state) => {
 const pianorollSelector = (state) => {
   return state.pianoroll
 }
+const noteSelectionOffsetStart = (state) => {
+  return state.phrase.noteSelectionOffsetStart
+}
+const noteSelectionOffsetEnd = (state) => {
+  return state.phrase.noteSelectionOffsetEnd
+}
+const noteSelectionOffsetKey = (state) => {
+  return state.phrase.noteSelectionOffsetKey
+}
 const currentTrackSelector = (state) => {
   return state.phrase.tracks.find(track => {
     return track.id == state.pianoroll.currentTrack
@@ -34,14 +43,35 @@ export const currentNotesSelector = createSelector(
   currentClipsSelector,
   notesSelector,
   currentTrackSelector,
-  (currentClips, notes, currentTrack) => {
-    var currentNotes = notes.filter(note => note.trackID == currentTrack.id)
+  noteSelectionOffsetStart,
+  noteSelectionOffsetEnd,
+  noteSelectionOffsetKey,
+  (currentClips, notes, currentTrack, offsetStart, offsetEnd, offsetKey) => {
+    var currentNotes = notes
+      .filter(note => note.trackID == currentTrack.id)
+
+    var selectedNotesRendered = []
+    if (offsetStart || offsetEnd || offsetKey) {
+      selectedNotesRendered = currentNotes
+      .filter(note => note.selected)
+      .map(note => {
+        return {
+          ...note,
+          start:  note.start  + offsetStart,
+          end:    note.end    + offsetEnd,
+          keyNum: Math.round(note.keyNum + offsetKey),
+          selected: offsetStart && offsetEnd ? false : true
+        }
+      })
+    }
 
     // Render a copy of each note for each loop iteration of it's respective clip
-    return currentNotes.reduce((allLoopedNotes, note) => {
-      var loopedNote = renderClipNotes(note, currentClips)
-      return allLoopedNotes.concat( loopedNote )
-    }, [])
+    return currentNotes
+      .concat(selectedNotesRendered)
+      .reduce((allLoopedNotes, note) => {
+        var loopedNote = renderClipNotes(note, currentClips)
+        return allLoopedNotes.concat( loopedNote )
+      }, [])
   }
 )
 
