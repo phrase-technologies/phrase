@@ -38,11 +38,17 @@ export function drawLine(context, x1, y1, x2, y2, xyFlip, color) {
 };
 
 export function drawRoundedRectangle(context, left, right, top, bottom, radius, leftCutoff = false) {
+  // Avoid artifacts with oversized corner radius
+  radius = Math.min(radius, 0.5*(right - left))
+
+  // Really small radius is negligible - draw a regular rectangle
   if (radius < 2) {
     if (context.fillStyle)
       context.fillRect(  left, top, right - left, bottom - top)
     if (context.strokeStyle)
       context.strokeRect(left, top, right - left, bottom - top)
+
+  // Rounded Corners
   } else {
     context.beginPath()
     if (leftCutoff)

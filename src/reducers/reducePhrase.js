@@ -33,6 +33,8 @@ export const defaultState = {
   noteLengthLast: 0.25
 };
 
+const MINIMUM_NOTE_LENGTH = 0.0078125
+
 export default function reducePhrase(state = defaultState, action) {
   switch (action.type)
   {
@@ -103,9 +105,20 @@ export default function reducePhrase(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.DRAG_NOTE_SELECTION:
+      // Avoid negative note lengths!
+      var adjustment = 0
+      var proposedLengthChange = action.end - action.start
+      if (proposedLengthChange < 0) {
+        var shortestNoteLength = state.notes
+          .filter(note => note.selected)
+          .reduce((shortestLength, note) => {
+            return Math.min(shortestLength, note.end - note.start)
+          }, 12345678) // Really long dummy number
+        adjustment = Math.min(0, shortestNoteLength + proposedLengthChange - MINIMUM_NOTE_LENGTH)
+      }
       return u({
-        noteSelectionOffsetStart: action.start,
-        noteSelectionOffsetEnd:   action.end,
+        noteSelectionOffsetStart: action.start ? (action.start + adjustment) : action.start,
+        noteSelectionOffsetEnd:   action.end   ? (action.end   - adjustment) : action.end,
         noteSelectionOffsetKey:   action.key
       }, state)
 
