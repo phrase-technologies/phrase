@@ -191,11 +191,11 @@ export class PianorollWindowDisplay extends Component {
         label = keyLetter + Math.floor((note.keyNum+8)/12);
       }
 
-      this.renderNote(canvasContext, left, right, top, bottom, note.selected, label)
+      this.renderNote(canvasContext, left, right, top, bottom, note.selected, label, note.outOfView)
     })
   }
 
-  renderNote(canvasContext, left, right, top, bottom, selected, label, gradient = true) {
+  renderNote(canvasContext, left, right, top, bottom, selected, label, leftCutoff = false, gradient = true) {
     // Gradient Fill
     if (gradient) {
       var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
@@ -215,7 +215,7 @@ export class PianorollWindowDisplay extends Component {
     var radius = height * 0.175
 
     // Shape
-    drawRoundedRectangle(canvasContext, left, right, top, bottom, radius)
+    drawRoundedRectangle(canvasContext, left, right, top, bottom, radius, leftCutoff)
 
     // Selected
     if (selected) {

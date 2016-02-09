@@ -37,7 +37,7 @@ export function drawLine(context, x1, y1, x2, y2, xyFlip, color) {
     context.stroke();
 };
 
-export function drawRoundedRectangle(context, left, right, top, bottom, radius) {
+export function drawRoundedRectangle(context, left, right, top, bottom, radius, leftCutoff = false) {
   if (radius < 2) {
     if (context.fillStyle)
       context.fillRect(  left, top, right - left, bottom - top)
@@ -45,15 +45,23 @@ export function drawRoundedRectangle(context, left, right, top, bottom, radius) 
       context.strokeRect(left, top, right - left, bottom - top)
   } else {
     context.beginPath()
-    context.moveTo(left + radius, top)
+    if (leftCutoff)
+      context.moveTo(left, top)
+    else
+      context.moveTo(left + radius, top)
     context.lineTo(right - radius, top)
     context.quadraticCurveTo(right, top, right, top + radius)
     context.lineTo(right, bottom - radius)
     context.quadraticCurveTo(right, bottom, right - radius, bottom)
-    context.lineTo(left + radius, bottom)
-    context.quadraticCurveTo(left, bottom, left, bottom - radius)
-    context.lineTo(left, top + radius)
-    context.quadraticCurveTo(left, top, left + radius, top)
+    if (leftCutoff) {
+      context.lineTo(left, bottom)
+      context.lineTo(left, top)
+    } else {
+      context.lineTo(left + radius, bottom)
+      context.quadraticCurveTo(left, bottom, left, bottom - radius)
+      context.lineTo(left, top + radius)
+      context.quadraticCurveTo(left, top, left + radius, top)
+    }
     context.closePath()
     if (context.fillStyle)
       context.fill()
