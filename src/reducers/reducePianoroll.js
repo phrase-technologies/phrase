@@ -15,7 +15,7 @@ export const defaultState = {
   width: 1000,
   height: 500,
   xMin: 0.000,
-  xMax: 0.0625,
+  xMax: 0.250,
   yMin: 0.250,
   yMax: 0.750,
   selectionStartX: null,

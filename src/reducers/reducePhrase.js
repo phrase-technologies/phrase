@@ -8,7 +8,7 @@ import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 import { phrase } from '../actions/actions.js';
 
 export const defaultState = {
-  barCount: 64.00,
+  barCount: 16.00,
   playhead: 0.000,
   tracks: [
     {

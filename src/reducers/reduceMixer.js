@@ -14,7 +14,7 @@ let defaultState = {
   width: 1000,
   height: 500,
   xMin: 0.000,
-  xMax: 0.0625,
+  xMax: 0.500,
   yMin: 0.000,
   yMax: 0.0625,
   selectionStartX: null,
