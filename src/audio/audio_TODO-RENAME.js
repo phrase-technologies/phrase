@@ -1,5 +1,6 @@
 import STORE from '../reducers/createStore.js'
 import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
+import { transportStop } from '../actions/actionsTransport.js'
 
 var ctx = new AudioContext()
 var oscillators = []
@@ -13,14 +14,16 @@ var keyFrequency = [] // Set the frequencies for the notes
     for( var i = 1; i <= 88; i++ ) { keyFrequency[i] = Math.pow(2, (i-49)/12) * 440 }
 
 export function audioStop() {
-console.log("audioStop()")
+  console.log("audioStop()")
+
   if (scheduleLooper)
     clearInterval(scheduleLooper)
   scheduleLooper = null
 }
 
 export function audioPlay() {
-console.log("audioPlay()")
+  console.log("audioPlay()")
+
   var state = STORE.getState()
   var playStart = ctx.currentTime;
   var loop = 0;
@@ -36,14 +39,26 @@ console.log("audioPlay()")
     return
 
   // Nothing to play? Ignore
-  if (notes.length == 0)
+  if (notes.length == 0) {
+    // Leave a delay, for 2 reasons:
+    // 1. We are still inside a redux action creator, so technically
+    //    the state is not even set to playing yet.
+    // 2. We want the PLAYING state to be visible momentarily to the user.
+    setTimeout(() => {
+      STORE.dispatch( transportStop() )
+    }, 250)
     return
+  }
 
   var iterator = notes[Symbol.iterator]()
   var iteration = iterator.next()
   var note = iteration.value
 
   scheduleLooper = setInterval(function(){
+    // Empty section at end of song
+    if (iteration.done)
+      return
+
     // Schedule up to the next 40 ms worth of notes
     var startTime = getPlayTime( note.start + loop*barsPerLoop, playStart );
     var   endTime = getPlayTime( note.end   + loop*barsPerLoop, playStart );
@@ -59,11 +74,17 @@ console.log("audioPlay()")
         endTime = getPlayTime( note.end   + loop*barsPerLoop, playStart );
     }
 
-    // Reached the end of loop - queue up next loop
+    // Reached the end of loop
     if (iteration.done) {
-      iterator = notes[Symbol.iterator]()
-      iteration = iterator.next()
-      note = iteration.value
+      // Queue up the stop command
+      setTimeout(() => {
+        STORE.dispatch( transportStop() )
+      }, 1000 * (endTime - ctx.currentTime))
+
+      // If we want to continue looping...
+      // iterator = notes[Symbol.iterator]()
+      // iteration = iterator.next()
+      // note = iteration.value
     }
   }, 25)
 }
