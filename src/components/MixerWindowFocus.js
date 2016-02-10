@@ -41,7 +41,6 @@ export default class MixerWindowFocus extends Component {
       return nextProps[prop] != this.props[prop]
     })
     if (changeToDebounce) {
-      console.log("changeToDebounce")
       this.shouldComponentUpdateFocus()
       return false
     }
@@ -61,7 +60,6 @@ export default class MixerWindowFocus extends Component {
   }
 
   shouldComponentUpdateFocus() {
-    console.log("shouldComponentUpdateFocus()")
     this.forceUpdate()
   }
 

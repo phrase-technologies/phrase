@@ -36,9 +36,8 @@
   width: $mixer-track-tag;
   bottom: 0;
 
-  border: 1px solid #F80;
   border-radius: $mixer-corner 0 0 $mixer-corner;
-  background: #C60;
+  background: #F80;
 
   pointer-events: all;
 }
@@ -49,8 +48,6 @@
   left: $mixer-track-tag;
   bottom: 0;
 
-  border: 1px solid #666;
-  border-left: 0;
   background: #555555;
 
   pointer-events: all;
