@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import _ from 'lodash'
 import { getPixelsToTrack,
          getTracksHeight } from '../helpers/trackHelpers.js';
 
@@ -28,6 +29,45 @@ export default class MixerWindowFocus extends Component {
         </div>
       </div>
     )
+  }
+
+  shouldComponentUpdate(nextProps) {
+    // Debounced Props
+    var debouncedProps = [
+      'focusBarMin',
+      'focusBarMax'
+    ]
+    var changeToDebounce = debouncedProps.some(prop => {
+      return nextProps[prop] != this.props[prop]
+    })
+    if (changeToDebounce) {
+      console.log("changeToDebounce")
+      this.shouldComponentUpdateFocus()
+      return false
+    }
+
+    // Regular Props
+    var propsToCheck = [
+      'tracks',
+      'xMin',
+      'xMax',
+      'yMin',
+      'yMax'
+    ]
+    var changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] != this.props[prop]
+    })
+    return changeDetected    
+  }
+
+  shouldComponentUpdateFocus() {
+    console.log("shouldComponentUpdateFocus()")
+    this.forceUpdate()
+  }
+
+  constructor() {
+    super(...arguments)
+    this.shouldComponentUpdateFocus = _.debounce(this.shouldComponentUpdateFocus, 100)
   }
 }
 
