@@ -26,6 +26,7 @@ import MixerTimeline from './MixerTimeline.js';
 import MixerTracks from './MixerTracks.js';
 import MixerWindowDisplay from './MixerWindowDisplay.js';
 import MixerWindowControl from './MixerWindowControl.js';
+import MixerWindowFocus from './MixerWindowFocus.js';
 import TimelinePlayhead from './TimelinePlayhead.js';
 import TimelineCursor from './TimelineCursor.js';
 import ScrollBar from './Scrollbar.js';
@@ -48,8 +49,18 @@ export class Mixer extends Component {
       dispatch: this.props.dispatch,
       yMin: this.props.yMin,
       yMax: this.props.yMax,
+      tracks: this.props.tracks
+    }
+
+    let trackFocusProps = {
       tracks: this.props.tracks,
-      currentTrack: this.props.currentTrack
+      focusedTrack: this.props.focusedTrack,
+      focusBarMin: this.props.focusBarMin,
+      focusBarMax: this.props.focusBarMax,
+      xMin: this.props.xMin,
+      xMax: this.props.xMax,
+      yMin: this.props.yMin,
+      yMax: this.props.yMax,
     }
 
     let contentProps = {
@@ -70,6 +81,7 @@ export class Mixer extends Component {
             <ScrollBar vertical min={this.props.yMin} max={this.props.yMax} setScroll={this.setVerticalScroll} />
           </div>
         </MixerWindowControl>
+        <MixerWindowFocus {...trackFocusProps} />
         <TimelineCursor     cursor={this.props.cursor} />
         <TimelinePlayhead playhead={this.props.playhead} {...timelineProps} />
       </div>
@@ -94,7 +106,9 @@ export class Mixer extends Component {
 
 function mapStateToProps(state) {
   return {
-    currentTrack: state.pianoroll.currentTrack,
+    focusedTrack: state.pianoroll.currentTrack,
+    focusBarMin: state.pianoroll.xMin,
+    focusBarMax: state.pianoroll.xMax,
     tracks: state.phrase.tracks,
     clips: state.phrase.clips,
     barCount: state.phrase.barCount,

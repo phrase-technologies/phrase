@@ -44,12 +44,24 @@ export default class MixerTracks extends Component {
   addNewTrack() {
     this.props.dispatch(phraseCreateTrack());
   }
+
+  shouldComponentUpdate(nextProps) {
+    var propsToCheck = [
+      'dispatch',
+      'tracks',
+      'yMin',
+      'yMax'
+    ]
+    var changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] != this.props[prop]
+    })
+    return changeDetected    
+  }
 }
 
 MixerTracks.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   tracks:       React.PropTypes.array.isRequired,
-  currentTrack: React.PropTypes.number.isRequired,
   yMin:         React.PropTypes.number.isRequired,
   yMax:         React.PropTypes.number.isRequired
 }

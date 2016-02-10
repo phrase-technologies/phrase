@@ -96,43 +96,6 @@ $mixer-track-control: 200px;
     display: none;
   }
 }
-.mixer-overflow {
-  right:  15px;
-
-  border-radius: $mixer-corner+3px;
-
-  &:before,
-  &:after {
-    right: 18px;
-  }
-
-  .mixer-timeline {
-    right: -1px + 14px;
-  }
-  > .timeline-cursor-window {
-    right:  3px + 10px + 14px;
-  }
-  > .mixer-track-list-gutter {
-    margin-right: 14px;
-    border-radius: $mixer-corner+3px;
-  }
-  > .mixer-scroll-window {
-    margin-right: 14px;
-  }
-  > .mixer-scroll-horizontal {
-    right: 3px + 10px + 14px;
-  }
-  > .mixer-settings-right {
-    width: 3px + 1px + 14px;
-  }
-  .mixer-empty-area {
-    display: none;
-  }
-  .mixer-track-new-wrapper {
-    box-shadow: inset 0 0 20px 10px #111;
-    background: rgba(17,17,17,0.5);
-  }
-}
 
 // ============================================================================
 // Mixer Timeline
@@ -264,4 +227,52 @@ $mixer-track-control: 200px;
 
   padding: 0 0 0 10px;
 }
+
+// ----------------------------------------------------------------------------
+// Mixer Window Focus
+// ----------------------------------------------------------------------------
+// The focus consists of 3 elements: 
+// 1) .mixer-window-focus-grid
+// 2) .mixer-window-focus-box
+// 3) .mixer-window-focus-ring
+// This is necessary to have accurate percentage position on the wrapper and 1px offset on the child.
+.mixer-window-focus {
+  position: absolute;
+  top: 0;
+  left: 3px + $mixer-track-control + $mixer-track-tag;
+  right: 3px + 1px;
+  bottom: 0;
+
+  pointer-events: none;
+  overflow: hidden;
+}
+.mixer-window-focus-grid {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 6px;
+  bottom: 0;
+}
+.mixer-window-focus-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.mixer-window-focus-ring {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  right: -3px;
+  bottom: 0;
+
+  border: 1px solid rgba(255,255,255,0.75);
+  border-radius: 3px;
+  box-shadow:
+    inset 0 0 3px 1px #000,
+          0 0 3px 1px #000;
+}
+
+
 
