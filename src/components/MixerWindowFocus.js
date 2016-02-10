@@ -18,7 +18,6 @@ export default class MixerWindowFocus extends Component {
       width: width*100 + '%',
       height: 46
     }
-    // console.log("Focus:", left, right)
     return (
       <div className="mixer-window-focus">
         <div className="mixer-window-focus-grid">
@@ -30,24 +29,6 @@ export default class MixerWindowFocus extends Component {
       </div>
     )
   }
-
-/*
-  shouldComponentUpdate(nextProps) {
-    var propsToCheck = [
-      'dispatch',
-      'track',
-      'focused',
-      'focusBarMin',
-      'focusBarMax',
-      'xMin',
-      'xMax'
-    ]
-    var changeDetected = propsToCheck.some(prop => {
-      return nextProps[prop] != this.props[prop]
-    })
-    return changeDetected    
-  }
-  */
 }
 
 MixerWindowFocus.propTypes = {

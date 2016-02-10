@@ -89,6 +89,20 @@ export class MixerTimeline extends Component {
       canvasContext.stroke();
     }    
   }
+
+  shouldComponentUpdate(nextProps) {
+    var propsToCheck = [
+      'dispatch',
+      'grid',
+      'barCount',
+      'xMin',
+      'xMax'
+    ]
+    var changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] != this.props[prop]
+    })
+    return changeDetected    
+  }  
 }
 
 MixerTimeline.propTypes = {

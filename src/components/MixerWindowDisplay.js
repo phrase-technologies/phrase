@@ -168,6 +168,24 @@ export class MixerWindowDisplay extends Component {
       canvasContext.fillText(`Clip ${clip.id}`, x, y)
     }
   }
+
+  shouldComponentUpdate(nextProps) {
+    var propsToCheck = [
+      'dispatch',
+      'grid',
+      'tracks',
+      'clips',
+      'barCount',
+      'xMin',
+      'xMax',
+      'yMin',
+      'yMax'
+    ]
+    var changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] != this.props[prop]
+    })
+    return changeDetected    
+  }
 }
 
 MixerWindowDisplay.propTypes = {

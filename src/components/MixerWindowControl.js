@@ -51,6 +51,24 @@ export class MixerWindowControl extends Component {
     this.props.dispatch(mixerResizeWidth( this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft));
     this.props.dispatch(mixerResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ));
   }
+
+  shouldComponentUpdate(nextProps) {
+    var propsToCheck = [
+      'dispatch',
+      'grid',
+      'tracks',
+      'clips',
+      'barCount',
+      'xMin',
+      'xMax',
+      'yMin',
+      'yMax'
+    ]
+    var changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] != this.props[prop]
+    })
+    return changeDetected    
+  }
 }
 
 MixerWindowControl.propTypes = {
