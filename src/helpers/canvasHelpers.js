@@ -37,12 +37,12 @@ export function drawLine(context, x1, y1, x2, y2, xyFlip, color) {
     context.stroke();
 };
 
-export function drawRoundedRectangle(context, left, right, top, bottom, radius, leftCutoff = false) {
+export function drawRoundedRectangle(context, left, right, top, bottom, radius, leftCutoff = false, rightCutoff = false) {
   // Avoid artifacts with oversized corner radius
   radius = Math.min(radius, 0.5*(right - left))
 
   // Really small radius is negligible - draw a regular rectangle
-  if (radius < 2) {
+  if (radius < 2 || (leftCutoff && rightCutoff)) {
     if (context.fillStyle)
       context.fillRect(  left, top, right - left, bottom - top)
     if (context.strokeStyle)
@@ -51,14 +51,22 @@ export function drawRoundedRectangle(context, left, right, top, bottom, radius, 
   // Rounded Corners
   } else {
     context.beginPath()
+
     if (leftCutoff)
       context.moveTo(left, top)
     else
       context.moveTo(left + radius, top)
-    context.lineTo(right - radius, top)
-    context.quadraticCurveTo(right, top, right, top + radius)
-    context.lineTo(right, bottom - radius)
-    context.quadraticCurveTo(right, bottom, right - radius, bottom)
+
+    if (rightCutoff) {
+      context.lineTo(right, top)
+      context.lineTo(right, bottom)
+    } else {
+      context.lineTo(right - radius, top)
+      context.quadraticCurveTo(right, top, right, top + radius)
+      context.lineTo(right, bottom - radius)
+      context.quadraticCurveTo(right, bottom, right - radius, bottom)
+    }
+
     if (leftCutoff) {
       context.lineTo(left, bottom)
       context.lineTo(left, top)
@@ -68,7 +76,9 @@ export function drawRoundedRectangle(context, left, right, top, bottom, radius, 
       context.lineTo(left, top + radius)
       context.quadraticCurveTo(left, top, left + radius, top)
     }
+
     context.closePath()
+    
     if (context.fillStyle)
       context.fill()
     if (context.strokeStyle)

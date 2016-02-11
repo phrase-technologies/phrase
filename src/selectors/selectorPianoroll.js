@@ -118,12 +118,14 @@ export function renderClipNotes(note, clips) {
     // Notes that are cut off at the beginning
     if (note.start < currentLoopStartCutoff) {
       renderedNote.start = currentLoopStart + currentLoopStartCutoff
-      renderedNote.outOfView = true
+      renderedNote.outOfViewLeft = true
     }
 
     // Notes that are cut off at the end
-    if (note.end > currentLoopEndCutoff)
+    if (note.end > currentLoopEndCutoff) {
       renderedNote.end = currentLoopStart + currentLoopEndCutoff
+      renderedNote.outOfViewRight = true
+    }
 
     renderedClipNotes.push(renderedNote)
 
