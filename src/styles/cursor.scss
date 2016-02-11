@@ -28,10 +28,10 @@
 .cursor-drag         * { cursor: grab      !important;   cursor: -webkit-grab     !important; }
 .cursor-grabbing     * { cursor: grabbing  !important;   cursor: -webkit-grabbing !important; }
 .cursor-move         * { cursor: move      !important;                                        }
-@mixin cursor-left()   { cursor: url(img/cursor-left-edge.ico)   0 8, ew-resize !important;   }
-@mixin cursor-right()  { cursor: url(img/cursor-right-edge.ico)  8 8, ew-resize !important;   }
-@mixin cursor-top()    { cursor: url(img/cursor-top-edge.ico)    8 0, ns-resize !important;   }
-@mixin cursor-bottom() { cursor: url(img/cursor-bottom-edge.ico) 8 8, ns-resize !important;   }
+@mixin cursor-left()   { cursor: url(img/cursor-left-edge.ico)    0  8, ew-resize !important;   }
+@mixin cursor-right()  { cursor: url(img/cursor-right-edge.ico)  16  8, ew-resize !important;   }
+@mixin cursor-top()    { cursor: url(img/cursor-top-edge.ico)     8  0, ns-resize !important;   }
+@mixin cursor-bottom() { cursor: url(img/cursor-bottom-edge.ico)  8 16, ns-resize !important;   }
 .cursor-left         * { @include cursor-left();   }
 .cursor-right        * { @include cursor-right();  }
 .cursor-top          * { @include cursor-top();    }

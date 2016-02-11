@@ -17,6 +17,9 @@ import { phraseCreateNote,
          phraseDeleteNote,
          phraseDragNoteSelection,
          phraseDropNoteSelection } from '../actions/actionsPhrase.js';
+import { cursorResizeLeft,
+         cursorResizeRight,
+         cursorClear } from '../actions/actionsCursor.js';         
 
 const SELECT_EMPTY_AREA = "SELECT_EMPTY_AREA"
 const CLICK_EMPTY_AREA  = "CLICK_EMPTY_AREA"
@@ -84,13 +87,7 @@ export class PianorollWindowControl extends Component {
   leftClickEvent(e) {
     var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
     var key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount);
-    var foundNote = this.props.notes.find(note => {
-      return (
-        Math.ceil(key) == note.keyNum &&
-        bar >= note.start &&
-        bar <= note.end          
-      )
-    })
+    var foundNote = this.getNoteAtBarKey(bar, key)
 
     if (foundNote) {
       this.noteEvent(e, bar, key, foundNote)
@@ -133,10 +130,13 @@ export class PianorollWindowControl extends Component {
       }
 
       if (bar < foundNote.start + threshold) {
+        this.props.dispatch( cursorResizeLeft )
         this.lastEvent.grip = "MIN"
       } else if (bar > foundNote.end - threshold) {
+        this.props.dispatch( cursorResizeRight )
         this.lastEvent.grip = "MAX"
       } else {
+        this.props.dispatch( cursorClear )
         this.lastEvent.grip = "MID"
       }
     }
@@ -202,6 +202,31 @@ export class PianorollWindowControl extends Component {
 
     // No Action - Clear the queue
     this.lastEvent = null
+
+    // Cursor on hover over notes
+    this.hoverEvent(e, bar, key)
+  }
+
+  hoverEvent(e, bar, key) {
+    var foundNote = this.getNoteAtBarKey(bar, key)
+    if (foundNote) {
+      var noteLength = foundNote.end - foundNote.start
+      var threshold = Math.min(
+        8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
+        0.25*noteLength
+      )
+
+      if (bar < foundNote.start + threshold) {
+        this.props.dispatch( cursorResizeLeft )
+      } else if (bar > foundNote.end - threshold) {
+        this.props.dispatch( cursorResizeRight )
+      } else {
+        this.props.dispatch( cursorClear )
+      }
+    // Clear cursor if not hovering over a note
+    } else {
+      this.props.dispatch( cursorClear )
+    }    
   }
 
   mouseUpEvent(e) {
@@ -217,6 +242,9 @@ export class PianorollWindowControl extends Component {
     // First Click - Note
     if (this.lastEvent &&
         this.lastEvent.action == SELECT_NOTE) {
+      // Cancel Cursor
+      this.props.dispatch( cursorClear )
+
       // Prepare for possibility of second click
       this.lastEvent.action = CLICK_NOTE
       return
@@ -245,6 +273,14 @@ export class PianorollWindowControl extends Component {
   handleResize() {
     this.props.dispatch(pianorollResizeWidth( this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft));
     this.props.dispatch(pianorollResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ));
+  }
+
+  getNoteAtBarKey(bar, key) {
+    return this.props.notes.find(note => (
+      Math.ceil(key) == note.keyNum &&
+      bar >= note.start &&
+      bar <= note.end          
+    ))
   }
 
   getPercentX(e) {

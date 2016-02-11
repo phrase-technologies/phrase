@@ -1,10 +1,6 @@
 import { cursor } from './actions.js'
 
-const cursorSetIcon = (cursorTYPE) => (
-  {
-    type: cursorTYPE
-  }
-)
+const cursorSetIcon = (cursorTYPE) => ({ type: cursorTYPE })
 
 export const cursorDefault      = cursorSetIcon(cursor.DEFAULT)
 export const cursorDrag         = cursorSetIcon(cursor.DRAG)
