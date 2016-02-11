@@ -60,7 +60,7 @@ export const currentNotesSelector = createSelector(
           start:  note.start  + offsetStart,
           end:    note.end    + offsetEnd,
           keyNum: Math.round(note.keyNum + offsetKey),
-          selected: offsetStart && offsetEnd ? false : true
+          selected: offsetStart && offsetEnd || Math.round(offsetKey) ? false : true
         }
       })
     }

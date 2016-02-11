@@ -116,7 +116,7 @@ function mapStateToProps(state) {
     xMax: state.mixer.xMax,
     yMin: state.mixer.yMin,
     yMax: state.mixer.yMax,
-    playhead: state.mixer.playhead,
+    playhead: state.phrase.playhead,
     cursor: state.mixer.cursor
   };
 }

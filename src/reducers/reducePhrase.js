@@ -144,6 +144,14 @@ export default function reducePhrase(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
+    case phrase.MOVE_PLAYHEAD:
+      var playhead = Math.max(action.bar, 0)
+          playhead = Math.min(playhead, state.barCount)
+      return u({
+        playhead: playhead
+      }, state)
+
+    // ------------------------------------------------------------------------
     default:
       return state;
   }  

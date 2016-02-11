@@ -69,6 +69,7 @@
   z-index: 4;  // Above all other track layers
 
   background: rgba(255,255,255,0.75);
+  box-shadow: 0 0 3px 1px #000;
 
   &:before,
   &:after {
@@ -76,11 +77,11 @@
     display: block;
     position: absolute;
     top: 0px;
-    border: 6px solid transparent;
-    left: -5px;
+    border: 4px solid transparent;
+    left: -3px;
     border-top-color: rgba(255,255,255,0.75);
   }
-  &:after { left: -6px; }
+  &:after { left: -4px; }
 }
 
 // ----------------------------------------------------------------------------

@@ -30,7 +30,7 @@ $pianoroll-scroll-vertical: 20px;
   }
 
   > .timeline-playhead-window {
-    top: $pianoroll-timeline - 5px;
+    top: 20px;
     left: $pianoroll-keyboard-width;
     right: $pianoroll-scroll-vertical;
     bottom: $pianoroll-scroll-horizontal + 1px;

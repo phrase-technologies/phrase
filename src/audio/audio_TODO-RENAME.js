@@ -1,6 +1,7 @@
 import STORE from '../reducers/createStore.js'
 import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
 import { transportStop } from '../actions/actionsTransport.js'
+import { phraseMovePlayhead } from '../actions/actionsPhrase.js'
 
 var ctx = new AudioContext()
 var oscillators = []
@@ -45,6 +46,7 @@ export function audioPlay() {
     //    the state is not even set to playing yet.
     // 2. We want the PLAYING state to be visible momentarily to the user.
     setTimeout(() => {
+      STORE.dispatch( phraseMovePlayhead(0) )
       STORE.dispatch( transportStop() )
     }, 250)
     return
@@ -55,13 +57,16 @@ export function audioPlay() {
   var note = iteration.value
 
   scheduleLooper = setInterval(function(){
+    var currentBar = playTimeToBar(ctx.currentTime, playStart)
+    STORE.dispatch( phraseMovePlayhead(currentBar) )
+
     // Empty section at end of song
     if (iteration.done)
       return
 
     // Schedule up to the next 40 ms worth of notes
-    var startTime = getPlayTime( note.start + loop*barsPerLoop, playStart );
-    var   endTime = getPlayTime( note.end   + loop*barsPerLoop, playStart );
+    var startTime = barToPlayTime( note.start + loop*barsPerLoop, playStart );
+    var   endTime = barToPlayTime( note.end   + loop*barsPerLoop, playStart );
     while (startTime <= ctx.currentTime + 0.40) {
       playSingleNote( note.keyNum, 127, startTime + 0.1, endTime + 0.1); // Offset by 0.1s to prevent missed notes? TODO investigate!
 
@@ -70,14 +75,15 @@ export function audioPlay() {
       if (iteration.done)
         break
 
-      startTime = getPlayTime( note.start + loop*barsPerLoop, playStart );
-        endTime = getPlayTime( note.end   + loop*barsPerLoop, playStart );
+      startTime = barToPlayTime( note.start + loop*barsPerLoop, playStart );
+        endTime = barToPlayTime( note.end   + loop*barsPerLoop, playStart );
     }
 
     // Reached the end of loop
     if (iteration.done) {
       // Queue up the stop command
       setTimeout(() => {
+        STORE.dispatch( phraseMovePlayhead(0) )
         STORE.dispatch( transportStop() )
       }, 1000 * (endTime - ctx.currentTime))
 
@@ -89,11 +95,20 @@ export function audioPlay() {
   }, 25)
 }
 
-export function getPlayTime(time, playStart) {
-  // Playstart is the moment when the "PLAY" button was pressed. If not provided, default to now.
-  playStart = playStart || ctx.currentTime;
+export function barToPlayTime(bar, playStart) {
+  // Playstart is the moment when the "PLAY" button was pressed.
+  // If not provided, default to now.
+  playStart = playStart || ctx.currentTime
 
-  return time * 120 / bpm + playStart;
+  return bar * 120 / bpm + playStart
+}
+
+export function playTimeToBar(time, playStart) {
+  // Playstart is the moment when the "PLAY" button was pressed.
+  // If not provided, default to now.
+  playStart = playStart || ctx.currentTime
+
+  return (time - playStart) / 120 * bpm
 }
 
 export function playSingleNote(key, velocity, startTime, endTime) {
@@ -129,7 +144,7 @@ export function playSingleNote(key, velocity, startTime, endTime) {
     // Attack
     amplitudeEnvelope.gain.cancelScheduledValues( startTime )
     amplitudeEnvelope.gain.setValueAtTime( 0.0, startTime )
-    amplitudeEnvelope.gain.setTargetAtTime( velocity/127, startTime, attackVolume )
+    amplitudeEnvelope.gain.setTargetAtTime( 0.125*velocity/127, startTime, attackVolume )
 
     // Release
     if (endTime) {
