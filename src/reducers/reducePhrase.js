@@ -116,7 +116,7 @@ export default function reducePhrase(state = defaultState, action) {
       // Snap drag offset to closest grid lines
       var [snappedOffsetStart, snappedOffsetEnd]
         = action.snap 
-        ? snapNoteOffsetToGrid(offsetStart, offsetEnd, targetNote, gridUnit)
+        ? snapNoteOffset(offsetStart, offsetEnd, targetNote, gridUnit)
         : [offsetStart, offsetEnd]
 
       // Avoid negative note lengths!
@@ -279,46 +279,68 @@ function clipSortComparison(a, b) {
   return a.start - b.start;
 }
 
-function snapNoteOffsetToGrid(offsetStart, offsetEnd, note, snapUnit = 0.125) {
+function snapNoteOffset(offsetStart, offsetEnd, note, snapUnit = 0.125) {
   // --------------------------------------------------------------------------
   // Moving the whole note
   // --------------------------------------------------------------------------
   // Snap both the start and end by the same amount, based on either the 
   // starting point or the ending point of the note - which ever snaps closer
   if (offsetStart == offsetEnd) {
-    let snappedOffsetStart = snapIndividualOffset(offsetStart, note.start, snapUnit)
-    let snappedOffsetEnd   = snapIndividualOffset(offsetEnd,   note.end,   snapUnit)
-    if (Math.abs(snappedOffsetStart - offsetStart) <= Math.abs(snappedOffsetEnd - offsetEnd))
-      return [snappedOffsetStart, snappedOffsetStart]
-    else
-      return [snappedOffsetEnd, snappedOffsetEnd]
+    var snappedClosestGridLineStart = snapValueToClosestGridLine(snapUnit, offsetStart, note.start)
+    var snappedClosestGridLineEnd   = snapValueToClosestGridLine(snapUnit, offsetStart, note.end)
+    var snappedClosestUnitAway      = snapValueToClosestUnitAway(snapUnit, offsetStart)
+    var snappings = [snappedClosestGridLineStart, snappedClosestGridLineEnd, snappedClosestUnitAway]
+    var [closestSnap, closestSnapDistance] = snappings
+      .map(snapping => [snapping, Math.abs(snapping - offsetStart)])
+      .sort((a, b) => a[1] - b[1])
+      [0]
+
+    // Don't do any snapping if we aren't at least 20% within range
+    if (closestSnapDistance > 0.20*snapUnit)
+      return [offsetStart, offsetStart]
+
+    // Return closest snap
+    return [closestSnap, closestSnap]
   }
 
   // --------------------------------------------------------------------------
-  // Draggin one end of the note
+  // Dragging one end of the note
   // --------------------------------------------------------------------------
   // Snap either individual end of the note
   if (offsetStart) {
-    let snappedOffset = snapIndividualOffset(offsetStart, note.start, snapUnit)
+    let snappedOffset = snapValueToBestFit(snapUnit, offsetStart, note.start)
     return [snappedOffset, 0]
   }
   if (offsetEnd) {
-    let snappedOffset = snapIndividualOffset(offsetEnd,   note.end,   snapUnit)
+    let snappedOffset = snapValueToBestFit(snapUnit, offsetEnd, note.end)
     return [0, snappedOffset]
   }
 }
 
-function snapIndividualOffset(offset, originalValue, snapUnit) {
-  // Snap an individual grip either to the next unit distance or to the closes gridline
-  var quantizedOffset = Math.round(                  offset  / snapUnit ) * snapUnit // Snap to the closest 1 unit delta
-  var quantizedResult = Math.round( (originalValue + offset) / snapUnit ) * snapUnit // Snap to the closest gridline
+function snapValueToClosestUnitAway(snapUnit, offset) {
+  return Math.round( offset  / snapUnit ) * snapUnit
+}
+function snapValueToClosestGridLine(snapUnit, offset, originalValue) {
+  return Math.round( (originalValue + offset) / snapUnit ) * snapUnit - originalValue
+}
+function snapValueToBestFit(snapUnit, offset, originalValue) {
+  // Snap an individual grip either to the next unit distance or to the closest grid line,
+  // Whichever fits best.
+  var snappedOffsetToClosestUnitAway = snapValueToClosestGridLine(snapUnit, offset, originalValue)
+  var snappedOffsetToClosestGridLine = snapValueToClosestUnitAway(snapUnit, offset)
 
+  var snapAmountUnitAway = Math.abs( snappedOffsetToClosestUnitAway - offset )
+  var snapAmountGridLine = Math.abs( snappedOffsetToClosestGridLine - offset )
+
+  // Don't do any snapping if we aren't at least within 25% within range
+  if (snapAmountUnitAway > 0.25*snapUnit && snapAmountGridLine > 0.25*snapUnit)
+    return offset
   // Snap to the closest 1 unit delta
-  if( Math.abs( quantizedOffset - offset ) < Math.abs( quantizedResult - originalValue - offset ) )
-    return quantizedOffset
+  if( snapAmountUnitAway < snapAmountGridLine )
+    return snappedOffsetToClosestUnitAway
   // Snap to the closest gridline
   else
-    return quantizedResult - originalValue  
+    return snappedOffsetToClosestGridLine
 }
 
 function enforcePositiveNoteLengths(offsetStart, offsetEnd, selectedNotes) {
