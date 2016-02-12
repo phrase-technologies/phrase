@@ -105,21 +105,27 @@ export default function reducePhrase(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.DRAG_NOTE_SELECTION:
+      var offsetStart = action.start
+      var offsetEnd   = action.end
+      var targetNote = state.notes.find(note => note.id == action.noteID)
+      var gridUnit = 0.125
+      var selectedNotes = state.notes.filter(note => note.selected)
+      if (selectedNotes[0] == 0)
+        debugger
+
+      // Snap drag offset to closest grid lines
+      var [snappedOffsetStart, snappedOffsetEnd]
+        = action.snap 
+        ? snapNoteOffsetToGrid(offsetStart, offsetEnd, targetNote, gridUnit)
+        : [offsetStart, offsetEnd]
+
       // Avoid negative note lengths!
-      var adjustment = 0
-      var proposedLengthChange = action.end - action.start
-      if (proposedLengthChange < 0) {
-        var shortestNoteLength = state.notes
-          .filter(note => note.selected)
-          .reduce((shortestLength, note) => {
-            return Math.min(shortestLength, note.end - note.start)
-          }, 12345678) // Really long dummy number
-        adjustment = Math.min(0, shortestNoteLength + proposedLengthChange - MINIMUM_NOTE_LENGTH)
-      }
+      var [finalOffsetStart, finalOffsetEnd] = enforcePositiveNoteLengths(snappedOffsetStart, snappedOffsetEnd, selectedNotes)
+
       return u({
-        noteSelectionOffsetStart: action.start ? (action.start + adjustment) : action.start,
-        noteSelectionOffsetEnd:   action.end   ? (action.end   - adjustment) : action.end,
-        noteSelectionOffsetKey:   action.key
+        noteSelectionOffsetStart: finalOffsetStart,
+        noteSelectionOffsetEnd:   finalOffsetEnd,
+        noteSelectionOffsetKey:   Math.round( action.key )
       }, state)
 
     // ------------------------------------------------------------------------
@@ -131,7 +137,7 @@ export default function reducePhrase(state = defaultState, action) {
               return u({
                 start:  note.start  + state.noteSelectionOffsetStart,
                 end:    note.end    + state.noteSelectionOffsetEnd,
-                keyNum: Math.round(note.keyNum + state.noteSelectionOffsetKey)
+                keyNum: note.keyNum + state.noteSelectionOffsetKey
               }, note)
             } else {
               return note
@@ -273,3 +279,59 @@ function clipSortComparison(a, b) {
   return a.start - b.start;
 }
 
+function snapNoteOffsetToGrid(offsetStart, offsetEnd, note, snapUnit = 0.125) {
+  // --------------------------------------------------------------------------
+  // Moving the whole note
+  // --------------------------------------------------------------------------
+  // Snap both the start and end by the same amount, based on either the 
+  // starting point or the ending point of the note - which ever snaps closer
+  if (offsetStart == offsetEnd) {
+    let snappedOffsetStart = snapIndividualOffset(offsetStart, note.start, snapUnit)
+    let snappedOffsetEnd   = snapIndividualOffset(offsetEnd,   note.end,   snapUnit)
+    if (Math.abs(snappedOffsetStart - offsetStart) <= Math.abs(snappedOffsetEnd - offsetEnd))
+      return [snappedOffsetStart, snappedOffsetStart]
+    else
+      return [snappedOffsetEnd, snappedOffsetEnd]
+  }
+
+  // --------------------------------------------------------------------------
+  // Draggin one end of the note
+  // --------------------------------------------------------------------------
+  // Snap either individual end of the note
+  if (offsetStart) {
+    let snappedOffset = snapIndividualOffset(offsetStart, note.start, snapUnit)
+    return [snappedOffset, 0]
+  }
+  if (offsetEnd) {
+    let snappedOffset = snapIndividualOffset(offsetEnd,   note.end,   snapUnit)
+    return [0, snappedOffset]
+  }
+}
+
+function snapIndividualOffset(offset, originalValue, snapUnit) {
+  // Snap an individual grip either to the next unit distance or to the closes gridline
+  var quantizedOffset = Math.round(                  offset  / snapUnit ) * snapUnit // Snap to the closest 1 unit delta
+  var quantizedResult = Math.round( (originalValue + offset) / snapUnit ) * snapUnit // Snap to the closest gridline
+
+  // Snap to the closest 1 unit delta
+  if( Math.abs( quantizedOffset - offset ) < Math.abs( quantizedResult - originalValue - offset ) )
+    return quantizedOffset
+  // Snap to the closest gridline
+  else
+    return quantizedResult - originalValue  
+}
+
+function enforcePositiveNoteLengths(offsetStart, offsetEnd, selectedNotes) {
+  var adjustment = 0
+  var proposedLengthChange = offsetEnd - offsetStart
+  if (proposedLengthChange < 0) {
+    var shortestNoteLength = selectedNotes
+      .reduce((shortestLength, note) => {
+        return Math.min(shortestLength, note.end - note.start)
+      }, 12345678) // Really long dummy number
+    adjustment = Math.min(0, shortestNoteLength + proposedLengthChange - MINIMUM_NOTE_LENGTH)
+  }
+  offsetStart = offsetStart ? (offsetStart + adjustment) : offsetStart
+  offsetEnd   = offsetEnd   ? (offsetEnd   - adjustment) : offsetEnd
+  return [offsetStart, offsetEnd]
+}

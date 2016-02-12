@@ -115,6 +115,7 @@ export class PianorollWindowControl extends Component {
     if (!this.lastEvent) {
       this.lastEvent = {
         action: SELECT_NOTE,
+        noteID: foundNote.id,
         bar: bar,
         key: key,
         time: Date.now()
@@ -185,7 +186,7 @@ export class PianorollWindowControl extends Component {
         case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; var offsetKey = key - this.lastEvent.key; break;
         case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; var offsetKey = 0; break;
       }
-      this.props.dispatch( phraseDragNoteSelection(offsetStart, offsetEnd, offsetKey) )
+      this.props.dispatch( phraseDragNoteSelection(this.lastEvent.noteID, offsetStart, offsetEnd, offsetKey, !e.altKey) )
       this.lastEvent.action = DRAG_NOTE
       return
     }
