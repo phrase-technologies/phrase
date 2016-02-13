@@ -87,7 +87,7 @@ export default class Scrollbar extends Component {
         var cursorType = this.props.vertical ? cursorResizeBottom : cursorResizeRight
         break;
     }
-    this.props.dispatch(cursorType);
+    this.props.dispatch( cursorType("explicit") );
   }
 
   handleDrag(e) {
@@ -139,7 +139,7 @@ export default class Scrollbar extends Component {
     // End the drag
     this.data.isDragging = false;
     this.forceUpdate();
-    this.props.dispatch(cursorClear);    
+    this.props.dispatch( cursorClear("explicit") );    
   }
 
   handlePaging(e) {

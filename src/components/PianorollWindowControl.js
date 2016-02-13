@@ -131,13 +131,13 @@ export class PianorollWindowControl extends Component {
       }
 
       if (bar < foundNote.start + threshold) {
-        this.props.dispatch( cursorResizeLeft )
+        this.props.dispatch( cursorResizeLeft("explicit") )
         this.lastEvent.grip = "MIN"
       } else if (bar > foundNote.end - threshold) {
-        this.props.dispatch( cursorResizeRight )
+        this.props.dispatch( cursorResizeRight("explicit") )
         this.lastEvent.grip = "MAX"
       } else {
-        this.props.dispatch( cursorClear )
+        this.props.dispatch( cursorClear("explicit") )
         this.lastEvent.grip = "MID"
       }
     }
@@ -172,10 +172,6 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseMoveEvent(e) {
-    // Ensure events from other components don't interfere!
-    if (e.target !== this.container)
-      return
-
     var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
     var key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount;
 
@@ -213,6 +209,9 @@ export class PianorollWindowControl extends Component {
   }
 
   hoverEvent(e, bar, key) {
+    if (e.target !== this.container)
+      return
+
     var foundNote = this.getNoteAtBarKey(bar, key)
     if (foundNote) {
       var noteLength = foundNote.end - foundNote.start
@@ -222,15 +221,15 @@ export class PianorollWindowControl extends Component {
       )
 
       if (bar < foundNote.start + threshold) {
-        this.props.dispatch( cursorResizeLeft )
+        this.props.dispatch( cursorResizeLeft("implicit") )
       } else if (bar > foundNote.end - threshold) {
-        this.props.dispatch( cursorResizeRight )
+        this.props.dispatch( cursorResizeRight("implicit") )
       } else {
-        this.props.dispatch( cursorClear )
+        this.props.dispatch( cursorClear("implicit") )
       }
-    // Clear cursor if not hovering over a note
-    } else {
-      this.props.dispatch( cursorClear )
+    // Clear cursor if not hovering over a note (but only for the current canvas)
+    } else if (e.target == this.container) {
+      this.props.dispatch( cursorClear("implicit") )
     }    
   }
 
@@ -248,7 +247,7 @@ export class PianorollWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action == SELECT_NOTE) {
       // Cancel Cursor
-      this.props.dispatch( cursorClear )
+      this.props.dispatch( cursorClear("explicit") )
 
       // Prepare for possibility of second click
       this.lastEvent.action = CLICK_NOTE

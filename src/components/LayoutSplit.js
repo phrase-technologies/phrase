@@ -38,7 +38,7 @@ export default class LayoutSplit extends Component {
   handleGrip(e) {
     // Start the drag
     this.data.isDragging = true;
-    this.props.dispatch(cursorResizeRow);
+    this.props.dispatch( cursorResizeRow() );
   }
 
   handleDrag(e) {
@@ -60,7 +60,7 @@ export default class LayoutSplit extends Component {
 
     // End the drag
     this.data.isDragging = false;
-    this.props.dispatch(cursorDrop);
+    this.props.dispatch( cursorDrop("explicit") );
     this.forceUpdate();
   }
 
