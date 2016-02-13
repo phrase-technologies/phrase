@@ -80,12 +80,6 @@ export default function reduceMixer(state = defaultState, action) {
       });
 
     // ------------------------------------------------------------------------
-    case mixer.MOVE_PLAYHEAD:
-      // TODO
-      // TODO
-      // TODO
-
-    // ------------------------------------------------------------------------
     default:
       return state
 
