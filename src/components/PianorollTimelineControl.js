@@ -7,7 +7,21 @@ import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js'
 import { pianorollScrollX,
          pianorollMoveCursor } from '../actions/actionsPianoroll.js'
-import { phraseSelectClip } from '../actions/actionsPhrase.js';
+import { phraseCreateClip,
+         phraseSelectClip,
+         phraseDeleteClip,
+         phraseDragClipSelection,
+         phraseDropClipSelection } from '../actions/actionsPhrase.js';
+import { cursorResizeLeft,
+         cursorResizeRight,
+         cursorClear } from '../actions/actionsCursor.js';         
+
+const SELECT_EMPTY_AREA = "SELECT_EMPTY_AREA"
+const CLICK_EMPTY_AREA  = "CLICK_EMPTY_AREA"
+const SELECT_CLIP       = "SELECT_CLIP"
+const CLICK_CLIP        = "CLICK_CLIP"
+const DRAG_CLIP         = "DRAG_CLIP"
+const DOUBLECLICK_DELAY = 360
 
 export class PianorollTimelineControl extends Component {
 
@@ -28,9 +42,12 @@ export class PianorollTimelineControl extends Component {
   }
 
   componentDidMount() {
+    // Setup Grid System
     this.props.grid.marginLeft   = 10
     this.props.grid.marginRight  = 10
+    this.props.grid.didMount()
 
+    // Event Sources
     this.container = ReactDOM.findDOMNode(this);
     this.container.addEventListener("mousedown", this.mouseDownEvent)
     document.addEventListener("mousemove", this.mouseMoveEvent)
@@ -44,6 +61,10 @@ export class PianorollTimelineControl extends Component {
   }
 
   mouseDownEvent(e) {
+    // Ensure clicks from the scrollbars don't interfere
+    if (e.target !== this.container)
+      return
+
     switch(e.which) {
       default:
       case 1: 
@@ -62,46 +83,170 @@ export class PianorollTimelineControl extends Component {
     if (foundClip) {
       this.clipEvent(e, bar, foundClip)
     } else {
-      this.emptyAreaEvent(e)
+      this.emptyAreaEvent(e, bar)
     }
   }
 
   clipEvent(e, bar, foundClip) {
-    this.lastEvent = {
-      action: "SELECT_CLIP",
-      bar: bar,
-      time: Date.now()
+    // Second Click - Clip
+    if (this.lastEvent &&
+        this.lastEvent.action == CLICK_CLIP) {
+      // Double click - Delete Clip
+      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
+        this.props.dispatch( phraseDeleteClip(foundClip.id) )
+        this.lastEvent = null
+        return
+      // Too slow, treat as new first click
+      } else {
+        this.lastEvent = null
+      }
     }
 
-    var clipLength = foundClip.end - foundClip.start
-    var threshold = Math.max(5, 0.25*clipLength)
+    // First Click - Start Selection
+    if (!this.lastEvent) {
+      this.lastEvent = {
+        action: SELECT_CLIP,
+        clipID: foundClip.id,
+        bar: bar,
+        time: Date.now()
+      }
+      var clipLength = foundClip.end - foundClip.start
+      var threshold = Math.min(
+        8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
+        0.25*clipLength
+      )
 
-    if (!foundClip.selected) {
-      this.props.dispatch( phraseSelectClip(foundClip.id, e.shiftKey) )
-    }
+      if (!foundClip.selected) {
+        this.props.dispatch( phraseSelectClip(foundClip.id, e.shiftKey) )
+      }
 
-    if (bar < foundClip.start + threshold) {
-      this.lastEvent.grip = "MIN"
-    } else if (bar > foundClip.end - threshold) {
-      this.lastEvent.grip = "MAX"
-    } else {
-      this.lastEvent.grip = "MID"
+      if (bar < foundClip.start + threshold) {
+        this.props.dispatch( cursorResizeLeft )
+        this.lastEvent.grip = "MIN"
+      } else if (bar > foundClip.end - threshold) {
+        this.props.dispatch( cursorResizeRight )
+        this.lastEvent.grip = "MAX"
+      } else {
+        this.props.dispatch( cursorClear )
+        this.lastEvent.grip = "MID"
+      }
     }
   }
 
-  emptyAreaEvent(e) {
+  emptyAreaEvent(e, bar) {
+    // Second Click - Empty Area
+    if (this.lastEvent &&
+        this.lastEvent.action == CLICK_EMPTY_AREA) {
+      // Double click - Create Clip
+      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
+        this.props.dispatch( phraseCreateClip(this.props.currentTrack.id, bar) )
+        this.lastEvent = null
+        return
+      // Too slow, treat as new first click
+      } else {
+        this.lastEvent = null
+      }
+    }
 
+    // First Click
+    if (!this.lastEvent) {
+      this.lastEvent = {
+        action: SELECT_EMPTY_AREA,
+        bar: bar,
+        time: Date.now()
+      }
+      return
+    }
   }
 
   mouseMoveEvent(e) {
+    // Ensure events from other components don't interfere!
+    if (e.target !== this.container)
+      return
+
+    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
+
+    // Drag Selected Clip(s)?
+    if (this.lastEvent &&
+       (this.lastEvent.action == SELECT_CLIP ||
+        this.lastEvent.action == DRAG_CLIP)) {
+      // Adjust Clip
+      let offsetBar = bar - this.lastEvent.bar
+      switch (this.lastEvent.grip) {
+        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; break;
+        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; break;
+        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; break;
+      }
+      this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, !e.altKey) )
+      this.lastEvent.action = DRAG_CLIP
+      return
+    }
+
+    // No Action - Clear the queue
+    this.lastEvent = null
+
+    // Cursor on hover over notes
+    this.hoverEvent(e, bar)
+  }
+
+  hoverEvent(e, bar) {
+    var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar)
+    if (foundClip) {
+      var clipLength = foundClip.end - foundClip.start
+      var threshold = Math.min(
+        8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
+        0.25*clipLength
+      )
+
+      if (bar < foundClip.start + threshold) {
+        this.props.dispatch( cursorResizeLeft )
+      } else if (bar > foundClip.end - threshold) {
+        this.props.dispatch( cursorResizeRight )
+      } else {
+        this.props.dispatch( cursorClear )
+      }
+    // Clear cursor if not hovering over a note
+    } else {
+      this.props.dispatch( cursorClear )
+    }    
   }
 
   mouseUpEvent(e) {
+    // First Click - Empty Area
+    if (this.lastEvent &&
+        this.lastEvent.action == SELECT_EMPTY_AREA) {
+      // Prepare for possibility of second click
+      this.lastEvent.action = CLICK_EMPTY_AREA
+      return
+    }
+
+    // First Click - Clip
+    if (this.lastEvent &&
+        this.lastEvent.action == SELECT_CLIP) {
+      // Cancel Cursor
+      this.props.dispatch( cursorClear )
+
+      // Prepare for possibility of second click
+      this.lastEvent.action = CLICK_CLIP
+      return
+    }
+
+    // Selected Clip(s) Dragged
+    if (this.lastEvent &&
+        this.lastEvent.action == DRAG_CLIP) {
+      this.props.dispatch( phraseDropClipSelection() )
+      this.lastEvent = null
+      return
+    }
+
+    // No Action - Clear the queue
+    this.lastEvent = null
   }
 }
 
 PianorollTimelineControl.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
+  currentTrack: React.PropTypes.object,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
   xMin:         React.PropTypes.number.isRequired,

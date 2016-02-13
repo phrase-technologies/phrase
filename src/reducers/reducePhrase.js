@@ -22,7 +22,8 @@ export const defaultState = {
   ],
   clips: [],
   notes: [],
-  clipSelectionOffsetBar:   null,
+  clipSelectionOffsetStart: null,
+  clipSelectionOffsetEnd:   null,
   clipSelectionOffsetTrack: null,
   noteSelectionOffsetStart: null,
   noteSelectionOffsetEnd: null,
@@ -97,10 +98,31 @@ export default function reducePhrase(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
-    case phrase.DRAG_CLIP_SELECTION:
+    case phrase.DELETE_CLIP:
       return u({
-        clipSelectionOffsetBar:   action.bar,
-        clipSelectionOffsetTrack: action.track
+        clips: u.reject(x => x.id == action.clipID)
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.DRAG_CLIP_SELECTION:
+      var offsetStart = action.start
+      var offsetEnd   = action.end
+      var targetClip = state.clips.find(clip => clip.id == action.clipID)
+      var gridUnit = 0.125
+      var selectedClips = state.clips.filter(clip => clip.selected)
+
+      // Snap drag offset to closest grid lines
+      var [snappedOffsetStart, snappedOffsetEnd]
+        = action.snap 
+        ? snapNoteOffset(offsetStart, offsetEnd, targetClip, gridUnit)
+        : [offsetStart, offsetEnd]
+
+      // Avoid negative clip lengths!
+      var [finalOffsetStart, finalOffsetEnd] = enforcePositiveNoteLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
+
+      return u({
+        clipSelectionOffsetStart: finalOffsetStart,
+        clipSelectionOffsetEnd:   finalOffsetEnd
       }, state)
 
     // ------------------------------------------------------------------------
@@ -110,8 +132,6 @@ export default function reducePhrase(state = defaultState, action) {
       var targetNote = state.notes.find(note => note.id == action.noteID)
       var gridUnit = 0.125
       var selectedNotes = state.notes.filter(note => note.selected)
-      if (selectedNotes[0] == 0)
-        debugger
 
       // Snap drag offset to closest grid lines
       var [snappedOffsetStart, snappedOffsetEnd]
@@ -126,6 +146,26 @@ export default function reducePhrase(state = defaultState, action) {
         noteSelectionOffsetStart: finalOffsetStart,
         noteSelectionOffsetEnd:   finalOffsetEnd,
         noteSelectionOffsetKey:   Math.round( action.key )
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.DROP_CLIP_SELECTION:
+      return u({
+        clips: clips => {
+          return clips.map(clip => {
+            if (clip.selected) {
+              return u({
+                start:  clip.start  + state.clipSelectionOffsetStart,
+                end:    clip.end    + state.clipSelectionOffsetEnd,
+              }, clip)
+            } else {
+              return clip
+            }
+          })
+        },
+        clipSelectionOffsetStart: null,
+        clipSelectionOffsetEnd:   null,
+        clipSelectionOffsetTrack: null
       }, state)
 
     // ------------------------------------------------------------------------
@@ -279,6 +319,7 @@ function clipSortComparison(a, b) {
   return a.start - b.start;
 }
 
+// Works for both notes and clips
 function snapNoteOffset(offsetStart, offsetEnd, note, snapUnit = 0.125) {
   // --------------------------------------------------------------------------
   // Moving the whole note
@@ -332,8 +373,8 @@ function snapValueToBestFit(snapUnit, offset, originalValue) {
   var snapAmountUnitAway = Math.abs( snappedOffsetToClosestUnitAway - offset )
   var snapAmountGridLine = Math.abs( snappedOffsetToClosestGridLine - offset )
 
-  // Don't do any snapping if we aren't at least within 25% within range
-  if (snapAmountUnitAway > 0.25*snapUnit && snapAmountGridLine > 0.25*snapUnit)
+  // Don't do any snapping if we aren't at least within 20% within range
+  if (snapAmountUnitAway > 0.20*snapUnit && snapAmountGridLine > 0.25*snapUnit)
     return offset
   // Snap to the closest 1 unit delta
   if( snapAmountUnitAway < snapAmountGridLine )
@@ -343,6 +384,7 @@ function snapValueToBestFit(snapUnit, offset, originalValue) {
     return snappedOffsetToClosestGridLine
 }
 
+// Works for both notes and clips
 function enforcePositiveNoteLengths(offsetStart, offsetEnd, selectedNotes) {
   var adjustment = 0
   var proposedLengthChange = offsetEnd - offsetStart

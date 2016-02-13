@@ -87,7 +87,7 @@ export class MixerWindowDisplay extends Component {
 
     var contentHeight = getTracksHeight(tracks)*this.props.grid.pixelScale
     var startingEdge = 0 - contentHeight * yMin
-    var radius = 3
+    var radius = 6
 
     // Iterate through each track
     tracks.reduce((currentEdge, track) => {
@@ -99,8 +99,8 @@ export class MixerWindowDisplay extends Component {
         return nextEdge
 
       // Render all 
-      let top = currentEdge + 6 * this.props.grid.pixelScale
-      let bottom = nextEdge - 4 * this.props.grid.pixelScale
+      let top = closestHalfPixel( currentEdge + 7 * this.props.grid.pixelScale, this.props.grid.pixelScale )
+      let bottom = closestHalfPixel( nextEdge - 5 * this.props.grid.pixelScale, this.props.grid.pixelScale )
       clips.forEach(clip => {
         // Filter by current track
         if (clip.trackID != track.id)
@@ -158,6 +158,29 @@ export class MixerWindowDisplay extends Component {
         (radius - 1.0)*this.props.grid.pixelScale
       )
     }
+
+    // Loop Lines
+    var currentLoopStart = clip.start + clip.offset + (!clip.offset * clip.loopLength)
+    var currentLoopStartCutoff = clip.start - currentLoopStart                      // Used to check if a note is cut off at the beginning of the current loop iteration
+    var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
+    while( currentLoopStart < clip.end ) {
+      // Draw current line
+      var currentLoopLine = closestHalfPixel( this.props.grid.barToXCoord( currentLoopStart ), this.props.grid.pixelScale )
+      drawLine(
+        canvasContext,
+        currentLoopLine,
+        top    + closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
+        currentLoopLine,
+        bottom - closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
+        [2, 2],
+        clip.selected ? "#F80" : "#000"
+      )
+
+      // Next iteration
+      currentLoopStart += clip.loopLength
+      currentLoopStartCutoff = 0
+      currentLoopEndCutoff = Math.min(clip.loopLength, clip.end - currentLoopStart)
+    }    
 
     // Label
     if (right - left > 30*this.props.grid.pixelScale) {

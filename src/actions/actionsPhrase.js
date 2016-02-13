@@ -5,8 +5,17 @@ export const phraseCreateClip             = (trackID, bar)            => ({type:
 export const phraseCreateNote             = (trackID, bar, key)       => ({type: phrase.CREATE_NOTE, trackID, bar, key})
 export const phraseSelectClip             = (clipID, union)           => ({type: phrase.SELECT_CLIP, clipID, union})
 export const phraseSelectNote             = (noteID, union)           => ({type: phrase.SELECT_NOTE, noteID, union})
-export const phraseDeleteNote             = (noteID)                  => ({type: phrase.DELETE_NOTE, noteID})
-export const phraseDragClipSelection      = (bar, track)              => ({type: phrase.DRAG_CLIP_SELECTION, bar, track})
+export const phraseDeleteClip = (clipID) => ({type: phrase.DELETE_CLIP, clipID})
+export const phraseDeleteNote = (noteID) => ({type: phrase.DELETE_NOTE, noteID})
+export const phraseDragClipSelection = (clipID, start, end, snap) => {
+  return {
+    type: phrase.DRAG_CLIP_SELECTION,
+    clipID: clipID,
+    start: start,
+    end: end,
+    snap: snap
+  }
+}
 export const phraseDragNoteSelection = (noteID, start, end, key, snap) => {
   return {
     type: phrase.DRAG_NOTE_SELECTION,
@@ -17,5 +26,6 @@ export const phraseDragNoteSelection = (noteID, start, end, key, snap) => {
     snap: snap
   }
 }
-export const phraseDropNoteSelection      = ()                        => ({type: phrase.DROP_NOTE_SELECTION})
+export const phraseDropNoteSelection = () => ({type: phrase.DROP_NOTE_SELECTION})
+export const phraseDropClipSelection = () => ({type: phrase.DROP_CLIP_SELECTION})
 export const phraseMovePlayhead           = (bar)                     => ({type: phrase.MOVE_PLAYHEAD, bar})

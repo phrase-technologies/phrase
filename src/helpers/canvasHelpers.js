@@ -18,23 +18,27 @@ export function closestHalfPixel(pixels, pixelScale = 1){
     return Math.round(pixels)
 }
 
-export function drawLine(context, x1, y1, x2, y2, xyFlip, color) {
-  if( color )
-  {
+export function drawLine(context, x1, y1, x2, y2, dashed = false, color = null, xyFlip = false) {
+  if (color) {
     context.beginPath();
     context.strokeStyle = color;
   }
 
-  if( xyFlip )
-  {
+  if (dashed)
+    context.setLineDash(dashed)
+
+  if (xyFlip) {
     x1 = [y1, y1 = x1][0];
     x2 = [y2, y2 = x2][0];
   }
   context.moveTo( x1, y1 );
   context.lineTo( x2, y2 );
 
-  if( color )
+  if (color)
     context.stroke();
+
+  if (dashed)
+    context.setLineDash([])
 };
 
 export function drawRoundedRectangle(context, left, right, top, bottom, radius, leftCutoff = false, rightCutoff = false) {
@@ -78,7 +82,7 @@ export function drawRoundedRectangle(context, left, right, top, bottom, radius, 
     }
 
     context.closePath()
-    
+
     if (context.fillStyle)
       context.fill()
     if (context.strokeStyle)

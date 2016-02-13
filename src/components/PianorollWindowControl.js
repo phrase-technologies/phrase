@@ -65,9 +65,9 @@ export class PianorollWindowControl extends Component {
   }
 
   componentWillUnmount() {
+    this.container.removeEventListener("mousedown", this.mouseDownEvent)
     document.removeEventListener("mousemove", this.mouseMoveEvent)
     document.removeEventListener("mouseup",   this.mouseUpEvent)
-    this.container.removeEventListener("mousedown", this.mouseDownEvent)
     window.removeEventListener('resize', this.handleResize);
   }
 
@@ -172,6 +172,10 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseMoveEvent(e) {
+    // Ensure events from other components don't interfere!
+    if (e.target !== this.container)
+      return
+
     var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
     var key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount;
 

@@ -1,33 +1,18 @@
 import { createSelector } from 'reselect';
 
-const barCountSelector = (state) => {
-  return state.phrase.barCount
-}
-const playheadSelector = (state) => {
-  return state.phrase.playhead
-}
-const tracksSelector = (state) => {
-  return state.phrase.tracks
-}
-const clipsSelector = (state) => {
-  return state.phrase.clips
-}
-const notesSelector = (state) => {
-  return state.phrase.notes
-}
-const pianorollSelector = (state) => {
-  return state.pianoroll
-}
-const noteSelectionOffsetStart = (state) => {
-  return state.phrase.noteSelectionOffsetStart
-}
-const noteSelectionOffsetEnd = (state) => {
-  return state.phrase.noteSelectionOffsetEnd
-}
-const noteSelectionOffsetKey = (state) => {
-  return state.phrase.noteSelectionOffsetKey
-}
-const currentTrackSelector = (state) => {
+const barCountSelector          = (state) => ( state.phrase.barCount )
+const playheadSelector          = (state) => ( state.phrase.playhead )
+const tracksSelector            = (state) => ( state.phrase.tracks )
+const clipsSelector             = (state) => ( state.phrase.clips )
+const notesSelector             = (state) => ( state.phrase.notes )
+const pianorollSelector         = (state) => ( state.pianoroll )
+const clipSelectionOffsetStart  = (state) => ( state.phrase.clipSelectionOffsetStart )
+const clipSelectionOffsetEnd    = (state) => ( state.phrase.clipSelectionOffsetEnd )
+const clipSelectionOffsetTrack  = (state) => ( state.phrase.clipSelectionOffsetTrack )
+const noteSelectionOffsetStart  = (state) => ( state.phrase.noteSelectionOffsetStart )
+const noteSelectionOffsetEnd    = (state) => ( state.phrase.noteSelectionOffsetEnd )
+const noteSelectionOffsetKey    = (state) => ( state.phrase.noteSelectionOffsetKey )
+const currentTrackSelector      = (state) => {
   return state.phrase.tracks.find(track => {
     return track.id == state.pianoroll.currentTrack
   })
@@ -35,8 +20,31 @@ const currentTrackSelector = (state) => {
 const currentClipsSelector = createSelector(
   clipsSelector,
   currentTrackSelector,
-  (clips, currentTrack) => {
-    return clips.filter(clip => clip.trackID == currentTrack.id)
+  clipSelectionOffsetStart,
+  clipSelectionOffsetEnd,
+  clipSelectionOffsetTrack,
+  (clips, currentTrack, offsetStart, offsetEnd, offsetTrack) => {
+    var currentClips = clips
+      .filter(clip => clip.trackID == currentTrack.id)
+
+    var selectedClipsRendered = []
+    if (offsetStart || offsetEnd || offsetTrack) {
+      selectedClipsRendered = currentClips
+      .filter(clip => clip.selected)
+      .map(clip => {
+        return {
+          ...clip,
+          start:  clip.start  + offsetStart,
+          end:    clip.end    + offsetEnd,
+          keyNum: Math.round(clip.keyNum + offsetTrack),
+          selected: offsetStart && offsetEnd || Math.round(offsetTrack) ? false : true
+        }
+      })
+    }
+
+    // Render a copy of each clip with their rendered selections appended
+    return currentClips
+      .concat(selectedClipsRendered)
   }
 )
 export const currentNotesSelector = createSelector(

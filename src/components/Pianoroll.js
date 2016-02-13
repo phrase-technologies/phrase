@@ -37,6 +37,7 @@ export default class Pianoroll extends Component {
       cursor: this.props.cursor,
       xMin: this.props.xMin,
       xMax: this.props.xMax,
+      currentTrack: this.props.currentTrack,
       barCount: this.props.barCount
     }
     let selectionBoxProps = {

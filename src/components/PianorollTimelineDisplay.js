@@ -90,18 +90,25 @@ export class PianorollTimelineDisplay extends Component {
   }
 
   renderClips(canvasContext, xMin, xMax, clips, gradient = true) {
-    this.renderClipBoxes(canvasContext, xMin, xMax, clips, gradient)
-    this.renderClipSelections(canvasContext, xMin, xMax, clips, gradient)
-    this.renderClipLabels(canvasContext, xMin, xMax, clips)
+    var topBox = closestHalfPixel( 25*this.props.grid.pixelScale, this.props.grid.pixelScale )
+    var bottomBox = closestHalfPixel( this.props.grid.height + 1*this.props.grid.pixelScale, this.props.grid.pixelScale ) 
+    var radiusBox = 6*this.props.grid.pixelScale
+    var topSelection = Math.floor(26.5*this.props.grid.pixelScale)
+    var bottomSelection = this.props.grid.height - 1.0*this.props.grid.pixelScale
+    var radiusSelection = 5*this.props.grid.pixelScale
+    var bottomLabel = this.props.grid.height + 1*this.props.grid.pixelScale
+
+    clips.forEach(clip => {
+      this.renderClipBox(      canvasContext, xMin, xMax, clip, topBox, bottomBox, radiusBox, gradient)
+      this.renderClipSelection(canvasContext, xMin, xMax, clip, topSelection, bottomSelection, radiusSelection, gradient)
+      this.renderClipLabel(    canvasContext, xMin, xMax, clip, bottomLabel)
+      this.renderClipLoopLines(canvasContext, xMin, xMax, clip, topSelection, bottomSelection)
+    })
   }
 
-  renderClipBoxes(canvasContext, xMin, xMax, clips, gradient) {
+  renderClipBox(canvasContext, xMin, xMax, clip, top, bottom, radius, gradient) {
     canvasContext.lineWidth = this.props.grid.pixelScale
     canvasContext.strokeStyle = "#000"
-
-    var top = closestHalfPixel( 25*this.props.grid.pixelScale, this.props.grid.pixelScale )
-    var bottom = closestHalfPixel( this.props.grid.height + 1*this.props.grid.pixelScale, this.props.grid.pixelScale ) 
-    var radius = 3*this.props.grid.pixelScale
 
     // Gradient Fill
     if (gradient) {
@@ -115,33 +122,30 @@ export class PianorollTimelineDisplay extends Component {
 
     // Box
     canvasContext.beginPath()
-    clips.forEach(clip => {
-      var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
-      var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
-      // Don't waste CPU cycles drawing stuff that's not visible
-      if (right < 0 || left > this.props.grid.width)
-        return
+    var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
+    var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
+    // Don't waste CPU cycles drawing stuff that's not visible
+    if (right < 0 || left > this.props.grid.width)
+      return
 
-      canvasContext.moveTo(left + radius, top)
-      canvasContext.lineTo(right - radius, top)
-      canvasContext.quadraticCurveTo(right, top, right, top + radius)
-      canvasContext.lineTo(right, bottom)
-      canvasContext.lineTo(left, bottom)
-      canvasContext.lineTo(left, top + radius)
-      canvasContext.quadraticCurveTo(left, top, left + radius, top)
-    })
+    canvasContext.moveTo(left + radius, top)
+    canvasContext.lineTo(right - radius, top)
+    canvasContext.quadraticCurveTo(right, top, right, top + radius)
+    canvasContext.lineTo(right, bottom)
+    canvasContext.lineTo(left, bottom)
+    canvasContext.lineTo(left, top + radius)
+    canvasContext.quadraticCurveTo(left, top, left + radius, top)
     canvasContext.closePath()
     canvasContext.fill()
     canvasContext.stroke()
   }
 
-  renderClipSelections(canvasContext, xMin, xMax, clips, gradient) {
+  renderClipSelection(canvasContext, xMin, xMax, clip, top, bottom, radius, gradient) {
+    if (!clip.selected)
+      return
+
     canvasContext.lineWidth = this.props.grid.pixelScale
     canvasContext.strokeStyle = "#000"
-
-    var top = Math.floor(26.5*this.props.grid.pixelScale)
-    var bottom = this.props.grid.height - 1.0*this.props.grid.pixelScale
-    var radius = 2*this.props.grid.pixelScale
 
     // Gradient Fill
     if (gradient) {
@@ -154,43 +158,53 @@ export class PianorollTimelineDisplay extends Component {
     }
 
     canvasContext.beginPath()
-    clips.filter(clip => clip.selected).forEach(clip => {
-      var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
-      var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
-          left  += closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale)
-          right -= closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale)
-      // Don't waste CPU cycles drawing stuff that's not visible
-      if (right < 0 || left > this.props.grid.width)
-        return
+    var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
+    var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
+        left  += closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale)
+        right -= closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale)
+    // Don't waste CPU cycles drawing stuff that's not visible
+    if (right < 0 || left > this.props.grid.width)
+      return
 
-      canvasContext.moveTo(left + radius, top)
-      canvasContext.lineTo(right - radius, top)
-      canvasContext.quadraticCurveTo(right, top, right, top + radius)
-      canvasContext.lineTo(right, bottom)
-      canvasContext.lineTo(left, bottom)
-      canvasContext.lineTo(left, top + radius)
-      canvasContext.quadraticCurveTo(left, top, left + radius, top)
-    })
+    canvasContext.moveTo(left + radius, top)
+    canvasContext.lineTo(right - radius, top)
+    canvasContext.quadraticCurveTo(right, top, right, top + radius)
+    canvasContext.lineTo(right, bottom)
+    canvasContext.lineTo(left, bottom)
+    canvasContext.lineTo(left, top + radius)
+    canvasContext.quadraticCurveTo(left, top, left + radius, top)
     canvasContext.closePath()
     canvasContext.fill()
   }
 
-  renderClipLabels(canvasContext, xMin, xMax, clips) {
-    var bottom = this.props.grid.height + 1*this.props.grid.pixelScale
+  renderClipLabel(canvasContext, xMin, xMax, clip, bottom) {
+    var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
+    var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
+    // Don't waste CPU cycles drawing stuff that's not visible
+    if (right < 0 || left > this.props.grid.width)
+      return
 
-    clips.forEach(clip => {
-      var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
-      var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
-      // Don't waste CPU cycles drawing stuff that's not visible
-      if (right < 0 || left > this.props.grid.width)
-        return
+    canvasContext.fillStyle = clip.selected ? "#F80" : "#000"
+    canvasContext.textAlign = "start"
+    let x = left   + 6*this.props.grid.pixelScale
+    let y = bottom - 9*this.props.grid.pixelScale
+    canvasContext.fillText(`Clip ${clip.id}`, x, y)
+  }
 
-      canvasContext.fillStyle = clip.selected ? "#F80" : "#000"
-      canvasContext.textAlign = "start"
-      let x = left   + 6*this.props.grid.pixelScale
-      let y = bottom - 9*this.props.grid.pixelScale
-      canvasContext.fillText(`Clip ${clip.id}`, x, y)
-    })
+  renderClipLoopLines(canvasContext, xMin, xMax, clip, top, bottom) {
+    var currentLoopStart = clip.start + clip.offset + (!clip.offset * clip.loopLength)
+    var currentLoopStartCutoff = clip.start - currentLoopStart                      // Used to check if a note is cut off at the beginning of the current loop iteration
+    var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
+    while( currentLoopStart < clip.end ) {
+      // Draw current line
+      var currentLoopLine = closestHalfPixel( this.props.grid.barToXCoord( currentLoopStart ), this.props.grid.pixelScale )
+      drawLine( canvasContext, currentLoopLine, bottom, currentLoopLine, top, [2, 2], clip.selected ? "#F80" : "#000")
+
+      // Next iteration
+      currentLoopStart += clip.loopLength
+      currentLoopStartCutoff = 0
+      currentLoopEndCutoff = Math.min(clip.loopLength, clip.end - currentLoopStart)
+    }
   }
 }
 

@@ -145,11 +145,6 @@ export class PianorollWindowDisplay extends Component {
   }
 
   renderClips(canvasContext, xMin, xMax, clips) {
-    canvasContext.lineWidth = this.props.grid.pixelScale
-    canvasContext.strokeStyle = "#000"
-    canvasContext.fillStyle   = "rgba(255, 127, 0, 0.125)"
-
-    canvasContext.beginPath()
     clips.forEach(clip => {
       var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
       var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
@@ -157,12 +152,32 @@ export class PianorollWindowDisplay extends Component {
       if (right < 0 || left > this.props.grid.width)
         return
 
+      // Start/End lines + background
+      canvasContext.lineWidth = this.props.grid.pixelScale
+      canvasContext.strokeStyle = "#000"
+      canvasContext.fillStyle   = "rgba(255, 127, 0, 0.125)"
+      canvasContext.beginPath()
       drawLine( canvasContext, left,  0, left,         this.props.grid.height )
       drawLine( canvasContext, right, 0, right,        this.props.grid.height )
       canvasContext.fillRect(   left, 0, right - left, this.props.grid.height )
+      canvasContext.closePath()
+      canvasContext.stroke()
+
+      // Loop Lines
+      var currentLoopStart = clip.start + clip.offset + (!clip.offset * clip.loopLength)
+      var currentLoopStartCutoff = clip.start - currentLoopStart                      // Used to check if a note is cut off at the beginning of the current loop iteration
+      var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
+      while( currentLoopStart < clip.end ) {
+        // Draw current line
+        var currentLoopLine = closestHalfPixel( this.props.grid.barToXCoord( currentLoopStart ), this.props.grid.pixelScale )
+        drawLine( canvasContext, currentLoopLine, 0, currentLoopLine, this.props.grid.height, [2, 2], "#000")
+
+        // Next iteration
+        currentLoopStart += clip.loopLength
+        currentLoopStartCutoff = 0
+        currentLoopEndCutoff = Math.min(clip.loopLength, clip.end - currentLoopStart)
+      }    
     })
-    canvasContext.closePath()
-    canvasContext.stroke()
   }
 
   renderNotes(canvasContext, xMin, xMax, yMin, yMax, notes) {
