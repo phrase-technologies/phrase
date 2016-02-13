@@ -3,14 +3,6 @@
 // ============================================================================
 // This is the top-level Component rendering the entire mixing console. 
 // It is responsible for composing all the mixer's child components together.
-//
-// Unfortunately, it is ALSO responsible for coordinating the scrolling and
-// overflow behaviours. This is the best solution we have so far, as vertical
-// scrolling within the tracks is not transferrable between clients and should
-// not be stored in the application state. So for now, everything in this
-// convoluted component is tightly coupled.
-//
-// TODO: de-spaghetti this component...
 
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
