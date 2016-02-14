@@ -60,6 +60,7 @@ export const pianoroll = namespaceActions(
     'SELECTION_BOX_START',
     'SELECTION_BOX_RESIZE',
     'SELECTION_BOX_APPLY',
+    'SET_FOCUS_WINDOW',
     'MOVE_CURSOR'
   ]
 )

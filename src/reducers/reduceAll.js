@@ -63,6 +63,7 @@ export default function reduceAll(state = {}, action) {
       }
 
     // ------------------------------------------------------------------------
+    // Select a Phrase's Notes via the Pianoroll
     case pianoroll.SELECTION_BOX_APPLY:
       // Outer Bounds
       var left   = Math.min( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )

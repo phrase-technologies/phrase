@@ -54,7 +54,7 @@ export default class Layout extends Component {
   }
 
   renderMixer() {
-    if( this.props.consoleSplitRatio < 0.2 )
+    if( this.props.consoleSplitRatio < 0.2 && this.props.focusedTrack !== null )
     {
       return (
         <h2 className="layout-console-heading" onClick={() => this.handleConsoleSplitDrag(0.5)}>
@@ -68,7 +68,7 @@ export default class Layout extends Component {
   }
 
   renderClip() {
-    if( this.props.consoleSplitRatio > 0.8 )
+    if( this.props.consoleSplitRatio > 0.8 || this.props.focusedTrack === null )
     {
       return (
         <h2 className="layout-console-heading" onClick={() => this.handleConsoleSplitDrag(0.5)}>
@@ -112,13 +112,15 @@ export default class Layout extends Component {
   }
 
   getMixerSplit() {
-    if     ( this.props.consoleSplitRatio < 0.2 ) return { height: 45 };
+    if     ( this.props.focusedTrack === null ) return { bottom: 0 }
+    else if( this.props.consoleSplitRatio < 0.2 ) return { height: 45 };
     else if( this.props.consoleSplitRatio > 0.8 ) return { bottom: 45 };
     else                                     return { bottom: ((1 - this.props.consoleSplitRatio) * 100) + '%' };
   }
 
   getClipSplit() {
-    if     ( this.props.consoleSplitRatio < 0.2 ) return { top:    45 };
+    if     ( this.props.focusedTrack === null ) return { display: 'none' }
+    else if( this.props.consoleSplitRatio < 0.2 ) return { top:    45 };
     else if( this.props.consoleSplitRatio > 0.8 ) return { height: 45 };
     else                                     return { top: (this.props.consoleSplitRatio  * 100) + '%' };
   }
@@ -132,10 +134,30 @@ export default class Layout extends Component {
     if( this.props.sidebar ) return { width: 300 };
     else                     return { width: 45 };
   }
+
+  shouldComponentUpdate(nextProps) {
+    // Ensure all canvases are re-rendered upon clip editor being shown
+    if (this.props.focusedTrack === null && nextProps.focusedTrack !== null) {
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 0)
+    }
+
+    var propsToCheck = [
+      'focusedTrack',
+      'consoleEmbedded',
+      'consoleSplitRatio'
+    ]
+    var changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] !== this.props[prop]
+    })
+    return changeDetected
+  }
 }
 
 function mapStateToProps(state) {
   return {
+    focusedTrack: state.pianoroll.currentTrack,
     consoleEmbedded:   state.navigation.consoleEmbedded,
     consoleSplitRatio: state.navigation.consoleSplitRatio
   };

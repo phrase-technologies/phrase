@@ -10,16 +10,7 @@ import { phrase } from '../actions/actions.js';
 export const defaultState = {
   barCount: 16.00,
   playhead: 0.000,
-  tracks: [
-    {
-      id: 0,
-      name: 'Track 1'
-    },
-    {
-      id: 1,
-      name: 'Track 2'
-    }
-  ],
+  tracks: [],
   clips: [],
   notes: [],
   clipSelectionOffsetStart: null,
@@ -28,7 +19,7 @@ export const defaultState = {
   noteSelectionOffsetStart: null,
   noteSelectionOffsetEnd: null,
   noteSelectionOffsetKey: null,
-  trackAutoIncrement: 2,
+  trackAutoIncrement: 0,
   noteAutoIncrement:  0,
   clipAutoIncrement:  0,
   noteLengthLast: 0.25

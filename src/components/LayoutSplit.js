@@ -7,6 +7,26 @@ import { cursorResizeRow,
 
 export default class LayoutSplit extends Component {
 
+  render() {
+    if (!this.props.splitRatio)
+      var scrollPosition = { display: 'none' }
+    else if( this.props.splitRatio < 0.2 )
+      var scrollPosition = { top: 45 }
+    else if( this.props.splitRatio > 0.8 )
+      var scrollPosition = { bottom: 45 - 4 }
+    else
+      var scrollPosition = { top: (this.props.splitRatio * 100) + '%' }
+
+    return (
+      <div className="layout-console-split">
+        <div
+          className="layout-console-split-handle"
+          style={scrollPosition}
+        />
+      </div>
+    )
+  }
+
   constructor() {
     super();
 
@@ -63,28 +83,10 @@ export default class LayoutSplit extends Component {
     this.props.dispatch( cursorDrop("explicit") );
     this.forceUpdate();
   }
-
-  render() {
-    if( this.props.splitRatio < 0.2 )
-      var scrollPosition = { top: 45 };
-    else if( this.props.splitRatio > 0.8 )
-      var scrollPosition = { bottom: 45 - 4 };
-    else
-      var scrollPosition = { top: (this.props.splitRatio * 100) + '%' };
-
-    return (
-      <div className="layout-console-split">
-        <div
-          className="layout-console-split-handle"
-          style={scrollPosition}
-        />
-      </div>
-    );
-  }
 }
 
 LayoutSplit.propTypes = {
-  splitRatio: React.PropTypes.number.isRequired,
+  splitRatio: React.PropTypes.number,
   setRatio:   React.PropTypes.func.isRequired
 };
 

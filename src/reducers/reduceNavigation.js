@@ -2,11 +2,13 @@
 // Layout Navigation
 // ============================================================================
 
-import { layout } from '../actions/actions.js';
+import u from 'updeep';
+
+import { layout, pianoroll } from '../actions/actions.js';
 
 let defaultState = {
   consoleEmbedded: false,
-  consoleSplitRatio: 0.500
+  consoleSplitRatio: null
 };
 
 export default function reducerNavigation(state = defaultState, action) {
@@ -20,6 +22,11 @@ export default function reducerNavigation(state = defaultState, action) {
       stateChanges.consoleSplitRatio = action.ratio < 0.0 ? null : action.ratio;
       stateChanges.consoleSplitRatio = action.ratio > 1.0 ? null : stateChanges.consoleSplitRatio;
       return Object.assign({}, state, stateChanges);
+
+    case pianoroll.SET_FOCUS_WINDOW:
+      return u({
+        consoleSplitRatio: state.consoleSplitRatio ? state.consoleSplitRatio : 0.500 
+      }, state)
 
     default:
       return state;

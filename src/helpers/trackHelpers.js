@@ -19,8 +19,9 @@ export function getTracksHeight(tracks) {
 export function getPixelsToTrack(tracks, targetTrackID) {
   var pixels = 0
   var i = 0
-  while(tracks[i].id != targetTrackID) {
+  while(tracks[i].id != targetTrackID && i < tracks.length) {
     pixels += getTrackHeight(tracks[i])
+    i++
   }
   return pixels
 }

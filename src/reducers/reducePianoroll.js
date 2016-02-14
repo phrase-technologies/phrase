@@ -11,7 +11,7 @@ import { pianoroll } from '../actions/actions.js';
 import marioNotes from '../helpers/marioNotes.js';
 
 export const defaultState = {
-  currentTrack: 0,
+  currentTrack: null,
   width: 1000,
   height: 500,
   xMin: 0.000,
@@ -51,19 +51,19 @@ export default function reducePianoroll(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_X:
-      return Object.assign({}, state,
-        action.min === null ? {} : {xMin: Math.max(0.0, action.min)},
-        action.max === null ? {} : {xMax: Math.min(1.0, action.max)}
-      )
+      return u({
+        xMin: action.min === null ? state.xMin : Math.max(0.0, action.min),
+        xMax: action.max === null ? state.xMax : Math.min(1.0, action.max)
+      }, state)
 
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_Y:
       return restrictKeyboardZoom(
-        Object.assign({}, state,
-          action.min === null ? {} : {yMin: Math.max(0.0, action.min)},
-          action.max === null ? {} : {yMax: Math.min(1.0, action.max)}
-        )
-      );
+        u({
+          yMin: action.min === null ? state.yMin : Math.max(0.0, action.min),
+          yMax: action.max === null ? state.yMax : Math.min(1.0, action.max)
+        }, state)
+      )
 
     // ------------------------------------------------------------------------
     case pianoroll.SELECTION_BOX_START:
@@ -82,6 +82,15 @@ export default function reducePianoroll(state = defaultState, action) {
       });
 
     // ------------------------------------------------------------------------
+    // Set the Pianoroll's focus window
+    case pianoroll.SET_FOCUS_WINDOW:
+      return u({
+        currentTrack: action.track,
+        xMin: action.start,
+        xMax: action.end
+      }, state)
+
+    // ------------------------------------------------------------------------
     case pianoroll.MOVE_CURSOR:
       return Object.assign({}, state, {
         cursor: action.percent
@@ -94,12 +103,17 @@ export default function reducePianoroll(state = defaultState, action) {
 }
 
 // Restrict min/max zoom against the pianoroll's height (ensure keyboard doesn't get too small or large)
-function restrictKeyboardZoom(newState) {
-  var keyboardHeight = newState.height / (newState.yMax - newState.yMin);
+function restrictKeyboardZoom(state) {
+  var yMin = state.yMin
+  var yMax = state.yMax
+  var keyboardHeight = state.height / (state.yMax - state.yMin);
   if( keyboardHeight < minKeyboardHeight )
-    [newState.yMin, newState.yMax] = zoomInterval([newState.yMin, newState.yMax], keyboardHeight/minKeyboardHeight);
+    [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/minKeyboardHeight);
   if( keyboardHeight > maxKeyboardHeight )
-    [newState.yMin, newState.yMax] = zoomInterval([newState.yMin, newState.yMax], keyboardHeight/maxKeyboardHeight);
-  return newState;
+    [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/maxKeyboardHeight);
+  return u({
+    yMin: yMin,
+    yMax: yMax
+  }, state);
 }
 

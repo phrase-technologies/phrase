@@ -5,7 +5,11 @@ import { getPixelsToTrack,
          getTracksHeight } from '../helpers/trackHelpers.js';
 
 export default class MixerWindowFocus extends Component {
+
   render() {
+    if (this.props.focusedTrack === null)
+      return null
+
     var {tracks, focusedTrack, focusBarMin, focusBarMax, xMin, xMax, yMin, yMax} = this.props
     var left  = (focusBarMin - xMin)/(xMax - xMin)
     var right = (xMax - focusBarMax)/(xMax - xMin)
@@ -71,7 +75,7 @@ export default class MixerWindowFocus extends Component {
 
 MixerWindowFocus.propTypes = {
   tracks:       React.PropTypes.array.isRequired,
-  focusedTrack: React.PropTypes.number.isRequired,
+  focusedTrack: React.PropTypes.number,
   focusBarMin:  React.PropTypes.number.isRequired,
   focusBarMax:  React.PropTypes.number.isRequired,
   xMin:         React.PropTypes.number.isRequired,

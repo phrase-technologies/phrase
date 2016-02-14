@@ -77,14 +77,8 @@ export default class Pianoroll extends Component {
         <TimelineCursor cursor={this.props.cursor} />
         <TimelinePlayhead {...timelineProps} playhead={this.props.playhead} />
       </div>
-    );
+    )
   }
-
-  handleScrollZone(e, hover) {
-    this.data.scrollZoneHover = hover;
-    this.forceUpdate();
-  }
-
 }
 
 Pianoroll.propTypes = {
