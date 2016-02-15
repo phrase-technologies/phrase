@@ -113,7 +113,8 @@ export default function reducePhrase(state = defaultState, action) {
 
       return u({
         clipSelectionOffsetStart: finalOffsetStart,
-        clipSelectionOffsetEnd:   finalOffsetEnd
+        clipSelectionOffsetEnd:   finalOffsetEnd,
+        clipSelectionOffsetTrack: action.trackID
       }, state)
 
     // ------------------------------------------------------------------------
@@ -148,6 +149,7 @@ export default function reducePhrase(state = defaultState, action) {
               return u({
                 start:  clip.start  + state.clipSelectionOffsetStart,
                 end:    clip.end    + state.clipSelectionOffsetEnd,
+                trackID: state.clipSelectionOffsetTrack === null ? clip.trackID : state.clipSelectionOffsetTrack
               }, clip)
             } else {
               return clip

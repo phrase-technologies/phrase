@@ -13,6 +13,7 @@ import { shiftInterval,
          zoomInterval } from '../helpers/intervalHelpers.js';
 import { mixerScrollX,
          mixerScrollY } from '../actions/actionsMixer.js';
+import { renderedClipsSelector } from '../selectors/selectorMixer.js'
 
 import MixerTimeline from './MixerTimeline.js';
 import MixerTracks from './MixerTracks.js';
@@ -102,7 +103,7 @@ function mapStateToProps(state) {
     focusBarMin: state.pianoroll.xMin,
     focusBarMax: state.pianoroll.xMax,
     tracks: state.phrase.tracks,
-    clips: state.phrase.clips,
+    clips: renderedClipsSelector(state),
     barCount: state.phrase.barCount,
     xMin: state.mixer.xMin,
     xMax: state.mixer.xMax,

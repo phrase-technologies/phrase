@@ -7,12 +7,13 @@ export const phraseSelectClip             = (clipID, union)           => ({type:
 export const phraseSelectNote             = (noteID, union)           => ({type: phrase.SELECT_NOTE, noteID, union})
 export const phraseDeleteClip = (clipID) => ({type: phrase.DELETE_CLIP, clipID})
 export const phraseDeleteNote = (noteID) => ({type: phrase.DELETE_NOTE, noteID})
-export const phraseDragClipSelection = (clipID, start, end, snap) => {
+export const phraseDragClipSelection = (clipID, start, end, trackID, snap) => {
   return {
     type: phrase.DRAG_CLIP_SELECTION,
     clipID: clipID,
     start: start,
     end: end,
+    trackID: trackID,
     snap: snap
   }
 }

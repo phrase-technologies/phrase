@@ -95,17 +95,17 @@ export class MixerWindowControl extends Component {
 
   leftClickEvent(e) {
     var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
-    var track = this.getTrackFromCursor(e)
-    var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar && clip.trackID == track)
+    var trackID = this.getTrackFromCursor(e)
+    var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar && clip.trackID == trackID)
 
     if (foundClip) {
-      this.clipEvent(e, bar, track, foundClip)
+      this.clipEvent(e, bar, trackID, foundClip)
     } else {
-      this.emptyAreaEvent(e, bar, track)
+      this.emptyAreaEvent(e, bar, trackID)
     }
   }
 
-  clipEvent(e, bar, track, foundClip) {
+  clipEvent(e, bar, trackID, foundClip) {
     // Second Click - Clip
     if (this.lastEvent &&
         this.lastEvent.action == CLICK_CLIP) {
@@ -113,7 +113,7 @@ export class MixerWindowControl extends Component {
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
         this.props.dispatch(
           pianorollSetFocusWindow(
-            track,
+            trackID,
             foundClip.start/this.props.barCount,
             foundClip.end/this.props.barCount
           )
@@ -157,13 +157,13 @@ export class MixerWindowControl extends Component {
     }
   }
 
-  emptyAreaEvent(e, bar, track) {
+  emptyAreaEvent(e, bar, trackID) {
     // Second Click - Empty Area
     if (this.lastEvent &&
         this.lastEvent.action == CLICK_EMPTY_AREA) {
       // Double click - Create Clip
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
-        this.props.dispatch( phraseCreateClip(track, bar) )
+        this.props.dispatch( phraseCreateClip(trackID, bar) )
         this.lastEvent = null
         return
       // Too slow, treat as new first click
@@ -185,20 +185,22 @@ export class MixerWindowControl extends Component {
 
   mouseMoveEvent(e) {
     var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
-    var track = this.getTrackFromCursor(e)
+    var trackID = this.getTrackFromCursor(e)
+    var trackIDFluid = this.getTrackFromCursor(e, false)
 
     // Drag Selected Clip(s)?
     if (this.lastEvent &&
        (this.lastEvent.action == SELECT_CLIP ||
         this.lastEvent.action == DRAG_CLIP)) {
       // Adjust Clip
+      let offsetTrack
       let offsetBar = bar - this.lastEvent.bar
       switch (this.lastEvent.grip) {
-        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; break;
-        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; break;
-        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; break;
+        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; offsetTrack = null; break;
+        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; offsetTrack = trackIDFluid; break;
+        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; offsetTrack = null; break;
       }
-      this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, !e.altKey) )
+      this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, offsetTrack, !e.altKey) )
       this.lastEvent.action = DRAG_CLIP
       return
     }
@@ -207,14 +209,14 @@ export class MixerWindowControl extends Component {
     this.lastEvent = null
 
     // Cursor on hover over notes
-    this.hoverEvent(e, bar, track)
+    this.hoverEvent(e, bar, trackID)
   }
 
-  hoverEvent(e, bar, track) {
+  hoverEvent(e, bar, trackID) {
     if (e.target !== this.container)
       return
 
-    var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar && clip.trackID == track)
+    var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar && clip.trackID == trackID)
     if (foundClip) {
       var clipLength = foundClip.end - foundClip.start
       var threshold = Math.min(
@@ -267,17 +269,18 @@ export class MixerWindowControl extends Component {
     this.lastEvent = null
   }
 
-  getTrackFromCursor(e) {
+  getTrackFromCursor(e, strict = true) {
     var contentHeight = getTracksHeight(this.props.tracks)
     var previousEdge = 0 - contentHeight * this.props.yMin
     var cursorPosition = e.clientY - this.container.getBoundingClientRect().top
+    var padding = strict ? 4 : 0
 
     // Each track could have different heights - iterate to the one that is interacted with (if at all)
     var foundTrack = this.props.tracks.find(track => {
       var trackHeight = getTrackHeight(track)
       var nextEdge = previousEdge + trackHeight
 
-      if (cursorPosition > previousEdge + 4 && cursorPosition < nextEdge - 4)
+      if (cursorPosition >= previousEdge + padding && cursorPosition < nextEdge - padding)
         return true
       else {
         previousEdge = nextEdge
@@ -285,7 +288,16 @@ export class MixerWindowControl extends Component {
       }
     })
 
-    return foundTrack ? foundTrack.id : null
+    if (foundTrack)
+      return foundTrack.id
+    else if (strict)
+      return null
+    else {
+      if (cursorPosition < 0)
+        return this.props.tracks[0].id
+      else
+        return this.props.tracks[this.props.tracks.length - 1].id
+    }
   }
 
   handleResize() {

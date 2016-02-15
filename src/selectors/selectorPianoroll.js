@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import u from 'updeep';
 
 const barCountSelector          = (state) => ( state.phrase.barCount )
 const playheadSelector          = (state) => ( state.phrase.playhead )
@@ -32,13 +33,13 @@ const currentClipsSelector = createSelector(
       selectedClipsRendered = currentClips
       .filter(clip => clip.selected)
       .map(clip => {
-        return {
+        return u.freeze({
           ...clip,
           start:  clip.start  + offsetStart,
           end:    clip.end    + offsetEnd,
-          keyNum: Math.round(clip.keyNum + offsetTrack),
+          trackID: clip.trackID,// + Math.round(offsetTrack), // Don't show any feedback for yet-to-be-finalized track changes
           selected: offsetStart && offsetEnd || Math.round(offsetTrack) ? false : true
-        }
+        })
       })
     }
 
