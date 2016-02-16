@@ -85,7 +85,7 @@ export default function reduceAll(state = {}, action) {
         .map(note => note.id)
       selectedNoteIDs = _.unique(selectedNoteIDs)
 
-      // Update selected status, clear selection box
+      // Update selected notes, deselect any selected clips, clear selection box
       return u({
         phrase: {
           notes: notes => {
@@ -102,7 +102,8 @@ export default function reduceAll(state = {}, action) {
                 }, note)
               }
             })
-          }
+          },
+          clips: u.updateIn(['*', 'selected'], false)
         },
         pianoroll: {
           selectionStartX: null,

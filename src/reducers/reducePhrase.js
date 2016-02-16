@@ -76,27 +76,25 @@ export default function reducePhrase(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_CLIP:
-      return u.updateIn(
-        ['clips', '*'],
-        u.ifElse(
+      return u({
+        notes: u.updateIn(['*', 'selected'], false),
+        clips: u.updateIn(['*'], u.ifElse(
           (clip) => clip.id === action.clipID,
           (clip) => u({selected: (action.union ? !clip.selected : true )}, clip),
           (clip) => u({selected: (action.union ?  clip.selected : false)}, clip)          
-        ),
-        state
-      )
+        ))
+      }, state)
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_NOTE:
-      return u.updateIn(
-        ['notes', '*'],
-        u.ifElse(
+      return u({
+        clips: u.updateIn(['*', 'selected'], false),
+        notes: u.updateIn(['*'], u.ifElse(
           (note) => note.id === action.noteID,
           (note) => u({selected: (action.union ? !note.selected : true )}, note),
           (note) => u({selected: (action.union ?  note.selected : false)}, note)          
-        ),
-        state
-      )
+        ))
+      }, state)
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_NOTE:
@@ -224,12 +222,11 @@ function reduceCreateClip(state, action) {
   if (getClipAtBar(state, action.bar, action.trackID))
     return state
 
-  // Deselect all existing clips
-  state = u.updateIn(
-    ['clips', '*', 'selected'],
-    false,
-    state
-  )
+  // Deselect all existing clips and notes
+  state = u({
+    clips: u.updateIn(['*', 'selected'], false),
+    notes: u.updateIn(['*', 'selected'], false)
+  }, state)
 
   // Create new clip
   var snappedClipStart = Math.floor(action.bar);
@@ -259,12 +256,11 @@ function reduceCreateNote(state, action) {
   var state = reduceCreateClip(state, action)
   var foundClip = getClipAtBar(state, action.bar, action.trackID)
 
-  // Deselect all existing notes
-  state = u.updateIn(
-    ['notes', '*', 'selected'],
-    false,
-    state
-  )
+  // Deselect all existing clips and notes
+  state = u({
+    clips: u.updateIn(['*', 'selected'], false),
+    notes: u.updateIn(['*', 'selected'], false)
+  }, state)
 
   // Insert note, snap to same length as most previously created note
   var snappedNoteKey   = Math.ceil(action.key)
