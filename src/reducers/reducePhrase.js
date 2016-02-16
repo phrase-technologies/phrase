@@ -21,11 +21,26 @@ export const defaultState = {
   noteSelectionOffsetEnd: null,
   noteSelectionOffsetKey: null,
   trackAutoIncrement: 0,
+  colorAutoIncrement: 0,
   noteAutoIncrement:  0,
   clipAutoIncrement:  0,
   noteLengthLast: 0.25
 };
 
+const TRACK_COLORS = [
+  "#F44",
+  "#F80",
+  "#EE0",
+  "#8D0",
+  "#0C0",
+  "#0C8",
+  "#0DD",
+  "#48F",
+  "#88F",
+  "#A6E",
+  "#D6D",
+  "#F4A"
+]
 const MINIMUM_NOTE_LENGTH = 0.0078125
 
 export default function reducePhrase(state = defaultState, action) {
@@ -33,17 +48,17 @@ export default function reducePhrase(state = defaultState, action) {
   {
     // ------------------------------------------------------------------------
     case phrase.CREATE_TRACK:
-      return {
-        ...state,
-        tracks: [
-          ...state.tracks,
+      return u({
+        tracks: uAppend(
           {
             id: state.trackAutoIncrement,
-            name: action.name || "Track "+(state.trackAutoIncrement+1)
+            name: action.name || "Track "+(state.trackAutoIncrement+1),
+            color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length]
           }
-        ],
-        trackAutoIncrement: state.trackAutoIncrement+1
-      }
+        ),
+        trackAutoIncrement: state.trackAutoIncrement+1,
+        colorAutoIncrement: state.colorAutoIncrement+1
+      }, state)
 
     // ------------------------------------------------------------------------
     case phrase.CREATE_CLIP:

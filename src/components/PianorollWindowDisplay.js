@@ -5,6 +5,7 @@ import _ from 'lodash'
 import { closestHalfPixel,
          drawLine,
          drawRoundedRectangle } from '../helpers/canvasHelpers.js'
+import { getDarkenedColor } from '../helpers/trackHelpers.js'
 
 import CanvasComponent from './CanvasComponent'
 
@@ -155,7 +156,7 @@ export class PianorollWindowDisplay extends Component {
       // Start/End lines + background
       canvasContext.lineWidth = this.props.grid.pixelScale
       canvasContext.strokeStyle = "#000"
-      canvasContext.fillStyle   = "rgba(255, 127, 0, 0.125)"
+      canvasContext.fillStyle   = getDarkenedColor(this.props.currentTrack.color, 0.0, 0.125)
       canvasContext.beginPath()
       drawLine( canvasContext, left,  0, left,         this.props.grid.height )
       drawLine( canvasContext, right, 0, right,        this.props.grid.height )
@@ -206,19 +207,19 @@ export class PianorollWindowDisplay extends Component {
         label = keyLetter + Math.floor((note.keyNum+8)/12);
       }
 
-      this.renderNote(canvasContext, left, right, top, bottom, note.selected, label, note.outOfViewLeft, note.outOfViewRight)
+      this.renderNote(canvasContext, left, right, top, bottom, note.selected, label, this.props.currentTrack.color, note.outOfViewLeft, note.outOfViewRight)
     })
   }
 
-  renderNote(canvasContext, left, right, top, bottom, selected, label, leftCutoff = false, rightCutoff = false, gradient = true) {
+  renderNote(canvasContext, left, right, top, bottom, selected, label, color, leftCutoff = false, rightCutoff = false, gradient = true) {
     // Gradient Fill
     if (gradient) {
       var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-          gradient.addColorStop(0, "#F80");
-          gradient.addColorStop(1, "#C60");
+          gradient.addColorStop(0, color);
+          gradient.addColorStop(1, getDarkenedColor(color, 0.266));
       canvasContext.fillStyle = gradient
     } else {
-      canvasContext.fillStyle = "#F80"
+      canvasContext.fillStyle = color
     }
 
     // Stroke
@@ -236,11 +237,11 @@ export class PianorollWindowDisplay extends Component {
     if (selected) {
       if (gradient) {
         var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-            gradient.addColorStop(0, "#630");
-            gradient.addColorStop(1, "#520");
+            gradient.addColorStop(0, getDarkenedColor(color, 0.533));
+            gradient.addColorStop(1, getDarkenedColor(color, 0.733));
         canvasContext.fillStyle = gradient
       } else {
-        canvasContext.fillStyle = "#520"
+        canvasContext.fillStyle = getDarkenedColor(color, 0.733)
       }
       canvasContext.strokeStyle = 'transparent'
       drawRoundedRectangle(canvasContext,
@@ -254,7 +255,7 @@ export class PianorollWindowDisplay extends Component {
 
     // Label
     if (label && width > 30*this.props.grid.pixelScale) {
-      canvasContext.fillStyle = selected ? "#F80" : "#000"
+      canvasContext.fillStyle = selected ? color : "#000"
       canvasContext.textAlign = "start"
       let x = left   + 4*this.props.grid.pixelScale
       let y = bottom - 5*this.props.grid.pixelScale
@@ -267,6 +268,7 @@ export class PianorollWindowDisplay extends Component {
 PianorollWindowDisplay.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
+  currentTrack: React.PropTypes.object.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   keyCount:     React.PropTypes.number.isRequired,
   xMin:         React.PropTypes.number.isRequired,

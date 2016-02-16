@@ -19,6 +19,16 @@ import Layout from './components/Layout.js'
 import { phraseCreateTrack } from './actions/actionsPhrase.js'
 STORE.dispatch( phraseCreateTrack() )
 STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch( phraseCreateTrack() )
 
 ReactDOM.render(
   <Provider store={STORE}>

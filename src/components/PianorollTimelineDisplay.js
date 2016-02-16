@@ -5,6 +5,7 @@ import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js'
 import { pianorollScrollX,
          pianorollMoveCursor } from '../actions/actionsPianoroll.js'
+import { getDarkenedColor } from '../helpers/trackHelpers.js'
 
 import CanvasComponent from './CanvasComponent'
 
@@ -99,25 +100,25 @@ export class PianorollTimelineDisplay extends Component {
     var bottomLabel = this.props.grid.height + 1*this.props.grid.pixelScale
 
     clips.forEach(clip => {
-      this.renderClipBox(      canvasContext, xMin, xMax, clip, topBox, bottomBox, radiusBox, gradient)
-      this.renderClipSelection(canvasContext, xMin, xMax, clip, topSelection, bottomSelection, radiusSelection, gradient)
-      this.renderClipLabel(    canvasContext, xMin, xMax, clip, bottomLabel)
-      this.renderClipLoopLines(canvasContext, xMin, xMax, clip, topSelection, bottomSelection)
+      this.renderClipBox(      canvasContext, xMin, xMax, clip, topBox, bottomBox, radiusBox, this.props.currentTrack.color, gradient)
+      this.renderClipSelection(canvasContext, xMin, xMax, clip, topSelection, bottomSelection, radiusSelection, this.props.currentTrack.color, gradient)
+      this.renderClipLabel(    canvasContext, xMin, xMax, clip, bottomLabel, this.props.currentTrack.color)
+      this.renderClipLoopLines(canvasContext, xMin, xMax, clip, topSelection, bottomSelection, this.props.currentTrack.color)
     })
   }
 
-  renderClipBox(canvasContext, xMin, xMax, clip, top, bottom, radius, gradient) {
+  renderClipBox(canvasContext, xMin, xMax, clip, top, bottom, radius, color, gradient) {
     canvasContext.lineWidth = this.props.grid.pixelScale
     canvasContext.strokeStyle = "#000"
 
     // Gradient Fill
     if (gradient) {
       var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-          gradient.addColorStop(0, "#F80");
-          gradient.addColorStop(1, "#C60");
+          gradient.addColorStop(0, color);
+          gradient.addColorStop(1, getDarkenedColor(color, 0.266));
       canvasContext.fillStyle = gradient
     } else {
-      canvasContext.fillStyle = "#F80"
+      canvasContext.fillStyle = color
     }
 
     // Box
@@ -140,7 +141,7 @@ export class PianorollTimelineDisplay extends Component {
     canvasContext.stroke()
   }
 
-  renderClipSelection(canvasContext, xMin, xMax, clip, top, bottom, radius, gradient) {
+  renderClipSelection(canvasContext, xMin, xMax, clip, top, bottom, radius, color, gradient) {
     if (!clip.selected)
       return
 
@@ -150,11 +151,11 @@ export class PianorollTimelineDisplay extends Component {
     // Gradient Fill
     if (gradient) {
       var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-          gradient.addColorStop(0, "#630");
-          gradient.addColorStop(1, "#520");
+          gradient.addColorStop(0, getDarkenedColor(color, 0.533));
+          gradient.addColorStop(1, getDarkenedColor(color, 0.733));
       canvasContext.fillStyle = gradient
     } else {
-      canvasContext.fillStyle = "#520"
+      canvasContext.fillStyle = getDarkenedColor(color, 0.733)
     }
 
     canvasContext.beginPath()
@@ -177,28 +178,28 @@ export class PianorollTimelineDisplay extends Component {
     canvasContext.fill()
   }
 
-  renderClipLabel(canvasContext, xMin, xMax, clip, bottom) {
+  renderClipLabel(canvasContext, xMin, xMax, clip, bottom, color) {
     var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
     var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
     // Don't waste CPU cycles drawing stuff that's not visible
     if (right < 0 || left > this.props.grid.width)
       return
 
-    canvasContext.fillStyle = clip.selected ? "#F80" : "#000"
+    canvasContext.fillStyle = clip.selected ? color : "#000"
     canvasContext.textAlign = "start"
     let x = left   + 6*this.props.grid.pixelScale
     let y = bottom - 9*this.props.grid.pixelScale
     canvasContext.fillText(`Clip ${clip.id}`, x, y)
   }
 
-  renderClipLoopLines(canvasContext, xMin, xMax, clip, top, bottom) {
+  renderClipLoopLines(canvasContext, xMin, xMax, clip, top, bottom, color) {
     var currentLoopStart = clip.start + clip.offset + (!clip.offset * clip.loopLength)
     var currentLoopStartCutoff = clip.start - currentLoopStart                      // Used to check if a note is cut off at the beginning of the current loop iteration
     var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
     while( currentLoopStart < clip.end ) {
       // Draw current line
       var currentLoopLine = closestHalfPixel( this.props.grid.barToXCoord( currentLoopStart ), this.props.grid.pixelScale )
-      drawLine( canvasContext, currentLoopLine, bottom, currentLoopLine, top, [2, 2], clip.selected ? "#F80" : "#000")
+      drawLine( canvasContext, currentLoopLine, bottom, currentLoopLine, top, [2, 2], clip.selected ? color : "#000")
 
       // Next iteration
       currentLoopStart += clip.loopLength
@@ -210,6 +211,7 @@ export class PianorollTimelineDisplay extends Component {
 
 PianorollTimelineDisplay.propTypes = {
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
+  currentTrack: React.PropTypes.object.isRequired,
   barCount:     React.PropTypes.number.isRequired,
   xMin:         React.PropTypes.number.isRequired,
   xMax:         React.PropTypes.number.isRequired,

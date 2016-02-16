@@ -37,7 +37,7 @@
   bottom: 0;
 
   border-radius: $mixer-corner 0 0 $mixer-corner;
-  background: #F80;
+  background: #FFF;
 
   pointer-events: all;
 }
@@ -74,7 +74,7 @@
 .mixer-track-gain,
 .mixer-track-meter {
   position: absolute;
-  left: 4px;
+  left: 5px;
   height: 9px;
   right: 90px;
 

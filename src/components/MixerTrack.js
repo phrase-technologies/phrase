@@ -5,9 +5,13 @@ export default class MixerTrack extends Component {
     var mixerTrackClasses  = "mixer-track"
         mixerTrackClasses += this.props.focused ? " mixer-track-focused" : ""
 
+    var tagStyle = {
+      backgroundColor: this.props.track.color
+    }
+
     return (
       <div className={mixerTrackClasses}>
-        <div className="mixer-track-tag" />
+        <div className="mixer-track-tag" style={tagStyle} />
         <div className="mixer-track-control">
           <h3 className="mixer-track-name">
             {this.props.track.name}

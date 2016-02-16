@@ -37,3 +37,28 @@ export function getOffsetedTrackID(currentTrackID, offset, allTracks) {
   return allTracks[offsetedIndex].id
 }
 
+export function getDarkenedColor(color, shadeFactor, alpha = 1.0) {
+  if (typeof color != "string" || color[0] != "#" || color.length != 4)
+    throw Error("Invalid Color: " + color + " - must be in the form of #XXX")
+
+  var r = parseInt(color[1], 16)
+  var g = parseInt(color[2], 16)
+  var b = parseInt(color[3], 16)
+
+  var brightness = 1.0 - shadeFactor
+
+  var r2 = Math.floor(r*brightness).toString(16)
+  var g2 = Math.floor(g*brightness).toString(16)
+  var b2 = Math.floor(b*brightness).toString(16)
+
+  if (typeof alpha == "number" && alpha < 1.0 && alpha >= 0.0) {
+    var r3 = parseInt(r2+r2, 16)
+    var g3 = parseInt(g2+g2, 16)
+    var b3 = parseInt(b2+b2, 16)
+    var darkenedTransparentedColor = `rgba(${r3},${g3},${b3},${alpha})`
+    return darkenedTransparentedColor
+  } else {
+    var darkenedColor = `#${r2}${g2}${b2}`
+    return darkenedColor
+  }
+}

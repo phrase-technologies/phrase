@@ -14,7 +14,8 @@ import { closestHalfPixel,
          drawLine,
          drawRoundedRectangle } from '../helpers/canvasHelpers.js'
 import { getTrackHeight,
-         getTracksHeight } from '../helpers/trackHelpers.js'
+         getTracksHeight,
+         getDarkenedColor } from '../helpers/trackHelpers.js'
 
 import CanvasComponent from './CanvasComponent'
 
@@ -112,23 +113,23 @@ export class MixerWindowDisplay extends Component {
         if (right < 0 || left > this.props.grid.width)
           return
 
-        this.renderClip(canvasContext, clip, left, right, top, bottom, radius)
+        this.renderClip(canvasContext, clip, left, right, top, bottom, radius, track.color)
       })
 
       return nextEdge
     }, startingEdge)
   }
 
-  renderClip(canvasContext, clip, left, right, top, bottom, radius, gradient = true) {
+  renderClip(canvasContext, clip, left, right, top, bottom, radius, color, gradient = true) {
     // Shape + gradient fill
     canvasContext.strokeStyle = "#000"
     if (gradient) {
       let gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-          gradient.addColorStop(0, "#F80");
-          gradient.addColorStop(1, "#C60");
+          gradient.addColorStop(0, color);
+          gradient.addColorStop(1, getDarkenedColor(color, 0.266));
       canvasContext.fillStyle = gradient
     } else {
-      canvasContext.fillStyle = "#F80"
+      canvasContext.fillStyle = color
     }
     drawRoundedRectangle(
       canvasContext,
@@ -143,11 +144,11 @@ export class MixerWindowDisplay extends Component {
     if (clip.selected) {
       if (gradient) {
         let gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-            gradient.addColorStop(0, "#630");
-            gradient.addColorStop(1, "#520");
+            gradient.addColorStop(0, getDarkenedColor(color, 0.533));
+            gradient.addColorStop(1, getDarkenedColor(color, 0.733));
         canvasContext.fillStyle = gradient
       } else {
-        canvasContext.fillStyle = "#520"
+        canvasContext.fillStyle = getDarkenedColor(color, 0.733)
       }
       canvasContext.strokeStyle = 'transparent'
       drawRoundedRectangle(canvasContext,
@@ -173,7 +174,7 @@ export class MixerWindowDisplay extends Component {
         currentLoopLine,
         bottom - closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
         [2, 2],
-        clip.selected ? "#F80" : "#000"
+        clip.selected ? color : "#000"
       )
 
       // Next iteration
@@ -184,7 +185,7 @@ export class MixerWindowDisplay extends Component {
 
     // Label
     if (right - left > 30*this.props.grid.pixelScale) {
-      canvasContext.fillStyle = clip.selected ? "#F80" : "#000"
+      canvasContext.fillStyle = clip.selected ? color : "#000"
       canvasContext.textAlign = "start"
       let x = left + 5*this.props.grid.pixelScale
       let y = top  + 14*this.props.grid.pixelScale
