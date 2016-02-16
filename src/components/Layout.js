@@ -138,9 +138,8 @@ export default class Layout extends Component {
   shouldComponentUpdate(nextProps) {
     // Ensure all canvases are re-rendered upon clip editor being shown
     if (this.props.focusedTrack === null && nextProps.focusedTrack !== null) {
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 0)
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 0) // Some lifecycle methods are missed on the first event propogation due to race conditions
     }
 
     var propsToCheck = [
