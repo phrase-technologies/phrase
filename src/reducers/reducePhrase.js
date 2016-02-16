@@ -99,13 +99,14 @@ export default function reducePhrase(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.DELETE_NOTE:
       return u({
-        notes: u.reject(x => x.id == action.noteID)
+        notes: u.reject(note => note.id === action.noteID)
       }, state)
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_CLIP:
       return u({
-        clips: u.reject(x => x.id == action.clipID)
+        clips: u.reject(clip => clip.id     === action.clipID),
+        notes: u.reject(note => note.clipID === action.clipID)
       }, state)
 
     // ------------------------------------------------------------------------
