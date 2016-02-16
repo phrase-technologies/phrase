@@ -25,22 +25,24 @@ const currentClipsSelector = createSelector(
   clipSelectionOffsetEnd,
   clipSelectionOffsetTrack,
   (clips, currentTrack, offsetStart, offsetEnd, offsetTrack) => {
+    // Current Track's Clips
     var currentClips = clips
       .filter(clip => clip.trackID == currentTrack.id)
 
+    // Render Offseted Selections
     var selectedClipsRendered = []
     if (offsetStart || offsetEnd || offsetTrack) {
       selectedClipsRendered = currentClips
-      .filter(clip => clip.selected)
-      .map(clip => {
-        return u.freeze({
-          ...clip,
-          start:  clip.start  + offsetStart,
-          end:    clip.end    + offsetEnd,
-          trackID: clip.trackID,// + Math.round(offsetTrack), // Don't show any feedback for yet-to-be-finalized track changes
-          selected: offsetStart && offsetEnd || Math.round(offsetTrack) ? false : true
+        .filter(clip => clip.selected)
+        .map(clip => {
+          return u.freeze({
+            ...clip,
+            start:  clip.start  + offsetStart,
+            end:    clip.end    + offsetEnd,
+            trackID: clip.trackID,// + Math.round(offsetTrack), // Don't show any feedback for yet-to-be-finalized track changes
+            selected: offsetStart && offsetEnd || Math.round(offsetTrack) ? false : true
+          })
         })
-      })
     }
 
     // Render a copy of each clip with their rendered selections appended

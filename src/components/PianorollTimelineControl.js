@@ -107,7 +107,6 @@ export class PianorollTimelineControl extends Component {
       this.lastEvent = {
         action: SELECT_CLIP,
         clipID: foundClip.id,
-        trackID: foundClip.trackID,
         bar: bar,
         time: Date.now()
       }
@@ -174,7 +173,7 @@ export class PianorollTimelineControl extends Component {
         case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; break;
         case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; break;
       }
-      this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, this.lastEvent.trackID, !e.altKey) )
+      this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, 0, !e.altKey) )
       this.lastEvent.action = DRAG_CLIP
       return
     }

@@ -26,3 +26,14 @@ export function getPixelsToTrack(tracks, targetTrackID) {
   return pixels
 }
 
+// Get the ID of the track in @allTracks that is @offset from @currentTrackID
+// e.g. @offset = -1, get the track in @allTracks that comes before @currentTrackID
+export function getOffsetedTrackID(currentTrackID, offset, allTracks) {
+  if (!offset)
+    return currentTrackID
+
+  var originalIndex = allTracks.findIndex(track => track.id == currentTrackID)
+  var offsetedIndex = originalIndex + offset
+  return allTracks[offsetedIndex].id
+}
+

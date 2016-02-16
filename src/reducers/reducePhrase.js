@@ -6,6 +6,7 @@ import u from 'updeep';
 import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
 import { phrase } from '../actions/actions.js';
+import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
 
 export const defaultState = {
   barCount: 16.00,
@@ -98,6 +99,7 @@ export default function reducePhrase(state = defaultState, action) {
     case phrase.DRAG_CLIP_SELECTION:
       var offsetStart = action.start
       var offsetEnd   = action.end
+      var offsetTrack = action.track
       var targetClip = state.clips.find(clip => clip.id == action.clipID)
       var gridUnit = 0.125
       var selectedClips = state.clips.filter(clip => clip.selected)
@@ -111,10 +113,13 @@ export default function reducePhrase(state = defaultState, action) {
       // Avoid negative clip lengths!
       var [finalOffsetStart, finalOffsetEnd] = enforcePositiveNoteLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
 
+      // Validate Track Offset
+      var finalOffsetTrack = validateTrackOffset(offsetTrack, state.tracks, state.clips)
+
       return u({
         clipSelectionOffsetStart: finalOffsetStart,
         clipSelectionOffsetEnd:   finalOffsetEnd,
-        clipSelectionOffsetTrack: action.trackID
+        clipSelectionOffsetTrack: finalOffsetTrack
       }, state)
 
     // ------------------------------------------------------------------------
@@ -149,7 +154,7 @@ export default function reducePhrase(state = defaultState, action) {
               return u({
                 start:  clip.start  + state.clipSelectionOffsetStart,
                 end:    clip.end    + state.clipSelectionOffsetEnd,
-                trackID: state.clipSelectionOffsetTrack === null ? clip.trackID : state.clipSelectionOffsetTrack
+                trackID: getOffsetedTrackID(clip.trackID, state.clipSelectionOffsetTrack, state.tracks)
               }, clip)
             } else {
               return clip
@@ -391,4 +396,23 @@ function enforcePositiveNoteLengths(offsetStart, offsetEnd, selectedNotes) {
   offsetStart = offsetStart ? (offsetStart + adjustment) : offsetStart
   offsetEnd   = offsetEnd   ? (offsetEnd   - adjustment) : offsetEnd
   return [offsetStart, offsetEnd]
+}
+
+function validateTrackOffset(offsetTrack, tracks, clips) {
+  // Which clips are we offsetting?
+  var selectedClips = clips.filter(clip => clip.selected)
+
+  // Calculate the largest offset allowable to both top and bottom directions
+  var firstTrackWithSelectedClip = tracks.length // Default to largest possible value
+  var lastTrackWithSelectedClip  = 0             // Default to smallest possible value
+  selectedClips.forEach(clip => {
+    var currentTrackPosition = tracks.findIndex(track => track.id === clip.trackID)
+    firstTrackWithSelectedClip = Math.min(firstTrackWithSelectedClip,  currentTrackPosition)
+    lastTrackWithSelectedClip  = Math.max(lastTrackWithSelectedClip, currentTrackPosition)
+  })
+
+  // Validate the target offset is within limits
+  var maxTrackOffsetTop    = -firstTrackWithSelectedClip
+  var maxTrackOffsetBottom = tracks.length - 1 - lastTrackWithSelectedClip
+  return Math.min(Math.max(maxTrackOffsetTop, offsetTrack), maxTrackOffsetBottom)
 }

@@ -96,7 +96,7 @@ export class MixerWindowControl extends Component {
   leftClickEvent(e) {
     var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
     var trackID = this.getTrackFromCursor(e)
-    var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar && clip.trackID == trackID)
+    var foundClip = this.props.clips.find(clip => clip.trackID == trackID && clip.start <= bar && clip.end > bar)
 
     if (foundClip) {
       this.clipEvent(e, bar, trackID, foundClip)
@@ -132,6 +132,7 @@ export class MixerWindowControl extends Component {
         action: SELECT_CLIP,
         clipID: foundClip.id,
         bar: bar,
+        trackPosition: this.props.tracks.findIndex(track => track.id == trackID),
         time: Date.now()
       }
       var clipLength = foundClip.end - foundClip.start
@@ -177,6 +178,7 @@ export class MixerWindowControl extends Component {
       this.lastEvent = {
         action: SELECT_EMPTY_AREA,
         bar: bar,
+        trackPosition: this.props.tracks.findIndex(track => track.id == trackID),
         time: Date.now()
       }
       return
@@ -185,19 +187,20 @@ export class MixerWindowControl extends Component {
 
   mouseMoveEvent(e) {
     var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
-    var trackID = this.getTrackFromCursor(e)
-    var trackIDFluid = this.getTrackFromCursor(e, false)
+    var trackID = this.getTrackFromCursor(e, true)       // Strict = true:  treat the gaps between each track as NOT considered a track
+    var trackIDFluid = this.getTrackFromCursor(e, false) // Strict = false: treat the gaps between each track as actual tracks to facilitate smooth drag and drop
 
     // Drag Selected Clip(s)?
     if (this.lastEvent &&
        (this.lastEvent.action == SELECT_CLIP ||
         this.lastEvent.action == DRAG_CLIP)) {
       // Adjust Clip
+      let trackPosition = this.props.tracks.findIndex(track => track.id == trackIDFluid)
       let offsetTrack
       let offsetBar = bar - this.lastEvent.bar
       switch (this.lastEvent.grip) {
         case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; offsetTrack = null; break;
-        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; offsetTrack = trackIDFluid; break;
+        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; offsetTrack = trackPosition - this.lastEvent.trackPosition; break;
         case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; offsetTrack = null; break;
       }
       this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, offsetTrack, !e.altKey) )
@@ -216,7 +219,7 @@ export class MixerWindowControl extends Component {
     if (e.target !== this.container)
       return
 
-    var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar && clip.trackID == trackID)
+    var foundClip = this.props.clips.find(clip => clip.trackID == trackID && clip.start <= bar && clip.end > bar)
     if (foundClip) {
       var clipLength = foundClip.end - foundClip.start
       var threshold = Math.min(
@@ -273,7 +276,7 @@ export class MixerWindowControl extends Component {
     var contentHeight = getTracksHeight(this.props.tracks)
     var previousEdge = 0 - contentHeight * this.props.yMin
     var cursorPosition = e.clientY - this.container.getBoundingClientRect().top
-    var padding = strict ? 4 : 0
+    var padding = strict ? 4 : 0 // Do we treat the gaps between tracks as tracks or "null-space"? See below...
 
     // Each track could have different heights - iterate to the one that is interacted with (if at all)
     var foundTrack = this.props.tracks.find(track => {
@@ -290,9 +293,9 @@ export class MixerWindowControl extends Component {
 
     if (foundTrack)
       return foundTrack.id
-    else if (strict)
+    else if (strict)  // Strict = true:  treat the gaps between each track as NOT considered a track
       return null
-    else {
+    else {            // Strict = false: treat the gaps between each track as actual tracks to facilitate smooth drag and drop
       if (cursorPosition < 0)
         return this.props.tracks[0].id
       else
