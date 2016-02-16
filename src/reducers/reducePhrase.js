@@ -41,7 +41,7 @@ const TRACK_COLORS = [
   "#D6D",
   "#F4A"
 ]
-const MINIMUM_NOTE_LENGTH = 0.0078125
+const MINIMUM_UNIT_LENGTH = 0.0078125
 
 export default function reducePhrase(state = defaultState, action) {
   switch (action.type)
@@ -126,7 +126,10 @@ export default function reducePhrase(state = defaultState, action) {
         : [offsetStart, offsetEnd]
 
       // Avoid negative clip lengths!
-      var [finalOffsetStart, finalOffsetEnd] = enforcePositiveNoteLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
+      var [finalOffsetStart, finalOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
+
+      // Avoid negative clip positions!
+      var [finalOffsetStart, finalOffsetEnd] = validateOffsetPosition(snappedOffsetStart, snappedOffsetEnd, selectedClips)
 
       // Validate Track Offset
       var finalOffsetTrack = validateTrackOffset(offsetTrack, state.tracks, state.clips)
@@ -152,7 +155,7 @@ export default function reducePhrase(state = defaultState, action) {
         : [offsetStart, offsetEnd]
 
       // Avoid negative note lengths!
-      var [finalOffsetStart, finalOffsetEnd] = enforcePositiveNoteLengths(snappedOffsetStart, snappedOffsetEnd, selectedNotes)
+      var [finalOffsetStart, finalOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedNotes)
 
       return u({
         noteSelectionOffsetStart: finalOffsetStart,
@@ -389,19 +392,38 @@ function snapValueToBestFit(snapUnit, offset, originalValue) {
 }
 
 // Works for both notes and clips
-function enforcePositiveNoteLengths(offsetStart, offsetEnd, selectedNotes) {
+function validateOffsetLengths(offsetStart, offsetEnd, selectedClips) {
   var adjustment = 0
   var proposedLengthChange = offsetEnd - offsetStart
   if (proposedLengthChange < 0) {
-    var shortestNoteLength = selectedNotes
-      .reduce((shortestLength, note) => {
-        return Math.min(shortestLength, note.end - note.start)
-      }, 12345678) // Really long dummy number
-    adjustment = Math.min(0, shortestNoteLength + proposedLengthChange - MINIMUM_NOTE_LENGTH)
+    var shortestClipLength = selectedClips.reduce((shortestLength, clip) => {
+      return Math.min(shortestLength, clip.end - clip.start)
+    }, 12345678) // Really long dummy number
+    adjustment = Math.min(0, shortestClipLength + proposedLengthChange - MINIMUM_UNIT_LENGTH)
   }
   offsetStart = offsetStart ? (offsetStart + adjustment) : offsetStart
   offsetEnd   = offsetEnd   ? (offsetEnd   - adjustment) : offsetEnd
   return [offsetStart, offsetEnd]
+}
+
+function validateOffsetPosition(offsetStart, offsetEnd, selectedNotes) {
+  // Calculate the limit
+  var firstNote = selectedNotes.reduce((earliestNote, note) => {
+    return earliestNote.start < note.start ? earliestNote : note
+  })
+  var largestAllowableOffset = -firstNote.start
+
+  // Drag Entire Note
+  if (offsetStart == offsetEnd) {
+    return offsetStart < largestAllowableOffset
+      ? [largestAllowableOffset, largestAllowableOffset]
+      : [offsetStart, offsetEnd]
+  // Resize Start/End of Note
+  } else {
+    return offsetStart < largestAllowableOffset
+      ? [largestAllowableOffset, offsetEnd]
+      : [offsetStart, offsetEnd]
+  }
 }
 
 function validateTrackOffset(offsetTrack, tracks, clips) {
