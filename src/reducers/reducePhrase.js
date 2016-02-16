@@ -64,7 +64,7 @@ export default function reducePhrase(state = defaultState, action) {
       return u.updateIn(
         ['clips', '*'],
         u.ifElse(
-          (clip) => clip.id == action.clipID,
+          (clip) => clip.id === action.clipID,
           (clip) => u({selected: (action.union ? !clip.selected : true )}, clip),
           (clip) => u({selected: (action.union ?  clip.selected : false)}, clip)          
         ),
@@ -76,7 +76,7 @@ export default function reducePhrase(state = defaultState, action) {
       return u.updateIn(
         ['notes', '*'],
         u.ifElse(
-          (note) => note.id == action.noteID,
+          (note) => note.id === action.noteID,
           (note) => u({selected: (action.union ? !note.selected : true )}, note),
           (note) => u({selected: (action.union ?  note.selected : false)}, note)          
         ),
@@ -306,15 +306,6 @@ export function getNoteAtKeyBar(state, key, bar, trackID) {
       bar <  loopStart + note.end
     )
   })
-}
-
-// Comparison function for sorting notes a and b by their start time. Usage: note.sort(noteSortComparison);
-function noteSortComparison(a, b) {
-  return a.start - b.start;
-}
-
-function clipSortComparison(a, b) {
-  return a.start - b.start;
 }
 
 // Works for both notes and clips

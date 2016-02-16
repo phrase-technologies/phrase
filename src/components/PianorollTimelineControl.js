@@ -215,6 +215,7 @@ export class PianorollTimelineControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action == SELECT_EMPTY_AREA) {
       // Prepare for possibility of second click
+      this.props.dispatch( phraseSelectClip(null, false) )
       this.lastEvent.action = CLICK_EMPTY_AREA
       return
     }
