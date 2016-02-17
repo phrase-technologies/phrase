@@ -7,6 +7,7 @@ import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
 import { phrase } from '../actions/actions.js';
 import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
+import { positiveModulus } from '../helpers/intervalHelpers.js'
 
 export const defaultState = {
   barCount: 16.00,
@@ -16,6 +17,7 @@ export const defaultState = {
   notes: [],
   clipSelectionOffsetStart: null,
   clipSelectionOffsetEnd:   null,
+  clipSelectionOffsetLooped: false,
   clipSelectionOffsetTrack: null,
   noteSelectionOffsetStart: null,
   noteSelectionOffsetEnd: null,
@@ -25,12 +27,12 @@ export const defaultState = {
   noteAutoIncrement:  0,
   clipAutoIncrement:  0,
   noteLengthLast: 0.25
-};
+}
 
 const TRACK_COLORS = [
-  "#F44",
+  "#F53",
   "#F80",
-  "#EE0",
+  "#FC0",
   "#8D0",
   "#0C0",
   "#0C8",
@@ -136,6 +138,7 @@ export default function reducePhrase(state = defaultState, action) {
       return u({
         clipSelectionOffsetStart: finalOffsetStart,
         clipSelectionOffsetEnd:   finalOffsetEnd,
+        clipSelectionOffsetLooped: action.looped,
         clipSelectionOffsetTrack: finalOffsetTrack
       }, state)
 
@@ -167,10 +170,15 @@ export default function reducePhrase(state = defaultState, action) {
       return u({
         clips: clips => {
           return clips.map(clip => {
+            // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
+            var validatedOffsetLooped = state.clipSelectionOffsetLooped || (clip.end - clip.start != clip.loopLength)
+
             if (clip.selected) {
               return u({
                 start:  clip.start  + state.clipSelectionOffsetStart,
                 end:    clip.end    + state.clipSelectionOffsetEnd,
+                offset: validatedOffsetLooped ? positiveModulus(clip.offset - state.clipSelectionOffsetStart, clip.loopLength) : clip.offset,
+                loopLength: validatedOffsetLooped ? clip.loopLength : clip.end + state.clipSelectionOffsetEnd - clip.start - state.clipSelectionOffsetStart,
                 trackID: getOffsetedTrackID(clip.trackID, state.clipSelectionOffsetTrack, state.tracks)
               }, clip)
             } else {

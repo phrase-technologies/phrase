@@ -28,6 +28,11 @@ import { phraseCreateClip,
 import { pianorollSetFocusWindow } from '../actions/actionsPianoroll.js';         
 import { cursorResizeLeft,
          cursorResizeRight,
+         cursorResizeLoop,
+         cursorResizeRightClip,
+         cursorResizeRightLoop,
+         cursorResizeRightClipped,
+         cursorResizeRightLooped,
          cursorClear } from '../actions/actionsCursor.js';         
 
 import CanvasComponent from './CanvasComponent';
@@ -132,6 +137,7 @@ export class MixerWindowControl extends Component {
         action: SELECT_CLIP,
         clipID: foundClip.id,
         bar: bar,
+        looped: (foundClip.loopLength != foundClip.end - foundClip.start),
         trackPosition: this.props.tracks.findIndex(track => track.id == trackID),
         time: Date.now()
       }
@@ -145,12 +151,29 @@ export class MixerWindowControl extends Component {
         this.props.dispatch( phraseSelectClip(foundClip.id, e.shiftKey) )
       }
 
+      // Adjust Start Point
       if (bar < foundClip.start + threshold) {
         this.props.dispatch( cursorResizeLeft("explicit") )
         this.lastEvent.grip = "MIN"
+      // Adjust End Point
       } else if (bar > foundClip.end - threshold) {
-        this.props.dispatch( cursorResizeRight("explicit") )
+        // Already Looped Clip
+        if (this.lastEvent.looped) {
+          this.props.dispatch( cursorResizeRight("explicit") )
+        // Possibly Looped Clip Depending on Cursor Position
+        } else {
+          // Not Looped
+          if (this.isCursorAtTrackTopHalf(e, trackID)) {
+            this.props.dispatch( cursorResizeRightClipped("explicit") )
+            this.lastEvent.looped = false
+          // Looped
+          } else {
+            this.props.dispatch( cursorResizeRightLooped("explicit") )
+            this.lastEvent.looped = true
+          }
+        }
         this.lastEvent.grip = "MAX"
+      // Move Entire Clip
       } else {
         this.props.dispatch( cursorClear("explicit") )
         this.lastEvent.grip = "MID"
@@ -203,7 +226,7 @@ export class MixerWindowControl extends Component {
         case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; offsetTrack = trackPosition - this.lastEvent.trackPosition; break;
         case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; offsetTrack = null; break;
       }
-      this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, offsetTrack, !e.altKey) )
+      this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, this.lastEvent.looped, offsetTrack, !e.altKey) )
       this.lastEvent.action = DRAG_CLIP
       return
     }
@@ -230,7 +253,12 @@ export class MixerWindowControl extends Component {
       if (bar < foundClip.start + threshold) {
         this.props.dispatch( cursorResizeLeft("implicit") )
       } else if (bar > foundClip.end - threshold) {
-        this.props.dispatch( cursorResizeRight("implicit") )
+        if (foundClip.loopLength != foundClip.end - foundClip.start)
+          this.props.dispatch( cursorResizeRight("implicit") )
+        else
+          this.isCursorAtTrackTopHalf(e, trackID)
+            ? this.props.dispatch( cursorResizeRightClip("implicit") )
+            : this.props.dispatch( cursorResizeRightLoop("implicit") )
       } else {
         this.props.dispatch( cursorClear("implicit") )
       }
@@ -292,16 +320,40 @@ export class MixerWindowControl extends Component {
       }
     })
 
-    if (foundTrack)
+    if (foundTrack) {
       return foundTrack.id
-    else if (strict)  // Strict = true:  treat the gaps between each track as NOT considered a track
+    } else if (strict) {    // Strict = true:  treat the gaps between each track as NOT considered a track
       return null
-    else {            // Strict = false: treat the gaps between each track as actual tracks to facilitate smooth drag and drop
+    } else if (!strict) {   // Strict = false: treat the gaps between each track as actual tracks to facilitate smooth drag and drop
       if (cursorPosition < 0)
         return this.props.tracks[0].id
       else
         return this.props.tracks[this.props.tracks.length - 1].id
     }
+  }
+
+  isCursorAtTrackTopHalf(e, currentTrackID) {
+    var contentHeight = getTracksHeight(this.props.tracks)
+    var previousEdge = 0 - contentHeight * this.props.yMin
+    var nextEdge
+    var cursorPosition = e.clientY - this.container.getBoundingClientRect().top
+
+    // Identify top and bottom edges corresponding to the current track
+    this.props.tracks.find(track => {
+      var trackHeight = getTrackHeight(track)
+      nextEdge = previousEdge + trackHeight
+
+      if (cursorPosition >= previousEdge && cursorPosition < nextEdge)
+        return true
+      else {
+        previousEdge = nextEdge
+        return false
+      }
+    })
+
+    // Compare cursor to the midpoint
+    var midPoint = 0.5 * (previousEdge + nextEdge)
+    return cursorPosition <= midPoint
   }
 
   handleResize() {

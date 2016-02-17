@@ -28,14 +28,24 @@
 .cursor-drag         * { cursor: grab      !important;   cursor: -webkit-grab     !important; }
 .cursor-grabbing     * { cursor: grabbing  !important;   cursor: -webkit-grabbing !important; }
 .cursor-move         * { cursor: move      !important;                                        }
-@mixin cursor-left()   { cursor: url(img/cursor-left-edge.ico)    0  8, ew-resize !important;   }
-@mixin cursor-right()  { cursor: url(img/cursor-right-edge.ico)  16  8, ew-resize !important;   }
-@mixin cursor-top()    { cursor: url(img/cursor-top-edge.ico)     8  0, ns-resize !important;   }
-@mixin cursor-bottom() { cursor: url(img/cursor-bottom-edge.ico)  8 16, ns-resize !important;   }
-.cursor-left         * { @include cursor-left();   }
-.cursor-right        * { @include cursor-right();  }
-.cursor-top          * { @include cursor-top();    }
-.cursor-bottom       * { @include cursor-bottom(); }
+@mixin cursor-left()          { cursor: url(img/cursor-left-edge.ico)      0  7, ew-resize !important; }
+@mixin cursor-right()         { cursor: url(img/cursor-right-edge.ico)    15  7, ew-resize !important; }
+@mixin cursor-top()           { cursor: url(img/cursor-top-edge.ico)       7  0, ns-resize !important; }
+@mixin cursor-bottom()        { cursor: url(img/cursor-bottom-edge.ico)    7 15, ns-resize !important; }
+@mixin cursor-loop()          { cursor: url(img/cursor-loop-edge.png)      3 11, ew-resize !important; }
+@mixin cursor-right-clip()    { cursor: url(img/cursor-right-clip.png)     3 11, ew-resize !important; }
+@mixin cursor-right-loop()    { cursor: url(img/cursor-right-loop.png)     3 11, ew-resize !important; }
+@mixin cursor-right-clipped() { cursor: url(img/cursor-right-clipped.png)  3 11, ew-resize !important; }
+@mixin cursor-right-looped()  { cursor: url(img/cursor-right-looped.png)   3 11, ew-resize !important; }
+.cursor-left            * { @include cursor-left();   }
+.cursor-right           * { @include cursor-right();  }
+.cursor-top             * { @include cursor-top();    }
+.cursor-bottom          * { @include cursor-bottom(); }
+.cursor-loop            * { @include cursor-loop();   }
+.cursor-right-clip      * { @include cursor-right-clip();     }
+.cursor-right-loop      * { @include cursor-right-loop();     }
+.cursor-right-clipped   * { @include cursor-right-clipped();  }
+.cursor-right-looped    * { @include cursor-right-looped();   }
 
 
 // ----------------------------------------------------------------------------
@@ -113,7 +123,7 @@
   width: 1px;
   z-index: 4;  // Above all other track layers
 
-  background: rgba(255,255,255,0.125);
+  background: rgba(255,255,255,0.250);
 }
 
 // ----------------------------------------------------------------------------

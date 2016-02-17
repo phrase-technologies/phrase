@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import u from 'updeep';
+import { positiveModulus } from '../helpers/intervalHelpers.js'
 
 const barCountSelector          = (state) => ( state.phrase.barCount )
 const playheadSelector          = (state) => ( state.phrase.playhead )
@@ -9,6 +10,7 @@ const notesSelector             = (state) => ( state.phrase.notes )
 const pianorollSelector         = (state) => ( state.pianoroll )
 const clipSelectionOffsetStart  = (state) => ( state.phrase.clipSelectionOffsetStart )
 const clipSelectionOffsetEnd    = (state) => ( state.phrase.clipSelectionOffsetEnd )
+const clipSelectionOffsetLooped = (state) => ( state.phrase.clipSelectionOffsetLooped )
 const clipSelectionOffsetTrack  = (state) => ( state.phrase.clipSelectionOffsetTrack )
 const noteSelectionOffsetStart  = (state) => ( state.phrase.noteSelectionOffsetStart )
 const noteSelectionOffsetEnd    = (state) => ( state.phrase.noteSelectionOffsetEnd )
@@ -23,8 +25,9 @@ const currentClipsSelector = createSelector(
   currentTrackSelector,
   clipSelectionOffsetStart,
   clipSelectionOffsetEnd,
+  clipSelectionOffsetLooped,
   clipSelectionOffsetTrack,
-  (clips, currentTrack, offsetStart, offsetEnd, offsetTrack) => {
+  (clips, currentTrack, offsetStart, offsetEnd, offsetLooped, offsetTrack) => {
     // Current Track's Clips
     var currentClips = clips
       .filter(clip => clip.trackID == currentTrack.id)
@@ -39,6 +42,8 @@ const currentClipsSelector = createSelector(
             ...clip,
             start:  clip.start  + offsetStart,
             end:    clip.end    + offsetEnd,
+            offset: offsetLooped ? positiveModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
+            loopLength: offsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
             trackID: clip.trackID,// + Math.round(offsetTrack), // Don't show any feedback for yet-to-be-finalized track changes
             selected: offsetStart && offsetEnd || Math.round(offsetTrack) ? false : true
           })

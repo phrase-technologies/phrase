@@ -79,6 +79,11 @@ export const cursor = namespaceActions(
     'RESIZE_RIGHT',
     'RESIZE_TOP',
     'RESIZE_BOTTOM',
+    'RESIZE_LOOP',
+    'RESIZE_RIGHT_CLIP',
+    'RESIZE_RIGHT_LOOP',
+    'RESIZE_RIGHT_CLIPPED',
+    'RESIZE_RIGHT_LOOPED',
     'CLEAR'
   ]
 )

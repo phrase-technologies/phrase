@@ -44,3 +44,6 @@ export function zoomInterval(interval, zoom, fulcrum = undefined, limit = [0.0, 
 }
 
 
+export function positiveModulus(dividend, modulus) {
+  return ((dividend % modulus) + modulus) % modulus
+}

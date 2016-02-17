@@ -3,6 +3,7 @@ import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
 import { transportStop } from '../actions/actionsTransport.js'
 import { phraseMovePlayhead } from '../actions/actionsPhrase.js'
 
+var AudioContext = AudioContext || webkitAudioContext
 var ctx = new AudioContext()
 var oscillators = []
 var amplitudeEnvelopes = []
