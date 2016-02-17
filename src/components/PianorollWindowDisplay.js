@@ -165,7 +165,7 @@ export class PianorollWindowDisplay extends Component {
       canvasContext.stroke()
 
       // Loop Lines
-      var currentLoopStart = clip.start + clip.offset + (!clip.offset * clip.loopLength)
+      var currentLoopStart = clip.start + clip.offset + clip.loopLength
       var currentLoopStartCutoff = clip.start - currentLoopStart                      // Used to check if a note is cut off at the beginning of the current loop iteration
       var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
       while( currentLoopStart < clip.end ) {

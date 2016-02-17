@@ -117,6 +117,7 @@ export class PianorollTimelineControl extends Component {
         time: Date.now()
       }
       var clipLength = foundClip.end - foundClip.start
+      var loopHandle = foundClip.start + foundClip.offset
       var threshold = Math.min(
         8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
         0.25*clipLength

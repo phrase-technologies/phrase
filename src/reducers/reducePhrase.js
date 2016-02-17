@@ -7,7 +7,7 @@ import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
 import { phrase } from '../actions/actions.js';
 import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
-import { positiveModulus } from '../helpers/intervalHelpers.js'
+import { negativeModulus } from '../helpers/intervalHelpers.js'
 
 export const defaultState = {
   barCount: 16.00,
@@ -177,7 +177,7 @@ export default function reducePhrase(state = defaultState, action) {
               return u({
                 start:  clip.start  + state.clipSelectionOffsetStart,
                 end:    clip.end    + state.clipSelectionOffsetEnd,
-                offset: validatedOffsetLooped ? positiveModulus(clip.offset - state.clipSelectionOffsetStart, clip.loopLength) : clip.offset,
+                offset: validatedOffsetLooped && state.clipSelectionOffsetStart != state.clipSelectionOffsetEnd ? negativeModulus(clip.offset - state.clipSelectionOffsetStart, clip.loopLength) : clip.offset,
                 loopLength: validatedOffsetLooped ? clip.loopLength : clip.end + state.clipSelectionOffsetEnd - clip.start - state.clipSelectionOffsetStart,
                 trackID: getOffsetedTrackID(clip.trackID, state.clipSelectionOffsetTrack, state.tracks)
               }, clip)
@@ -238,12 +238,12 @@ function reduceCreateClip(state, action) {
   }, state)
 
   // Create new clip
-  var snappedClipStart = Math.floor(action.bar);
+  var snappedClipStart = Math.floor(action.bar) + 0.00;
   var newClip = u.freeze({
     id:         state.clipAutoIncrement,
     trackID:    action.trackID,
     start:      snappedClipStart,
-    end:        snappedClipStart + 1,
+    end:        snappedClipStart + 1.00,
     offset:     0.00,
     loopLength: 1.00,
     selected:   true

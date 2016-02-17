@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import u from 'updeep';
 
 import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
-import { positiveModulus } from '../helpers/intervalHelpers.js'
+import { negativeModulus } from '../helpers/intervalHelpers.js'
 
 const tracksSelector            = (state) => ( state.phrase.tracks )
 const clipsSelector             = (state) => ( state.phrase.clips )
@@ -37,7 +37,7 @@ export const renderedClipsSelector = createSelector(
             ...clip,
             start:  clip.start  + offsetStart,
             end:    clip.end    + offsetEnd,
-            offset: validatedOffsetLooped ? positiveModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
+            offset: validatedOffsetLooped && offsetStart != offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
             loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
             trackID: getOffsetedTrackID(clip.trackID, offsetTrack, tracks),
             selected: offsetStart && offsetEnd || offsetTrack ? false : true

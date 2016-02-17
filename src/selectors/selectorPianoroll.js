@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import u from 'updeep';
-import { positiveModulus } from '../helpers/intervalHelpers.js'
+import { negativeModulus } from '../helpers/intervalHelpers.js'
 
 const barCountSelector          = (state) => ( state.phrase.barCount )
 const playheadSelector          = (state) => ( state.phrase.playhead )
@@ -38,12 +38,15 @@ const currentClipsSelector = createSelector(
       selectedClipsRendered = currentClips
         .filter(clip => clip.selected)
         .map(clip => {
+          // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
+          var validatedOffsetLooped = offsetLooped || (clip.end - clip.start != clip.loopLength)
+
           return u.freeze({
             ...clip,
             start:  clip.start  + offsetStart,
             end:    clip.end    + offsetEnd,
-            offset: offsetLooped ? positiveModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
-            loopLength: offsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
+            offset: validatedOffsetLooped && offsetStart != offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
+            loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
             trackID: clip.trackID,// + Math.round(offsetTrack), // Don't show any feedback for yet-to-be-finalized track changes
             selected: offsetStart && offsetEnd || Math.round(offsetTrack) ? false : true
           })
@@ -117,33 +120,32 @@ export function renderClipNotes(note, clips) {
   var clip = clips.find(clip => clip.id == note.clipID)
 
   // Loop Iterations
-  var currentLoopStart = clip.start + clip.offset - (!!clip.offset * clip.loopLength)
-  var currentLoopStartCutoff = clip.start - currentLoopStart                      // Used to check if a note is cut off at the beginning of the current loop iteration
+  var currentLoopStart = clip.start + clip.offset
+  var currentLoopStartCutoff = -clip.offset                                           // Used to check if a note is cut off at the beginning of the current loop iteration
   var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
   while( currentLoopStart < clip.end ) {
     // Notes that are entirely out of view - skip them
-    if (note.end < currentLoopStartCutoff || note.start > currentLoopEndCutoff)
-      break
+    if (note.end >= currentLoopStartCutoff && note.start <= currentLoopEndCutoff) {
+      // Extrapolate the note to the current loop iteration
+      let renderedNote = Object.assign({}, note, {
+        start: currentLoopStart + note.start,
+        end:   currentLoopStart + note.end
+      })
 
-    // Extrapolate the note to the current loop iteration
-    let renderedNote = Object.assign({}, note, {
-      start: currentLoopStart + note.start,
-      end:   currentLoopStart + note.end
-    })
+      // Notes that are cut off at the beginning
+      if (note.start < currentLoopStartCutoff) {
+        renderedNote.start = currentLoopStart + currentLoopStartCutoff
+        renderedNote.outOfViewLeft = true
+      }
 
-    // Notes that are cut off at the beginning
-    if (note.start < currentLoopStartCutoff) {
-      renderedNote.start = currentLoopStart + currentLoopStartCutoff
-      renderedNote.outOfViewLeft = true
+      // Notes that are cut off at the end
+      if (note.end > currentLoopEndCutoff) {
+        renderedNote.end = currentLoopStart + currentLoopEndCutoff
+        renderedNote.outOfViewRight = true
+      }
+
+      renderedClipNotes.push(renderedNote)
     }
-
-    // Notes that are cut off at the end
-    if (note.end > currentLoopEndCutoff) {
-      renderedNote.end = currentLoopStart + currentLoopEndCutoff
-      renderedNote.outOfViewRight = true
-    }
-
-    renderedClipNotes.push(renderedNote)
 
     // Next iteration
     currentLoopStart += clip.loopLength
