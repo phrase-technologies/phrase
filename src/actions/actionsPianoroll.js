@@ -7,12 +7,5 @@ export const pianorollResizeHeight        = (height)          => ({type: pianoro
 export const pianorollSelectionBoxStart   = (x, y)            => ({type: pianoroll.SELECTION_BOX_START,  x, y})
 export const pianorollSelectionBoxResize  = (x, y)            => ({type: pianoroll.SELECTION_BOX_RESIZE, x, y})
 export const pianorollSelectionBoxApply   = (union)           => ({type: pianoroll.SELECTION_BOX_APPLY, union})
-export const pianorollSetFocusWindow = (track, start, end) => {
-  return {
-    type: pianoroll.SET_FOCUS_WINDOW,
-    track: track,
-    start: start,
-    end: end
-  }
-}
+export const pianorollSetFocusWindow      = (clipID)          => ({type: pianoroll.SET_FOCUS_WINDOW, clipID})
 export const pianorollMoveCursor          = (percent)         => ({type: pianoroll.MOVE_CURSOR, percent})

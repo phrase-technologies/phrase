@@ -114,15 +114,9 @@ export class MixerWindowControl extends Component {
     // Second Click - Clip
     if (this.lastEvent &&
         this.lastEvent.action == CLICK_CLIP) {
-      // Double click - Focus Clip to Pianoroll
+      // Double click - ...?
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
-        this.props.dispatch(
-          pianorollSetFocusWindow(
-            trackID,
-            foundClip.start/this.props.barCount,
-            foundClip.end/this.props.barCount
-          )
-        )
+        // Nothing for now...
         this.lastEvent = null
         return
       // Too slow, treat as new first click
@@ -281,7 +275,8 @@ export class MixerWindowControl extends Component {
     // First Click - Clip
     if (this.lastEvent &&
         this.lastEvent.action == SELECT_CLIP) {
-      // Cancel Cursor
+      // Focus Clip Editor to this Clip, Cancel Cursor
+      this.props.dispatch( pianorollSetFocusWindow(this.lastEvent.clipID) )    
       this.props.dispatch( cursorClear("explicit") )
 
       // Prepare for possibility of second click
@@ -289,7 +284,7 @@ export class MixerWindowControl extends Component {
       return
     }
 
-    // Selected Clip(s) Dragged
+    // Selected Clip(s) Dragged - Now Drop the Clip
     if (this.lastEvent &&
         this.lastEvent.action == DRAG_CLIP) {
       this.props.dispatch( phraseDropClipSelection() )

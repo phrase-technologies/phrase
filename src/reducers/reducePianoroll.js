@@ -16,8 +16,8 @@ export const defaultState = {
   height: 500,
   xMin: 0.000,
   xMax: 0.250,
-  yMin: 0.250,
-  yMax: 0.750,
+  yMin: 0.350,
+  yMax: 0.650,
   selectionStartX: null,
   selectionStartY: null,
   selectionEndX: null,
@@ -80,15 +80,6 @@ export default function reducePianoroll(state = defaultState, action) {
         selectionEndX: action.x,
         selectionEndY: action.y
       });
-
-    // ------------------------------------------------------------------------
-    // Set the Pianoroll's focus window
-    case pianoroll.SET_FOCUS_WINDOW:
-      return u({
-        currentTrack: action.track,
-        xMin: action.start,
-        xMax: action.end
-      }, state)
 
     // ------------------------------------------------------------------------
     case pianoroll.MOVE_CURSOR:

@@ -114,6 +114,22 @@ export default function reduceAll(state = {}, action) {
       }, state);
 
     // ------------------------------------------------------------------------
+    // Set the Pianoroll's focus window
+    case pianoroll.SET_FOCUS_WINDOW:
+      var foundClip = state.phrase.clips.find(clip => clip.id == action.clipID)
+      var clipLength = foundClip.end - foundClip.start
+      var targetBarMin = Math.max(foundClip.start - clipLength * 0.25, 0)
+      var targetBarMax = Math.min(foundClip.end   + clipLength * 0.25, state.phrase.barCount)
+
+      return u({
+        pianoroll: {
+          currentTrack: foundClip.trackID,
+          xMin: targetBarMin / state.phrase.barCount,
+          xMax: targetBarMax / state.phrase.barCount
+        }
+      }, state)
+
+    // ------------------------------------------------------------------------
     default:
       return state
 
