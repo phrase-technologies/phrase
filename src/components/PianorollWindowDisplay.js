@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import provideGridSystem from './GridSystemProvider'
+import provideGridSystem from './GridSystemProvider.js'
+import provideTween from './TweenProvider.js'
 
 import _ from 'lodash'
 import { closestHalfPixel,
@@ -279,4 +280,9 @@ PianorollWindowDisplay.propTypes = {
   notes:        React.PropTypes.array.isRequired
 }
 
-export default provideGridSystem(PianorollWindowDisplay)
+export default provideTween(
+  ["xMin", "xMax"],
+  provideGridSystem(
+    PianorollWindowDisplay
+  )
+)

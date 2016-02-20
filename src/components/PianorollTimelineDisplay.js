@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider'
+import provideTween from './TweenProvider.js'
 
 import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js'
@@ -218,4 +219,9 @@ PianorollTimelineDisplay.propTypes = {
   clips:        React.PropTypes.array.isRequired
 };
 
-export default provideGridSystem(PianorollTimelineDisplay)
+export default provideTween(
+  ["xMin", "xMax"],
+  provideGridSystem(
+    PianorollTimelineDisplay
+  )
+)
