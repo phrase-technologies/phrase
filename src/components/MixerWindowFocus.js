@@ -14,17 +14,22 @@ export default class MixerWindowFocus extends Component {
     var left  = (focusBarMin - xMin)/(xMax - xMin)
     var right = (xMax - focusBarMax)/(xMax - xMin)
     var width = 1 - right - left
+    var height = 46
     var pixelsToFocusedTrack = 4 + getPixelsToTrack(tracks, focusedTrack)
     var contentHeight = getTracksHeight(tracks)
     var top = pixelsToFocusedTrack - contentHeight*yMin
+
+    // If Focus is shifted via clip selection - use CSS transitions for smooth shift (in mixer.scss)
     var boxStyle = {
-      transform: 'translate3d('+left/width*100+'%,'+top+'px,1px)',
-      transformOrigin: '0 0 0',
+      top: top,
+      left: left*100+"%",
       width: width*100 + '%',
-      height: 46
+      height: height
     }
-    if (!this.smoothTransition) // If Mixer is directly scrolled - let the focus window scroll in real time with it
-      boxStyle.transition = "none"
+
+    // If Mixer is directly scrolled - let the focus window scroll in real time with it
+    if (!this.smoothTransition)
+      boxStyle.transition = 'none'
 
     return (
       <div className="mixer-window-focus">

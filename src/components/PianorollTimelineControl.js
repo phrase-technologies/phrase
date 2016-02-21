@@ -97,9 +97,9 @@ export class PianorollTimelineControl extends Component {
     // Second Click - Clip
     if (this.lastEvent &&
         this.lastEvent.action == CLICK_CLIP) {
-      // Double click - Delete Clip
+      // Double click - Zoom Focus to this clip!
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
-        this.props.dispatch( pianorollSetFocusWindow(foundClip.id) )
+        this.props.dispatch( pianorollSetFocusWindow(foundClip.id, true) )
         this.lastEvent = null
         return
       // Too slow, treat as new first click
@@ -256,7 +256,8 @@ export class PianorollTimelineControl extends Component {
     // First Click - Clip
     if (this.lastEvent &&
         this.lastEvent.action == SELECT_CLIP) {
-      // Cancel Cursor
+      // Focus to this clip! Cancel Cursor
+      this.props.dispatch( pianorollSetFocusWindow(this.lastEvent.clipID, false) )
       this.props.dispatch( cursorClear("explicit") )
 
       // Prepare for possibility of second click

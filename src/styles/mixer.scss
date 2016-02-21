@@ -260,8 +260,11 @@ $mixer-track-control: 200px;
   right: 0;
   bottom: 0;
 
-  transition: transform 0.2s, height 0.2s, width 0.2s;
-  transition-timing-function: ease-in-out;
+  transition:
+    top       0.18s,
+    left      0.18s,
+    height    0.18s,
+    width     0.18s;
 }
 .mixer-window-focus-ring {
   position: absolute;

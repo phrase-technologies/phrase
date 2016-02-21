@@ -114,9 +114,9 @@ export class MixerWindowControl extends Component {
     // Second Click - Clip
     if (this.lastEvent &&
         this.lastEvent.action == CLICK_CLIP) {
-      // Double click - ...?
+      // Double click - zoom the focus around this clip!
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
-        // Nothing for now...
+        this.props.dispatch( pianorollSetFocusWindow(this.lastEvent.clipID, true) )
         this.lastEvent = null
         return
       // Too slow, treat as new first click
@@ -276,7 +276,7 @@ export class MixerWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action == SELECT_CLIP) {
       // Focus Clip Editor to this Clip, Cancel Cursor
-      this.props.dispatch( pianorollSetFocusWindow(this.lastEvent.clipID) )
+      this.props.dispatch( pianorollSetFocusWindow(this.lastEvent.clipID, false) )
       this.props.dispatch( cursorClear("explicit") )
 
       // Prepare for possibility of second click

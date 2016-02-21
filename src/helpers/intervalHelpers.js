@@ -7,13 +7,11 @@ export function shiftInterval(interval, shift, limit = [0.0, 1.0]) {
   var [newMin, newMax] = interval;
   newMin += shift;
   newMax += shift;
-  if( newMin < limit[0] )
-  {
+  if (newMin < limit[0]) {
     newMax -= newMin;
     newMin = limit[0];
   }
-  if( newMax > limit[1] )
-  {
+  if (newMax > limit[1]) {
     newMin -= (newMax - limit[1]);
     newMax = limit[1];
   }
@@ -30,20 +28,19 @@ export function zoomInterval(interval, zoom, fulcrum = undefined, limit = [0.0, 
   range *= zoom;
   newMin = center - (0.0 + fulcrum)*range;
   newMax = center + (1.0 - fulcrum)*range;
-  if( newMin < limit[0] )
-  {
+  if (newMin < limit[0]) {
     newMax -= newMin;
     newMin = limit[0];
   }
-  if( newMax > limit[1] )
-  {
+  if (newMax > limit[1]) {
     newMin -= (newMax - limit[1]);
     newMax = limit[1];
   }
   return [newMin, newMax];
 }
 
-
+// Returns the closest negative distance to a repeating interval.
+// Useful for calculating the start of the first loop in a clip.
 export function negativeModulus(dividend, modulus) {
   return ((dividend % modulus) - modulus) % modulus
 }
