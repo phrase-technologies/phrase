@@ -23,6 +23,9 @@ export default class MixerWindowFocus extends Component {
       width: width*100 + '%',
       height: 46
     }
+    if (!this.smoothTransition) // If Mixer is directly scrolled - let the focus window scroll in real time with it
+      boxStyle.transition = "none"
+
     return (
       <div className="mixer-window-focus">
         <div className="mixer-window-focus-grid">
@@ -38,6 +41,7 @@ export default class MixerWindowFocus extends Component {
   shouldComponentUpdate(nextProps) {
     // Debounced Props
     var debouncedProps = [
+      'focusedTrack',
       'focusBarMin',
       'focusBarMax'
     ]
@@ -46,6 +50,7 @@ export default class MixerWindowFocus extends Component {
     })
     if (changeToDebounce) {
       this.debouncedUpdate()
+      this.smoothTransition = true
       return false
     }
 
@@ -60,6 +65,8 @@ export default class MixerWindowFocus extends Component {
     var changeDetected = propsToCheck.some(prop => {
       return nextProps[prop] != this.props[prop]
     })
+    if (changeDetected)
+      this.smoothTransition = false
     return changeDetected    
   }
 

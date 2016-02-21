@@ -276,7 +276,7 @@ export class MixerWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action == SELECT_CLIP) {
       // Focus Clip Editor to this Clip, Cancel Cursor
-      this.props.dispatch( pianorollSetFocusWindow(this.lastEvent.clipID) )    
+      this.props.dispatch( pianorollSetFocusWindow(this.lastEvent.clipID) )
       this.props.dispatch( cursorClear("explicit") )
 
       // Prepare for possibility of second click

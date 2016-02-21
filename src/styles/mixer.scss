@@ -259,6 +259,9 @@ $mixer-track-control: 200px;
   left: 0;
   right: 0;
   bottom: 0;
+
+  transition: transform 0.2s, height 0.2s, width 0.2s;
+  transition-timing-function: ease-in-out;
 }
 .mixer-window-focus-ring {
   position: absolute;

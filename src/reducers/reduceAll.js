@@ -13,6 +13,7 @@ import { mixer,
          pianoroll,
          phrase } from '../actions/actions.js'
 import { getTracksHeight } from '../helpers/trackHelpers.js'
+import { shiftInterval } from '../helpers/intervalHelpers.js'
 
 export default function reduceAll(state = {}, action) {
 
@@ -116,16 +117,40 @@ export default function reduceAll(state = {}, action) {
     // ------------------------------------------------------------------------
     // Set the Pianoroll's focus window
     case pianoroll.SET_FOCUS_WINDOW:
+      // Figure out the measurements
       var foundClip = state.phrase.clips.find(clip => clip.id == action.clipID)
       var clipLength = foundClip.end - foundClip.start
-      var targetBarMin = Math.max(foundClip.start - clipLength * 0.25, 0)
-      var targetBarMax = Math.min(foundClip.end   + clipLength * 0.25, state.phrase.barCount)
+      var spacing = Math.min(0.5, Math.max(0.125*clipLength, 0.125))
+      var windowBarLength = (state.pianoroll.xMax - state.pianoroll.xMin) * state.phrase.barCount
 
+      // Let's figure out the best place to shift the window to
+      var shiftAmount = 0         // Don't shift if not necessary, by default
+      var shiftAmountMax = foundClip.end   + spacing - state.pianoroll.xMax * state.phrase.barCount // Does the target clip end beyond the ending of the window?
+      var shiftAmountMin = foundClip.start - spacing - state.pianoroll.xMin * state.phrase.barCount // Does the target clip start before the beginning of the window?
+      // If newly focused clip DOES NOT fit in the window, focus to the beginning of it
+      if (spacing + clipLength + spacing > windowBarLength)
+        shiftAmount = shiftAmountMin
+      // If newly focused clip is able to fit in the window, we might need to shift to one end
+      else {
+             if (shiftAmountMax > 0) { shiftAmount = shiftAmountMax }
+        else if (shiftAmountMin < 0) { shiftAmount = shiftAmountMin }
+      }
+      var [targetBarMin, targetBarMax] = shiftInterval([state.pianoroll.xMin, state.pianoroll.xMax], shiftAmount/state.phrase.barCount)
+
+      // Already focused on the same spot? Zoom tighter
+      if (Math.abs(targetBarMin - state.pianoroll.xMin) < 0.0001
+       && Math.abs(targetBarMax - state.pianoroll.xMax) < 0.0001
+       && state.pianoroll.currentTrack == foundClip.trackID) {
+        targetBarMin = Math.max( foundClip.start - spacing, 0                     ) / state.phrase.barCount
+        targetBarMax = Math.min( foundClip.end   + spacing, state.phrase.barCount ) / state.phrase.barCount
+      }
+
+      // Make the change!
       return u({
         pianoroll: {
           currentTrack: foundClip.trackID,
-          xMin: targetBarMin / state.phrase.barCount,
-          xMax: targetBarMax / state.phrase.barCount
+          xMin: targetBarMin,
+          xMax: targetBarMax
         }
       }, state)
 

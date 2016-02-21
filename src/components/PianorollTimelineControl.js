@@ -6,7 +6,8 @@ import provideGridScroll from './GridScrollProvider'
 import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js'
 import { pianorollScrollX,
-         pianorollMoveCursor } from '../actions/actionsPianoroll.js'
+         pianorollMoveCursor,
+         pianorollSetFocusWindow } from '../actions/actionsPianoroll.js'
 import { phraseCreateClip,
          phraseSelectClip,
          phraseDeleteClip,
@@ -98,7 +99,7 @@ export class PianorollTimelineControl extends Component {
         this.lastEvent.action == CLICK_CLIP) {
       // Double click - Delete Clip
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
-        this.props.dispatch( phraseDeleteClip(foundClip.id) )
+        this.props.dispatch( pianorollSetFocusWindow(foundClip.id) )
         this.lastEvent = null
         return
       // Too slow, treat as new first click
