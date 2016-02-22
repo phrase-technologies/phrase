@@ -1,5 +1,5 @@
 import STORE from '../reducers/createStore.js'
-import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
+import { phraseMidiSelector } from '../selectors/selectorTransport.js'
 import { transportStop } from '../actions/actionsTransport.js'
 import { phraseMovePlayhead } from '../actions/actionsPhrase.js'
 
@@ -11,6 +11,7 @@ var masterBus = ctx.createGain()
     masterBus.connect( ctx.destination )
 
 var scheduleLooper = null
+var unsubscribeStoreChanges = null
 var bpm = 128
 var keyFrequency = [] // Set the frequencies for the notes
     for( var i = 1; i <= 88; i++ ) { keyFrequency[i] = Math.pow(2, (i-49)/12) * 440 }
@@ -18,30 +19,39 @@ var keyFrequency = [] // Set the frequencies for the notes
 export function audioStop() {
   console.log("audioStop()")
 
+  for(var keyNum = 1; keyNum <= 88; keyNum++)
+    runMidiCommand( keyNum, 0, 0)
+
   if (scheduleLooper)
     clearInterval(scheduleLooper)
   scheduleLooper = null
+
+  if (unsubscribeStoreChanges)
+    unsubscribeStoreChanges()
+  unsubscribeStoreChanges = null
 }
 
 export function audioPlay() {
   console.log("audioPlay()")
 
-  var state = STORE.getState()
-  var playStart = ctx.currentTime;
-  var loop = 0;
-  var barsPerLoop = state.phrase.barCount
-  var notes = currentNotesSelector(state)
-    .concat([]) // Make a copy so we don't mutate the original
-    .sort((noteA, noteB) => { // Sort by starting time
-      return noteA.start - noteB.start;
-    })
-
   // Already running? Ignore
   if (scheduleLooper)
     return
 
+  var state = STORE.getState()
+  var midiCommands = phraseMidiSelector(state)
+  var iCommand = 0
+  var currentCommand
+  var currentCommandTime
+  unsubscribeStoreChanges = STORE.subscribe(() => {
+    state = STORE.getState()
+    midiCommands = phraseMidiSelector(state)
+    iCommand = midiCommands.findIndex(command => command.bar >= currentCommand.bar)
+    currentCommand = midiCommands[iCommand]
+  })
+
   // Nothing to play? Ignore
-  if (notes.length == 0) {
+  if (midiCommands.length == 0) {
     // Leave a delay, for 2 reasons:
     // 1. We are still inside a redux action creator, so technically
     //    the state is not even set to playing yet.
@@ -53,47 +63,52 @@ export function audioPlay() {
     return
   }
 
-  var iterator = notes[Symbol.iterator]()
-  var iteration = iterator.next()
-  var note = iteration.value
+  var playStart = ctx.currentTime;
+
+  // Looping
+  // ...
+  // var loop = 0;
+  // var barsPerLoop = state.phrase.barCount
+
+  iCommand = 0
+  currentCommand = midiCommands[iCommand]
+  currentCommandTime = barToPlayTime(currentCommand.bar, playStart)
 
   scheduleLooper = setInterval(function(){
     var currentBar = playTimeToBar(ctx.currentTime, playStart)
     STORE.dispatch( phraseMovePlayhead(currentBar) )
 
     // Empty section at end of song
-    if (iteration.done)
+    if (iCommand >= midiCommands.length)
       return
 
     // Schedule up to the next 40 ms worth of notes
-    var startTime = barToPlayTime( note.start + loop*barsPerLoop, playStart );
-    var   endTime = barToPlayTime( note.end   + loop*barsPerLoop, playStart );
-    while (startTime <= ctx.currentTime + 0.40) {
-      playSingleNote( note.keyNum, 127, startTime + 0.1, endTime + 0.1); // Offset by 0.1s to prevent missed notes? TODO investigate!
+    while (currentCommandTime <= ctx.currentTime + 0.10) {
+      runMidiCommand( currentCommand.keyNum, currentCommand.velocity, currentCommandTime)
 
-      iteration = iterator.next()
-      note = iteration.value
-      if (iteration.done)
+      iCommand++
+      if (iCommand >= midiCommands.length)
         break
 
-      startTime = barToPlayTime( note.start + loop*barsPerLoop, playStart );
-        endTime = barToPlayTime( note.end   + loop*barsPerLoop, playStart );
+      currentCommand = midiCommands[iCommand]
+      currentCommandTime = barToPlayTime(currentCommand.bar, playStart)
     }
 
     // Reached the end of loop
-    if (iteration.done) {
+    if (iCommand >= midiCommands.length) {
+      // End the loop
+      clearInterval(scheduleLooper)
+
       // Queue up the stop command
       setTimeout(() => {
         STORE.dispatch( phraseMovePlayhead(0) )
         STORE.dispatch( transportStop() )
-      }, 1000 * (endTime - ctx.currentTime))
+      }, 1000*(currentCommandTime - ctx.currentTime))
 
       // If we want to continue looping...
-      // iterator = notes[Symbol.iterator]()
-      // iteration = iterator.next()
-      // note = iteration.value
+      // ...
     }
-  }, 25)
+  }, 5)
 }
 
 export function barToPlayTime(bar, playStart) {
@@ -112,11 +127,8 @@ export function playTimeToBar(time, playStart) {
   return (time - playStart) / 120 * bpm
 }
 
-export function playSingleNote(key, velocity, startTime, endTime) {
-  startTime = startTime || ctx.currentTime;
-
-  var attackVolume  = 0.001
-  var releaseVolume = 0.001
+export function runMidiCommand(key, velocity, time) {
+  var easing  = 0.001
 
   var amplitudeEnvelope = amplitudeEnvelopes[key]
   var currentOscillator = oscillators[key]
@@ -140,22 +152,8 @@ export function playSingleNote(key, velocity, startTime, endTime) {
   currentOscillator.type = 'square'
   currentOscillator.frequency.value = keyFrequency[ key ]
 
-  // Start a new envelope
-  if (velocity > 0) {
-    // Attack
-    amplitudeEnvelope.gain.cancelScheduledValues( startTime )
-    amplitudeEnvelope.gain.setValueAtTime( 0.0, startTime )
-    amplitudeEnvelope.gain.setTargetAtTime( 0.125*velocity/127, startTime, attackVolume )
-
-    // Release
-    if (endTime) {
-      amplitudeEnvelope.gain.setTargetAtTime( 0.0, endTime, releaseVolume )
-    }
-  }
-  // Release the current envelope
-  else {
-    // Release
-    amplitudeEnvelope.gain.cancelScheduledValues(startTime)
-    amplitudeEnvelope.gain.setTargetAtTime( 0.0, startTime, releaseVolume )
-  }
+  // Render the velocity
+  amplitudeEnvelope.gain.cancelScheduledValues( time )
+  amplitudeEnvelope.gain.setValueAtTime( 0.0, time )
+  amplitudeEnvelope.gain.setTargetAtTime( 0.125*velocity/127, time, easing )
 }

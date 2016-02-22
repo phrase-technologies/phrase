@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import { createSelector } from 'reselect'
 import u from 'updeep';
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
@@ -88,7 +88,7 @@ export const currentNotesSelector = createSelector(
     return currentNotes
       .concat(selectedNotesRendered)
       .reduce((allLoopedNotes, note) => {
-        var loopedNote = renderClipNotes(note, currentClips)
+        var loopedNote = loopedNoteSelector(note, currentClips)
         return allLoopedNotes.concat( loopedNote )
       }, [])
   }
@@ -115,43 +115,49 @@ export const mapPianorollToProps = createSelector(
 
 // A clip might be looped for multiple iterations, some full, some partial.
 // Render the clip's notes into the correct positions for each iteration.
-export function renderClipNotes(note, clips) {
-  var renderedClipNotes = []
-  var clip = clips.find(clip => clip.id == note.clipID)
+const singleNoteSelector = (note, clips) => note
+const allClipsSelector   = (note, clips) => clips
+export const loopedNoteSelector = createSelector(
+  singleNoteSelector,
+  allClipsSelector,
+  (note, clips) => {
+    var renderedClipNotes = []
+    var clip = clips.find(clip => clip.id == note.clipID)
 
-  // Loop Iterations
-  var currentLoopStart = clip.start + clip.offset
-  var currentLoopStartCutoff = -clip.offset                                           // Used to check if a note is cut off at the beginning of the current loop iteration
-  var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
-  while( currentLoopStart < clip.end ) {
-    // Notes that are entirely out of view - skip them
-    if (note.end >= currentLoopStartCutoff && note.start <= currentLoopEndCutoff) {
-      // Extrapolate the note to the current loop iteration
-      let renderedNote = Object.assign({}, note, {
-        start: currentLoopStart + note.start,
-        end:   currentLoopStart + note.end
-      })
+    // Loop Iterations
+    var currentLoopStart = clip.start + clip.offset
+    var currentLoopStartCutoff = -clip.offset                                           // Used to check if a note is cut off at the beginning of the current loop iteration
+    var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
+    while( currentLoopStart < clip.end ) {
+      // Notes that are entirely out of view - skip them
+      if (note.end >= currentLoopStartCutoff && note.start <= currentLoopEndCutoff) {
+        // Extrapolate the note to the current loop iteration
+        let renderedNote = Object.assign({}, note, {
+          start: currentLoopStart + note.start,
+          end:   currentLoopStart + note.end
+        })
 
-      // Notes that are cut off at the beginning
-      if (note.start < currentLoopStartCutoff) {
-        renderedNote.start = currentLoopStart + currentLoopStartCutoff
-        renderedNote.outOfViewLeft = true
+        // Notes that are cut off at the beginning
+        if (note.start < currentLoopStartCutoff) {
+          renderedNote.start = currentLoopStart + currentLoopStartCutoff
+          renderedNote.outOfViewLeft = true
+        }
+
+        // Notes that are cut off at the end
+        if (note.end > currentLoopEndCutoff) {
+          renderedNote.end = currentLoopStart + currentLoopEndCutoff
+          renderedNote.outOfViewRight = true
+        }
+
+        renderedClipNotes.push(renderedNote)
       }
 
-      // Notes that are cut off at the end
-      if (note.end > currentLoopEndCutoff) {
-        renderedNote.end = currentLoopStart + currentLoopEndCutoff
-        renderedNote.outOfViewRight = true
-      }
-
-      renderedClipNotes.push(renderedNote)
+      // Next iteration
+      currentLoopStart += clip.loopLength
+      currentLoopStartCutoff = 0
+      currentLoopEndCutoff = Math.min(clip.loopLength, clip.end - currentLoopStart)
     }
 
-    // Next iteration
-    currentLoopStart += clip.loopLength
-    currentLoopStartCutoff = 0
-    currentLoopEndCutoff = Math.min(clip.loopLength, clip.end - currentLoopStart)
+    return renderedClipNotes
   }
-
-  return renderedClipNotes
-}
+)
