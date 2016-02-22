@@ -180,7 +180,7 @@ export class MixerWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action == CLICK_EMPTY_AREA) {
       // Double click - Create Clip
-      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
+      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY && trackID != null) {
         this.props.dispatch( phraseCreateClip(trackID, bar) )
         this.lastEvent = null
         return
