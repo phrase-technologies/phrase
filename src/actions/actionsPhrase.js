@@ -1,6 +1,9 @@
 import { phrase } from './actions.js'
 
 export const phraseCreateTrack            = ()                        => ({type: phrase.CREATE_TRACK})
+export const phraseArmTrack               = (trackID)                 => ({type: phrase.ARM_TRACK, trackID})
+export const phraseMuteTrack              = (trackID)                 => ({type: phrase.MUTE_TRACK, trackID})
+export const phraseSoloTrack              = (trackID)                 => ({type: phrase.SOLO_TRACK, trackID})
 export const phraseCreateClip             = (trackID, bar)            => ({type: phrase.CREATE_CLIP, trackID, bar})
 export const phraseCreateNote             = (trackID, bar, key)       => ({type: phrase.CREATE_NOTE, trackID, bar, key})
 export const phraseSelectClip             = (clipID, union)           => ({type: phrase.SELECT_CLIP, clipID, union})

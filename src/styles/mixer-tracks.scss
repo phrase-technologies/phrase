@@ -12,22 +12,6 @@
   + .mixer-track {
     margin-top: -2px;
   }
-
-  .active {
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      bottom: 0px;
-      right: 0px;
-      z-index: 2;
-
-      border: 1px solid #FFF;
-      border-radius: 4px;
-      box-shadow: 0 0 20px #FFF;
-    }
-  }  
 }
 .mixer-track-tag {
   position: absolute;
@@ -114,12 +98,28 @@
 }
 .mixer-track-arm {
   right: 61px;
+
+  &.active {
+    background-image: linear-gradient(to bottom, #F55 0%, #C00 100%);
+    color: #000;
+  }
 }
 .mixer-track-mute {
   right: 33px;
+
+  &.active {
+    border-color: #000;
+    background-image: linear-gradient(to bottom, #333 0%, #111 100%);
+    color: #FFF;
+  }
 }
 .mixer-track-solo {
   right: 5px;
+
+  &.active {
+    background-image: linear-gradient(to bottom, #FF3 0%, #FA0 100%);
+    color: #000;
+  }
 }
 .mixer-track-window {
   position: absolute;

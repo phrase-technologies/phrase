@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 
+import MixerTrackArm  from './MixerTrackArm.js';
+import MixerTrackMute from './MixerTrackMute.js';
+import MixerTrackSolo from './MixerTrackSolo.js';
+
 export default class MixerTrack extends Component {
   render() {
     var mixerTrackClasses  = "mixer-track"
@@ -7,6 +11,11 @@ export default class MixerTrack extends Component {
 
     var tagStyle = {
       backgroundColor: this.props.track.color
+    }
+
+    var buttonProps = {
+      dispatch: this.props.dispatch,
+      trackID: this.props.track.id
     }
 
     return (
@@ -19,19 +28,13 @@ export default class MixerTrack extends Component {
           <span className="mixer-track-caret fa fa-ellipsis-h" />
           <div className="mixer-track-gain" />
           <div className="mixer-track-meter" />
-          <button className="mixer-track-btn mixer-track-arm">
-            <span className="fa fa-circle" />
-          </button>
-          <button className="mixer-track-btn mixer-track-mute">
-            <span>M</span>
-          </button>
-          <button className="mixer-track-btn mixer-track-solo">
-            <span>S</span>
-          </button>
+          <MixerTrackArm   arm={this.props.track.arm}  {...buttonProps} />
+          <MixerTrackMute mute={this.props.track.mute} {...buttonProps} />
+          <MixerTrackSolo solo={this.props.track.solo} {...buttonProps} />
         </div>
         <div className="mixer-track-window" />
       </div>
-    );
+    )
   }
 }
 
@@ -39,4 +42,4 @@ MixerTrack.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
   track:        React.PropTypes.object.isRequired,
   focused:      React.PropTypes.bool
-};  
+}

@@ -55,11 +55,41 @@ export default function reducePhrase(state = defaultState, action) {
           {
             id: state.trackAutoIncrement,
             name: action.name || "Track "+(state.trackAutoIncrement+1),
-            color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length]
+            color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
+            arm:  false,
+            mute: false,
+            solo: false
           }
         ),
         trackAutoIncrement: state.trackAutoIncrement+1,
         colorAutoIncrement: state.colorAutoIncrement+1
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.ARM_TRACK:
+      return u({
+        tracks: u.updateIn(['*'], u.if(
+          (track) => track.id === action.trackID,
+          (track) => u({arm: !track.arm}, track)
+        ))
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.MUTE_TRACK:
+      return u({
+        tracks: u.updateIn(['*'], u.if(
+          (track) => track.id === action.trackID,
+          (track) => u({mute: !track.mute}, track)
+        ))
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.SOLO_TRACK:
+      return u({
+        tracks: u.updateIn(['*'], u.if(
+          (track) => track.id === action.trackID,
+          (track) => u({solo: !track.solo}, track)
+        ))
       }, state)
 
     // ------------------------------------------------------------------------
