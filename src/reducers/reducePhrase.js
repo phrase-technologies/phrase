@@ -68,9 +68,10 @@ export default function reducePhrase(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.ARM_TRACK:
       return u({
-        tracks: u.updateIn(['*'], u.if(
+        tracks: u.updateIn(['*'], u.ifElse(
           (track) => track.id === action.trackID,
-          (track) => u({arm: !track.arm}, track)
+          (track) => u({arm: !track.arm}, track),
+          (track) => u({arm: false}, track)
         ))
       }, state)
 
