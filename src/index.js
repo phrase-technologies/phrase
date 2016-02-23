@@ -11,7 +11,7 @@ import './index.scss';
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import { Provider } from 'react-redux'
+import { Provider as StoreProvider } from 'react-redux'
 import STORE from './reducers/createStore.js'
 import Layout from './components/Layout.js'
 
@@ -20,9 +20,12 @@ import { phraseCreateTrack } from './actions/actionsPhrase.js'
 STORE.dispatch( phraseCreateTrack() )
 STORE.dispatch( phraseCreateTrack() )
 
+// Setup Audio Engine
+// import {  }
+
 ReactDOM.render(
-  <Provider store={STORE}>
+  <StoreProvider store={STORE}>
     <Layout />
-  </Provider>,
+  </StoreProvider>,
   document.getElementById('root')
 )

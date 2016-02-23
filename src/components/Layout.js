@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 import { layoutConsoleEmbedded,
-         layoutConsoleSplit } from '../actions/actionsLayout.js';
+         layoutConsoleSplit } from '../actions/actionsLayout.js'
 
-import CursorProvider from './CursorProvider.js';
-import LayoutPage from './LayoutPage.js';
-import LayoutSplit from './LayoutSplit.js';
-import Mixer from './Mixer.js';
-import Transport from './Transport.js';
-import Pianoroll from './Pianoroll.js';
+import CursorProvider from './CursorProvider.js'
+import HotkeyProvider from './HotkeyProvider.js'
+import LayoutPage from './LayoutPage.js'
+import LayoutSplit from './LayoutSplit.js'
+import Mixer from './Mixer.js'
+import Transport from './Transport.js'
+import Pianoroll from './Pianoroll.js'
 
 export default class Layout extends Component {
 
@@ -24,31 +25,33 @@ export default class Layout extends Component {
 
     return (
       <CursorProvider>
-        <div className="disable-select">
-          <div className={layoutConsoleClasses}>
-            {/*
-            <LayoutPage />
-            */}
-            <div className="layout-console-header">
-              <Transport />
-            </div>
-            <div className="layout-console-body">
-              <div className="layout-console-main" style={this.getMainSplit()}>
-                <div className="layout-console-mixer" style={this.getMixerSplit()}>
-                  {this.renderMixer()}
+        <HotkeyProvider dispatch={this.props.dispatch}>
+          <div className="disable-select">
+            <div className={layoutConsoleClasses}>
+              {/*
+              <LayoutPage />
+              */}
+              <div className="layout-console-header">
+                <Transport />
+              </div>
+              <div className="layout-console-body">
+                <div className="layout-console-main" style={this.getMainSplit()}>
+                  <div className="layout-console-mixer" style={this.getMixerSplit()}>
+                    {this.renderMixer()}
+                  </div>
+                  <LayoutSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.handleConsoleSplitDrag} />
+                  <div className="layout-console-clip" style={this.getClipSplit()}>
+                    {this.renderClip()}
+                  </div>
                 </div>
-                <LayoutSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.handleConsoleSplitDrag} />
-                <div className="layout-console-clip" style={this.getClipSplit()}>
-                  {this.renderClip()}
+                <div className="layout-console-effects-chain" style={this.getSidebarSplit()}>
+                  {this.renderEffectsChain()}
                 </div>
               </div>
-              <div className="layout-console-effects-chain" style={this.getSidebarSplit()}>
-                {this.renderEffectsChain()}
-              </div>
+              {this.renderPageOverlay()}
             </div>
-            {this.renderPageOverlay()}
           </div>
-        </div>
+        </HotkeyProvider>
       </CursorProvider>
     )
   }
