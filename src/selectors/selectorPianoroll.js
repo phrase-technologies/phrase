@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
 import u from 'updeep';
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
@@ -115,11 +116,9 @@ export const mapPianorollToProps = createSelector(
 
 // A clip might be looped for multiple iterations, some full, some partial.
 // Render the clip's notes into the correct positions for each iteration.
-const singleNoteSelector = (note, clips) => note
-const allClipsSelector   = (note, clips) => clips
-export const loopedNoteSelector = createSelector(
-  singleNoteSelector,
-  allClipsSelector,
+export const loopedNoteSelector = createLargeCacheSelector(
+  (note, clips) => note,
+  (note, clips) => clips,
   (note, clips) => {
     var renderedClipNotes = []
     var clip = clips.find(clip => clip.id == note.clipID)

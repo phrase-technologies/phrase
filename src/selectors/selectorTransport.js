@@ -1,10 +1,11 @@
 import { createSelector } from 'reselect'
+import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
 import { loopedNoteSelector } from './selectorPianoroll.js'
 
 const tracksSelector = (state) => ( state.phrase.tracks )
 const clipsSelector  = (state) => ( state.phrase.clips )
 const notesSelector  = (state) => ( state.phrase.notes )
-const noteMidiSelector = createSelector(
+const noteMidiSelector = createLargeCacheSelector(
   note => note,
   (note) => {
     var startCommand = {

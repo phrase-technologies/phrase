@@ -42,3 +42,22 @@ export function uRemove(element) {
     return result
   }
 }
+
+// ----------------------------------------------------------------------------
+// Select/Memoize many, many Key-Value pairs
+// ----------------------------------------------------------------------------
+// By default, createSelector from 'reselect' only caches the most recent
+// call. Here we create a new version called "createLargeCacheSelector" which
+// will cache every single permutation of arguments it gets!
+// 
+// This may get unwieldy when Phrases get large... TODO!
+import { createSelectorCreator } from 'reselect'
+import { memoize } from 'lodash'
+
+const hashFn = (...args) => {
+  return args.reduce((hashKey, arg) => {
+    return hashKey + '-' + JSON.stringify(arg)
+  }, "")
+}
+export const createLargeCacheSelector = createSelectorCreator(memoize, hashFn)
+
