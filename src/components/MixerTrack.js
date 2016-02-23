@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 
-import MixerTrackArm  from './MixerTrackArm.js';
-import MixerTrackMute from './MixerTrackMute.js';
-import MixerTrackSolo from './MixerTrackSolo.js';
+import { phraseArmTrack,
+         phraseMuteTrack,
+         phraseSoloTrack } from '../actions/actionsPhrase.js'
+
+import MixerTrackButton from './MixerTrackButton.js';
 
 export default class MixerTrack extends Component {
   render() {
@@ -28,9 +30,21 @@ export default class MixerTrack extends Component {
           <span className="mixer-track-caret fa fa-ellipsis-h" />
           <div className="mixer-track-gain" />
           <div className="mixer-track-meter" />
-          <MixerTrackArm   arm={this.props.track.arm}  {...buttonProps} />
-          <MixerTrackMute mute={this.props.track.mute} {...buttonProps} />
-          <MixerTrackSolo solo={this.props.track.solo} {...buttonProps} />
+          <MixerTrackButton buttonClasses="mixer-track-arm"
+            active={this.props.track.arm}
+            action={phraseArmTrack} {...buttonProps}>
+            <span className="fa fa-circle" />
+          </MixerTrackButton>
+          <MixerTrackButton buttonClasses="mixer-track-mute"
+            active={this.props.track.mute}
+            action={phraseMuteTrack} {...buttonProps}>
+            <span>M</span>
+          </MixerTrackButton>
+          <MixerTrackButton buttonClasses="mixer-track-solo"
+            active={this.props.track.solo}
+            action={phraseSoloTrack} {...buttonProps}>
+            <span>S</span>
+          </MixerTrackButton>
         </div>
         <div className="mixer-track-window" />
       </div>
