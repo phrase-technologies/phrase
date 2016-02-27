@@ -9,9 +9,9 @@ npm install
 ```
 Create `server.config.js` in the root folder with the following contents:
 ```
-{
-  HOST: 'localhost',
-  PORT: 3000,
+module.exports = {
+  "HOST": "localhost",
+  "PORT": 3000
 }
 ```
 Choose whatever `HOST` and `PORT` you prefer.
