@@ -39,6 +39,8 @@ export default function createAudioEngine(STORE) {
     }
   }
   engine.masterGain = engine.ctx.createGain()
+  engine.masterGain.connect( engine.ctx.destination )
+  engine.masterGain.gain.value = 1.0
 
   // --------------------------------------------------------------------------
   // State-driven behaviours

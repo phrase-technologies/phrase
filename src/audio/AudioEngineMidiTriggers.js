@@ -41,41 +41,7 @@ export function killNote(engine, trackID, keyNum) {
   fireNote(engine, trackID, keyNum, 0, 0)
 }
 export function fireNote(engine, trackID, keyNum, velocity, time) {
-
-  console.warn( "fireNote():", trackID, keyNum, velocity, time, "(TODO: Refactor!)" )
-  // ...
-  // ...
-  // ...
-
-  if (!masterBus) {
-    masterBus = masterBus || engine.ctx.createGain()
-    masterBus.connect( engine.ctx.destination )
-  }
-
-  var amplitudeEnvelope = amplitudeEnvelopes[keyNum]
-  var currentOscillator = oscillators[keyNum]
-
-  // Create Amplitude Envelope if necessary
-  if (! amplitudeEnvelope) {
-    amplitudeEnvelopes[keyNum] = engine.ctx.createGain()
-    amplitudeEnvelope = amplitudeEnvelopes[keyNum]
-    amplitudeEnvelope.connect(masterBus)
-    amplitudeEnvelope.gain.value = 0.0
-  }
-
-  if (! currentOscillator) {
-    oscillators[keyNum] = engine.ctx.createOscillator()
-    currentOscillator = oscillators[keyNum]
-    currentOscillator.connect( amplitudeEnvelope )
-    currentOscillator.start(engine.ctx.currentTime)
-  }
-
-  // Set the synth
-  currentOscillator.type = 'square'
-  currentOscillator.frequency.value = keyFrequency[ keyNum ]
-
-  // Render the velocity
-  amplitudeEnvelope.gain.cancelScheduledValues( time )
-  amplitudeEnvelope.gain.setValueAtTime( 0.0, time )
-  amplitudeEnvelope.gain.setTargetAtTime( 0.125*velocity/127, time, easing )
+  var trackModule = engine.trackModules[trackID]
+  var instrument = trackModule.effectsChain[0]
+      instrument.fireNote(keyNum, velocity, time)
 }

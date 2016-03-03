@@ -1,3 +1,5 @@
+import SynthPoly from './SynthPoly.js'
+
 // ============================================================================
 // VIRTUAL AUDIO GRAPH NODES
 // ============================================================================
@@ -18,7 +20,7 @@ export function updateNodes(engine, state) {
   // Add tracks as required
   state.phrase.tracks.forEach(track => {
     if (!engine.trackModules[track.id]) {
-      engine.trackModules[track.id] = createTrackModule(engine, track.id)
+      engine.trackModules[track.id] = createTrackModule(engine, track)
     }
   })
 
@@ -28,13 +30,21 @@ export function updateNodes(engine, state) {
 }
 
 // This function births a new trackModule
-function createTrackModule(engine, trackID) {
+function createTrackModule(engine, track) {
   var outputGain = engine.ctx.createGain()
       outputGain.connect(engine.masterGain)
 
+  var synth = new SynthPoly(engine.ctx)
+      synth.connect(outputGain)
+
+  var effectsChain = [
+    synth
+  ]
+
   var trackModule = {
-    trackID: trackID,
-    outputGain: outputGain
+    trackID: track.id,
+    outputGain: outputGain,
+    effectsChain: effectsChain
   }
 
   return trackModule
@@ -43,4 +53,5 @@ function createTrackModule(engine, trackID) {
 // This function sends unused trackModules to the graveyard
 function destroyTrackModule(trackModule) {
   trackModule.outputGain.disconnect()
+  trackModule.effectsChain.forEach(effect => effect.disconnect())
 }

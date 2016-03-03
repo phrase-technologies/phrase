@@ -96,9 +96,9 @@ export function stopPlayback(engine, state) {
   console.log("stopPlayback()", engine.ctx.currentTime)
 
   // Kill all active sounds
-  _.forOwn(engine.trackModules, (trackID, track) => {
+  _.forOwn(engine.trackModules, (track, trackID) => {
     for (var keyNum = 1; keyNum <= 88; keyNum++)
-      killNote(engine, track.trackID, keyNum)
+      killNote(engine, trackID, keyNum)
   })
 
   // Cancel the playback setInterval loop
