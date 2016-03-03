@@ -32,10 +32,9 @@ var reduceBranches = combineReducers({
 // Below we employ a hybrid solution to combine
 // state branches via combineReducers() and any "Top Level Reducers"
 // are layered overtop.
-import { createStore } from 'redux'
 import reduceAll from './reduceAll.js'
 
-export function finalReducer(state = {}, action) {
+export default function finalReducer(state = {}, action) {
 
   // Reduce Branches
   state = reduceBranches(state, action)
@@ -43,5 +42,3 @@ export function finalReducer(state = {}, action) {
   // Top Level Reduction
   return reduceAll(state, action)
 } 
-
-export default createStore(finalReducer)

@@ -11,6 +11,7 @@ import { negativeModulus } from '../helpers/intervalHelpers.js'
 
 export const defaultState = {
   barCount: 16.00,
+  tempo: 120,
   playhead: 0.000,
   tracks: [],
   clips: [],
