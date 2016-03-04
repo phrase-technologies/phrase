@@ -1,4 +1,4 @@
-import SynthPoly from './SynthPoly.js'
+import { PolyphonicSynth } from './SynthPoly.js'
 
 // ============================================================================
 // VIRTUAL AUDIO GRAPH NODES
@@ -34,7 +34,7 @@ function createTrackModule(engine, track) {
   var outputGain = engine.ctx.createGain()
       outputGain.connect(engine.masterGain)
 
-  var synth = new SynthPoly(engine.ctx)
+  var synth = new PolyphonicSynth(engine.ctx, 2)
       synth.connect(outputGain)
 
   var effectsChain = [
