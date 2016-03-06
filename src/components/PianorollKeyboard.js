@@ -111,7 +111,6 @@ export class PianorollKeyboard extends Component {
 }
 
 PianorollKeyboard.propTypes = {
-  ENGINE:       engineShape.isRequired,
   dispatch:     React.PropTypes.func.isRequired,
   currentTrack: React.PropTypes.object,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
@@ -119,7 +118,7 @@ PianorollKeyboard.propTypes = {
   yMax:         React.PropTypes.number.isRequired
 }
 
-export default connectEngine(
+export default 
   provideGridSystem(
     provideGridScroll(
       PianorollKeyboard,
@@ -128,4 +127,3 @@ export default connectEngine(
       }
     )
   )
-)
