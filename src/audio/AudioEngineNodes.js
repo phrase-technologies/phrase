@@ -34,7 +34,7 @@ function createTrackModule(engine, track) {
   var outputGain = engine.ctx.createGain()
       outputGain.connect(engine.masterGain)
 
-  var synth = new PolyphonicSynth(engine.ctx, 2)
+  var synth = new PolyphonicSynth(engine.ctx, 10)
       synth.connect(outputGain)
 
   var effectsChain = [

@@ -12,11 +12,13 @@ import ReactDOM from 'react-dom'
 // Create the STORE
 // ============================================================================
 import { Provider as StoreProvider } from 'react-redux'
-import { createStore, compose } from 'redux'
+import EngineProvider from './audio/AudioEngineProvider.js'
+import { createStore, compose, applyMiddleware } from 'redux'
 import finalReducer from './reducers/reduce.js'
 import Layout from './components/Layout.js'
+
 const finalCreateStore = compose(
-  // applyMiddleware(thunk),
+  applyMiddleware(),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore);
 const STORE = finalCreateStore(finalReducer)
@@ -37,7 +39,9 @@ const ENGINE = createAudioEngine(STORE)
 // ============================================================================
 ReactDOM.render(
   <StoreProvider store={STORE}>
-    <Layout />
+    <EngineProvider engine={ENGINE}>
+      <Layout />
+    </EngineProvider>
   </StoreProvider>,
   document.getElementById('root')
 )

@@ -5,6 +5,7 @@ import { phraseArmTrack,
          phraseSoloTrack } from '../actions/actionsPhrase.js'
 
 import MixerTrackButton from './MixerTrackButton.js';
+import MixerTrackMeter  from './MixerTrackMeter.js';
 
 export default class MixerTrack extends Component {
   render() {
@@ -29,7 +30,7 @@ export default class MixerTrack extends Component {
           </h3>
           <span className="mixer-track-caret fa fa-ellipsis-h" />
           <div className="mixer-track-gain" />
-          <div className="mixer-track-meter" />
+          <MixerTrackMeter track={this.props.track} />
           <MixerTrackButton buttonClasses="mixer-track-arm"
             active={this.props.track.arm}
             action={phraseArmTrack} {...buttonProps}>

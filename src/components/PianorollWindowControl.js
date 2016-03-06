@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
+import connectEngine from '../audio/AudioEngineConnect.js'
+import engineShape   from '../audio/AudioEnginePropTypes.js'
 
 import _ from 'lodash'
 import { pianorollScrollX,
@@ -45,6 +47,7 @@ export class PianorollWindowControl extends Component {
     this.mouseDownEvent = this.mouseDownEvent.bind(this)
     this.mouseMoveEvent = this.mouseMoveEvent.bind(this)
     this.mouseUpEvent   = this.mouseUpEvent.bind(this)
+    this.lastKeysPlayed  = null
   }
 
   componentDidMount() {
@@ -97,6 +100,9 @@ export class PianorollWindowControl extends Component {
   }
 
   noteEvent(e, bar, key, foundNote) {
+    // Play the sound
+    this.previewNoteSound([key])
+
     // Second Click - Note
     if (this.lastEvent &&
         this.lastEvent.action == CLICK_NOTE) {
@@ -150,6 +156,7 @@ export class PianorollWindowControl extends Component {
       // Double click - Create Note
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
         this.props.dispatch( phraseCreateNote(this.props.currentTrack.id, bar, key) )
+        this.previewNoteSound([key])
         this.lastEvent = null
         return
       // Too slow, treat as new first click
@@ -187,6 +194,7 @@ export class PianorollWindowControl extends Component {
         case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; var offsetKey = 0; break;
       }
       this.props.dispatch( phraseDragNoteSelection(this.lastEvent.noteID, offsetStart, offsetEnd, offsetKey, !e.altKey) )
+      this.previewDragSound( offsetKey )
       this.lastEvent.action = DRAG_NOTE
       return
     }
@@ -234,6 +242,9 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseUpEvent(e) {
+    // Cancel any sounds
+    this.killPreviewSound()
+
     // First Click - Empty Area
     if (this.lastEvent &&
         this.lastEvent.action == SELECT_EMPTY_AREA) {
@@ -274,6 +285,47 @@ export class PianorollWindowControl extends Component {
     this.lastEvent = null
   }
 
+  previewNoteSound(keyNum) {
+    // Cancel any previous key
+    if (this.lastKeysPlayed && (this.lastKeysPlayed.length > 1 || this.lastKeysPlayed[0] != keyNum))
+      this.killPreviewSound()
+
+    // Play new key
+    keyNum = Math.ceil(keyNum)
+    this.props.ENGINE.fireNote(this.props.currentTrack.id, keyNum, 127)
+    this.lastKeysPlayed = [keyNum]
+  }
+
+  previewDragSound(offsetKey) {
+    var selectedKeys = _.chain(this.props.notes)
+      .filter(note => note.selected)
+      .map(note => note.keyNum + Math.round(offsetKey))
+      .uniq()
+      .sort()
+      .value()
+
+    // Cancel keys only if there has been a change
+    var addedKeys = _.difference(selectedKeys, this.lastKeysPlayed)
+    var lostKeys  = _.difference(this.lastKeysPlayed, selectedKeys)
+    if (addedKeys.length > 0 || lostKeys.length > 0)
+      this.killPreviewSound()
+
+    // Play new key
+    selectedKeys.forEach(keyNum => {
+      this.props.ENGINE.fireNote(this.props.currentTrack.id, keyNum, 127)
+    })
+    this.lastKeysPlayed = selectedKeys
+  }
+
+  killPreviewSound() {
+    if (this.lastKeysPlayed) {
+      this.lastKeysPlayed.forEach(key => {
+        this.props.ENGINE.killNote(this.props.currentTrack.id, key)
+      })
+    }
+    this.lastKeysPlayed = null
+  }
+
   handleResize() {
     this.props.dispatch(pianorollResizeWidth( this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft));
     this.props.dispatch(pianorollResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ));
@@ -297,6 +349,7 @@ export class PianorollWindowControl extends Component {
 }
 
 PianorollWindowControl.propTypes = {
+  ENGINE:       engineShape.isRequired,
   dispatch:     React.PropTypes.func.isRequired,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   barCount:     React.PropTypes.number.isRequired,
@@ -309,13 +362,15 @@ PianorollWindowControl.propTypes = {
   notes:        React.PropTypes.array.isRequired
 }
 
-export default provideGridSystem(
-  provideGridScroll(
-    PianorollWindowControl,
-    {
-      scrollXActionCreator: pianorollScrollX,
-      scrollYActionCreator: pianorollScrollY,
-      cursorActionCreator: pianorollMoveCursor
-    }
+export default connectEngine(
+  provideGridSystem(
+    provideGridScroll(
+      PianorollWindowControl,
+      {
+        scrollXActionCreator: pianorollScrollX,
+        scrollYActionCreator: pianorollScrollY,
+        cursorActionCreator: pianorollMoveCursor
+      }
+    )
   )
 )

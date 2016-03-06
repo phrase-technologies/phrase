@@ -38,6 +38,14 @@ export class PolyphonicSynth {
       return
     }
 
+    // Is voice already in play? Reuse voice
+    var activeVoice = _.remove(this.activeVoices, voice => voice.lastNote === keyNum).shift()
+    if (activeVoice) {
+      activeVoice.fireNote(keyNum, velocity, time)
+      this.activeVoices.push(activeVoice)
+      return
+    }
+
     // Try using an inactive voice
     var unusedVoice = this.unusedVoices.shift()
     if (unusedVoice) {

@@ -10,6 +10,9 @@ var AudioContext = AudioContext || webkitAudioContext
 // ============================================================================
 // ENGINE CREATION
 // ============================================================================
+// This is the universal glue of the application. In this engine, each track
+// is given a `trackModule` with a `gain`, a `pan`, `mute`/`solo` functionality,
+// an `effectsChain`, and is routed into a `masterGain`.
 export default function createAudioEngine(STORE) {
 
   // --------------------------------------------------------------------------
@@ -40,7 +43,7 @@ export default function createAudioEngine(STORE) {
   }
   engine.masterGain = engine.ctx.createGain()
   engine.masterGain.connect( engine.ctx.destination )
-  engine.masterGain.gain.value = 1.0
+  engine.masterGain.gain.value = 0.125
 
   // --------------------------------------------------------------------------
   // State-driven behaviours
