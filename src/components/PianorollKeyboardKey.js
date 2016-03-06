@@ -34,7 +34,8 @@ export class PianorollKeyboardKey extends Component {
   }
 
   mouseDownEvent(e) {
-    this.props.ENGINE.fireNote(this.props.currentTrack.id, this.props.keyNum, 127)
+    var velocity = 127 * (e.clientX - this.container.getBoundingClientRect().left) / this.container.getBoundingClientRect().width
+    this.props.ENGINE.fireNote(this.props.currentTrack.id, this.props.keyNum, velocity)
     this.keydown = true
   }
 
