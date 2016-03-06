@@ -55,7 +55,7 @@ export default class Pianoroll extends Component {
 
     return (
       <div className="pianoroll">
-        <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
+        <PianorollKeyboard {...dispatchProp} {...keyboardProps} currentTrack={this.props.currentTrack} />
         <PianorollTimelineDisplay {...dispatchProp} {...timelineProps} clips={this.props.clips} />
         <PianorollTimelineControl {...dispatchProp} {...timelineProps} clips={this.props.clips} />
         <PianorollWindowDisplay {...this.props} />
