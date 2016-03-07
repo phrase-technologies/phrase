@@ -227,8 +227,8 @@ $pianoroll-scroll-vertical: 20px;
 }
 $total-keys:  88.00;
 $octave-keys: 12.00;
-$octave-thickness: percentage($octave-keys/$total-keys);
-$key-thickness: percentage(1/$octave-keys);
+$octave-thickness: percentage($octave-keys/$total-keys) - 0.0001; // Compensate for rounding errors that cause border overflow
+$key-thickness: percentage(1/$octave-keys) - 0.001;               // Compensate for rounding errors that cause border overflow
 $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, which are are calculated based off of width rather than height.
 .pianoroll-key {
   display: block;
