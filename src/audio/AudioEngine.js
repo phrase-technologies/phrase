@@ -1,4 +1,5 @@
-import { updateNodes } from './AudioEngineNodes.js'
+import { updateNodes,
+         getTrackOutputDecibels } from './AudioEngineNodes.js'
 import { fireNote,
          killNote,
          updateMidiCommands } from './AudioEngineMidiTriggers.js'
@@ -78,6 +79,9 @@ export default function createAudioEngine(STORE) {
     },
     killNote: (trackID, keyNum) => {
       killNote(engine, trackID, keyNum)
+    },
+    getTrackOutputDecibels: (trackID) => {
+      return getTrackOutputDecibels(engine, trackID)
     },
     destroy: () => {
       engine.unsubscribeStoreChanges()

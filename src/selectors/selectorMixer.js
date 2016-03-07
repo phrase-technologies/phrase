@@ -50,3 +50,10 @@ export const renderedClipsSelector = createSelector(
       .concat(selectedClipsRendered)
   }
 )
+
+export const atleastOneTrackSoloedSelector = createSelector(
+  tracksSelector,
+  (tracks) => {
+    return tracks.some(track => track.solo)
+  }  
+)

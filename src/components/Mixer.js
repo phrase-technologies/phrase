@@ -13,7 +13,8 @@ import { shiftInterval,
          zoomInterval } from '../helpers/intervalHelpers.js';
 import { mixerScrollX,
          mixerScrollY } from '../actions/actionsMixer.js';
-import { renderedClipsSelector } from '../selectors/selectorMixer.js'
+import { renderedClipsSelector,
+         atleastOneTrackSoloedSelector } from '../selectors/selectorMixer.js'
 
 import MixerTimeline from './MixerTimeline.js';
 import MixerTracks from './MixerTracks.js';
@@ -42,7 +43,8 @@ export class Mixer extends Component {
       dispatch: this.props.dispatch,
       yMin: this.props.yMin,
       yMax: this.props.yMax,
-      tracks: this.props.tracks
+      tracks: this.props.tracks,
+      atleastOneTrackSoloed: this.props.atleastOneTrackSoloed
     }
 
     let trackFocusProps = {
@@ -103,6 +105,7 @@ function mapStateToProps(state) {
     focusBarMin: state.pianoroll.xMin,
     focusBarMax: state.pianoroll.xMax,
     tracks: state.phrase.tracks,
+    atleastOneTrackSoloed: atleastOneTrackSoloedSelector(state),
     clips: renderedClipsSelector(state),
     barCount: state.phrase.barCount,
     xMin: state.mixer.xMin,

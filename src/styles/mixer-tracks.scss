@@ -63,6 +63,7 @@
   right: 90px;
 
   border: 1px solid #111;
+  border-radius: 1px;
   background: #222;
 }
 .mixer-track-gain {
@@ -70,6 +71,15 @@
 }
 .mixer-track-meter {
   bottom: 4px;
+  background-image: linear-gradient(to right, #080 0%, #0F0 50%, #FF0 80%, #F00 100%);
+}
+.mixer-track-meter-limit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #222;
 }
 .mixer-track-btn {
   position: absolute;

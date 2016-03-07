@@ -30,7 +30,7 @@ export default class MixerTrack extends Component {
           </h3>
           <span className="mixer-track-caret fa fa-ellipsis-h" />
           <div className="mixer-track-gain" />
-          <MixerTrackMeter track={this.props.track} />
+          <MixerTrackMeter track={this.props.track} atleastOneTrackSoloed={this.props.atleastOneTrackSoloed} />
           <MixerTrackButton buttonClasses="mixer-track-arm"
             active={this.props.track.arm}
             action={phraseArmTrack} {...buttonProps}>
@@ -54,6 +54,7 @@ export default class MixerTrack extends Component {
 }
 
 MixerTrack.propTypes = {
+  atleastOneTrackSoloed: React.PropTypes.bool.isRequired,
   dispatch:     React.PropTypes.func.isRequired,
   track:        React.PropTypes.object.isRequired,
   focused:      React.PropTypes.bool

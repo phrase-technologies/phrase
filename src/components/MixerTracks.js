@@ -32,7 +32,13 @@ export default class MixerTracks extends Component {
       <div className="mixer-track-list-gutter">
         <ul className="mixer-track-list" style={{marginTop: scrollOffset}}>
           {this.props.tracks.map(track => (
-            <MixerTrack key={track.id} dispatch={this.props.dispatch} track={track} focused={track.id == this.props.currentTrack} />
+            <MixerTrack
+              key={track.id}
+              dispatch={this.props.dispatch}
+              track={track}
+              focused={track.id == this.props.currentTrack}
+              atleastOneTrackSoloed={this.props.atleastOneTrackSoloed}
+            />
           ))}
           <MixerTrackNew handleClickNew={this.addNewTrack} />
         </ul>
@@ -60,6 +66,7 @@ export default class MixerTracks extends Component {
 }
 
 MixerTracks.propTypes = {
+  atleastOneTrackSoloed: React.PropTypes.bool.isRequired,
   dispatch:     React.PropTypes.func.isRequired,
   tracks:       React.PropTypes.array.isRequired,
   yMin:         React.PropTypes.number.isRequired,
