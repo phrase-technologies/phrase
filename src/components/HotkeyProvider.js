@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { transportPlay,
+import { transportPlayToggle,
          transportStop } from '../actions/actionsTransport.js';
 
 // ============================================================================
@@ -32,7 +32,7 @@ export default class HotkeyProvider extends Component {
     // Everything else, override with custom hotkeys!
     e.preventDefault()
     switch(e.code) {
-      case "Space": dispatch( transportPlay() )
+      case "Space": dispatch( transportPlayToggle() )
     }
   }
 }

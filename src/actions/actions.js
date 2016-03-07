@@ -11,7 +11,7 @@ export const layout = namespaceActions(
 export const transport = namespaceActions(
   'transport',
   [
-    'PLAY',
+    'PLAY_TOGGLE',
     'STOP',
     'REWIND',
     'RECORD',

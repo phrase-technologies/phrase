@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect, dispatch } from 'react-redux';
 
-import { transportPlay,
+import { transportPlayToggle,
          transportStop,
          transportRecord } from '../actions/actionsTransport.js';
 
@@ -17,8 +17,8 @@ export default class Transport extends Component {
           <TransportButton type="backward"      toggle={false}    />
           <TransportButton type="forward"       toggle={false}    />
           <TransportButton type="stop"          toggle={!playing}   onButtonClick={() => dispatch(transportStop())} />
-          <TransportButton type="play"          toggle={playing}    onButtonClick={() => dispatch(transportPlay())}   color="green" />
-          <TransportButton type="circle"        toggle={recording}  onButtonClick={() => dispatch(transportRecord())} color="red"   />
+          <TransportButton type="play"          toggle={playing}    onButtonClick={() => dispatch(transportPlayToggle())} color="green" />
+          <TransportButton type="circle"        toggle={recording}  onButtonClick={() => dispatch(transportRecord())}     color="red"   />
         </div>        
       </div>
     );
