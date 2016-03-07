@@ -218,6 +218,24 @@ export default function reducePhrase(state = defaultState, action) {
             }
           })
         },
+        notes: notes => {
+          // Do nothing if no change of track occured
+          if (!state.clipSelectionOffsetTrack)
+            return notes
+
+          // Change of track occured - make sure appropriate notes are moved also!
+          var selectedClips = state.clips.filter(clip => clip.selected)
+          return notes.map(note => {
+            var clipMoved = selectedClips.find(clip => clip.id == note.clipID)
+            if (clipMoved) {
+              return u({
+                trackID: getOffsetedTrackID(note.trackID, state.clipSelectionOffsetTrack, state.tracks)
+              }, note)
+            } else {
+              return note
+            }
+          })
+        },
         clipSelectionOffsetStart: null,
         clipSelectionOffsetEnd:   null,
         clipSelectionOffsetTrack: null
