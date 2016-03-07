@@ -15,6 +15,7 @@ export class PianorollKeyboard extends Component {
     var keyWindow = this.props.yMax - this.props.yMin
     var keybedHeight = ( this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ) / keyWindow
     var keybedOffset = ( this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ) / keyWindow * this.props.yMin
+        keybedOffset = Math.round(keybedOffset)
     var keybedWidth = keybedHeight / 12.5
 
     var isCompact = keybedWidth < 100

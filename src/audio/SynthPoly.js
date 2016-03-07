@@ -106,8 +106,8 @@ export class MonophonicSynth {
 
     // Schedule the Amplitude change
     this.amplitudeEnvelope.gain.cancelScheduledValues( time )
-    this.amplitudeEnvelope.gain.setValueAtTime(0, time)                             // End any previous note (TODO: Easing... exponentialRamp to 0 is NaN)
-    this.amplitudeEnvelope.gain.setTargetAtTime(velocity/127, time, DEFAULT_EASING) // Begin the next note
+    this.amplitudeEnvelope.gain.setTargetAtTime(0, Math.max(0, time - 0.001), DEFAULT_EASING) // End any previous note (TODO: Easing... exponentialRamp to 0 is NaN)
+    this.amplitudeEnvelope.gain.setTargetAtTime(velocity/127, time, DEFAULT_EASING)           // Begin the next note
 
     // Keep track of the last note
     this.lastNote = keyNum
