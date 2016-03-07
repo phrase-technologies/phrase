@@ -122,6 +122,9 @@ export const loopedNoteSelector = createLargeCacheSelector(
   (note, clips) => {
     var renderedClipNotes = []
     var clip = clips.find(clip => clip.id == note.clipID)
+    if (!clip) {
+      console.error(`loopedNoteSelector(): clip not found with id ${note.clipID}`, note, clips)
+    }
 
     // Loop Iterations
     var currentLoopStart = clip.start + clip.offset
