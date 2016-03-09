@@ -22,7 +22,6 @@ import { getTrackHeight,
          getTracksHeight } from '../helpers/trackHelpers.js'
 import { phraseCreateClip,
          phraseSelectClip,
-         phraseDeleteClip,
          phraseDragClipSelection,
          phraseDropClipSelection } from '../actions/actionsPhrase.js';
 import { pianorollSetFocusWindow } from '../actions/actionsPianoroll.js';         

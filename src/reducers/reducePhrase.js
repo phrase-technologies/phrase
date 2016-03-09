@@ -144,6 +144,20 @@ export default function reducePhrase(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
+    case phrase.DELETE_SELECTION:
+      // If clips were deleted, must keep track to delete corresponding notes
+      var selectedClipIDs = state.clips
+        .filter(clip => clip.selected)
+        .map(clip => clip.id)
+
+      console.log( selectedClipIDs )
+
+      return u({
+        clips: u.reject(clip => clip.selected),
+        notes: u.reject(note => note.selected || selectedClipIDs.includes(note.clipID))
+      }, state)
+
+    // ------------------------------------------------------------------------
     case phrase.DRAG_CLIP_SELECTION:
       var offsetStart = action.start
       var offsetEnd   = action.end

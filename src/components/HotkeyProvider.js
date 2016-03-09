@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 import { transportPlayToggle,
-         transportStop } from '../actions/actionsTransport.js';
+         transportStop } from '../actions/actionsTransport.js'
+import { phraseDeleteSelection } from '../actions/actionsPhrase.js'
 
 // ============================================================================
 // Hotkey Provider
@@ -18,11 +19,22 @@ export default class HotkeyProvider extends Component {
 
   constructor() {
     super()
-    this.handleKey = this.handleKey.bind(this)
-    document.addEventListener("keyup", this.handleKey)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.handleKeyUp   = this.handleKeyUp.bind(this)
+    document.addEventListener("keydown", this.handleKeyDown)
+    document.addEventListener("keyup",   this.handleKeyUp)
   }
 
-  handleKey(e) {
+  handleKeyDown(e) {
+    // Prevent doublebooking events with form <inputs>
+    if (e.target.tagName == "INPUT")
+      return
+
+    // Everything else, override!
+    e.preventDefault()
+  }
+
+  handleKeyUp(e) {
     let dispatch = this.props.dispatch
 
     // Prevent doublebooking events with form <inputs>
@@ -32,7 +44,8 @@ export default class HotkeyProvider extends Component {
     // Everything else, override with custom hotkeys!
     e.preventDefault()
     switch(e.code) {
-      case "Space": dispatch( transportPlayToggle() )
+      case "Space":     dispatch(       transportPlayToggle() ); break;
+      case "Delete":    dispatch(     phraseDeleteSelection() ); break;
     }
   }
 }

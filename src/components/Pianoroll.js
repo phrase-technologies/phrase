@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import { mapPianorollToProps } from '../selectors/selectorPianoroll.js';
+import { mapPianorollToProps } from '../selectors/selectorPianoroll.js'
 import { shiftInterval,
-         zoomInterval } from '../helpers/intervalHelpers.js';
+         zoomInterval } from '../helpers/intervalHelpers.js'
 import { pianorollScrollX,
-         pianorollScrollY } from '../actions/actionsPianoroll.js';
+         pianorollScrollY } from '../actions/actionsPianoroll.js'
 
-import PianorollTimelineDisplay from './PianorollTimelineDisplay.js';
-import PianorollTimelineControl from './PianorollTimelineControl.js';
-import PianorollWindowDisplay from './PianorollWindowDisplay.js';
-import PianorollWindowControl from './PianorollWindowControl.js';
-import PianorollKeyboard      from './PianorollKeyboard.js';
-import Scrollbar              from './Scrollbar.js';
+import PianorollTimelineDisplay from './PianorollTimelineDisplay.js'
+import PianorollTimelineControl from './PianorollTimelineControl.js'
+import PianorollWindowDisplay from './PianorollWindowDisplay.js'
+import PianorollWindowControl from './PianorollWindowControl.js'
+import PianorollKeyboard      from './PianorollKeyboard.js'
+import Scrollbar              from './Scrollbar.js'
 import TimelineCursor         from './TimelineCursor.js'
 import TimelineSelectionBox   from './TimelineSelectionBox.js'
 import TimelinePlayhead       from './TimelinePlayhead.js'
@@ -20,8 +20,8 @@ import TimelinePlayhead       from './TimelinePlayhead.js'
 export default class Pianoroll extends Component {
 
   constructor() {
-    super();
-    this.data = {};
+    super()
+    this.data = {}
   }
 
   render() {
@@ -95,9 +95,9 @@ Pianoroll.propTypes = {
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,
   selectionEndY: React.PropTypes.number
-};
+}
 Pianoroll.defaultProps = {
   keyCount: 88
-};
+}
 
-export default connect(mapPianorollToProps)(Pianoroll);
+export default connect(mapPianorollToProps)(Pianoroll)

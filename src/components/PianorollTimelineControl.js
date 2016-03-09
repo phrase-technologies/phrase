@@ -10,7 +10,6 @@ import { pianorollScrollX,
          pianorollSetFocusWindow } from '../actions/actionsPianoroll.js'
 import { phraseCreateClip,
          phraseSelectClip,
-         phraseDeleteClip,
          phraseDragClipSelection,
          phraseDropClipSelection } from '../actions/actionsPhrase.js';
 import { cursorResizeLeft,

@@ -30,7 +30,7 @@ export const phrase = namespaceActions(
     'CREATE_NOTE',
     'SELECT_CLIP',
     'SELECT_NOTE',
-    'DELETE_CLIP',
+    'DELETE_SELECTION',
     'DELETE_NOTE',
     'DRAG_CLIP_SELECTION',
     'DRAG_NOTE_SELECTION',
