@@ -12,6 +12,10 @@ import { fireNote,
 // This function initializes a tight setInterval loop. In this loop, the next
 // few milliseconds worth of midi commands are scheduled, and the playhead is
 // moved. 
+//
+// TODO: Use WebWorkers to trigger each tick of the loop, to avoid playback
+//       stutter when tab moves to the background. Example:
+//       https://github.com/cwilso/metronome/blob/master/js/metronome.js
 export function startPlayback(engine, state, dispatch) {
 
   console.log("startPlayback()", engine.ctx.currentTime)
@@ -86,7 +90,7 @@ export function startPlayback(engine, state, dispatch) {
 }
 
 // ============================================================================
-// PLAY START
+// PLAY STOP
 // ============================================================================
 // This function kills all active sounds and cancels the playback setInterval
 // loop. It also clears flags that are used to queue up other behaviours where
