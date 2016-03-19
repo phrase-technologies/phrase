@@ -11,9 +11,11 @@ import reducePianoroll from './reducePianoroll'
 import reduceCursor from './reduceCursor'
 import reduceAuth from './reduceAuth'
 
+import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
 
 let reduceBranches = combineReducers({
+  routing: routerReducer,
   navigation: reduceNavigation,
   transport: reduceTransport,
   phrase: reducePhrase,

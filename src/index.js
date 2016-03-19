@@ -11,20 +11,23 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 // ============================================================================
-// Create the STORE
+// Create the STORE + HISTORY god objects
 // ============================================================================
 import { Provider as StoreProvider } from 'react-redux'
 import EngineProvider from 'audio/AudioEngineProvider.js'
 import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import finalReducer from 'reducers/reduce.js'
-import Layout from 'components/Layout.js'
+import { Router, Route, IndexRoute, browserHistory } from 'react-router'
+import { syncHistoryWithStore } from 'react-router-redux'
+import finalReducer from './reducers/reduce.js'
 
 const finalCreateStore = compose(
   applyMiddleware(thunk),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore)
 const STORE = finalCreateStore(finalReducer)
+const HISTORY = syncHistoryWithStore(browserHistory, STORE)
 
 // Setup initial state - 2 tracks by default
 import { phraseCreateTrack } from 'actions/actionsPhrase.js'
@@ -32,7 +35,7 @@ STORE.dispatch(phraseCreateTrack())
 STORE.dispatch(phraseCreateTrack())
 
 // ============================================================================
-// Setup Audio Engine
+// Setup Audio Engine god object
 // ============================================================================
 import createAudioEngine from 'audio/AudioEngine.js'
 const ENGINE = createAudioEngine(STORE)
@@ -40,10 +43,28 @@ const ENGINE = createAudioEngine(STORE)
 // ============================================================================
 // APPLICATION ENTRY POINT
 // ============================================================================
+import Layout from './components/Layout.js'
+import Library from './components/Library.js'
+
+class App extends React.Component {
+  render() {
+    return (
+      <div>
+        {this.props.children}
+      </div>
+    )
+  }
+}
+
 ReactDOM.render(
   <StoreProvider store={STORE}>
     <EngineProvider engine={ENGINE}>
-      <Layout />
+      <Router history={HISTORY}>
+        <Route path="/" component={App}>
+          <IndexRoute component={Layout} />
+          <Route path="library" component={Library}/>
+        </Route>
+      </Router>
     </EngineProvider>
   </StoreProvider>,
   document.getElementById(`root`)

@@ -65,10 +65,13 @@ $fa-font-path: "./../node_modules/font-awesome/fonts";
 // ============================================================================
 // Custom Styles. 
 // ============================================================================
+// Utilities with variable definitions that have to go first
+@import './styles/font.scss';
+// Everything else second
 @import './styles/layout.scss';
+@import './styles/library.scss';
 @import './styles/scrollbar.scss';
 @import './styles/cursor.scss';
-@import './styles/font.scss';
 @import './styles/button.scss';
 @import './styles/stories.scss';
 @import './styles/mixer.scss';
