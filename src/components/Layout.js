@@ -12,7 +12,7 @@ import Mixer from './Mixer.js'
 import Transport from './Transport.js'
 import Pianoroll from './Pianoroll.js'
 
-export default class Layout extends Component {
+export class Layout extends Component {
 
   constructor() {
     super();

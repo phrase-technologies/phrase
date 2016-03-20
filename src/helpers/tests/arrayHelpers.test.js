@@ -4,11 +4,11 @@ import u from 'updeep'
 import { uIncrement,
          uAppend,
          uReplace,
-         uRemove } from '../src/helpers/arrayHelpers.js'
+         uRemove } from '../arrayHelpers'
 
 describe("updeep arrayHelpers", () => {
 
-  var obj1 = {
+  let obj1 = {
     name: "50 Cent",
     fruits: [
       "Apple",
@@ -16,14 +16,15 @@ describe("updeep arrayHelpers", () => {
       "Grape"
     ],
     cash: 250
-  };
+  }
 
   describe("uIncrement", () => {
 
     it("should increment by the correct amount", () => {
       [1, -3, 235987].forEach(amount => {
-        var obj2 = u({cash: uIncrement(amount)}, obj1)
-        expect( obj2.cash ).toEqual( obj1.cash + amount )
+        let { cash: actual } = u({cash: uIncrement(amount)}, obj1)
+        let expected = obj1.cash + amount
+        expect(actual).toEqual(expected)
       })
     })
 

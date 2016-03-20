@@ -1,11 +1,11 @@
-import expect from 'expect';
-import u from 'updeep';
-import { uIncrement, uAppend, uReplace } from '../src/helpers/arrayHelpers.js'
+import expect from 'expect'
+import u from 'updeep'
+import { uIncrement, uAppend, uReplace } from '../../helpers/arrayHelpers.js'
 
 import _ from 'lodash'
-import reducePhrase, { defaultState, getNoteAtKeyBar } from '../src/reducers/reducePhrase.js';
+import reducePhrase, { defaultState, getNoteAtKeyBar } from '../reducePhrase.js'
 import { phraseCreateClip,
-         phraseCreateNote } from '../src/actions/actionsPhrase.js';
+         phraseCreateNote } from '../../actions/actionsPhrase.js'
 
 describe("Phrase", () => {
 
