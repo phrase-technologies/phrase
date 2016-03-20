@@ -27,7 +27,7 @@ export class MixerTimeline extends Component {
 
   renderFrame() {
     return function(canvasContext) {
-      canvasContext.fillStyle = "#282828";
+      canvasContext.fillStyle = '#282828';
       canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height );
       this.props.grid.calculateZoomThreshold();
       this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax);
@@ -37,9 +37,9 @@ export class MixerTimeline extends Component {
   renderBarLines(canvasContext, xMin, xMax) {
     // Styles
     canvasContext.lineWidth = 1.0;
-    canvasContext.font = 11*this.props.grid.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif";
-    canvasContext.fillStyle = "#AAAAAA";
-    canvasContext.textAlign = "start";
+    canvasContext.font = 11*this.props.grid.pixelScale + 'px Helvetica Neue, Helvetica, Arial, sans-serif';
+    canvasContext.fillStyle = '#AAAAAA';
+    canvasContext.textAlign = 'start';
 
     // Draw lines for each beat
     var minBar = this.props.grid.percentToBar( xMin ) - 1;
@@ -68,18 +68,18 @@ export class MixerTimeline extends Component {
         canvasContext.fillText(outputText, leftEdge, topEdge);
 
         // Bar line style
-        canvasContext.strokeStyle = "#555555";
+        canvasContext.strokeStyle = '#555555';
       }
       // Intermediary Bar lines
       else if( bar % this.props.grid.lineThresholdsNoKeys.middleLine === 0 )
       {
-        canvasContext.strokeStyle = "#383838";
+        canvasContext.strokeStyle = '#383838';
         yPosition = 18 * this.props.grid.pixelScale;
       }
       // Minor lines
       else if( this.props.grid.lineThresholdsNoKeys.minorLine )
       {
-        canvasContext.strokeStyle = "#333333";
+        canvasContext.strokeStyle = '#333333';
         yPosition = 20 * this.props.grid.pixelScale;
       }
 

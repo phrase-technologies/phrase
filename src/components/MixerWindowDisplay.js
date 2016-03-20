@@ -36,7 +36,7 @@ export class MixerWindowDisplay extends Component {
 
   renderFrame() {
     return function(canvasContext) {
-      canvasContext.fillStyle = "#444444";
+      canvasContext.fillStyle = '#444444';
       canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height );
       this.props.grid.calculateZoomThreshold();
       this.renderTimeline(canvasContext, this.props.xMin, this.props.xMax)
@@ -68,13 +68,13 @@ export class MixerWindowDisplay extends Component {
 
       // Major Bar lines
       if( bar % this.props.grid.lineThresholdsNoKeys.majorLine === 0 )
-        canvasContext.strokeStyle = "#222222";
+        canvasContext.strokeStyle = '#222222';
       // Intermediary Bar lines
       else if( bar % this.props.grid.lineThresholdsNoKeys.middleLine === 0 )
-        canvasContext.strokeStyle = "#333333";
+        canvasContext.strokeStyle = '#333333';
       // Minor Bar lines
       else if( this.props.grid.lineThresholdsNoKeys.minorLine )
-        canvasContext.strokeStyle = "#3C3C3C";
+        canvasContext.strokeStyle = '#3C3C3C';
 
       canvasContext.beginPath();
       drawLine( canvasContext, xPosition, 0, xPosition, this.props.grid.height );
@@ -84,7 +84,7 @@ export class MixerWindowDisplay extends Component {
 
   renderClips(canvasContext, xMin, xMax, yMin, yMax, tracks, clips) {
     canvasContext.lineWidth = this.props.grid.pixelScale
-    canvasContext.font = 11*this.props.grid.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif"
+    canvasContext.font = 11*this.props.grid.pixelScale + 'px Helvetica Neue, Helvetica, Arial, sans-serif'
 
     var contentHeight = getTracksHeight(tracks)*this.props.grid.pixelScale
     var startingEdge = 0 - contentHeight * yMin
@@ -122,7 +122,7 @@ export class MixerWindowDisplay extends Component {
 
   renderClip(canvasContext, clip, left, right, top, bottom, radius, color, gradient = true) {
     // Shape + gradient fill
-    canvasContext.strokeStyle = "#000"
+    canvasContext.strokeStyle = '#000'
     if (gradient) {
       let gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
           gradient.addColorStop(0, color);
@@ -174,7 +174,7 @@ export class MixerWindowDisplay extends Component {
         currentLoopLine,
         bottom - closestHalfPixel(1.5*this.props.grid.pixelScale, this.props.grid.pixelScale),
         [2, 2],
-        clip.selected ? color : "#000"
+        clip.selected ? color : '#000'
       )
 
       // Next iteration
@@ -185,8 +185,8 @@ export class MixerWindowDisplay extends Component {
 
     // Label
     if (right - left > 30*this.props.grid.pixelScale) {
-      canvasContext.fillStyle = clip.selected ? color : "#000"
-      canvasContext.textAlign = "start"
+      canvasContext.fillStyle = clip.selected ? color : '#000'
+      canvasContext.textAlign = 'start'
       let x = left + 5*this.props.grid.pixelScale
       let y = top  + 14*this.props.grid.pixelScale
       canvasContext.fillText(`Clip ${clip.id}`, x, y)

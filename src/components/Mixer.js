@@ -28,9 +28,9 @@ import ScrollBar from './Scrollbar.js';
 export class Mixer extends Component {
 
   render() {
-    let mixerClasses = "mixer"
-        mixerClasses += (this.props.yMin < 0.001) ? " mixer-disable-shadow-top"    : ""
-        mixerClasses += (this.props.yMax > 0.999) ? " mixer-disable-shadow-bottom" : ""
+    let mixerClasses = 'mixer'
+        mixerClasses += (this.props.yMin < 0.001) ? ' mixer-disable-shadow-top'    : ''
+        mixerClasses += (this.props.yMax > 0.999) ? ' mixer-disable-shadow-bottom' : ''
 
     let timelineProps = {
       dispatch: this.props.dispatch,

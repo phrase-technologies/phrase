@@ -23,12 +23,12 @@ import { cursorResizeLeft,
          cursorResizeRight,
          cursorClear } from '../actions/actionsCursor.js';         
 
-const SELECT_EMPTY_AREA = "SELECT_EMPTY_AREA"
-const CLICK_EMPTY_AREA  = "CLICK_EMPTY_AREA"
-const SELECT_NOTE       = "SELECT_NOTE"
-const CLICK_NOTE        = "CLICK_NOTE"
-const DRAG_NOTE         = "DRAG_NOTE"
-const SELECTION_BOX     = "SELECTION_BOX"
+const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
+const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
+const SELECT_NOTE       = 'SELECT_NOTE'
+const CLICK_NOTE        = 'CLICK_NOTE'
+const DRAG_NOTE         = 'DRAG_NOTE'
+const SELECTION_BOX     = 'SELECTION_BOX'
 const DOUBLECLICK_DELAY = 360
 
 export class PianorollWindowControl extends Component {
@@ -60,17 +60,17 @@ export class PianorollWindowControl extends Component {
 
     // Event Sources
     this.container = ReactDOM.findDOMNode(this);
-    this.container.addEventListener("mousedown", this.mouseDownEvent)
-    document.addEventListener("mousemove", this.mouseMoveEvent)
-    document.addEventListener("mouseup",   this.mouseUpEvent)
+    this.container.addEventListener('mousedown', this.mouseDownEvent)
+    document.addEventListener('mousemove', this.mouseMoveEvent)
+    document.addEventListener('mouseup',   this.mouseUpEvent)
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
   }
 
   componentWillUnmount() {
-    this.container.removeEventListener("mousedown", this.mouseDownEvent)
-    document.removeEventListener("mousemove", this.mouseMoveEvent)
-    document.removeEventListener("mouseup",   this.mouseUpEvent)
+    this.container.removeEventListener('mousedown', this.mouseDownEvent)
+    document.removeEventListener('mousemove', this.mouseMoveEvent)
+    document.removeEventListener('mouseup',   this.mouseUpEvent)
     window.removeEventListener('resize', this.handleResize);
   }
 
@@ -137,14 +137,14 @@ export class PianorollWindowControl extends Component {
       }
 
       if (bar < foundNote.start + threshold) {
-        this.props.dispatch( cursorResizeLeft("explicit") )
-        this.lastEvent.grip = "MIN"
+        this.props.dispatch( cursorResizeLeft('explicit') )
+        this.lastEvent.grip = 'MIN'
       } else if (bar > foundNote.end - threshold) {
-        this.props.dispatch( cursorResizeRight("explicit") )
-        this.lastEvent.grip = "MAX"
+        this.props.dispatch( cursorResizeRight('explicit') )
+        this.lastEvent.grip = 'MAX'
       } else {
-        this.props.dispatch( cursorClear("explicit") )
-        this.lastEvent.grip = "MID"
+        this.props.dispatch( cursorClear('explicit') )
+        this.lastEvent.grip = 'MID'
       }
     }
   }
@@ -229,15 +229,15 @@ export class PianorollWindowControl extends Component {
       )
 
       if (bar < foundNote.start + threshold) {
-        this.props.dispatch( cursorResizeLeft("implicit") )
+        this.props.dispatch( cursorResizeLeft('implicit') )
       } else if (bar > foundNote.end - threshold) {
-        this.props.dispatch( cursorResizeRight("implicit") )
+        this.props.dispatch( cursorResizeRight('implicit') )
       } else {
-        this.props.dispatch( cursorClear("implicit") )
+        this.props.dispatch( cursorClear('implicit') )
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else if (e.target == this.container) {
-      this.props.dispatch( cursorClear("implicit") )
+      this.props.dispatch( cursorClear('implicit') )
     }    
   }
 
@@ -258,7 +258,7 @@ export class PianorollWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action == SELECT_NOTE) {
       // Cancel Cursor
-      this.props.dispatch( cursorClear("explicit") )
+      this.props.dispatch( cursorClear('explicit') )
 
       // Prepare for possibility of second click
       this.lastEvent.action = CLICK_NOTE

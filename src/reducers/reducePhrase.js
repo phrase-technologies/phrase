@@ -31,18 +31,18 @@ export const defaultState = {
 }
 
 const TRACK_COLORS = [
-  "#F53",
-  "#F80",
-  "#FC0",
-  "#8D0",
-  "#0C0",
-  "#0C8",
-  "#0DD",
-  "#48F",
-  "#88F",
-  "#A6E",
-  "#D6D",
-  "#F4A"
+  '#F53',
+  '#F80',
+  '#FC0',
+  '#8D0',
+  '#0C0',
+  '#0C8',
+  '#0DD',
+  '#48F',
+  '#88F',
+  '#A6E',
+  '#D6D',
+  '#F4A'
 ]
 const MINIMUM_UNIT_LENGTH = 0.0078125
 
@@ -55,7 +55,7 @@ export default function reducePhrase(state = defaultState, action) {
         tracks: uAppend(
           {
             id: state.trackAutoIncrement,
-            name: action.name || "Track "+(state.trackAutoIncrement+1),
+            name: action.name || 'Track '+(state.trackAutoIncrement+1),
             color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
             arm:  false,
             mute: false,

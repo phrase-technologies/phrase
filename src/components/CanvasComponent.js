@@ -28,7 +28,7 @@ export default class CanvasComponent extends Component {
     this.data = this.data || {};
     this.data.canvas = ReactDOM.findDOMNode(this);
     this.data.container = ReactDOM.findDOMNode(this).parentElement;
-    this.data.canvasContext = this.data.canvas.getContext("2d");
+    this.data.canvasContext = this.data.canvas.getContext('2d');
 
     // Set Scaling
     this.data.pixelScale = window.devicePixelRatio || 1;

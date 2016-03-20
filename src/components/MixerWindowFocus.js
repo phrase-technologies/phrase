@@ -22,7 +22,7 @@ export default class MixerWindowFocus extends Component {
     // If Focus is shifted via clip selection - use CSS transitions for smooth shift (in mixer.scss)
     var boxStyle = {
       top: top,
-      left: left*100+"%",
+      left: left*100+'%',
       width: width*100 + '%',
       height: height
     }

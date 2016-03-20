@@ -12,8 +12,8 @@ export default class MixerTrackButton extends Component {
   }
 
   render() {
-    var buttonClasses = "mixer-track-btn " + this.props.buttonClasses
-        buttonClasses += this.props.active ? " active" : ""
+    var buttonClasses = 'mixer-track-btn ' + this.props.buttonClasses
+        buttonClasses += this.props.active ? ' active' : ''
 
     return (
       <button className={buttonClasses} onClick={this.handleClick}>

@@ -71,9 +71,9 @@ export class PianorollWindowDisplay extends Component {
     // Styles
     canvasContext.lineWidth = 1.0
     canvasContext.setLineDash( key.alt ? [2,4] : [] )
-    canvasContext.font = 11*this.props.grid.pixelScale + "pleft Helvetica Neue, Helvetica, Arial, sans-serif"
-    canvasContext.fillStyle = "#AAAAAA"
-    canvasContext.textAlign = "start"
+    canvasContext.font = 11*this.props.grid.pixelScale + 'pleft Helvetica Neue, Helvetica, Arial, sans-serif'
+    canvasContext.fillStyle = '#AAAAAA'
+    canvasContext.textAlign = 'start'
 
     // Draw lines for each beat
     var minBar = this.props.grid.percentToBar( xMin ) - 1
@@ -90,13 +90,13 @@ export class PianorollWindowDisplay extends Component {
 
       // Major Bar lines
       if( bar % this.props.grid.lineThresholdsWithKeys.majorLine === 0 )
-        canvasContext.strokeStyle = "#222222"
+        canvasContext.strokeStyle = '#222222'
       // Intermediary Bar lines
       else if( bar % this.props.grid.lineThresholdsWithKeys.middleLine === 0 )
-        canvasContext.strokeStyle = "#333333"
+        canvasContext.strokeStyle = '#333333'
       // Minor Bar lines
       else if( this.props.grid.lineThresholdsWithKeys.minorLine )
-        canvasContext.strokeStyle = "#383838"
+        canvasContext.strokeStyle = '#383838'
 
       // Draw each line (different colors)
       canvasContext.beginPath()
@@ -109,8 +109,8 @@ export class PianorollWindowDisplay extends Component {
     // Styles
     canvasContext.lineWidth   = 1.0;
     canvasContext.setLineDash([])
-    canvasContext.strokeStyle = "#393939"
-    canvasContext.fillStyle   = "#3D3D3D"
+    canvasContext.strokeStyle = '#393939'
+    canvasContext.fillStyle   = '#3D3D3D'
 
     // Each edge + black key fills
     var minKey = this.props.grid.percentToKey( yMin )
@@ -132,13 +132,13 @@ export class PianorollWindowDisplay extends Component {
       {
         canvasContext.stroke()
         canvasContext.beginPath()
-        canvasContext.strokeStyle = "#222222";
+        canvasContext.strokeStyle = '#222222';
       }
       else if( key % 12 === 2 )
       {
         canvasContext.stroke()
         canvasContext.beginPath()
-        canvasContext.strokeStyle = "#393939";
+        canvasContext.strokeStyle = '#393939';
       }
     }
 
@@ -156,7 +156,7 @@ export class PianorollWindowDisplay extends Component {
 
       // Start/End lines + background
       canvasContext.lineWidth = this.props.grid.pixelScale
-      canvasContext.strokeStyle = "#000"
+      canvasContext.strokeStyle = '#000'
       canvasContext.fillStyle   = getDarkenedColor(this.props.currentTrack.color, 0.0, 0.125)
       canvasContext.beginPath()
       drawLine( canvasContext, left,  0, left,         this.props.grid.height )
@@ -172,7 +172,7 @@ export class PianorollWindowDisplay extends Component {
       while( currentLoopStart < clip.end ) {
         // Draw current line
         var currentLoopLine = closestHalfPixel( this.props.grid.barToXCoord( currentLoopStart ), this.props.grid.pixelScale )
-        drawLine( canvasContext, currentLoopLine, 0, currentLoopLine, this.props.grid.height, [2, 2], "#000")
+        drawLine( canvasContext, currentLoopLine, 0, currentLoopLine, this.props.grid.height, [2, 2], '#000')
 
         // Next iteration
         currentLoopStart += clip.loopLength
@@ -186,7 +186,7 @@ export class PianorollWindowDisplay extends Component {
     var keyboardHeight = this.props.grid.getActiveHeight() / this.props.grid.getKeyRange()
     var keyHeight = keyboardHeight / this.props.keyCount
     var fontSize = keyHeight - 8.5*this.props.grid.pixelScale + 2*this.props.grid.pixelScale
-    canvasContext.font = fontSize + "px Helvetica Neue, Helvetica, Arial, sans-serif"
+    canvasContext.font = fontSize + 'px Helvetica Neue, Helvetica, Arial, sans-serif'
     canvasContext.lineWidth = this.props.grid.pixelScale
 
     notes.forEach(note => {
@@ -224,7 +224,7 @@ export class PianorollWindowDisplay extends Component {
     }
 
     // Stroke
-    canvasContext.strokeStyle = "#000"
+    canvasContext.strokeStyle = '#000'
 
     // Dimensions
     var width = right - left
@@ -256,8 +256,8 @@ export class PianorollWindowDisplay extends Component {
 
     // Label
     if (label && width > 30*this.props.grid.pixelScale) {
-      canvasContext.fillStyle = selected ? color : "#000"
-      canvasContext.textAlign = "start"
+      canvasContext.fillStyle = selected ? color : '#000'
+      canvasContext.textAlign = 'start'
       let x = left   + 4*this.props.grid.pixelScale
       let y = bottom - 5*this.props.grid.pixelScale
       canvasContext.fillText(label, x, y)
@@ -281,7 +281,7 @@ PianorollWindowDisplay.propTypes = {
 }
 
 export default provideTween(
-  ["xMin", "xMax"],
+  ['xMin', 'xMax'],
   provideGridSystem(
     PianorollWindowDisplay
   )

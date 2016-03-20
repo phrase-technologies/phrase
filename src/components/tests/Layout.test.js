@@ -7,8 +7,8 @@ import { Layout } from '../Layout'
  *  Shallow
  */
 
-describe(`<Layout />`, () => {
-  it(`should exist`, () => {
+describe('<Layout />', () => {
+  it('should exist', () => {
     let component = shallow(<Layout dispatch={ () => {} } />)
     expect(component).to.exist
   })

@@ -6,7 +6,7 @@ import StoryActivityPreview from './StoryActivityPreview.js';
 export default class Story extends Component {
 
   getClasses() {
-    return this.props.action ? "story story-with-action" : "story";
+    return this.props.action ? 'story story-with-action' : 'story';
   }
 
   getAction() {

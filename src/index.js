@@ -1,8 +1,8 @@
 // ============================================================================
 // GLOBAL SCRIPTS
 // ============================================================================
-require("css-element-queries/src/ResizeSensor.js");
-require("css-element-queries/src/ElementQueries.js");
+require('css-element-queries/src/ResizeSensor.js');
+require('css-element-queries/src/ElementQueries.js');
 
 import './index.scss';
 import React from 'react'

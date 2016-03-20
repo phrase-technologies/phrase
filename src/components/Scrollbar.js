@@ -33,22 +33,22 @@ export default class Scrollbar extends Component {
     window.addEventListener('resize', this.handleResize);
 
     // Scrollbar Click Handlers
-    this.bar.addEventListener("mousedown", this.handleGrip);
-    document.addEventListener("mousemove", this.handleDrag);
-    document.addEventListener("mouseup",   this.handleDrop);
-    document.addEventListener("mousedown", this.handleDrop);
+    this.bar.addEventListener('mousedown', this.handleGrip);
+    document.addEventListener('mousemove', this.handleDrag);
+    document.addEventListener('mouseup',   this.handleDrop);
+    document.addEventListener('mousedown', this.handleDrop);
 
     // Gutter paging
-    this.gutter.addEventListener("mousedown", this.handlePaging)
+    this.gutter.addEventListener('mousedown', this.handlePaging)
   }
 
   componentWillUnmount() {
     this.data = null;
 
-    this.bar.removeEventListener("mousedown", this.handleGrip);
-    document.removeEventListener("mousemove", this.handleDrag);
-    document.removeEventListener("mouseup",   this.handleDrop);
-    document.removeEventListener("mousedown", this.handleDrop);
+    this.bar.removeEventListener('mousedown', this.handleGrip);
+    document.removeEventListener('mousemove', this.handleDrag);
+    document.removeEventListener('mouseup',   this.handleDrop);
+    document.removeEventListener('mousedown', this.handleDrop);
     window.removeEventListener('resize', this.handleResize);
   }
 
@@ -87,7 +87,7 @@ export default class Scrollbar extends Component {
         var cursorType = this.props.vertical ? cursorResizeBottom : cursorResizeRight
         break;
     }
-    this.props.dispatch( cursorType("explicit") );
+    this.props.dispatch( cursorType('explicit') );
   }
 
   handleDrag(e) {
@@ -133,13 +133,13 @@ export default class Scrollbar extends Component {
 
   handleDrop(e) {
     // Ignore left clicks - those are not drops
-    if( e.type == "mousedown" && e.which == 1 )
+    if( e.type == 'mousedown' && e.which == 1 )
       return;
 
     // End the drag
     this.data.isDragging = false;
     this.forceUpdate();
-    this.props.dispatch( cursorClear("explicit") );    
+    this.props.dispatch( cursorClear('explicit') );    
   }
 
   handlePaging(e) {

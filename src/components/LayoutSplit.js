@@ -40,17 +40,17 @@ export default class LayoutSplit extends Component {
     this.data.container = ReactDOM.findDOMNode(this);
     this.data.isDragging = false;
 
-    this.data.container.addEventListener("mousedown", this.handleGrip);
-    document.addEventListener("mousemove", this.handleDrag);
-    document.addEventListener("mouseup",   this.handleDrop);
-    document.addEventListener("mousedown", this.handleDrop);
+    this.data.container.addEventListener('mousedown', this.handleGrip);
+    document.addEventListener('mousemove', this.handleDrag);
+    document.addEventListener('mouseup',   this.handleDrop);
+    document.addEventListener('mousedown', this.handleDrop);
   }
 
   componentWillUnmount() {
-    this.data.container.removeEventListener("mousedown", this.handleGrip);
-    document.removeEventListener("mousemove", this.handleDrag);
-    document.removeEventListener("mouseup",   this.handleDrop);
-    document.removeEventListener("mousedown", this.handleDrop);
+    this.data.container.removeEventListener('mousedown', this.handleGrip);
+    document.removeEventListener('mousemove', this.handleDrag);
+    document.removeEventListener('mouseup',   this.handleDrop);
+    document.removeEventListener('mousedown', this.handleDrop);
 
     this.data = null;
   }
@@ -75,12 +75,12 @@ export default class LayoutSplit extends Component {
 
   handleDrop(e) {
     // Ignore left clicks - those are not drops
-    if( e.type == "mousedown" && e.which == 1 )
+    if( e.type == 'mousedown' && e.which == 1 )
       return;
 
     // End the drag
     this.data.isDragging = false;
-    this.props.dispatch( cursorDrop("explicit") );
+    this.props.dispatch( cursorDrop('explicit') );
     this.forceUpdate();
   }
 }

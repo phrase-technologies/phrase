@@ -14,10 +14,10 @@ import { connect } from 'react-redux'
 export default class CursorProvider extends Component {
 
   getCursorClass() {
-    var resultClass = "";
+    var resultClass = '';
 
     if( this.props.cursor.explicit || this.props.cursor.implicit )
-      resultClass = "cursor-"+(this.props.cursor.explicit || this.props.cursor.implicit)
+      resultClass = 'cursor-'+(this.props.cursor.explicit || this.props.cursor.implicit)
 
     return resultClass
   }
