@@ -70,7 +70,7 @@ export default function reduceAll(state = {}, action) {
       var left   = Math.min( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
       var right  = Math.max( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
       var top    = Math.max( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )
-      var bottom = Math.min( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )            
+      var bottom = Math.min( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )
 
       // Find selected notes, even in loop iterations
       var selectedNoteIDs = currentNotesSelector(state)
@@ -84,7 +84,7 @@ export default function reduceAll(state = {}, action) {
           )
         })
         .map(note => note.id)
-      selectedNoteIDs = _.unique(selectedNoteIDs)
+      selectedNoteIDs = _.uniq(selectedNoteIDs)
 
       // Update selected notes, deselect any selected clips, clear selection box
       return u({
@@ -160,7 +160,7 @@ export default function reduceAll(state = {}, action) {
       return state
 
   }
-} 
+}
 
 
 // Make sure timeline doesn't zoom too close
@@ -177,5 +177,3 @@ function restrictTimelineZoom(stateBranch, barCount) {
   }
   return stateBranch
 }
-
-
