@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import Numeral from 'numeral';
-import StoryUser from './StoryUser.js';
+import React, { Component } from 'react'
+import Numeral from 'numeral'
+import StoryUser from './StoryUser.js'
 
 export default class StoryTrack extends Component {
 
   getContributors() {
     var contributorAddress = (this.props.contributors.length > 1)
                            ? this.props.contributors.length+' contributors: '
-                           : 'By ';
-    var contributors = [];
-        contributors.push(<span className="story-contributors-address" key="address">{contributorAddress}</span>);
+                           : 'By '
+    var contributors = []
+        contributors.push(<span className="story-contributors-address" key="address">{contributorAddress}</span>)
 
     for(var i in this.props.contributors )
     {
       if( i > 0 )
-        contributors.push(<span key={(i-1)+'-comma'}>, </span>);
+        contributors.push(<span key={(i-1)+'-comma'}>, </span>)
 
       contributors.push(
         <StoryUser
@@ -23,17 +23,17 @@ export default class StoryTrack extends Component {
           mode="text"
           key={i}
         />
-      );
+      )
     }
 
-    return contributors;
+    return contributors
   }
 
   render() {
-    var contributors  = this.getContributors();
-    var numPlays      = Numeral(this.props.plays).format('0,0[.][0]')    + ( (this.props.plays    == 1) ? ' play'    : ' plays'    );
-    var numLikes      = Numeral(this.props.likes).format('0,0[.][0]')    + ( (this.props.likes    == 1) ? ' like'    : ' likes'    );
-    var numComments   = Numeral(this.props.comments).format('0,0[.][0]') + ( (this.props.comments == 1) ? ' comment' : ' comments' );
+    var contributors  = this.getContributors()
+    var numPlays      = Numeral(this.props.plays).format('0,0[.][0]')    + ( (this.props.plays    == 1) ? ' play'    : ' plays'    )
+    var numLikes      = Numeral(this.props.likes).format('0,0[.][0]')    + ( (this.props.likes    == 1) ? ' like'    : ' likes'    )
+    var numComments   = Numeral(this.props.comments).format('0,0[.][0]') + ( (this.props.comments == 1) ? ' comment' : ' comments' )
 
     return (
       <div className="story-track">
@@ -57,7 +57,7 @@ export default class StoryTrack extends Component {
           </span>
         </div>
       </div>
-    );
+    )
   }
 }
 
@@ -73,4 +73,4 @@ StoryTrack.propTypes = {
   plays:        React.PropTypes.number.isRequired,
   likes:        React.PropTypes.number.isRequired,
   comments:     React.PropTypes.number.isRequired
-};
+}

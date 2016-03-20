@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class StoryEffect extends Component {
   render() {
@@ -6,9 +6,9 @@ export default class StoryEffect extends Component {
       <div className="story-effect">
         Effect
       </div>      
-    );
+    )
   }
 }
 
 StoryEffect.propTypes = {
-};
+}

@@ -40,13 +40,13 @@ export class PianorollWindowDisplay extends Component {
       <div className="pianoroll-window-display">
         <CanvasComponent renderFrame={this.renderFrame()} />
       </div>
-    );
+    )
   }
 
   renderFrame() {
     return function(canvasContext) {
       canvasContext.clearRect( 0, 0, this.props.grid.width, this.props.grid.height )
-      this.props.grid.calculateZoomThreshold();
+      this.props.grid.calculateZoomThreshold()
       this.renderKeyLines(canvasContext, this.props.yMin, this.props.yMax)
       this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax)
       this.renderClips(canvasContext,
@@ -107,7 +107,7 @@ export class PianorollWindowDisplay extends Component {
 
   renderKeyLines(canvasContext, yMin, yMax) {
     // Styles
-    canvasContext.lineWidth   = 1.0;
+    canvasContext.lineWidth   = 1.0
     canvasContext.setLineDash([])
     canvasContext.strokeStyle = '#393939'
     canvasContext.fillStyle   = '#3D3D3D'
@@ -132,13 +132,13 @@ export class PianorollWindowDisplay extends Component {
       {
         canvasContext.stroke()
         canvasContext.beginPath()
-        canvasContext.strokeStyle = '#222222';
+        canvasContext.strokeStyle = '#222222'
       }
       else if( key % 12 === 2 )
       {
         canvasContext.stroke()
         canvasContext.beginPath()
-        canvasContext.strokeStyle = '#393939';
+        canvasContext.strokeStyle = '#393939'
       }
     }
 
@@ -204,8 +204,8 @@ export class PianorollWindowDisplay extends Component {
 
       var label
       if (keyboardHeight > 1275*this.props.grid.pixelScale) {
-        let keyLetter = {1:'A',2:'A#',3:'B',4:'C',5:'C#',6:'D',7:'D#',8:'E',9:'F',10:'F#',11:'G',0:'G#'}[note.keyNum % 12];
-        label = keyLetter + Math.floor((note.keyNum+8)/12);
+        let keyLetter = {1:'A',2:'A#',3:'B',4:'C',5:'C#',6:'D',7:'D#',8:'E',9:'F',10:'F#',11:'G',0:'G#'}[note.keyNum % 12]
+        label = keyLetter + Math.floor((note.keyNum+8)/12)
       }
 
       this.renderNote(canvasContext, left, right, top, bottom, note.selected, label, this.props.currentTrack.color, note.outOfViewLeft, note.outOfViewRight)
@@ -215,9 +215,9 @@ export class PianorollWindowDisplay extends Component {
   renderNote(canvasContext, left, right, top, bottom, selected, label, color, leftCutoff = false, rightCutoff = false, gradient = true) {
     // Gradient Fill
     if (gradient) {
-      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-          gradient.addColorStop(0, color);
-          gradient.addColorStop(1, getDarkenedColor(color, 0.266));
+      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
+          gradient.addColorStop(0, color)
+          gradient.addColorStop(1, getDarkenedColor(color, 0.266))
       canvasContext.fillStyle = gradient
     } else {
       canvasContext.fillStyle = color
@@ -237,9 +237,9 @@ export class PianorollWindowDisplay extends Component {
     // Selected
     if (selected) {
       if (gradient) {
-        var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-            gradient.addColorStop(0, getDarkenedColor(color, 0.533));
-            gradient.addColorStop(1, getDarkenedColor(color, 0.733));
+        var gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
+            gradient.addColorStop(0, getDarkenedColor(color, 0.533))
+            gradient.addColorStop(1, getDarkenedColor(color, 0.733))
         canvasContext.fillStyle = gradient
       } else {
         canvasContext.fillStyle = getDarkenedColor(color, 0.733)

@@ -1,5 +1,5 @@
-import { createSelector } from 'reselect';
-import u from 'updeep';
+import { createSelector } from 'reselect'
+import u from 'updeep'
 
 import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
 import { negativeModulus } from '../helpers/intervalHelpers.js'

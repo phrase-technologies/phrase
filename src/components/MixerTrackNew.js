@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class MixerTrackNew extends Component {
   render() {
@@ -11,10 +11,10 @@ export default class MixerTrackNew extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
 MixerTrackNew.propTypes = {
   handleClickNew: React.PropTypes.func.isRequired
-};
+}

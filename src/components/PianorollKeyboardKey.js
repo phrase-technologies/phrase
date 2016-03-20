@@ -23,7 +23,7 @@ export class PianorollKeyboardKey extends Component {
   }
 
   componentDidMount() {
-    this.container = ReactDOM.findDOMNode(this);
+    this.container = ReactDOM.findDOMNode(this)
     this.container.addEventListener('mousedown', this.mouseDownEvent)
     document.addEventListener('mouseup',   this.mouseUpEvent)
   }

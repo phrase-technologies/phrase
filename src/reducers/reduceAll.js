@@ -46,14 +46,14 @@ export default function reduceAll(state = {}, action) {
           }
         }, state)
       } else {
-        let fulcrum;
+        let fulcrum
              if( state.mixer.yMin < 0.001 ) { fulcrum = 0.000 }
         else if( state.mixer.yMax > 0.999 ) { fulcrum = 1.000 }
 
         let oldWindow = state.mixer.yMax - state.mixer.yMin
         let newWindow = state.mixer.height / contentHeight
         let zoomFactor = newWindow/oldWindow
-        let [newMin, newMax] = zoomInterval([state.mixer.yMin, state.mixer.yMax], zoomFactor, fulcrum);
+        let [newMin, newMax] = zoomInterval([state.mixer.yMin, state.mixer.yMax], zoomFactor, fulcrum)
 
         return u({
           mixer: {
@@ -112,7 +112,7 @@ export default function reduceAll(state = {}, action) {
           selectionEndX: null,
           selectionEndY: null
         }
-      }, state);
+      }, state)
 
     // ------------------------------------------------------------------------
     // Set the Pianoroll's focus window

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import Stories from './Stories.js';
+import Stories from './Stories.js'
 
 export default class LayoutPage extends Component {
   render() {
@@ -43,7 +43,7 @@ export default class LayoutPage extends Component {
 
         </div>
       </div>
-    );
+    )
   }
 }
 
@@ -51,7 +51,7 @@ function mapStateToProps(state) {
   return {
     barMin: state.pianoroll.barMin,
     barMax: state.pianoroll.barMax
-  };
+  }
 }
 
-export default connect(mapStateToProps)(LayoutPage);
+export default connect(mapStateToProps)(LayoutPage)

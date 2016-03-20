@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 import _ from 'lodash'
 import { getPixelsToTrack,
-         getTracksHeight } from '../helpers/trackHelpers.js';
+         getTracksHeight } from '../helpers/trackHelpers.js'
 
 export default class MixerWindowFocus extends Component {
 
@@ -94,4 +94,4 @@ MixerWindowFocus.propTypes = {
   xMax:         React.PropTypes.number.isRequired,
   yMin:         React.PropTypes.number.isRequired,
   yMax:         React.PropTypes.number.isRequired
-};  
+}  

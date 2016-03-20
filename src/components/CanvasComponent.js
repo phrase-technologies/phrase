@@ -17,24 +17,24 @@ var canvasCounter = 0
 export default class CanvasComponent extends Component {
 
   constructor() {
-    super();
+    super()
 
     this.canvasID = canvasCounter++
-    this.handleResize = this.handleResize.bind(this);
+    this.handleResize = this.handleResize.bind(this)
   }
 
   componentDidMount() {
     // Initialize DOM
-    this.data = this.data || {};
-    this.data.canvas = ReactDOM.findDOMNode(this);
-    this.data.container = ReactDOM.findDOMNode(this).parentElement;
-    this.data.canvasContext = this.data.canvas.getContext('2d');
+    this.data = this.data || {}
+    this.data.canvas = ReactDOM.findDOMNode(this)
+    this.data.container = ReactDOM.findDOMNode(this).parentElement
+    this.data.canvasContext = this.data.canvas.getContext('2d')
 
     // Set Scaling
-    this.data.pixelScale = window.devicePixelRatio || 1;
-    this.data.canvasContext.scale( this.data.pixelScale, this.data.pixelScale );
-    window.addEventListener('resize', this.handleResize);
-    this.handleResize();
+    this.data.pixelScale = window.devicePixelRatio || 1
+    this.data.canvasContext.scale( this.data.pixelScale, this.data.pixelScale )
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize()
 
     // Render
     CanvasComponent.requestCanvasUpdate(
@@ -58,9 +58,9 @@ export default class CanvasComponent extends Component {
   }
 
   handleResize() {
-    this.data.pixelScale = window.devicePixelRatio || 1;
-    this.data.canvas.width  = this.data.width  = this.data.container.clientWidth  * this.data.pixelScale;
-    this.data.canvas.height = this.data.height = this.data.container.clientHeight * this.data.pixelScale;
+    this.data.pixelScale = window.devicePixelRatio || 1
+    this.data.canvas.width  = this.data.width  = this.data.container.clientWidth  * this.data.pixelScale
+    this.data.canvas.height = this.data.height = this.data.container.clientHeight * this.data.pixelScale
     CanvasComponent.requestCanvasUpdate(
       this.canvasID,
       () => this.props.renderFrame(this.data.canvasContext)
@@ -70,7 +70,7 @@ export default class CanvasComponent extends Component {
   render() {
     return (
       <canvas/>
-    );
+    )
   }
 }
 
@@ -90,7 +90,7 @@ CanvasComponent.requestCanvasUpdate = function(canvasID, canvasUpdate) {
           canvasUpdate()
       })
       CanvasComponent.canvasUpdates = null
-    });
+    })
   }
 }
 CanvasComponent.cancelCanvasUpdate = function(canvasID) {

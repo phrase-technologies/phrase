@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import _ from 'lodash';
-import Story from './Story.js';
+import React, { Component } from 'react'
+import _ from 'lodash'
+import Story from './Story.js'
 
 export default class StorySound extends Component {
   render() {
 
-    var storiesComponents = [];
+    var storiesComponents = []
     for(var i in stories) {
-      var story = stories[i];
+      var story = stories[i]
       storiesComponents.push(
         <Story
           userPhoto={story.user.userPhoto}
@@ -22,24 +22,24 @@ export default class StorySound extends Component {
           comments={story.item.comments}
           key={i}>
         </Story>
-      );
+      )
     }
 
     return (
       <ul className="stories">
         {storiesComponents}
       </ul>
-    );
+    )
   }
 }
 
 StorySound.propTypes = {
-};
+}
 
 
 function getById(id){
   return function(element) {
-    return element.id == id;
+    return element.id == id
   }
 }
 
@@ -74,8 +74,8 @@ var photos = [
   'way-you-lie.png'
 ].sort(function(){
   // Randomize the order of photos (weakly, see http://stackoverflow.com/a/18650169/476426)
-  return .5 - Math.random();
-});
+  return .5 - Math.random()
+})
 
 var users = [
   {
@@ -128,7 +128,7 @@ var users = [
     userPhoto:    require('../img/user/'+photos.shift()),
     userName:     'b3li3b3r'
   }
-];
+]
 
 
 var tracks = [
@@ -222,7 +222,7 @@ var tracks = [
     likes:        0,
     comments:     0
   }
-];
+]
 
 var stories = [
   {
@@ -285,4 +285,4 @@ var stories = [
     timestamp:    new Date( (new Date()).getTime() - 1000000000*Math.random()),
     item:         tracks.find(getById(10))
   }
-];
+]

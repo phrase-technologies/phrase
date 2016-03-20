@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 export default class CursorProvider extends Component {
 
   getCursorClass() {
-    var resultClass = '';
+    var resultClass = ''
 
     if( this.props.cursor.explicit || this.props.cursor.implicit )
       resultClass = 'cursor-'+(this.props.cursor.explicit || this.props.cursor.implicit)
@@ -34,7 +34,7 @@ export default class CursorProvider extends Component {
 function mapStateToProps(state) {
   return {
     cursor: state.cursor
-  };
+  }
 }
 
 export default connect(mapStateToProps)(CursorProvider)

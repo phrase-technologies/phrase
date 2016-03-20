@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
-import u from 'updeep';
+import u from 'updeep'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
 const barCountSelector          = (state) => ( state.phrase.barCount )

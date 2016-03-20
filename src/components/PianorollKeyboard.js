@@ -7,7 +7,7 @@ import engineShape   from '../audio/AudioEnginePropTypes.js'
 import { pianorollResizeHeight,
          pianorollScrollY } from '../actions/actionsPianoroll.js'
 
-import PianorollKeyboardKey from './PianorollKeyboardKey.js';
+import PianorollKeyboardKey from './PianorollKeyboardKey.js'
 
 export class PianorollKeyboard extends Component {
 

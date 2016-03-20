@@ -48,7 +48,7 @@ export function startPlayback(engine, state, dispatch) {
 
       // Empty section at end of song - escape
       if (engine.iCommand >= engine.midiCommands.length)
-        break;
+        break
 
       fireNote(
         engine,

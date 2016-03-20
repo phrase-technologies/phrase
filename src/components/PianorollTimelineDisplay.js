@@ -22,7 +22,7 @@ export class PianorollTimelineDisplay extends Component {
       <div className="pianoroll-timeline-display">
         <CanvasComponent renderFrame={this.renderFrame()} />
       </div>
-    );
+    )
   }
 
   renderFrame() {
@@ -55,7 +55,7 @@ export class PianorollTimelineDisplay extends Component {
     {
       // Start each line as a separate path (different colors)
       let xPosition = closestHalfPixel( this.props.grid.barToXCoord( bar ) )
-      let yPosition = 0;
+      let yPosition = 0
 
       // Bar Numbers + Major lines
       if( bar % this.props.grid.lineThresholdsWithKeys.majorLine === 0 )
@@ -114,9 +114,9 @@ export class PianorollTimelineDisplay extends Component {
 
     // Gradient Fill
     if (gradient) {
-      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-          gradient.addColorStop(0, color);
-          gradient.addColorStop(1, getDarkenedColor(color, 0.266));
+      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
+          gradient.addColorStop(0, color)
+          gradient.addColorStop(1, getDarkenedColor(color, 0.266))
       canvasContext.fillStyle = gradient
     } else {
       canvasContext.fillStyle = color
@@ -151,9 +151,9 @@ export class PianorollTimelineDisplay extends Component {
 
     // Gradient Fill
     if (gradient) {
-      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-          gradient.addColorStop(0, getDarkenedColor(color, 0.533));
-          gradient.addColorStop(1, getDarkenedColor(color, 0.733));
+      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
+          gradient.addColorStop(0, getDarkenedColor(color, 0.533))
+          gradient.addColorStop(1, getDarkenedColor(color, 0.733))
       canvasContext.fillStyle = gradient
     } else {
       canvasContext.fillStyle = getDarkenedColor(color, 0.733)
@@ -217,7 +217,7 @@ PianorollTimelineDisplay.propTypes = {
   xMin:         React.PropTypes.number.isRequired,
   xMax:         React.PropTypes.number.isRequired,
   clips:        React.PropTypes.array.isRequired
-};
+}
 
 export default provideTween(
   ['xMin', 'xMax'],

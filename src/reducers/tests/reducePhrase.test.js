@@ -9,9 +9,9 @@ import { phraseCreateClip,
 
 describe('Phrase', () => {
 
-  var clip1             = { id: 0, trackID: 0, start: 0.00, end: 1.00, offset: 0.00, loopLength: 1.00, notes: [] };
-  var clip2half         = { id: 1, trackID: 0, start: 1.00, end: 2.50, offset: 0.00, loopLength: 2.50, notes: [] };
-  var clip3half         = { id: 2, trackID: 0, start: 2.75, end: 3.50, offset: 0.50, loopLength: 1.00, notes: [] };
+  var clip1             = { id: 0, trackID: 0, start: 0.00, end: 1.00, offset: 0.00, loopLength: 1.00, notes: [] }
+  var clip2half         = { id: 1, trackID: 0, start: 1.00, end: 2.50, offset: 0.00, loopLength: 2.50, notes: [] }
+  var clip3half         = { id: 2, trackID: 0, start: 2.75, end: 3.50, offset: 0.50, loopLength: 1.00, notes: [] }
 
   var stateEmpty          = defaultState
   var stateSingleClip     = u({clips: uAppend(clip1)}, defaultState)
@@ -31,18 +31,18 @@ describe('Phrase', () => {
     it('should create a new clip if no existing clips', () => {
       // No clips at all to start with
       [createNote1, createNote1Again, createNote1Higher, createNote2, createNote3End].forEach((action) => {
-        let newState = reducePhrase( stateEmpty, action );
-        expect( newState.clips.length ).toEqual( 1 );
-      });
-    });
+        let newState = reducePhrase( stateEmpty, action )
+        expect( newState.clips.length ).toEqual( 1 )
+      })
+    })
 
     it('should create a new clip if existing clip doesn\'t fit', () => {
       // 1 existing clip to start with, which doesn't fit the new note
       [createNote2, createNote3End].forEach((action) => {
-        let newState = reducePhrase( stateSingleClip, action );
-        expect( newState.clips.length ).toEqual( 2 );
-      });
-    });
+        let newState = reducePhrase( stateSingleClip, action )
+        expect( newState.clips.length ).toEqual( 2 )
+      })
+    })
 
     it('should never create two clips in the same place', () => {
       // Many different permutations
@@ -63,7 +63,7 @@ describe('Phrase', () => {
         expect(currentClipCount).toEqual(priorClipCount)
         priorClipCount = currentClipCount
       })
-    });
+    })
 
   })
 
@@ -73,11 +73,11 @@ describe('Phrase', () => {
       // Many different permutations into existing empty clips with no notes
       [createNote1, createNote1Again, createNote1Higher, createNote2, createNote3End].forEach((action) => {
         [stateEmpty, stateSingleClip, stateMultipleClips].forEach((state) => {
-          let newState = reducePhrase( state, action );
-          expect( newState.notes.length ).toBeGreaterThan( 0 );
-        });
-      });
-    });
+          let newState = reducePhrase( state, action )
+          expect( newState.notes.length ).toBeGreaterThan( 0 )
+        })
+      })
+    })
 
     it('should never create the same note twice', () => {
       // Many different permutations into empty tracks with no clips or notes
@@ -100,6 +100,6 @@ describe('Phrase', () => {
       })
     })
 
-  });
+  })
 
-});
+})

@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import StoryAction from './StoryAction.js';
-import StoryTrack from './StoryTrack.js';
-import StoryActivityPreview from './StoryActivityPreview.js';
+import React, { Component } from 'react'
+import StoryAction from './StoryAction.js'
+import StoryTrack from './StoryTrack.js'
+import StoryActivityPreview from './StoryActivityPreview.js'
 
 export default class Story extends Component {
 
   getClasses() {
-    return this.props.action ? 'story story-with-action' : 'story';
+    return this.props.action ? 'story story-with-action' : 'story'
   }
 
   getAction() {
@@ -17,12 +17,12 @@ export default class Story extends Component {
         action={this.props.action}
         timestamp={this.props.timestamp}
       />
-    ) : null;
+    ) : null
   }
 
   render() {
-    var storyClasses = this.getClasses();
-    var action = this.getAction();
+    var storyClasses = this.getClasses()
+    var action = this.getAction()
 
     return (
       <li className={storyClasses}>
@@ -37,7 +37,7 @@ export default class Story extends Component {
         />
         <StoryActivityPreview />
       </li>
-    );
+    )
   }
 }
 
@@ -57,4 +57,4 @@ Story.propTypes = {
   plays:        React.PropTypes.number.isRequired,
   likes:        React.PropTypes.number.isRequired,
   comments:     React.PropTypes.number.isRequired
-};
+}

@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { connect, dispatch } from 'react-redux';
+import React, { Component } from 'react'
+import { connect, dispatch } from 'react-redux'
 
 import { transportPlayToggle,
          transportStop,
-         transportRecord } from '../actions/actionsTransport.js';
+         transportRecord } from '../actions/actionsTransport.js'
 
-import TransportButton from './TransportButton';
+import TransportButton from './TransportButton'
 
 export default class Transport extends Component {
   render() {
-    var { dispatch, playing, recording } = this.props;
+    var { dispatch, playing, recording } = this.props
     return (
       <div className="transport ">
         <div className="btn-group">
@@ -21,7 +21,7 @@ export default class Transport extends Component {
           <TransportButton type="circle"        toggle={recording}  onButtonClick={() => dispatch(transportRecord())}     color="red"   />
         </div>        
       </div>
-    );
+    )
   }
 }
 
@@ -29,7 +29,7 @@ function mapStateToProps(state) {
   return {
     playing:   state.transport.playing,
     recording: state.transport.recording
-  };
+  }
 }
 
-export default connect(mapStateToProps)(Transport);
+export default connect(mapStateToProps)(Transport)

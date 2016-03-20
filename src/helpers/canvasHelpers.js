@@ -8,7 +8,7 @@ export function closestHalfPixel(pixels, pixelScale = 1){
   // Single-pixel stroke width must be drawn at a half-pixel position,
   // otherwise it gets sub-pixel blurring. 
   if (pixelScale == 1)
-    return parseInt( 0.5 + pixels ) - 0.5; // parseInt is a hack for efficient rounding 
+    return parseInt( 0.5 + pixels ) - 0.5 // parseInt is a hack for efficient rounding 
   // On retina displays, 2 retina-pixels are the same as 1 normal pixel.
   // In the case of drawing a 2-pixel stroke in Retina,
   // we actually want full-pixel positioning to avoid sub-pixel rendering.
@@ -20,22 +20,22 @@ export function closestHalfPixel(pixels, pixelScale = 1){
 
 export function drawLine(context, x1, y1, x2, y2, dashed = false, color = null, xyFlip = false) {
   if (color) {
-    context.beginPath();
-    context.strokeStyle = color;
+    context.beginPath()
+    context.strokeStyle = color
   }
 
   if (dashed)
     context.setLineDash(dashed)
 
   if (xyFlip) {
-    x1 = [y1, y1 = x1][0];
-    x2 = [y2, y2 = x2][0];
+    x1 = [y1, y1 = x1][0]
+    x2 = [y2, y2 = x2][0]
   }
-  context.moveTo( x1, y1 );
-  context.lineTo( x2, y2 );
+  context.moveTo( x1, y1 )
+  context.lineTo( x2, y2 )
 
   if (color)
-    context.stroke();
+    context.stroke()
 
   if (dashed)
     context.setLineDash([])

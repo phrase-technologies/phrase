@@ -44,8 +44,8 @@ export default class HotkeyProvider extends Component {
     // Everything else, override with custom hotkeys!
     e.preventDefault()
     switch(e.code) {
-      case 'Space':     dispatch(       transportPlayToggle() ); break;
-      case 'Delete':    dispatch(     phraseDeleteSelection() ); break;
+      case 'Space':     dispatch(       transportPlayToggle() ); break
+      case 'Delete':    dispatch(     phraseDeleteSelection() ); break
     }
   }
 }

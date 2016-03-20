@@ -11,7 +11,7 @@ import { pianorollScrollX,
 import { phraseCreateClip,
          phraseSelectClip,
          phraseDragClipSelection,
-         phraseDropClipSelection } from '../actions/actionsPhrase.js';
+         phraseDropClipSelection } from '../actions/actionsPhrase.js'
 import { cursorResizeLeft,
          cursorResizeRight,
          cursorResizeLoop,
@@ -19,7 +19,7 @@ import { cursorResizeLeft,
          cursorResizeRightLoop,
          cursorResizeRightClipped,
          cursorResizeRightLooped,
-         cursorClear } from '../actions/actionsCursor.js';         
+         cursorClear } from '../actions/actionsCursor.js'         
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
 const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
@@ -35,7 +35,7 @@ export class PianorollTimelineControl extends Component {
       <div className="pianoroll-timeline-control">
         {this.props.children}
       </div>
-    );
+    )
   }
 
   constructor() {
@@ -53,7 +53,7 @@ export class PianorollTimelineControl extends Component {
     this.props.grid.didMount()
 
     // Event Sources
-    this.container = ReactDOM.findDOMNode(this);
+    this.container = ReactDOM.findDOMNode(this)
     this.container.addEventListener('mousedown', this.mouseDownEvent)
     document.addEventListener('mousemove', this.mouseMoveEvent)
     document.addEventListener('mouseup',   this.mouseUpEvent)
@@ -81,7 +81,7 @@ export class PianorollTimelineControl extends Component {
   leftClickEvent(e) {
     var top = e.clientY - this.container.getBoundingClientRect().top
     if (top >= 25) {
-      var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
+      var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
       var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar)
     }
 
@@ -185,7 +185,7 @@ export class PianorollTimelineControl extends Component {
   }
 
   mouseMoveEvent(e) {
-    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
+    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
 
     // Drag Selected Clip(s)?
     if (this.lastEvent &&
@@ -194,9 +194,9 @@ export class PianorollTimelineControl extends Component {
       // Adjust Clip
       let offsetBar = bar - this.lastEvent.bar
       switch (this.lastEvent.grip) {
-        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; break;
-        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; break;
-        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; break;
+        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; break
+        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; break
+        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; break
       }
       this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, this.lastEvent.looped, 0, !e.altKey) )
       this.lastEvent.action = DRAG_CLIP

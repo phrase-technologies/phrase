@@ -5,22 +5,22 @@
 // barlines and provides horizontal scrolling. The tracks themselves also
 // provide horizontal scrolling but both are needed for the complete UX.
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import _ from 'lodash';
+import _ from 'lodash'
 import { closestHalfPixel,
-         drawLine } from '../helpers/canvasHelpers.js';
+         drawLine } from '../helpers/canvasHelpers.js'
 import { getTracksHeight } from '../helpers/trackHelpers.js'
 import { phraseCreateTrack } from '../actions/actionsPhrase.js'
 
-import MixerTrack from './MixerTrack.js';
-import MixerTrackNew from './MixerTrackNew.js';
+import MixerTrack from './MixerTrack.js'
+import MixerTrackNew from './MixerTrackNew.js'
 
 export default class MixerTracks extends Component {
 
   constructor() {
     super()
-    this.addNewTrack = this.addNewTrack.bind(this);
+    this.addNewTrack = this.addNewTrack.bind(this)
   }
 
   render() {
@@ -44,11 +44,11 @@ export default class MixerTracks extends Component {
         </ul>
         <div className="mixer-empty-area" style={{top: emptyAreaOffset}} />
       </div>
-    );
+    )
   }
 
   addNewTrack() {
-    this.props.dispatch(phraseCreateTrack());
+    this.props.dispatch(phraseCreateTrack())
   }
 
   shouldComponentUpdate(nextProps) {

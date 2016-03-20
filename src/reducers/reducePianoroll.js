@@ -2,13 +2,13 @@
 // Pianoroll View State
 // ============================================================================
 
-import u from 'updeep';
-import { zoomInterval } from '../helpers/intervalHelpers.js';
+import u from 'updeep'
+import { zoomInterval } from '../helpers/intervalHelpers.js'
 import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
-import { pianoroll } from '../actions/actions.js';
+import { pianoroll } from '../actions/actions.js'
 
-import marioNotes from '../helpers/marioNotes.js';
+import marioNotes from '../helpers/marioNotes.js'
 
 export const defaultState = {
   currentTrack: null,
@@ -23,11 +23,11 @@ export const defaultState = {
   selectionEndX: null,
   selectionEndY: null,
   cursor: null
-};
+}
 
-const maxBarWidth = 1000;
-const minKeyboardHeight =  800;
-const maxKeyboardHeight = 1275 + 300;
+const maxBarWidth = 1000
+const minKeyboardHeight =  800
+const maxKeyboardHeight = 1275 + 300
 
 export default function reducePianoroll(state = defaultState, action) {
   switch (action.type)
@@ -47,7 +47,7 @@ export default function reducePianoroll(state = defaultState, action) {
         Object.assign({}, state, {
           height: action.height
         })
-      );
+      )
 
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_X:
@@ -72,24 +72,24 @@ export default function reducePianoroll(state = defaultState, action) {
         selectionStartY: action.y,
         selectionEndX: action.x,
         selectionEndY: action.y
-      });
+      })
 
     // ------------------------------------------------------------------------
     case pianoroll.SELECTION_BOX_RESIZE:
       return Object.assign({}, state, {
         selectionEndX: action.x,
         selectionEndY: action.y
-      });
+      })
 
     // ------------------------------------------------------------------------
     case pianoroll.MOVE_CURSOR:
       return Object.assign({}, state, {
         cursor: action.percent
-      });
+      })
 
     // ------------------------------------------------------------------------
     default:
-      return state;
+      return state
   }  
 }
 
@@ -97,14 +97,14 @@ export default function reducePianoroll(state = defaultState, action) {
 function restrictKeyboardZoom(state) {
   var yMin = state.yMin
   var yMax = state.yMax
-  var keyboardHeight = state.height / (state.yMax - state.yMin);
+  var keyboardHeight = state.height / (state.yMax - state.yMin)
   if( keyboardHeight < minKeyboardHeight )
-    [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/minKeyboardHeight);
+    [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/minKeyboardHeight)
   if( keyboardHeight > maxKeyboardHeight )
-    [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/maxKeyboardHeight);
+    [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/maxKeyboardHeight)
   return u({
     yMin: yMin,
     yMax: yMax
-  }, state);
+  }, state)
 }
 

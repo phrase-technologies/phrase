@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import { createSelector } from 'reselect'
 
 const barCountSelector = (state) => {
   return state.phrase.barCount

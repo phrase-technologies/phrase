@@ -13,15 +13,15 @@ import { pianorollScrollX,
          pianorollMoveCursor,
          pianorollSelectionBoxStart,
          pianorollSelectionBoxResize,
-         pianorollSelectionBoxApply } from '../actions/actionsPianoroll.js';
+         pianorollSelectionBoxApply } from '../actions/actionsPianoroll.js'
 import { phraseCreateNote,
          phraseSelectNote,
          phraseDeleteNote,
          phraseDragNoteSelection,
-         phraseDropNoteSelection } from '../actions/actionsPhrase.js';
+         phraseDropNoteSelection } from '../actions/actionsPhrase.js'
 import { cursorResizeLeft,
          cursorResizeRight,
-         cursorClear } from '../actions/actionsCursor.js';         
+         cursorClear } from '../actions/actionsCursor.js'         
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
 const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
@@ -38,7 +38,7 @@ export class PianorollWindowControl extends Component {
       <div className="pianoroll-window-control">
         {this.props.children}
       </div>
-    );
+    )
   }
 
   constructor() {
@@ -59,19 +59,19 @@ export class PianorollWindowControl extends Component {
     this.props.grid.didMount()
 
     // Event Sources
-    this.container = ReactDOM.findDOMNode(this);
+    this.container = ReactDOM.findDOMNode(this)
     this.container.addEventListener('mousedown', this.mouseDownEvent)
     document.addEventListener('mousemove', this.mouseMoveEvent)
     document.addEventListener('mouseup',   this.mouseUpEvent)
-    window.addEventListener('resize', this.handleResize);
-    this.handleResize();
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize()
   }
 
   componentWillUnmount() {
     this.container.removeEventListener('mousedown', this.mouseDownEvent)
     document.removeEventListener('mousemove', this.mouseMoveEvent)
     document.removeEventListener('mouseup',   this.mouseUpEvent)
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this.handleResize)
   }
 
   mouseDownEvent(e) {
@@ -88,8 +88,8 @@ export class PianorollWindowControl extends Component {
   }
 
   leftClickEvent(e) {
-    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
-    var key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount);
+    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
+    var key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount)
     var foundNote = this.getNoteAtBarKey(bar, key)
 
     if (foundNote) {
@@ -179,8 +179,8 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseMoveEvent(e) {
-    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
-    var key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount;
+    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
+    var key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount
 
     // Drag Selected Note(s)?
     if (this.lastEvent &&
@@ -189,9 +189,9 @@ export class PianorollWindowControl extends Component {
       // Adjust Note
       let offsetBar = bar - this.lastEvent.bar
       switch (this.lastEvent.grip) {
-        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; var offsetKey = 0; break;
-        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; var offsetKey = key - this.lastEvent.key; break;
-        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; var offsetKey = 0; break;
+        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; var offsetKey = 0; break
+        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; var offsetKey = key - this.lastEvent.key; break
+        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; var offsetKey = 0; break
       }
       this.props.dispatch( phraseDragNoteSelection(this.lastEvent.noteID, offsetStart, offsetEnd, offsetKey, !e.altKey) )
       this.previewDragSound( offsetKey )
@@ -327,8 +327,8 @@ export class PianorollWindowControl extends Component {
   }
 
   handleResize() {
-    this.props.dispatch(pianorollResizeWidth( this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft));
-    this.props.dispatch(pianorollResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ));
+    this.props.dispatch(pianorollResizeWidth( this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft))
+    this.props.dispatch(pianorollResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ))
   }
 
   getNoteAtBarKey(bar, key) {
@@ -340,11 +340,11 @@ export class PianorollWindowControl extends Component {
   }
 
   getPercentX(e) {
-    return (e.clientX - this.container.getBoundingClientRect().left) / this.container.getBoundingClientRect().width;
+    return (e.clientX - this.container.getBoundingClientRect().left) / this.container.getBoundingClientRect().width
   }
 
   getPercentY(e) {
-    return (e.clientY - this.container.getBoundingClientRect().top) / this.container.getBoundingClientRect().height;
+    return (e.clientY - this.container.getBoundingClientRect().top) / this.container.getBoundingClientRect().height
   }
 }
 
