@@ -34,5 +34,17 @@ module.exports = {
         loaders: ['file']
       },
     ]
-  }
+  },
+    resolve: {
+    root: path.resolve(__dirname),
+     alias: {
+       components: 'src/components',
+       reducers: 'src/reducers',
+       actions: 'src/actions',
+       audio: 'src/audio',
+       helpers: 'src/helpers',
+       selectors: 'src/selectors',
+     },
+     extensions: ['', '.js', '.scss'],
+  },
 };
