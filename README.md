@@ -27,3 +27,11 @@ open http://localhost:3000
 ```
 npm test
 ```
+
+## Contributing
+Check code quality first: (TODO: Automate this via CI hook)
+```
+npm run lint
+```
+
+Submit pull request when ready
