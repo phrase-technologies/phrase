@@ -8,10 +8,10 @@
 // It is dependent on GridSystemProvider.
 // See: GridSystemProvider.js
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 import { shiftInterval,
-         zoomInterval } from '../helpers/intervalHelpers.js';
+         zoomInterval } from '../helpers/intervalHelpers.js'
 
 var provideGridScroll = function(
   ChildComponent,
@@ -41,13 +41,13 @@ var provideGridScroll = function(
 
     componentDidMount() {
       this.props.grid.didMount()
-      this.props.grid.container.addEventListener("wheel", this.handleScrollWheel)
-      this.props.grid.container.addEventListener("mousemove", this.handleMouseMove)
+      this.props.grid.container.addEventListener('wheel', this.handleScrollWheel)
+      this.props.grid.container.addEventListener('mousemove', this.handleMouseMove)
     }
 
     componentWillUnmount() {
-      this.props.grid.container.removeEventListener("wheel", this.handleScrollWheel)
-      this.props.grid.container.removeEventListener("mousemove", this.handleMouseMove)
+      this.props.grid.container.removeEventListener('wheel', this.handleScrollWheel)
+      this.props.grid.container.removeEventListener('mousemove', this.handleMouseMove)
     }
 
     // Scrolling and zooming within the timeline

@@ -7,7 +7,7 @@ import engineShape   from '../audio/AudioEnginePropTypes.js'
 import { pianorollResizeHeight,
          pianorollScrollY } from '../actions/actionsPianoroll.js'
 
-import PianorollKeyboardKey from './PianorollKeyboardKey.js';
+import PianorollKeyboardKey from './PianorollKeyboardKey.js'
 
 export class PianorollKeyboard extends Component {
 
@@ -41,7 +41,7 @@ export class PianorollKeyboard extends Component {
     var keys = []
     for (var key = 88; key > 0; key--) {
       // Specific sequence of black and white keys
-      let keyClass = "pianoroll-key"
+      let keyClass = 'pianoroll-key'
           keyClass += ( key % 12 in {2:true, 0:true, 10: true, 7: true, 5: true} ) ? ' black' : ' white'
           keyClass += ( key % 12 in {2:true,  7:true} ) ? ' higher' : ''
           keyClass += ( key % 12 in {10:true, 5:true} ) ? ' lower' : ''

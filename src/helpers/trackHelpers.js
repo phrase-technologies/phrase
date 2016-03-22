@@ -38,8 +38,8 @@ export function getOffsetedTrackID(currentTrackID, offset, allTracks) {
 }
 
 export function getDarkenedColor(color, shadeFactor, alpha = 1.0) {
-  if (typeof color != "string" || color[0] != "#" || color.length != 4)
-    throw Error("Invalid Color: " + color + " - must be in the form of #XXX")
+  if (typeof color != 'string' || color[0] != '#' || color.length != 4)
+    throw Error('Invalid Color: ' + color + ' - must be in the form of #XXX')
 
   var r = parseInt(color[1], 16)
   var g = parseInt(color[2], 16)
@@ -51,7 +51,7 @@ export function getDarkenedColor(color, shadeFactor, alpha = 1.0) {
   var g2 = Math.floor(g*brightness).toString(16)
   var b2 = Math.floor(b*brightness).toString(16)
 
-  if (typeof alpha == "number" && alpha < 1.0 && alpha >= 0.0) {
+  if (typeof alpha == 'number' && alpha < 1.0 && alpha >= 0.0) {
     var r3 = parseInt(r2+r2, 16)
     var g3 = parseInt(g2+g2, 16)
     var b3 = parseInt(b2+b2, 16)

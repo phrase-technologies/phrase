@@ -3,7 +3,7 @@
 // ============================================================================
 // This Component renders a playhead in any timeline, e.g. Mixer or Pianoroll. 
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class TimelinePlayhead extends Component {
   
@@ -12,7 +12,7 @@ export default class TimelinePlayhead extends Component {
     var playheadStyles = {
       display: this.props.playhead === null ? 'none' : 'block',
       left: left*100 + '%'
-    };
+    }
 
     return (
       <div className="timeline-playhead-window">
@@ -20,7 +20,7 @@ export default class TimelinePlayhead extends Component {
           <div className="timeline-playhead" style={playheadStyles} />
         </div>
       </div>
-    );
+    )
   }
 
 }
@@ -30,4 +30,4 @@ TimelinePlayhead.propTypes = {
   xMin: React.PropTypes.number,
   xMax: React.PropTypes.number,
   playhead: React.PropTypes.number
-};
+}

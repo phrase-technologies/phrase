@@ -8,29 +8,29 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import _ from 'lodash';
+import _ from 'lodash'
 import { shiftInterval,
-         zoomInterval } from '../helpers/intervalHelpers.js';
+         zoomInterval } from '../helpers/intervalHelpers.js'
 import { mixerScrollX,
-         mixerScrollY } from '../actions/actionsMixer.js';
+         mixerScrollY } from '../actions/actionsMixer.js'
 import { renderedClipsSelector,
          atleastOneTrackSoloedSelector } from '../selectors/selectorMixer.js'
 
-import MixerTimeline from './MixerTimeline.js';
-import MixerTracks from './MixerTracks.js';
-import MixerWindowDisplay from './MixerWindowDisplay.js';
-import MixerWindowControl from './MixerWindowControl.js';
-import MixerWindowFocus from './MixerWindowFocus.js';
-import TimelinePlayhead from './TimelinePlayhead.js';
-import TimelineCursor from './TimelineCursor.js';
-import ScrollBar from './Scrollbar.js';
+import MixerTimeline from './MixerTimeline.js'
+import MixerTracks from './MixerTracks.js'
+import MixerWindowDisplay from './MixerWindowDisplay.js'
+import MixerWindowControl from './MixerWindowControl.js'
+import MixerWindowFocus from './MixerWindowFocus.js'
+import TimelinePlayhead from './TimelinePlayhead.js'
+import TimelineCursor from './TimelineCursor.js'
+import ScrollBar from './Scrollbar.js'
 
 export class Mixer extends Component {
 
   render() {
-    let mixerClasses = "mixer"
-        mixerClasses += (this.props.yMin < 0.001) ? " mixer-disable-shadow-top"    : ""
-        mixerClasses += (this.props.yMax > 0.999) ? " mixer-disable-shadow-bottom" : ""
+    let mixerClasses = 'mixer'
+        mixerClasses += (this.props.yMin < 0.001) ? ' mixer-disable-shadow-top'    : ''
+        mixerClasses += (this.props.yMax > 0.999) ? ' mixer-disable-shadow-bottom' : ''
 
     let timelineProps = {
       dispatch: this.props.dispatch,
@@ -80,7 +80,7 @@ export class Mixer extends Component {
         <TimelineCursor     cursor={this.props.cursor} />
         <TimelinePlayhead playhead={this.props.playhead} {...timelineProps} />
       </div>
-    );
+    )
   }
 
   constructor() {
@@ -114,7 +114,7 @@ function mapStateToProps(state) {
     yMax: state.mixer.yMax,
     playhead: state.phrase.playhead,
     cursor: state.mixer.cursor
-  };
+  }
 }
 
-export default connect(mapStateToProps)(Mixer);
+export default connect(mapStateToProps)(Mixer)

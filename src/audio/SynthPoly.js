@@ -85,7 +85,7 @@ export class MonophonicSynth {
     this.amplitudeEnvelope.connect(this.outputGain)
     this.oscillator = this.ctx.createOscillator()
     this.oscillator.connect(this.amplitudeEnvelope)
-    this.oscillator.type = "square"
+    this.oscillator.type = 'square'
     this.oscillator.start()
     this.lastNote = null
   }

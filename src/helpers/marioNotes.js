@@ -71,4 +71,4 @@ export default [
     { id: 69, keyNum: 59, start: 4.813, end: 4.875, velocity: 127 },
     { id: 70, keyNum: 51, start: 4.813, end: 4.875, velocity: 127 },
     { id: 71, keyNum: 44, start: 4.813, end: 4.875, velocity: 127 }
-  ];
+  ]

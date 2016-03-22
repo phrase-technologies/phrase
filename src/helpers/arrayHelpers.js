@@ -16,7 +16,7 @@ export function uAppend(element, sortComparison = undefined) {
   return (array) => {
     var result = [...array, element]
 
-    if (typeof sortComparison === "function")
+    if (typeof sortComparison === 'function')
       result.sort(sortComparison)
     else if (sortComparison)
       result.sort()
@@ -57,7 +57,7 @@ import { memoize } from 'lodash'
 const hashFn = (...args) => {
   return args.reduce((hashKey, arg) => {
     return hashKey + '-' + JSON.stringify(arg)
-  }, "")
+  }, '')
 }
 export const createLargeCacheSelector = createSelectorCreator(memoize, hashFn)
 

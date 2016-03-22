@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 import { phraseArmTrack,
          phraseMuteTrack,
          phraseSoloTrack } from '../actions/actionsPhrase.js'
 
-import MixerTrackButton from './MixerTrackButton.js';
-import MixerTrackMeter  from './MixerTrackMeter.js';
+import MixerTrackButton from './MixerTrackButton.js'
+import MixerTrackMeter  from './MixerTrackMeter.js'
 
 export default class MixerTrack extends Component {
   render() {
-    var mixerTrackClasses  = "mixer-track"
-        mixerTrackClasses += this.props.focused ? " mixer-track-focused" : ""
+    var mixerTrackClasses  = 'mixer-track'
+        mixerTrackClasses += this.props.focused ? ' mixer-track-focused' : ''
 
     var tagStyle = {
       backgroundColor: this.props.track.color

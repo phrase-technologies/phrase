@@ -8,7 +8,7 @@ export class MixerTrackMeter extends Component {
 
   render() {
     var muteTrack = this.props.atleastOneTrackSoloed && !this.props.track.solo || this.props.track.mute
-    var trackColor = muteTrack ? "#888" : this.props.track.color
+    var trackColor = muteTrack ? '#888' : this.props.track.color
     var shadedColor = getDarkenedColor( trackColor, 0.25 )
     var meterStyle = {
       // background: this.props.track.color

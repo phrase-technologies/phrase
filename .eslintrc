@@ -9,6 +9,7 @@
   },
   "parser": "babel-eslint",
   "rules": {
+    semi: [2, "never"],
     "quotes": [2, "single"],
     "strict": [2, "never"],
     "react/jsx-uses-react": 2,

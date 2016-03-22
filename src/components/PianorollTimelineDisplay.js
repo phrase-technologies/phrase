@@ -22,12 +22,12 @@ export class PianorollTimelineDisplay extends Component {
       <div className="pianoroll-timeline-display">
         <CanvasComponent renderFrame={this.renderFrame()} />
       </div>
-    );
+    )
   }
 
   renderFrame() {
     return function(canvasContext) {
-      canvasContext.fillStyle = "#282828"
+      canvasContext.fillStyle = '#282828'
       canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height )
       this.props.grid.calculateZoomThreshold()
       this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax)
@@ -38,9 +38,9 @@ export class PianorollTimelineDisplay extends Component {
   renderBarLines(canvasContext, xMin, xMax) {
     // Styles
     canvasContext.lineWidth = 1.0
-    canvasContext.font = 11*this.props.grid.pixelScale + "px Helvetica Neue, Helvetica, Arial, sans-serif"
-    canvasContext.fillStyle = "#AAAAAA"
-    canvasContext.textAlign = "start"
+    canvasContext.font = 11*this.props.grid.pixelScale + 'px Helvetica Neue, Helvetica, Arial, sans-serif'
+    canvasContext.fillStyle = '#AAAAAA'
+    canvasContext.textAlign = 'start'
 
     // Draw lines for each beat
     var minBar = this.props.grid.percentToBar( xMin ) - 1
@@ -55,7 +55,7 @@ export class PianorollTimelineDisplay extends Component {
     {
       // Start each line as a separate path (different colors)
       let xPosition = closestHalfPixel( this.props.grid.barToXCoord( bar ) )
-      let yPosition = 0;
+      let yPosition = 0
 
       // Bar Numbers + Major lines
       if( bar % this.props.grid.lineThresholdsWithKeys.majorLine === 0 )
@@ -69,18 +69,18 @@ export class PianorollTimelineDisplay extends Component {
         canvasContext.fillText(outputText, leftEdge, topEdge)
 
         // Bar line style
-        canvasContext.strokeStyle = "#555555"
+        canvasContext.strokeStyle = '#555555'
       }
       // Intermediary Bar lines
       else if( bar % this.props.grid.lineThresholdsWithKeys.middleLine === 0 )
       {
-        canvasContext.strokeStyle = "#383838"
+        canvasContext.strokeStyle = '#383838'
         yPosition = 18 * this.props.grid.pixelScale
       }
       // Minor lines
       else if( this.props.grid.lineThresholdsWithKeys.minorLine )
       {
-        canvasContext.strokeStyle = "#333333"
+        canvasContext.strokeStyle = '#333333'
         yPosition = 20 * this.props.grid.pixelScale
       }
 
@@ -110,13 +110,13 @@ export class PianorollTimelineDisplay extends Component {
 
   renderClipBox(canvasContext, xMin, xMax, clip, top, bottom, radius, color, gradient) {
     canvasContext.lineWidth = this.props.grid.pixelScale
-    canvasContext.strokeStyle = "#000"
+    canvasContext.strokeStyle = '#000'
 
     // Gradient Fill
     if (gradient) {
-      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-          gradient.addColorStop(0, color);
-          gradient.addColorStop(1, getDarkenedColor(color, 0.266));
+      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
+          gradient.addColorStop(0, color)
+          gradient.addColorStop(1, getDarkenedColor(color, 0.266))
       canvasContext.fillStyle = gradient
     } else {
       canvasContext.fillStyle = color
@@ -147,13 +147,13 @@ export class PianorollTimelineDisplay extends Component {
       return
 
     canvasContext.lineWidth = this.props.grid.pixelScale
-    canvasContext.strokeStyle = "#000"
+    canvasContext.strokeStyle = '#000'
 
     // Gradient Fill
     if (gradient) {
-      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom);
-          gradient.addColorStop(0, getDarkenedColor(color, 0.533));
-          gradient.addColorStop(1, getDarkenedColor(color, 0.733));
+      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
+          gradient.addColorStop(0, getDarkenedColor(color, 0.533))
+          gradient.addColorStop(1, getDarkenedColor(color, 0.733))
       canvasContext.fillStyle = gradient
     } else {
       canvasContext.fillStyle = getDarkenedColor(color, 0.733)
@@ -186,8 +186,8 @@ export class PianorollTimelineDisplay extends Component {
     if (right < 0 || left > this.props.grid.width)
       return
 
-    canvasContext.fillStyle = clip.selected ? color : "#000"
-    canvasContext.textAlign = "start"
+    canvasContext.fillStyle = clip.selected ? color : '#000'
+    canvasContext.textAlign = 'start'
     let x = left   + 6*this.props.grid.pixelScale
     let y = bottom - 9*this.props.grid.pixelScale
     canvasContext.fillText(`Clip ${clip.id}`, x, y)
@@ -200,7 +200,7 @@ export class PianorollTimelineDisplay extends Component {
     while( currentLoopStart < clip.end ) {
       // Draw current line
       var currentLoopLine = closestHalfPixel( this.props.grid.barToXCoord( currentLoopStart ), this.props.grid.pixelScale )
-      drawLine( canvasContext, currentLoopLine, bottom, currentLoopLine, top, [2, 2], clip.selected ? color : "#000")
+      drawLine( canvasContext, currentLoopLine, bottom, currentLoopLine, top, [2, 2], clip.selected ? color : '#000')
 
       // Next iteration
       currentLoopStart += clip.loopLength
@@ -217,10 +217,10 @@ PianorollTimelineDisplay.propTypes = {
   xMin:         React.PropTypes.number.isRequired,
   xMax:         React.PropTypes.number.isRequired,
   clips:        React.PropTypes.array.isRequired
-};
+}
 
 export default provideTween(
-  ["xMin", "xMax"],
+  ['xMin', 'xMax'],
   provideGridSystem(
     PianorollTimelineDisplay
   )

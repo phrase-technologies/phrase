@@ -15,7 +15,7 @@ import { cursor,
 
 let defaultState = {
   icon: null
-};
+}
 
 export default function reduceCursor(state = defaultState, action) {
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class StorySound extends Component {
   render() {
@@ -7,7 +7,7 @@ export default class StorySound extends Component {
         <span className="fa fa-wifi fa-rotate-90" />
         Sound
       </div>      
-    );
+    )
   }
 }
 
@@ -19,4 +19,4 @@ StorySound.propTypes = {
                     userName:   React.PropTypes.string.isRequired
                   })
                 ),
-};
+}

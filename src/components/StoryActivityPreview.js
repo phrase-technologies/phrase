@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class StoryActivityPreview extends Component {
   render() {
@@ -6,9 +6,9 @@ export default class StoryActivityPreview extends Component {
       <div className="story-activity-preview">
         Activity Preview
       </div>      
-    );
+    )
   }
 }
 
 StoryActivityPreview.propTypes = {
-};
+}

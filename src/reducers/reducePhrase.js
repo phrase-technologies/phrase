@@ -2,10 +2,10 @@
 // Phrase Tracks
 // ============================================================================
 
-import u from 'updeep';
+import u from 'updeep'
 import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
-import { phrase } from '../actions/actions.js';
+import { phrase } from '../actions/actions.js'
 import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
@@ -31,18 +31,18 @@ export const defaultState = {
 }
 
 const TRACK_COLORS = [
-  "#F53",
-  "#F80",
-  "#FC0",
-  "#8D0",
-  "#0C0",
-  "#0C8",
-  "#0DD",
-  "#48F",
-  "#88F",
-  "#A6E",
-  "#D6D",
-  "#F4A"
+  '#F53',
+  '#F80',
+  '#FC0',
+  '#8D0',
+  '#0C0',
+  '#0C8',
+  '#0DD',
+  '#48F',
+  '#88F',
+  '#A6E',
+  '#D6D',
+  '#F4A'
 ]
 const MINIMUM_UNIT_LENGTH = 0.0078125
 
@@ -55,7 +55,7 @@ export default function reducePhrase(state = defaultState, action) {
         tracks: uAppend(
           {
             id: state.trackAutoIncrement,
-            name: action.name || "Track "+(state.trackAutoIncrement+1),
+            name: action.name || 'Track '+(state.trackAutoIncrement+1),
             color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
             arm:  false,
             mute: false,
@@ -286,7 +286,7 @@ export default function reducePhrase(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     default:
-      return state;
+      return state
   }  
 }
 
@@ -302,7 +302,7 @@ function reduceCreateClip(state, action) {
   }, state)
 
   // Create new clip
-  var snappedClipStart = Math.floor(action.bar) + 0.00;
+  var snappedClipStart = Math.floor(action.bar) + 0.00
   var newClip = u.freeze({
     id:         state.clipAutoIncrement,
     trackID:    action.trackID,
@@ -337,7 +337,7 @@ function reduceCreateNote(state, action) {
 
   // Insert note, snap to same length as most previously created note
   var snappedNoteKey   = Math.ceil(action.key)
-  var snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast;
+  var snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast
   var newNote = u.freeze({
     id:       state.noteAutoIncrement,
     trackID:  action.trackID,

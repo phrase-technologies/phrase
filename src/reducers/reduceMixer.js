@@ -77,7 +77,7 @@ export default function reduceMixer(state = defaultState, action) {
     case mixer.MOVE_CURSOR:
       return Object.assign({}, state, {
         cursor: action.percent
-      });
+      })
 
     // ------------------------------------------------------------------------
     default:

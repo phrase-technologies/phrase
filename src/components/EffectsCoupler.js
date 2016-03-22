@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class EffectsCoupler extends Component {
 
@@ -10,6 +10,6 @@ export default class EffectsCoupler extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }

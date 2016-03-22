@@ -18,7 +18,7 @@ import { fireNote,
 //       https://github.com/cwilso/metronome/blob/master/js/metronome.js
 export function startPlayback(engine, state, dispatch) {
 
-  console.log("startPlayback()", engine.ctx.currentTime)
+  console.log('startPlayback()', engine.ctx.currentTime)
 
   // Keep track of when playback began
   engine.isPlaying = true
@@ -48,7 +48,7 @@ export function startPlayback(engine, state, dispatch) {
 
       // Empty section at end of song - escape
       if (engine.iCommand >= engine.midiCommands.length)
-        break;
+        break
 
       fireNote(
         engine,
@@ -97,7 +97,7 @@ export function startPlayback(engine, state, dispatch) {
 // necessary
 export function stopPlayback(engine, state) {
 
-  console.log("stopPlayback()", engine.ctx.currentTime)
+  console.log('stopPlayback()', engine.ctx.currentTime)
 
   // Kill all active sounds
   _.forOwn(engine.trackModules, (track, trackID) => {

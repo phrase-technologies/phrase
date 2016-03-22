@@ -21,13 +21,13 @@ export default class HotkeyProvider extends Component {
     super()
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleKeyUp   = this.handleKeyUp.bind(this)
-    document.addEventListener("keydown", this.handleKeyDown)
-    document.addEventListener("keyup",   this.handleKeyUp)
+    document.addEventListener('keydown', this.handleKeyDown)
+    document.addEventListener('keyup',   this.handleKeyUp)
   }
 
   handleKeyDown(e) {
     // Prevent doublebooking events with form <inputs>
-    if (e.target.tagName == "INPUT")
+    if (e.target.tagName == 'INPUT')
       return
 
     // Everything else, override!
@@ -38,14 +38,14 @@ export default class HotkeyProvider extends Component {
     let dispatch = this.props.dispatch
 
     // Prevent doublebooking events with form <inputs>
-    if (e.target.tagName == "INPUT")
+    if (e.target.tagName == 'INPUT')
       return
 
     // Everything else, override with custom hotkeys!
     e.preventDefault()
     switch(e.code) {
-      case "Space":     dispatch(       transportPlayToggle() ); break;
-      case "Delete":    dispatch(     phraseDeleteSelection() ); break;
+      case 'Space':     dispatch(       transportPlayToggle() ); break
+      case 'Delete':    dispatch(     phraseDeleteSelection() ); break
     }
   }
 }

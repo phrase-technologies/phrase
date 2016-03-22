@@ -11,7 +11,7 @@ import { pianorollScrollX,
 import { phraseCreateClip,
          phraseSelectClip,
          phraseDragClipSelection,
-         phraseDropClipSelection } from '../actions/actionsPhrase.js';
+         phraseDropClipSelection } from '../actions/actionsPhrase.js'
 import { cursorResizeLeft,
          cursorResizeRight,
          cursorResizeLoop,
@@ -19,13 +19,13 @@ import { cursorResizeLeft,
          cursorResizeRightLoop,
          cursorResizeRightClipped,
          cursorResizeRightLooped,
-         cursorClear } from '../actions/actionsCursor.js';         
+         cursorClear } from '../actions/actionsCursor.js'         
 
-const SELECT_EMPTY_AREA = "SELECT_EMPTY_AREA"
-const CLICK_EMPTY_AREA  = "CLICK_EMPTY_AREA"
-const SELECT_CLIP       = "SELECT_CLIP"
-const CLICK_CLIP        = "CLICK_CLIP"
-const DRAG_CLIP         = "DRAG_CLIP"
+const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
+const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
+const SELECT_CLIP       = 'SELECT_CLIP'
+const CLICK_CLIP        = 'CLICK_CLIP'
+const DRAG_CLIP         = 'DRAG_CLIP'
 const DOUBLECLICK_DELAY = 360
 
 export class PianorollTimelineControl extends Component {
@@ -35,7 +35,7 @@ export class PianorollTimelineControl extends Component {
       <div className="pianoroll-timeline-control">
         {this.props.children}
       </div>
-    );
+    )
   }
 
   constructor() {
@@ -53,16 +53,16 @@ export class PianorollTimelineControl extends Component {
     this.props.grid.didMount()
 
     // Event Sources
-    this.container = ReactDOM.findDOMNode(this);
-    this.container.addEventListener("mousedown", this.mouseDownEvent)
-    document.addEventListener("mousemove", this.mouseMoveEvent)
-    document.addEventListener("mouseup",   this.mouseUpEvent)
+    this.container = ReactDOM.findDOMNode(this)
+    this.container.addEventListener('mousedown', this.mouseDownEvent)
+    document.addEventListener('mousemove', this.mouseMoveEvent)
+    document.addEventListener('mouseup',   this.mouseUpEvent)
   }
 
   componentWillUnmount() {
-    this.container.removeEventListener("mousedown", this.mouseDownEvent)
-    document.removeEventListener("mousemove", this.mouseMoveEvent)
-    document.removeEventListener("mouseup",   this.mouseUpEvent)
+    this.container.removeEventListener('mousedown', this.mouseDownEvent)
+    document.removeEventListener('mousemove', this.mouseMoveEvent)
+    document.removeEventListener('mouseup',   this.mouseUpEvent)
   }
 
   mouseDownEvent(e) {
@@ -81,7 +81,7 @@ export class PianorollTimelineControl extends Component {
   leftClickEvent(e) {
     var top = e.clientY - this.container.getBoundingClientRect().top
     if (top >= 25) {
-      var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
+      var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
       var foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar)
     }
 
@@ -129,31 +129,31 @@ export class PianorollTimelineControl extends Component {
 
       // Adjust Start Point
       if (bar < foundClip.start + threshold) {
-        this.props.dispatch( cursorResizeLeft("explicit") )
-        this.lastEvent.grip = "MIN"
+        this.props.dispatch( cursorResizeLeft('explicit') )
+        this.lastEvent.grip = 'MIN'
       // Adjust End Point
       } else if (bar > foundClip.end - threshold) {
         // Already Looped Clip
         if (this.lastEvent.looped) {
-          this.props.dispatch( cursorResizeRight("explicit") )
+          this.props.dispatch( cursorResizeRight('explicit') )
         // Possibly Looped Clip Depending on Cursor Position
         } else {
           var top = e.clientY - this.container.getBoundingClientRect().top
           // Not Looped
           if (top <= 37.5) {
-            this.props.dispatch( cursorResizeRightClipped("explicit") )
+            this.props.dispatch( cursorResizeRightClipped('explicit') )
             this.lastEvent.looped = false
           // Looped
           } else {
-            this.props.dispatch( cursorResizeRightLooped("explicit") )
+            this.props.dispatch( cursorResizeRightLooped('explicit') )
             this.lastEvent.looped = true
           }
         }
-        this.lastEvent.grip = "MAX"
+        this.lastEvent.grip = 'MAX'
       // Move Entire Clip
       } else {
-        this.props.dispatch( cursorClear("explicit") )
-        this.lastEvent.grip = "MID"
+        this.props.dispatch( cursorClear('explicit') )
+        this.lastEvent.grip = 'MID'
       }
     }
   }
@@ -185,7 +185,7 @@ export class PianorollTimelineControl extends Component {
   }
 
   mouseMoveEvent(e) {
-    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
+    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
 
     // Drag Selected Clip(s)?
     if (this.lastEvent &&
@@ -194,9 +194,9 @@ export class PianorollTimelineControl extends Component {
       // Adjust Clip
       let offsetBar = bar - this.lastEvent.bar
       switch (this.lastEvent.grip) {
-        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; break;
-        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; break;
-        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; break;
+        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; break
+        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; break
+        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; break
       }
       this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, this.lastEvent.looped, 0, !e.altKey) )
       this.lastEvent.action = DRAG_CLIP
@@ -223,22 +223,22 @@ export class PianorollTimelineControl extends Component {
       )
 
       if (bar < foundClip.start + threshold) {
-        this.props.dispatch( cursorResizeLeft("implicit") )
+        this.props.dispatch( cursorResizeLeft('implicit') )
       } else if (bar > foundClip.end - threshold) {
         if (foundClip.loopLength != foundClip.end - foundClip.start)
-          this.props.dispatch( cursorResizeRight("implicit") )
+          this.props.dispatch( cursorResizeRight('implicit') )
         else {
           var top = e.clientY - this.container.getBoundingClientRect().top
           top <= 37.5
-            ? this.props.dispatch( cursorResizeRightClip("implicit") )
-            : this.props.dispatch( cursorResizeRightLoop("implicit") )
+            ? this.props.dispatch( cursorResizeRightClip('implicit') )
+            : this.props.dispatch( cursorResizeRightLoop('implicit') )
         }
       } else {
-        this.props.dispatch( cursorClear("implicit") )
+        this.props.dispatch( cursorClear('implicit') )
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else {
-      this.props.dispatch( cursorClear("implicit") )
+      this.props.dispatch( cursorClear('implicit') )
     }    
   }
 
@@ -257,7 +257,7 @@ export class PianorollTimelineControl extends Component {
         this.lastEvent.action == SELECT_CLIP) {
       // Focus to this clip! Cancel Cursor
       this.props.dispatch( pianorollSetFocusWindow(this.lastEvent.clipID, false) )
-      this.props.dispatch( cursorClear("explicit") )
+      this.props.dispatch( cursorClear('explicit') )
 
       // Prepare for possibility of second click
       this.lastEvent.action = CLICK_CLIP

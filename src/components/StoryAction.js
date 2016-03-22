@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import Moment from 'moment-twitter';
-import StoryUser from './StoryUser.js';
+import React, { Component } from 'react'
+import Moment from 'moment-twitter'
+import StoryUser from './StoryUser.js'
 
 export default class StoryAction extends Component {
   render() {
-    var timestamp = Moment(this.props.timestamp).twitterLong();
+    var timestamp = Moment(this.props.timestamp).twitterLong()
 
     return (
       <div className="story-action">
@@ -16,7 +16,7 @@ export default class StoryAction extends Component {
         <span className="separator-bullet"> &bull; </span>
         <a className="story-user-timestamp"> {timestamp.toString()}</a>
       </div>      
-    );
+    )
   }
 }
 
@@ -25,4 +25,4 @@ StoryAction.propTypes = {
   userName:     React.PropTypes.string.isRequired,
   action:       React.PropTypes.string.isRequired,
   timestamp:    React.PropTypes.instanceOf(Date).isRequired
-};
+}

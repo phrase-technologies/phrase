@@ -5,26 +5,26 @@
 // barlines and provides horizontal scrolling. The tracks themselves also
 // provide horizontal scrolling but both are needed for the complete UX.
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 
-import _ from 'lodash';
+import _ from 'lodash'
 import { closestHalfPixel,
-         drawLine } from '../helpers/canvasHelpers.js';
+         drawLine } from '../helpers/canvasHelpers.js'
 import { mixerScrollX,
          mixerScrollY,
          mixerResizeWidth,
          mixerResizeHeight,
-         mixerMoveCursor } from '../actions/actionsMixer.js';
+         mixerMoveCursor } from '../actions/actionsMixer.js'
 import { getTrackHeight,
          getTracksHeight } from '../helpers/trackHelpers.js'
 import { phraseCreateClip,
          phraseSelectClip,
          phraseDragClipSelection,
-         phraseDropClipSelection } from '../actions/actionsPhrase.js';
-import { pianorollSetFocusWindow } from '../actions/actionsPianoroll.js';         
+         phraseDropClipSelection } from '../actions/actionsPhrase.js'
+import { pianorollSetFocusWindow } from '../actions/actionsPianoroll.js'         
 import { cursorResizeLeft,
          cursorResizeRight,
          cursorResizeLoop,
@@ -32,16 +32,16 @@ import { cursorResizeLeft,
          cursorResizeRightLoop,
          cursorResizeRightClipped,
          cursorResizeRightLooped,
-         cursorClear } from '../actions/actionsCursor.js';         
+         cursorClear } from '../actions/actionsCursor.js'         
 
-import CanvasComponent from './CanvasComponent';
+import CanvasComponent from './CanvasComponent'
 
-const SELECT_EMPTY_AREA = "SELECT_EMPTY_AREA"
-const CLICK_EMPTY_AREA  = "CLICK_EMPTY_AREA"
-const SELECT_CLIP       = "SELECT_CLIP"
-const CLICK_CLIP        = "CLICK_CLIP"
-const DRAG_CLIP         = "DRAG_CLIP"
-const SELECTION_BOX     = "SELECTION_BOX"
+const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
+const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
+const SELECT_CLIP       = 'SELECT_CLIP'
+const CLICK_CLIP        = 'CLICK_CLIP'
+const DRAG_CLIP         = 'DRAG_CLIP'
+const SELECTION_BOX     = 'SELECTION_BOX'
 const DOUBLECLICK_DELAY = 360
 
 export class MixerWindowControl extends Component {
@@ -51,7 +51,7 @@ export class MixerWindowControl extends Component {
       <div className="mixer-window-control">
         {this.props.children}
       </div>
-    );
+    )
   }
 
   constructor(){
@@ -64,24 +64,24 @@ export class MixerWindowControl extends Component {
 
   componentDidMount() {
     // Setup Grid System
-    this.props.grid.marginLeft   = 10;
-    this.props.grid.marginRight  = 11;
+    this.props.grid.marginLeft   = 10
+    this.props.grid.marginRight  = 11
     this.props.grid.didMount()
 
     // Event Sources
-    this.container = ReactDOM.findDOMNode(this);
-    this.container.addEventListener("mousedown", this.mouseDownEvent)
-    document.addEventListener("mousemove", this.mouseMoveEvent)
-    document.addEventListener("mouseup",   this.mouseUpEvent)
-    window.addEventListener('resize', this.handleResize);
-    this.handleResize();
+    this.container = ReactDOM.findDOMNode(this)
+    this.container.addEventListener('mousedown', this.mouseDownEvent)
+    document.addEventListener('mousemove', this.mouseMoveEvent)
+    document.addEventListener('mouseup',   this.mouseUpEvent)
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize()
   }
 
   componentWillUnmount() {
-    this.container.removeEventListener("mousedown", this.mouseDownEvent)
-    document.removeEventListener("mousemove", this.mouseMoveEvent)
-    document.removeEventListener("mouseup",   this.mouseUpEvent)
-    window.removeEventListener('resize', this.handleResize);
+    this.container.removeEventListener('mousedown', this.mouseDownEvent)
+    document.removeEventListener('mousemove', this.mouseMoveEvent)
+    document.removeEventListener('mouseup',   this.mouseUpEvent)
+    window.removeEventListener('resize', this.handleResize)
   }
 
   mouseDownEvent(e) {
@@ -98,7 +98,7 @@ export class MixerWindowControl extends Component {
   }
 
   leftClickEvent(e) {
-    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
+    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     var trackID = this.getTrackFromCursor(e)
     var foundClip = this.props.clips.find(clip => clip.trackID == trackID && clip.start <= bar && clip.end > bar)
 
@@ -146,30 +146,30 @@ export class MixerWindowControl extends Component {
 
       // Adjust Start Point
       if (bar < foundClip.start + threshold) {
-        this.props.dispatch( cursorResizeLeft("explicit") )
-        this.lastEvent.grip = "MIN"
+        this.props.dispatch( cursorResizeLeft('explicit') )
+        this.lastEvent.grip = 'MIN'
       // Adjust End Point
       } else if (bar > foundClip.end - threshold) {
         // Already Looped Clip
         if (this.lastEvent.looped) {
-          this.props.dispatch( cursorResizeRight("explicit") )
+          this.props.dispatch( cursorResizeRight('explicit') )
         // Possibly Looped Clip Depending on Cursor Position
         } else {
           // Not Looped
           if (this.isCursorAtTrackTopHalf(e, trackID)) {
-            this.props.dispatch( cursorResizeRightClipped("explicit") )
+            this.props.dispatch( cursorResizeRightClipped('explicit') )
             this.lastEvent.looped = false
           // Looped
           } else {
-            this.props.dispatch( cursorResizeRightLooped("explicit") )
+            this.props.dispatch( cursorResizeRightLooped('explicit') )
             this.lastEvent.looped = true
           }
         }
-        this.lastEvent.grip = "MAX"
+        this.lastEvent.grip = 'MAX'
       // Move Entire Clip
       } else {
-        this.props.dispatch( cursorClear("explicit") )
-        this.lastEvent.grip = "MID"
+        this.props.dispatch( cursorClear('explicit') )
+        this.lastEvent.grip = 'MID'
       }
     }
   }
@@ -202,7 +202,7 @@ export class MixerWindowControl extends Component {
   }
 
   mouseMoveEvent(e) {
-    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount;
+    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     var trackID = this.getTrackFromCursor(e, true)       // Strict = true:  treat the gaps between each track as NOT considered a track
     var trackIDFluid = this.getTrackFromCursor(e, false) // Strict = false: treat the gaps between each track as actual tracks to facilitate smooth drag and drop
 
@@ -215,9 +215,9 @@ export class MixerWindowControl extends Component {
       let offsetTrack
       let offsetBar = bar - this.lastEvent.bar
       switch (this.lastEvent.grip) {
-        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; offsetTrack = null; break;
-        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; offsetTrack = trackPosition - this.lastEvent.trackPosition; break;
-        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; offsetTrack = null; break;
+        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; offsetTrack = null; break
+        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; offsetTrack = trackPosition - this.lastEvent.trackPosition; break
+        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; offsetTrack = null; break
       }
       this.props.dispatch( phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, this.lastEvent.looped, offsetTrack, !e.altKey) )
       this.lastEvent.action = DRAG_CLIP
@@ -244,20 +244,20 @@ export class MixerWindowControl extends Component {
       )
 
       if (bar < foundClip.start + threshold) {
-        this.props.dispatch( cursorResizeLeft("implicit") )
+        this.props.dispatch( cursorResizeLeft('implicit') )
       } else if (bar > foundClip.end - threshold) {
         if (foundClip.loopLength != foundClip.end - foundClip.start)
-          this.props.dispatch( cursorResizeRight("implicit") )
+          this.props.dispatch( cursorResizeRight('implicit') )
         else
           this.isCursorAtTrackTopHalf(e, trackID)
-            ? this.props.dispatch( cursorResizeRightClip("implicit") )
-            : this.props.dispatch( cursorResizeRightLoop("implicit") )
+            ? this.props.dispatch( cursorResizeRightClip('implicit') )
+            : this.props.dispatch( cursorResizeRightLoop('implicit') )
       } else {
-        this.props.dispatch( cursorClear("implicit") )
+        this.props.dispatch( cursorClear('implicit') )
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else {
-      this.props.dispatch( cursorClear("implicit") )
+      this.props.dispatch( cursorClear('implicit') )
     }    
   }
 
@@ -276,7 +276,7 @@ export class MixerWindowControl extends Component {
         this.lastEvent.action == SELECT_CLIP) {
       // Focus Clip Editor to this Clip, Cancel Cursor
       this.props.dispatch( pianorollSetFocusWindow(this.lastEvent.clipID, false) )
-      this.props.dispatch( cursorClear("explicit") )
+      this.props.dispatch( cursorClear('explicit') )
 
       // Prepare for possibility of second click
       this.lastEvent.action = CLICK_CLIP
@@ -351,8 +351,8 @@ export class MixerWindowControl extends Component {
   }
 
   handleResize() {
-    this.props.dispatch(mixerResizeWidth( this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft));
-    this.props.dispatch(mixerResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ));
+    this.props.dispatch(mixerResizeWidth( this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft))
+    this.props.dispatch(mixerResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ))
   }
 
   shouldComponentUpdate(nextProps) {

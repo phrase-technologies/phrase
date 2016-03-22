@@ -1,10 +1,10 @@
 // ============================================================================
 // GLOBAL SCRIPTS
 // ============================================================================
-require("css-element-queries/src/ResizeSensor.js");
-require("css-element-queries/src/ElementQueries.js");
+require('css-element-queries/src/ResizeSensor.js')
+require('css-element-queries/src/ElementQueries.js')
 
-import './index.scss';
+import './index.scss'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
@@ -20,7 +20,7 @@ import Layout from './components/Layout.js'
 const finalCreateStore = compose(
   applyMiddleware(),
   window.devToolsExtension ? window.devToolsExtension() : f => f
-)(createStore);
+)(createStore)
 const STORE = finalCreateStore(finalReducer)
 
 // Setup initial state - 2 tracks by default

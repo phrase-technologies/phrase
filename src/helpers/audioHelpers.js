@@ -10,7 +10,7 @@ for (var i = 1; i <= 88; i++)
 
 export function getFrequencyFromKeyNum(keyNum) {
   // Valid keyNum
-  if (typeof keyNum == "number" && keyNum >= 1 && keyNum <= 88)
+  if (typeof keyNum == 'number' && keyNum >= 1 && keyNum <= 88)
     return keyFrequency[keyNum]
 
   // If we get to hear - something wrong!

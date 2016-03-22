@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class Pianoroll extends Component {
 
@@ -11,6 +11,6 @@ export default class Pianoroll extends Component {
         <div className="effects-chain-body">
         </div>
       </div>
-    );
+    )
   }
 }
