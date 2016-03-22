@@ -12,10 +12,10 @@ import ReactDOM from 'react-dom'
 // Create the STORE
 // ============================================================================
 import { Provider as StoreProvider } from 'react-redux'
-import EngineProvider from './audio/AudioEngineProvider.js'
+import EngineProvider from 'audio/AudioEngineProvider.js'
 import { createStore, compose, applyMiddleware } from 'redux'
-import finalReducer from './reducers/reduce.js'
-import Layout from './components/Layout.js'
+import finalReducer from 'reducers/reduce.js'
+import Layout from 'components/Layout.js'
 
 const finalCreateStore = compose(
   applyMiddleware(),
@@ -24,14 +24,14 @@ const finalCreateStore = compose(
 const STORE = finalCreateStore(finalReducer)
 
 // Setup initial state - 2 tracks by default
-import { phraseCreateTrack } from './actions/actionsPhrase.js'
+import { phraseCreateTrack } from 'actions/actionsPhrase.js'
 STORE.dispatch( phraseCreateTrack() )
 STORE.dispatch( phraseCreateTrack() )
 
 // ============================================================================
 // Setup Audio Engine
 // ============================================================================
-import createAudioEngine from './audio/AudioEngine.js'
+import createAudioEngine from 'audio/AudioEngine.js'
 const ENGINE = createAudioEngine(STORE)
 
 // ============================================================================
