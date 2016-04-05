@@ -4,19 +4,22 @@ import bodyParser from 'koa-bodyparser'
 import mongoose from 'mongoose'
 import { db } from './config'
 import auth from './auth'
-
+import jwt from 'koa-jwt'
+import { secret } from './config'
+import chalk from 'chalk'
 
 mongoose.connect(db)
 
 let app = new Koa()
 
-app.use(convert(bodyParser()))
-app.use(auth.routes())
-
 app.keys = [ `i got 99 problemz but a DAW aint one` ]
 
+app.use(convert(bodyParser()))
+app.use(auth.routes())
+app.use(convert(jwt({ secret })))
+
 app.listen(3000, () => {
-  console.log(`Server running at http://localhost:3000`)
+  console.log(chalk.yellow(`⚡ Server running at http://localhost:3000`))
 })
 
 export default app
