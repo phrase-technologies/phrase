@@ -13,13 +13,14 @@ export class PolyphonicSynth {
     this.voices = []
     this.activeVoices = []
     this.unusedVoices = []
+    this.pitchwheelSettings = [ 2, -2 ]
 
     // Populate the polyphony of voices
-    for (var i = 0; i < this.polyphony; i++) {
-      var newVoice = new this.VoiceClass(this.ctx)
-          newVoice.connect( this.outputGain )
-      this.voices.push( newVoice )
-      this.unusedVoices.push( newVoice )
+    for (let i = 0; i < this.polyphony; i++) {
+      let newVoice = new this.VoiceClass(this.ctx)
+      newVoice.connect(this.outputGain)
+      this.voices.push(newVoice)
+      this.unusedVoices.push(newVoice)
     }
   }
 
@@ -27,12 +28,12 @@ export class PolyphonicSynth {
     this.outputGain.connect(target)
   }
 
-  fireNote(keyNum, velocity, time = 0) {
+  fireNote(keyNum, velocity, time = 0, detune) {
     // Handle kill signals first
     if (velocity == 0) {
       var voiceToKill = _.remove(this.activeVoices, voice => voice.lastNote === keyNum).shift()
       if (voiceToKill) {
-        voiceToKill.fireNote(keyNum, 0, time)
+        voiceToKill.fireNote(keyNum, 0, time, detune)
         this.unusedVoices.push(voiceToKill)
       }
       return
@@ -41,7 +42,7 @@ export class PolyphonicSynth {
     // Is voice already in play? Reuse voice
     var activeVoice = _.remove(this.activeVoices, voice => voice.lastNote === keyNum).shift()
     if (activeVoice) {
-      activeVoice.fireNote(keyNum, velocity, time)
+      activeVoice.fireNote(keyNum, velocity, time, detune)
       this.activeVoices.push(activeVoice)
       return
     }
@@ -49,7 +50,7 @@ export class PolyphonicSynth {
     // Try using an inactive voice
     var unusedVoice = this.unusedVoices.shift()
     if (unusedVoice) {
-      unusedVoice.fireNote(keyNum, velocity, time)
+      unusedVoice.fireNote(keyNum, velocity, time, detune)
       this.activeVoices.push(unusedVoice)
       return
     }
@@ -57,13 +58,13 @@ export class PolyphonicSynth {
     // Nothing available, must steal!
     var stolenVoice = this.activeVoices.shift()
     if (stolenVoice) {
-      stolenVoice.fireNote(keyNum, velocity, time)
+      stolenVoice.fireNote(keyNum, velocity, time, detune)
       this.activeVoices.push(stolenVoice)
       return
     }
 
     // If we get here, well technically it would only be possible if you have 0 voices. Could be cause for an exception?
-    // Or maybe we should just put a bunch of rap lyrics yo. 
+    // Or maybe we should just put a bunch of rap lyrics yo.
     // I got enemies, gotta lotta enemies
     // Gotta lotta people tryna take away my energy
   }
@@ -77,7 +78,7 @@ export class PolyphonicSynth {
 
 export class MonophonicSynth {
 
-  constructor(AudioContext) { 
+  constructor(AudioContext) {
     this.ctx = AudioContext
     this.outputGain = this.ctx.createGain()
     this.amplitudeEnvelope = this.ctx.createGain()
@@ -94,14 +95,15 @@ export class MonophonicSynth {
     this.outputGain.connect(target)
   }
 
-  fireNote(keyNum, velocity, time = 0) {
+  fireNote(keyNum, velocity, time = 0, detune) {
+    console.log(detune)
     // If this voice has been stolen, ignore "dud" kill signals
-    if (velocity == 0 && this.lastNote != keyNum)
+    if (!velocity && this.lastNote !== keyNum)
       return
 
     // Schedule the key change
-    var frequency = getFrequencyFromKeyNum(keyNum)
-    this.oscillator.frequency.cancelScheduledValues( time )
+    let frequency = getFrequencyFromKeyNum(keyNum)
+    this.oscillator.frequency.cancelScheduledValues(time)
     this.oscillator.frequency.setValueAtTime(frequency, time) // TODO: Legato
 
     // Schedule the Amplitude change
@@ -120,4 +122,3 @@ export class MonophonicSynth {
   }
 
 }
-

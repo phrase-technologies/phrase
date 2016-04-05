@@ -6,7 +6,7 @@ import { fireNote,
 import { startPlayback,
          stopPlayback } from './AudioEnginePlaybackLoop.js'
 
-var AudioContext = AudioContext || webkitAudioContext
+let AudioContext = AudioContext || webkitAudioContext
 
 // ============================================================================
 // ENGINE CREATION
@@ -22,35 +22,61 @@ export default function createAudioEngine(STORE) {
   // This is a private mutable object. It is passed around to other functions
   // inside this AudioEngine, which mutate it as a way to communicate
   // changes in real-time to other functions that also access it.
-  // 
+  //
   // Despite the strict use of immutables and pure functional strategies in
   // the Redux store and elsewhere in this app, we stick to mutable techniques
   // here as it is easy to grok. Perhaps worth investigating further in the
   // future if immutable techniques are helpful. TODO
-  var engine = {
+  let engine = {
     ctx: new AudioContext(),
     masterGain: null,
     trackModules: {},
     midiCommands: [],
+    midiAccess: false,
     iCommand: null,
     isPlaying: false,
     playStartTime: null,
     playheadPositionBars: null,
     stopQueued: false,
     unsubscribeStoreChanges: null,
-    lastState: {
-      tracks: null
-    }
+    lastState: { tracks: null },
   }
   engine.masterGain = engine.ctx.createGain()
-  engine.masterGain.connect( engine.ctx.destination )
+  engine.masterGain.connect(engine.ctx.destination)
   engine.masterGain.gain.value = 0.25
 
   // --------------------------------------------------------------------------
   // State-driven behaviours
   // --------------------------------------------------------------------------
   engine.unsubscribeStoreChanges = STORE.subscribe(() => {
-    var state = STORE.getState()
+    let state = STORE.getState()
+
+    function onMIDIMessage (event) {
+      let [ type, key, velocity ] = event.data
+
+      /*
+       *  TODO:
+       *    - add note to track if recording
+       *    - pitch bends / knobs / sliders etc
+       *    - make mapping for event types, eg - 144: note on/off, 224: pitch bend
+       */
+
+      let armedTrack = state.phrase.present.tracks.find(x => x.arm)
+      if (armedTrack && type === 144) {
+        if (velocity) fireNote(engine, armedTrack.id, key, velocity)
+        else killNote(engine, armedTrack.id, key, velocity)
+      }
+    }
+
+    navigator.requestMIDIAccess().then(
+      midiAccess => {
+        engine.midiAccess = midiAccess
+        engine.midiAccess.inputs.forEach(entry => {
+          entry.onmidimessage = onMIDIMessage
+        })
+      },
+      error => console.log(`Failed to get MIDI access - ${error}`)
+    )
 
     // PLAY Playback state
     if (state.transport.playing && !engine.isPlaying)
@@ -89,4 +115,3 @@ export default function createAudioEngine(STORE) {
     }
   }
 }
-

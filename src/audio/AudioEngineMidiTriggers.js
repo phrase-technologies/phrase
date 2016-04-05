@@ -3,12 +3,12 @@ import { phraseMidiSelector } from '../selectors/selectorTransport.js'
 // ============================================================================
 // CONVERT NOTES TO MIDI COMAMNDS
 // ============================================================================
-// This converts notes in the state into MIDI start and stop commands that 
+// This converts notes in the state into MIDI start and stop commands that
 // can be used to fire and kill sounds using the above two methods
 export function updateMidiCommands(engine, state) {
 
   // Playing, ensure latest notes are played next
-  var latestMidiCommands = phraseMidiSelector(state)
+  let latestMidiCommands = phraseMidiSelector(state)
   if (latestMidiCommands !== engine.midiCommands) {
     engine.midiCommands = latestMidiCommands
     engine.iCommand = engine.midiCommands.findIndex(command => {
@@ -23,12 +23,12 @@ export function updateMidiCommands(engine, state) {
 
 
 // TODO REFACTOR AS VIRTUAL AUDIO GRAPH STYLE
-var oscillators = []
-var amplitudeEnvelopes = []
-var masterBus
-var easing  = 0.001
-var keyFrequency = [] // Set the frequencies for the notes
-for (var i = 1; i <= 88; i++)
+let oscillators = []
+let amplitudeEnvelopes = []
+let masterBus
+let easing = 0.001
+let keyFrequency = [] // Set the frequencies for the notes
+for (let i = 1; i <= 88; i++)
   keyFrequency[i] = Math.pow(2, (i-49)/12) * 440
 
 // ============================================================================
@@ -41,7 +41,7 @@ export function killNote(engine, trackID, keyNum) {
   fireNote(engine, trackID, keyNum, 0, 0)
 }
 export function fireNote(engine, trackID, keyNum, velocity, time) {
-  var trackModule = engine.trackModules[trackID]
-  var instrument = trackModule.effectsChain[0]
-      instrument.fireNote(keyNum, velocity, time)
+  let trackModule = engine.trackModules[trackID]
+  let instrument = trackModule.effectsChain[0]
+  instrument.fireNote(keyNum, velocity, time)
 }
