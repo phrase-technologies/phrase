@@ -1,8 +1,10 @@
+import 'babel-polyfill'
+
 // ============================================================================
 // GLOBAL SCRIPTS
 // ============================================================================
-require('css-element-queries/src/ResizeSensor.js')
-require('css-element-queries/src/ElementQueries.js')
+require(`css-element-queries/src/ResizeSensor.js`)
+require(`css-element-queries/src/ElementQueries.js`)
 
 import './index.scss'
 import React from 'react'
@@ -14,19 +16,20 @@ import ReactDOM from 'react-dom'
 import { Provider as StoreProvider } from 'react-redux'
 import EngineProvider from 'audio/AudioEngineProvider.js'
 import { createStore, compose, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
 import finalReducer from 'reducers/reduce.js'
 import Layout from 'components/Layout.js'
 
 const finalCreateStore = compose(
-  applyMiddleware(),
+  applyMiddleware(thunk),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore)
 const STORE = finalCreateStore(finalReducer)
 
 // Setup initial state - 2 tracks by default
 import { phraseCreateTrack } from 'actions/actionsPhrase.js'
-STORE.dispatch( phraseCreateTrack() )
-STORE.dispatch( phraseCreateTrack() )
+STORE.dispatch(phraseCreateTrack())
+STORE.dispatch(phraseCreateTrack())
 
 // ============================================================================
 // Setup Audio Engine
@@ -43,5 +46,5 @@ ReactDOM.render(
       <Layout />
     </EngineProvider>
   </StoreProvider>,
-  document.getElementById('root')
+  document.getElementById(`root`)
 )

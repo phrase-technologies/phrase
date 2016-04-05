@@ -3,22 +3,24 @@
 // ============================================================================
 // We use combineReducers to organize state into decoupled branches, where each
 // branch represents a different module within the app. Much cleaner this way.
-import reduceNavigation from './reduceNavigation.js'
-import reduceTransport from './reduceTransport.js'
-import reducePhrase from './reducePhrase.js'
-import reduceMixer from './reduceMixer.js'
-import reducePianoroll from './reducePianoroll.js'
-import reduceCursor from './reduceCursor.js'
+import reduceNavigation from './reduceNavigation'
+import reduceTransport from './reduceTransport'
+import reducePhrase from './reducePhrase'
+import reduceMixer from './reduceMixer'
+import reducePianoroll from './reducePianoroll'
+import reduceCursor from './reduceCursor'
+import reduceAuth from './reduceAuth'
 
 import { combineReducers } from 'redux'
 
-var reduceBranches = combineReducers({
+let reduceBranches = combineReducers({
   navigation: reduceNavigation,
   transport: reduceTransport,
   phrase: reducePhrase,
   mixer: reduceMixer,
   pianoroll: reducePianoroll,
-  cursor: reduceCursor
+  cursor: reduceCursor,
+  auth: reduceAuth,
 })
 
 
@@ -41,4 +43,4 @@ export default function finalReducer(state = {}, action) {
 
   // Top Level Reduction
   return reduceAll(state, action)
-} 
+}

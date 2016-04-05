@@ -2,25 +2,22 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { layoutConsoleEmbedded,
-         layoutConsoleSplit } from '../actions/actionsLayout.js'
+         layoutConsoleSplit } from '../actions/actionsLayout'
 
-import CursorProvider from './CursorProvider.js'
-import HotkeyProvider from './HotkeyProvider.js'
-import LayoutPage from './LayoutPage.js'
-import LayoutSplit from './LayoutSplit.js'
-import Mixer from './Mixer.js'
-import Transport from './Transport.js'
-import Pianoroll from './Pianoroll.js'
+import { login, signup } from 'reducers/reduceAuth'
+import { api } from 'helpers/ajaxHelpers'
+
+import CursorProvider from './CursorProvider'
+import HotkeyProvider from './HotkeyProvider'
+import LayoutSplit from './LayoutSplit'
+import Mixer from './Mixer'
+import Transport from './Transport'
+import Pianoroll from './Pianoroll'
 
 export class Layout extends Component {
 
-  constructor() {
-    super()
-    this.handleConsoleSplitDrag = this.handleConsoleSplitDrag.bind(this)
-  }
-
   render() {
-    var layoutConsoleClasses = 'layout-console'
+    let layoutConsoleClasses = 'layout-console'
         layoutConsoleClasses += this.props.consoleEmbedded ? ' layout-console-embedded' : ''
 
     return (
@@ -109,7 +106,7 @@ export class Layout extends Component {
     )
   }
 
-  handleConsoleSplitDrag(ratio) {
+  handleConsoleSplitDrag = (ratio) => {
     this.props.dispatch(layoutConsoleSplit(ratio))
     window.dispatchEvent(new Event('resize'))
   }
