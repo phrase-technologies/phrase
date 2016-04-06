@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Attempt at using React for this sequencer prototype!",
   "scripts": {
+    "prestart": "npm install",
     "start": "node server.js",
     "test": "find ./src -name '*.test.js' | xargs mocha --require babel-core/register --compilers jpg:./mocha.config.js --compilers png:./mocha.config.js",
     "lint": "eslint src",
