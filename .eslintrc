@@ -11,7 +11,6 @@
   "plugins": [ "react" ],
   "rules": {
     "arrow-spacing": 2,
-    "comma-dangle": [ 2, "always-multiline" ],
     "dot-notation": 2,
     "eqeqeq": 2,
     "linebreak-style": [ 2, "unix" ],
@@ -22,7 +21,6 @@
     "no-var": 2,
     "object-shorthand": 2,
     "prefer-arrow-callback": 2,
-    "quotes": [ 2, "backtick" ],
     "semi": [ 2, "never" ],
     "space-in-parens": [ 2, "never" ],
     "strict": 0,
