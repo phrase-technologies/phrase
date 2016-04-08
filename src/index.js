@@ -56,16 +56,21 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <StoreProvider store={STORE}>
-    <EngineProvider engine={ENGINE}>
-      <Router history={HISTORY}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Layout} />
-          <Route path="library" component={Library}/>
-        </Route>
-      </Router>
-    </EngineProvider>
-  </StoreProvider>,
-  document.getElementById(`root`)
-)
+// window.onload - Require all assets to be loaded before rendering.
+// This is only necessary because we are using Google Font API in font.scss.
+// Possibly stick to websafe fonts, or roll the font into WebPack? TODO
+window.onload = () => {
+  ReactDOM.render(
+    <StoreProvider store={STORE}>
+      <EngineProvider engine={ENGINE}>
+        <Router history={HISTORY}>
+          <Route path="/" component={App}>
+            <IndexRoute component={Layout} />
+            <Route path="library" component={Library}/>
+          </Route>
+        </Router>
+      </EngineProvider>
+    </StoreProvider>,
+    document.getElementById('root')
+  )
+}
