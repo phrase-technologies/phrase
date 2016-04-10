@@ -3,23 +3,20 @@ import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
 import u from 'updeep'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
-const barCountSelector          = (state) => ( state.phrase.barCount )
-const playheadSelector          = (state) => ( state.phrase.playhead )
-const tracksSelector            = (state) => ( state.phrase.tracks )
-const clipsSelector             = (state) => ( state.phrase.clips )
-const notesSelector             = (state) => ( state.phrase.notes )
-const pianorollSelector         = (state) => ( state.pianoroll )
-const clipSelectionOffsetStart  = (state) => ( state.phrase.clipSelectionOffsetStart )
-const clipSelectionOffsetEnd    = (state) => ( state.phrase.clipSelectionOffsetEnd )
-const clipSelectionOffsetLooped = (state) => ( state.phrase.clipSelectionOffsetLooped )
-const clipSelectionOffsetTrack  = (state) => ( state.phrase.clipSelectionOffsetTrack )
-const noteSelectionOffsetStart  = (state) => ( state.phrase.noteSelectionOffsetStart )
-const noteSelectionOffsetEnd    = (state) => ( state.phrase.noteSelectionOffsetEnd )
-const noteSelectionOffsetKey    = (state) => ( state.phrase.noteSelectionOffsetKey )
+const barCountSelector          = (state) => (state.phrase.barCount)
+const playheadSelector          = (state) => (state.phrase.playhead)
+const clipsSelector             = (state) => (state.phrase.clips)
+const notesSelector             = (state) => (state.phrase.notes)
+const pianorollSelector         = (state) => (state.pianoroll)
+const clipSelectionOffsetStart  = (state) => (state.phrase.clipSelectionOffsetStart)
+const clipSelectionOffsetEnd    = (state) => (state.phrase.clipSelectionOffsetEnd)
+const clipSelectionOffsetLooped = (state) => (state.phrase.clipSelectionOffsetLooped)
+const clipSelectionOffsetTrack  = (state) => (state.phrase.clipSelectionOffsetTrack)
+const noteSelectionOffsetStart  = (state) => (state.phrase.noteSelectionOffsetStart)
+const noteSelectionOffsetEnd    = (state) => (state.phrase.noteSelectionOffsetEnd)
+const noteSelectionOffsetKey    = (state) => (state.phrase.noteSelectionOffsetKey)
 const currentTrackSelector      = (state) => {
-  return state.phrase.tracks.find(track => {
-    return track.id == state.pianoroll.currentTrack
-  })
+  return state.phrase.tracks.find(track => track.id === state.pianoroll.currentTrack)
 }
 const currentClipsSelector = createSelector(
   clipsSelector,
@@ -30,23 +27,22 @@ const currentClipsSelector = createSelector(
   clipSelectionOffsetTrack,
   (clips, currentTrack, offsetStart, offsetEnd, offsetLooped, offsetTrack) => {
     // Current Track's Clips
-    var currentClips = clips
-      .filter(clip => clip.trackID == currentTrack.id)
+    let currentClips = currentTrack ? clips.filter(clip => clip.trackID === currentTrack.id) : []
 
     // Render Offseted Selections
-    var selectedClipsRendered = []
+    let selectedClipsRendered = []
     if (offsetStart || offsetEnd || offsetTrack) {
       selectedClipsRendered = currentClips
         .filter(clip => clip.selected)
         .map(clip => {
           // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
-          var validatedOffsetLooped = offsetLooped || (clip.end - clip.start != clip.loopLength)
+          let validatedOffsetLooped = offsetLooped || (clip.end - clip.start !== clip.loopLength)
 
           return u.freeze({
             ...clip,
             start:  clip.start  + offsetStart,
             end:    clip.end    + offsetEnd,
-            offset: validatedOffsetLooped && offsetStart != offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
+            offset: validatedOffsetLooped && offsetStart !== offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
             loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
             trackID: clip.trackID,// + Math.round(offsetTrack), // Don't show any feedback for yet-to-be-finalized track changes
             selected: offsetStart && offsetEnd || Math.round(offsetTrack) ? false : true
@@ -67,10 +63,10 @@ export const currentNotesSelector = createSelector(
   noteSelectionOffsetEnd,
   noteSelectionOffsetKey,
   (currentClips, notes, currentTrack, offsetStart, offsetEnd, offsetKey) => {
-    var currentNotes = notes
-      .filter(note => note.trackID == currentTrack.id)
+    let currentNotes = notes
+      .filter(note => note.trackID === currentTrack.id)
 
-    var selectedNotesRendered = []
+    let selectedNotesRendered = []
     if (offsetStart || offsetEnd || offsetKey) {
       selectedNotesRendered = currentNotes
       .filter(note => note.selected)
@@ -89,8 +85,8 @@ export const currentNotesSelector = createSelector(
     return currentNotes
       .concat(selectedNotesRendered)
       .reduce((allLoopedNotes, note) => {
-        var loopedNote = loopedNoteSelector(note, currentClips)
-        return allLoopedNotes.concat( loopedNote )
+        let loopedNote = loopedNoteSelector(note, currentClips)
+        return allLoopedNotes.concat(loopedNote)
       }, [])
   }
 )
@@ -105,11 +101,11 @@ export const mapPianorollToProps = createSelector(
   (pianoroll, currentTrack, currentClips, currentNotes, barCount, playhead) => {
     return {
       ...pianoroll,
-      currentTrack: currentTrack,
+      currentTrack,
       clips: currentClips,
       notes: currentNotes,
-      barCount: barCount,
-      playhead: playhead
+      barCount,
+      playhead
     }
   }
 )
@@ -120,18 +116,18 @@ export const loopedNoteSelector = createLargeCacheSelector(
   (note, clips) => note,
   (note, clips) => clips,
   (note, clips) => {
-    var renderedClipNotes = []
-    var clip = clips.find(clip => clip.id == note.clipID)
+    let renderedClipNotes = []
+    let clip = clips.find(clip => clip.id === note.clipID)
     if (!clip) {
       console.error(`loopedNoteSelector(): clip not found with id ${note.clipID}`, note, clips)
       return []
     }
 
     // Loop Iterations
-    var currentLoopStart = clip.start + clip.offset
-    var currentLoopStartCutoff = -clip.offset                                           // Used to check if a note is cut off at the beginning of the current loop iteration
-    var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
-    while( currentLoopStart < clip.end ) {
+    let currentLoopStart = clip.start + clip.offset
+    let currentLoopStartCutoff = -clip.offset                                           // Used to check if a note is cut off at the beginning of the current loop iteration
+    let currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
+    while (currentLoopStart < clip.end) {
       // Notes that are entirely out of view - skip them
       if (note.end >= currentLoopStartCutoff && note.start <= currentLoopEndCutoff) {
         // Extrapolate the note to the current loop iteration

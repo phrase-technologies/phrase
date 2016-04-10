@@ -1,7 +1,7 @@
 // ============================================================================
 // Mixer
 // ============================================================================
-// This is the top-level Component rendering the entire mixing console. 
+// This is the top-level Component rendering the entire mixing console.
 // It is responsible for composing all the mixer's child components together.
 
 import React, { Component } from 'react'
@@ -28,6 +28,15 @@ import ScrollBar from './Scrollbar.js'
 export class Mixer extends Component {
 
   render() {
+    if (this.props.minimized) {
+      return (
+        <h2 className="workstation-heading" onClick={this.props.maximize}>
+          Arrangement
+          <span className="fa fa-plus-square pull-right" />
+        </h2>
+      )
+    }
+
     let mixerClasses = 'mixer'
         mixerClasses += (this.props.yMin < 0.001) ? ' mixer-disable-shadow-top'    : ''
         mixerClasses += (this.props.yMax > 0.999) ? ' mixer-disable-shadow-bottom' : ''
@@ -83,18 +92,11 @@ export class Mixer extends Component {
     )
   }
 
-  constructor() {
-    super()
-
-    this.setVerticalScroll    = this.setVerticalScroll.bind(this)
-    this.setHorizontalScroll  = this.setHorizontalScroll.bind(this)
-  }
-
-  setVerticalScroll(min, max) {
+  setVerticalScroll = (min, max) => {
     this.props.dispatch(mixerScrollY(min,max))
   }
 
-  setHorizontalScroll(min, max) {
+  setHorizontalScroll = (min, max) => {
     this.props.dispatch(mixerScrollX(min,max))
   }
 }
@@ -115,6 +117,11 @@ function mapStateToProps(state) {
     playhead: state.phrase.playhead,
     cursor: state.mixer.cursor
   }
+}
+
+Mixer.propTypes = {
+  minimized: React.PropTypes.bool.isRequired,
+  maximize: React.PropTypes.func.isRequired,
 }
 
 export default connect(mapStateToProps)(Mixer)

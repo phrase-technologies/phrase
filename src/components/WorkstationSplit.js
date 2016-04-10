@@ -5,34 +5,28 @@ import { connect } from 'react-redux'
 import { cursorResizeRow,
          cursorDrop } from '../actions/actionsCursor.js'
 
-export default class LayoutSplit extends Component {
+export default class WorkstationSplit extends Component {
 
   render() {
+    let scrollPosition
+
     if (!this.props.splitRatio)
-      var scrollPosition = { display: 'none' }
-    else if( this.props.splitRatio < 0.2 )
-      var scrollPosition = { top: 45 }
-    else if( this.props.splitRatio > 0.8 )
-      var scrollPosition = { bottom: 45 - 4 }
+      scrollPosition = { display: 'none' }
+    else if (this.props.splitRatio < 0.2)
+      scrollPosition = { top: 45 }
+    else if (this.props.splitRatio > 0.8)
+      scrollPosition = { bottom: 45 - 4 }
     else
-      var scrollPosition = { top: (this.props.splitRatio * 100) + '%' }
+      scrollPosition = { top: (this.props.splitRatio * 100) + '%' }
 
     return (
-      <div className="layout-console-split">
+      <div className="workstation-split">
         <div
-          className="layout-console-split-handle"
+          className="workstation-split-handle"
           style={scrollPosition}
         />
       </div>
     )
-  }
-
-  constructor() {
-    super()
-
-    this.handleGrip   = this.handleGrip.bind(this)
-    this.handleDrag   = this.handleDrag.bind(this)
-    this.handleDrop   = this.handleDrop.bind(this)
   }
 
   componentDidMount() {
@@ -55,39 +49,39 @@ export default class LayoutSplit extends Component {
     this.data = null
   }
 
-  handleGrip(e) {
+  handleGrip = () => {
     // Start the drag
     this.data.isDragging = true
-    this.props.dispatch( cursorResizeRow() )
+    this.props.dispatch(cursorResizeRow())
   }
 
-  handleDrag(e) {
+  handleDrag = (e) => {
     // Ignore moves that aren't drag-initiated
-    if( !this.data.isDragging )
+    if (!this.data.isDragging)
       return
 
-    var percentDelta = (e.clientY - this.data.container.getBoundingClientRect().top) / this.data.container.clientHeight
+    let percentDelta = (e.clientY - this.data.container.getBoundingClientRect().top) / this.data.container.clientHeight
         percentDelta = percentDelta > 1.0 ? 1.0 : percentDelta
         percentDelta = percentDelta < 0.0 ? 0.0 : percentDelta
 
     this.props.setRatio(percentDelta)
   }
 
-  handleDrop(e) {
+  handleDrop = (e) => {
     // Ignore left clicks - those are not drops
-    if( e.type == 'mousedown' && e.which == 1 )
+    if (e.type === 'mousedown' && e.which === 1)
       return
 
     // End the drag
     this.data.isDragging = false
-    this.props.dispatch( cursorDrop('explicit') )
+    this.props.dispatch(cursorDrop('explicit'))
     this.forceUpdate()
   }
 }
 
-LayoutSplit.propTypes = {
+WorkstationSplit.propTypes = {
   splitRatio: React.PropTypes.number,
   setRatio:   React.PropTypes.func.isRequired
 }
 
-export default connect()(LayoutSplit)
+export default connect()(WorkstationSplit)

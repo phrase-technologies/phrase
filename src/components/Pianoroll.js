@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { mapPianorollToProps } from '../selectors/selectorPianoroll.js'
-import { shiftInterval,
-         zoomInterval } from '../helpers/intervalHelpers.js'
 import { pianorollScrollX,
          pianorollScrollY } from '../actions/actionsPianoroll.js'
 
@@ -19,12 +17,16 @@ import TimelinePlayhead       from './TimelinePlayhead.js'
 
 export default class Pianoroll extends Component {
 
-  constructor() {
-    super()
-    this.data = {}
-  }
-
   render() {
+    if (this.props.minimized) {
+      return (
+        <h2 className="workstation-heading" onClick={this.props.maximize}>
+          Clip Editor
+          <span className="fa fa-plus-square pull-right" />
+        </h2>
+      )
+    }
+
     let dispatchProp = {
       dispatch: this.props.dispatch
     }
@@ -94,7 +96,8 @@ Pianoroll.propTypes = {
   selectionStartX: React.PropTypes.number,
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,
-  selectionEndY: React.PropTypes.number
+  selectionEndY: React.PropTypes.number,
+  maximize: React.PropTypes.func.isRequired,
 }
 Pianoroll.defaultProps = {
   keyCount: 88

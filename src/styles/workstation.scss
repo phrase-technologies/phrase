@@ -1,13 +1,11 @@
-$layout-page-sidebar: 200px;
-$layout-page-z-index: 100;              // Above...? (leave some room)
-$layout-mixer-width: 240px;
-$layout-mixer-z-index: 200;             // Above Page
-$layout-console-header-height: 45px;
-$layout-console-header-z-index: 300;    // Above Page & Mixer
-$layout-clip-width: 240px;
-$layout-clip-z-index: 400;              // Above Page & Mixer
-$layout-effects-chain-width: 300px;
-$layout-effects-chain-z-index: 500;     // Above.... TODO: Obsolete after removing box-shadows....?
+$workstation-mixer-width: 240px;
+$workstation-mixer-z-index: 200;          // Above Page
+$workstation-header-height: 45px;
+$workstation-header-z-index: 300;         // Above Page & Mixer
+$workstation-clip-width: 240px;
+$workstation-clip-z-index: 400;           // Above Page & Mixer
+$workstation-effects-chain-width: 300px;
+$workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after removing box-shadows....?
 
 html,
 body {
@@ -17,62 +15,10 @@ body {
   background: #DDD;
 }
 
-.layout-overlay-hidden {
-  background: transparent !important;
-  pointer-events: none;
-}
-
-// ============================================================================
-// Page Layout
-// ============================================================================
-.layout-page {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: $layout-mixer-width;
-  bottom: 0;
-  z-index: $layout-page-z-index;
-
-  overflow: auto;
-  color: #333;
-}
-.layout-page-header {
-  border-bottom: 1px solid #DDD;
-  padding: 20px;
-  background: #EEE;
-}
-.layout-page-body {
-  position: relative;
-  padding: 20px;
-  padding-left: 20px + $layout-page-sidebar + 20px;
-  background: #EEE;
-}
-.layout-page-sidebar {
-  opacity: 0.25;
-
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: $layout-page-sidebar;
-
-  font-size: 16px;
-}
-.layout-page-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: $layout-mixer-z-index - 1; // Below Console
-
-  background: rgba(64,64,64,0.5);
-  transition: background .25s;
-}
-
 // ============================================================================
 // Overall Console (Mixer, Clip, Effects Chain)
 // ============================================================================
-.layout-console {
+.workstation {
   position: absolute;
   top: 0;
   left: 45px;
@@ -82,25 +28,13 @@ body {
   overflow: hidden;
   border-left: 1px solid #000;
 }
-.layout-console-embedded {
-  top:    45px;
-  right:  45px;
-  bottom: 45px;
-  width:  50%;
-  left: auto;
-
-  border-top: 1px solid #000;
-  box-shadow:
-    3px 3px 5px  #AAA,
-    0   0   10px #888;
-}
-.layout-console-header {
+.workstation-header {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: $layout-console-header-height;
-  z-index: $layout-console-header-z-index;
+  height: $workstation-header-height;
+  z-index: $workstation-header-z-index;
 
   box-shadow: inset  1px  1px 1px -1px #FFF,
               inset -1px -1px 0px  0px #111;
@@ -108,21 +42,21 @@ body {
   background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
   // background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
 }
-.layout-console-body {
+.workstation-body {
   position: absolute;
-  top: $layout-console-header-height;
+  top: $workstation-header-height;
   left: 0;
   right: 0;
   bottom: 0;
 }
-.layout-console-main {
+.workstation-main {
   position: absolute;
   top: 0;
   left: 0;
-  right: $layout-effects-chain-width;
+  right: $workstation-effects-chain-width;
   bottom: 0;
 }
-.layout-console-heading {
+.workstation-heading {
   position: absolute;
   top: 0;
   left: 0;
@@ -143,7 +77,7 @@ body {
     color: #FFF;
   }
 }
-.layout-console-heading-vertical {
+.workstation-heading-vertical {
   display: block;
   position: absolute;
   top: 0;
@@ -160,12 +94,12 @@ body {
 // ============================================================================
 // Mixer Arrangement
 // ============================================================================
-.layout-console-mixer {
+.workstation-mixer {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  z-index: $layout-mixer-z-index;
+  z-index: $workstation-mixer-z-index;
 
   box-shadow: inset  1px  1px 1px -1px #FFF,
               inset -1px -1px 0px  0px #111;
@@ -185,12 +119,12 @@ body {
 // ============================================================================
 // Clip Editor (Piano Roll or Audio Clip)
 // ============================================================================
-.layout-console-clip {
+.workstation-clip {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: $layout-clip-z-index;
+  z-index: $workstation-clip-z-index;
 
   box-shadow: inset  1px  1px 1px -1px #FFF,
               inset -1px -1px 0px  0px #111;
@@ -198,17 +132,17 @@ body {
   background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
   // background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
 }
-.layout-console-split {
+.workstation-split {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
 
-  z-index: $layout-clip-z-index + 1; // Above Clip Editor
+  z-index: $workstation-clip-z-index + 1; // Above Clip Editor
   pointer-events: none;
 }
-.layout-console-split-handle {
+.workstation-split-handle {
   position: absolute;
   left: 0;
   right: 0;
@@ -234,19 +168,19 @@ body {
   }
   &:after {
     bottom: 0px;
-  }  
+  }
 }
 
 // ============================================================================
 // Effects Chain sidebar
 // ============================================================================
-.layout-console-effects-chain {
+.workstation-effects-chain {
   position: absolute;
   top: 0;
-  width: $layout-effects-chain-width;
+  width: $workstation-effects-chain-width;
   right: 0;
   bottom: 0;
-  z-index: $layout-effects-chain-z-index;
+  z-index: $workstation-effects-chain-z-index;
 
   box-shadow: inset  1px  1px 1px -1px #FFF,
               inset -1px -1px 0px  0px #111;
