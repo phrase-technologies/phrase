@@ -68,6 +68,7 @@ $fa-font-path: "./../node_modules/font-awesome/fonts";
 // Utilities with variable definitions that have to go first
 @import './styles/font.scss';
 // Everything else second
+@import './styles/header.scss';
 @import './styles/page.scss';
 @import './styles/workstation.scss';
 @import './styles/library.scss';

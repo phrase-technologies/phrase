@@ -1,5 +1,6 @@
 $workstation-mixer-width: 240px;
 $workstation-mixer-z-index: 200;          // Above Page
+$workstation-header-top: 55px;
 $workstation-header-height: 45px;
 $workstation-header-z-index: 300;         // Above Page & Mixer
 $workstation-clip-width: 240px;
@@ -20,17 +21,24 @@ body {
 // ============================================================================
 .workstation {
   position: absolute;
-  top: 0;
-  left: 45px;
+  top: 100%;
+  left: 0;
   right: 0;
-  bottom: 0;
+  height: 100%;
 
   overflow: hidden;
-  border-left: 1px solid #000;
+  pointer-events: none;
+
+  // Use CSS translations (CPU Optimized) for smooth minimization and maximization
+  transition: transform 0.1s;
+  transform: translateY(-100px);
+  &.workstation-maximized {
+    transform: translateY(-100%);
+  }
 }
 .workstation-header {
   position: absolute;
-  top: 0;
+  top: $workstation-header-top;
   left: 0;
   right: 0;
   height: $workstation-header-height;
@@ -41,13 +49,17 @@ body {
   background: #444;
   background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
   // background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
+
+  pointer-events: all;
 }
 .workstation-body {
   position: absolute;
-  top: $workstation-header-height;
+  top: $workstation-header-top + $workstation-header-height;
   left: 0;
   right: 0;
   bottom: 0;
+
+  pointer-events: all;
 }
 .workstation-main {
   position: absolute;

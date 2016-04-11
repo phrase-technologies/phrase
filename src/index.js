@@ -47,10 +47,6 @@ import CursorProvider from 'components/CursorProvider.js'
 import HotkeyProvider from 'components/HotkeyProvider.js'
 import App from 'components/App.js'
 import Error404 from 'components/Error404.js'
-// import Layout from 'components/Layout.js'
-import LayoutPage from 'components/LayoutPage.js'
-import Workstation from 'components/Workstation.js'
-import Library from 'components/Library.js'
 
 // window.onload - Require all assets to be loaded before rendering.
 // This is only necessary because we are using Google Font API in font.scss.
@@ -63,12 +59,9 @@ window.onload = () => {
           <HotkeyProvider>
 
             <Router history={HISTORY}>
-              <Route path="/" component={App}>
-                <IndexRoute component={Workstation} />
-                <Route path="library" component={Library} />
-                <Route path="page" component={LayoutPage} />
-                <Route path="*" component={Error404}/>
-              </Route>
+              <Route path="/" component={App} />
+              <Route path="/edit" component={App} />
+              <Route path="/*" component={Error404}/>
             </Router>
 
           </HotkeyProvider>

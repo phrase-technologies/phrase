@@ -11,37 +11,41 @@ import Pianoroll from './Pianoroll.js'
 export class Workstation extends Component {
 
   render() {
+    let workstationClasses = "workstation disable-select"
+        workstationClasses += this.props.maximized ? ' workstation-maximized' : ''
     let minimizeMixer = this.props.consoleSplitRatio < 0.2 && this.props.focusedTrack !== null
     let minimizeClipEditor = this.props.consoleSplitRatio > 0.8 || this.props.focusedTrack === null
 
     return (
-      <div className="disable-select">
-        <div className="workstation">
-          <div className="workstation-header">
-            <Transport />
+      <div className={workstationClasses}>
+        <div className="workstation-header" onClick={this.maximize}>
+          <Transport />
+        </div>
+        <div className="workstation-body">
+          <div className="workstation-main" style={this.getMainSplit()}>
+            <div className="workstation-mixer" style={this.getMixerSplit()}>
+              <Mixer minimized={minimizeMixer} maximize={() => this.setConsoleSplit(0.5)} />
+            </div>
+            <WorkstationSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.setConsoleSplit} />
+            <div className="workstation-clip" style={this.getClipSplit()}>
+              <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
+            </div>
           </div>
-          <div className="workstation-body">
-            <div className="workstation-main" style={this.getMainSplit()}>
-              <div className="workstation-mixer" style={this.getMixerSplit()}>
-                <Mixer minimized={minimizeMixer} maximize={() => this.setConsoleSplit(0.5)} />
-              </div>
-              <WorkstationSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.setConsoleSplit} />
-              <div className="workstation-clip" style={this.getClipSplit()}>
-                <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
-              </div>
-            </div>
-            <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
-              <h2 className="workstation-heading">
-                <span className="workstation-heading-vertical">
-                  <span>Effects Chain </span>
-                  <span className="fa fa-plus-square" />
-                </span>
-              </h2>
-            </div>
+          <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
+            <h2 className="workstation-heading">
+              <span className="workstation-heading-vertical">
+                <span>Effects Chain </span>
+                <span className="fa fa-plus-square" />
+              </span>
+            </h2>
           </div>
         </div>
       </div>
     )
+  }
+
+  maximize = () => {
+    this.context.router.push('/edit')
   }
 
   setConsoleSplit = (ratio) => {
@@ -81,10 +85,19 @@ export class Workstation extends Component {
     let propsToCheck = [
       'focusedTrack',
       'consoleEmbedded',
-      'consoleSplitRatio'
+      'consoleSplitRatio',
+      'maximized'
     ]
     return propsToCheck.some(prop => nextProps[prop] !== this.props[prop])
   }
+}
+
+Workstation.contextTypes = {
+  router: React.PropTypes.object.isRequired
+}
+
+Workstation.propTypes = {
+  maximized: React.PropTypes.bool.isRequired
 }
 
 function mapStateToProps(state) {
