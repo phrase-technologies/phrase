@@ -10,7 +10,7 @@ export class AuthenticationModal extends Component {
     let mainButton = this.props.returningUser ? 'Log in' : 'Sign up'
     let alternateHeading = this.props.returningUser ? 'New to Phrase?' : 'Already have an account?'
     let alternateButton = this.props.returningUser ? 'Sign up' : 'Log in'
-    let loadingIcon = this.props.requestingAuth ? '<span>...</span>' : null
+    let loadingIcon = this.props.requestingAuth ? '...' : null
 
     return (
       <Modal

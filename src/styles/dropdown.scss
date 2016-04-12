@@ -1,0 +1,24 @@
+// ============================================================================
+// Dropdowns - customizations over bootstraps defaults
+// ============================================================================
+.dropdown-menu {
+  margin-top: 5px;
+
+  &::before {
+    content: '';
+    border: 7px solid transparent;
+    border-bottom-color: #000;
+    opacity: 0.15;
+    position: absolute;
+    right: 6px;
+    top: -14px;
+  }
+  &::after {
+    content: '';
+    border: 6px solid transparent;
+    border-bottom-color: #FFF;
+    position: absolute;
+    right: 7px;
+    top: -12px;
+  }
+}

@@ -7,7 +7,7 @@ export let LOGIN_FAIL = `LOGIN_FAIL`
 export let LOGOUT = `LOGOUT`
 
 export let login = ({ email, password }) => {
-  dispatch => {
+  return (dispatch) => {
     dispatch({ type: AUTH_REQUEST })
 
     if (!isAValidEmail(email)) {
@@ -39,7 +39,7 @@ export let login = ({ email, password }) => {
 }
 
 export let signup = ({ email, password }) => {
-  dispatch => {
+  return (dispatch) => {
     dispatch({ type: AUTH_REQUEST })
 
     if (!isAValidEmail(email)) {
