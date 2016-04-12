@@ -1,72 +1,93 @@
-import Router from 'koa-router'
-import jwt from 'koa-jwt'
+import jwt from 'jsonwebtoken'
 import User from '../models/User'
-import { secret } from '../config'
 
-let router = new Router({ prefix: `/api` })
+export default ({
+  api,
+  app,
+}) => {
+  app.post(`/signup`, (req, res) => {
 
-router.post(`/signup`, async ctx => {
+    let { email, password } = req.body
 
-  let { email, password } = ctx.request.body
+    if (email && password) {
+      User.findOne({ email }, (err, user) => {
+        if (err) throw err
+        if (user) res.json({
+          success: false,
+          message: `User with this email already exists.`,
+        })
+        else {
 
-  if (email && password) {
-    let user = await User.findOne({ email })
+          /*
+           *  TODO: hash password
+           */
 
-    if (user) {
-      ctx.body = {
-        success: false,
-        message: `User with this email already exists.`,
+          let user = new User({ email, password, plan: `free` })
+
+          user.save((err, user) => {
+            if (err) throw err
+            res.json({ success: true, user })
+          })
+        }
+      })
+    } else res.json({
+      success: false,
+      message: `Must provide email and password.`,
+    })
+  })
+
+  api.post(`/login`, (req, res) => {
+
+    let { email, password } = req.body
+
+    User.findOne({ email }, (err, user) => {
+
+      if (err) throw err
+
+      if (!user) {
+        res.json({ success: false, message: 'User not found.' })
+      } else if (user) {
+
+        // check if password matches
+        if (user.password !== password) {
+          res.json({ success: false, message: 'Wrong password.' })
+        } else {
+
+          let token = jwt.sign(user, app.get('superSecret'), {
+            expiresInMinutes: 1440, // expires in 24 hours
+          })
+
+          res.json({
+            success: true,
+            message: 'Enjoy your token!',
+            token,
+            user,
+          })
+        }
       }
-    }
+    })
+  })
 
-    else {
+  api.use((req, res, next) => {
 
-      /*
-       *  TODO: hash password
-       */
+    let token = req.body.token
 
-      let user = new User({ email, password })
-      let response = await user.save()
-      ctx.body = { success: true, user: response }
-    }
-  }
-
-  else ctx.body = {
-    success: false,
-    message: `Must provide email and password.`,
-  }
-})
-
-router.post(`/authenticate`, async ctx => {
-
-  let { email, password } = ctx.request.body
-
-  let user = await User.findOne({ email })
-
-  if (!user) {
-    ctx.body = { success: false, message: `User not found.` }
-  }
-
-  else if (user) {
-
-    if (user.password !== password) {
-      ctx.body = { success: false, message: `Wrong password.` }
-    }
-
-    else {
-
-      let token = jwt.sign(user, secret, {
-        expiresInMinutes: 1440, // expires in 24 hours
+    if (token) {
+      jwt.verify(token, app.get(`superSecret`), (err, decoded) => {
+        if (err) {
+          return res.json({ success: false, message: 'Failed to authenticate token.' })
+        } else {
+          req.decoded = decoded
+          next()
+        }
       })
 
-      ctx.body = {
-        success: true,
-        message: `Enjoy your token!`,
-        token,
-        user,
-      }
-    }
-  }
-})
+    } else {
 
-export default router
+      return res.status(403).send({
+        success: false,
+        message: 'No token provided.',
+      })
+    }
+  })
+}

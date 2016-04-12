@@ -1,27 +1,30 @@
-import Koa from 'koa'
-import convert from 'koa-convert'
-import bodyParser from 'koa-bodyparser'
-import cors from 'koa-cors';
+/* global process, require */
+
+import express from 'express'
+import cors from 'cors'
+import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
-import { db } from './config'
-import auth from './auth'
-import jwt from 'koa-jwt'
-import { secret } from './config'
 import chalk from 'chalk'
+import { database, secret } from './config'
+import { Server } from 'http'
 
-mongoose.connect(db)
+import router from './router'
 
-let app = new Koa()
+mongoose.connect(database)
 
-app.keys = [ `i got 99 problemz but a DAW aint one` ]
+let app = express()
+let http = Server(app)
 
-app.use(convert(cors()))
-app.use(convert(bodyParser()))
-app.use(auth.routes())
-app.use(convert(jwt({ secret })))
+let port = process.env.PORT || 5000
 
-app.listen(5000, () => {
-  console.log(chalk.yellow(`⚡ Server running at http://localhost:5000`))
+app.set(`superSecret`, secret)
+
+app.use(cors())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
+app.use(`/api`, router({ app }))
+
+http.listen(port, () => {
+  console.log(chalk.white(`☆ listening on localhost:${port}`))
 })
-
-export default app
