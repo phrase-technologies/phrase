@@ -3,12 +3,13 @@
 // ============================================================================
 // We use combineReducers to organize state into decoupled branches, where each
 // branch represents a different module within the app. Much cleaner this way.
-import reduceNavigation from './reduceNavigation'
-import reduceTransport from './reduceTransport'
-import reducePhrase from './reducePhrase'
-import reduceMixer from './reduceMixer'
-import reducePianoroll from './reducePianoroll'
-import reduceCursor from './reduceCursor'
+import reduceModal from './reduceModal.js'
+import reduceNavigation from './reduceNavigation.js'
+import reduceTransport from './reduceTransport.js'
+import reducePhrase from './reducePhrase.js'
+import reduceMixer from './reduceMixer.js'
+import reducePianoroll from './reducePianoroll.js'
+import reduceCursor from './reduceCursor.js'
 import reduceAuth from './reduceAuth'
 
 import { routerReducer } from 'react-router-redux'
@@ -16,6 +17,7 @@ import { combineReducers } from 'redux'
 
 let reduceBranches = combineReducers({
   routing: routerReducer,
+  modal: reduceModal,
   navigation: reduceNavigation,
   transport: reduceTransport,
   phrase: reducePhrase,

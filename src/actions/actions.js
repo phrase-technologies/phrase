@@ -40,6 +40,14 @@ export const phrase = namespaceActions(
   ]
 )
 
+export const modal = namespaceActions(
+  'modal',
+  [
+    'OPEN',
+    'CLOSE',
+  ]
+)
+
 export const mixer = namespaceActions(
   'mixer',
   [
