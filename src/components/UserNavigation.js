@@ -8,7 +8,7 @@ export default () => {
       <div className="header-user-navigation">
         <button className="btn btn-dark" type="button">Log in</button>
         <button className="btn btn-bright" type="button">Sign up</button>
-        <AuthenticationModal type="login" />
+        <AuthenticationModal returningUser={true} />
       </div>
     )
   }

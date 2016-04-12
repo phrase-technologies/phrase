@@ -7,8 +7,12 @@ $text-color:      #000;
 $fa-font-path: "./../node_modules/font-awesome/fonts";
 @import "./../node_modules/font-awesome/scss/font-awesome.scss";
 
-$modal-backdrop-bg: #888 !default;
+$modal-backdrop-bg: #888;
 $modal-backdrop-opacity: 0.25;
+
+$border-radius-base:        3px !default;
+$border-radius-large:       4px !default;
+$border-radius-small:       2px !default;
 
 // ============================================================================
 // Bootstrap
