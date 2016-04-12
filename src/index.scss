@@ -1,12 +1,14 @@
 // ============================================================================
 // Bootstrap Overrides
 // ============================================================================
-$brand-primary:   #FFF;
-$text-color:      #FFF;
+$brand-primary:   #000;
+$text-color:      #000;
 
 $fa-font-path: "./../node_modules/font-awesome/fonts";
 @import "./../node_modules/font-awesome/scss/font-awesome.scss";
 
+$modal-backdrop-bg: #888 !default;
+$modal-backdrop-opacity: 0.25;
 
 // ============================================================================
 // Bootstrap
