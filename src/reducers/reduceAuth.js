@@ -6,7 +6,7 @@ export let LOGIN_SUCCESS = `LOGIN_SUCCESS`
 export let LOGIN_FAIL = `LOGIN_FAIL`
 export let LOGOUT = `LOGOUT`
 
-export let login = ({ email, password }) =>
+export let login = ({ email, password }) => {
   dispatch => {
     dispatch({ type: AUTH_REQUEST })
 
@@ -36,8 +36,9 @@ export let login = ({ email, password }) =>
       })
     })
   }
+}
 
-export let signup = ({ email, password }) =>
+export let signup = ({ email, password }) => {
   dispatch => {
     dispatch({ type: AUTH_REQUEST })
 
@@ -67,6 +68,7 @@ export let signup = ({ email, password }) =>
       })
     })
   }
+}
 
 export let logout = () =>
   dispatch => {

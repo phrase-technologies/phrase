@@ -1,14 +1,16 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import AuthenticationModal from './AuthenticationModal'
 
-export default () => {
-  if ('NO USER LOGGED IN') {
+export let UserNavigation = (props) => {
+  console.log(props)
+  if (!props.loggedIn) {
     return (
       <div className="header-user-navigation">
         <button className="btn btn-dark" type="button">Log in</button>
         <button className="btn btn-bright" type="button">Sign up</button>
-        <AuthenticationModal returningUser={true} />
+        <AuthenticationModal returningUser={true} {...props.requestingAuth} />
       </div>
     )
   }
@@ -22,3 +24,11 @@ export default () => {
     </a>
   )
 }
+
+function mapStateToProps(state) {
+  return {
+    ...state.auth
+  }
+}
+
+export default connect(mapStateToProps)(UserNavigation)
