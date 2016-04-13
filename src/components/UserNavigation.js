@@ -1,18 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Dropdown from 'react-bootstrap/lib/Dropdown'
 
 import AuthenticationModal from './AuthenticationModal'
 
 import { logout } from '../reducers/reduceAuth.js'
 
 export class UserNavigation extends Component {
-  constructor() {
-    super()
-    this.state = {
-      dropdownOpen: false
-    }
-  }
-
   render() {
     if (!this.props.loggedIn) {
       return (
@@ -25,32 +19,25 @@ export class UserNavigation extends Component {
     }
 
     let profileImageUrl = require('../img/user/anson-kao.jpg')
-    let dropdownClass = 'header-user-navigation dropdown'
-        dropdownClass += this.state.dropdownOpen ? ' open' : ''
 
     return (
-      <div className={dropdownClass}>
-        <a className="dropdown-toggle" onClick={this.toggleDropdown}>
+      <Dropdown id="header-user-navigation-dropdown" className="header-user-navigation" pullRight>
+        <a className="dropdown-toggle" bsRole="toggle" onClick={this.preventDefault}>
           <img className="header-user-profile-pic" src={profileImageUrl} />
-          <span className="header-user-name">Anson Kao <span className="caret" /></span>
+          <span className="header-user-name">{this.props.user.email} <span className="caret" /></span>
         </a>
-        <ul className="dropdown-menu pull-right">
+        <Dropdown.Menu>
           <li><a>Profile</a></li>
           <li role="separator" className="divider"></li>
           <li><a onClick={this.logout}>Log out</a></li>
-        </ul>
-      </div>
+        </Dropdown.Menu>
+      </Dropdown>
     )
   }
 
-  toggleDropdown = () => {
-    this.setState({ dropdownOpen: !this.state.dropdownOpen })
-  }
+  preventDefault = (e) => e.preventDefault()
 
-  logout = () => {
-    this.setState({ dropdownOpen: false })
-    this.props.dispatch(logout())
-  }
+  logout = () => this.props.dispatch(logout())
 }
 
 function mapStateToProps(state) {
