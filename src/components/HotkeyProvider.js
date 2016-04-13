@@ -30,6 +30,14 @@ class HotkeyProvider extends Component {
     // Prevent doublebooking events with form <inputs>
     if (e.target.tagName === 'INPUT')
       return
+    if (e.target.tagName === 'SELECT')
+      return
+    if (e.target.tagName === 'TEXTAREA')
+      return
+    if (e.target.tagName === 'A')
+      return
+    if (e.target.tagName === 'BUTTON')
+      return
 
     // Everything else, override!
     e.preventDefault()
