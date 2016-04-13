@@ -1,30 +1,25 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
+import LaddaButton from 'react-ladda'
 
-import { login, signup } from '../reducers/reduceAuth.js'
+import { login } from '../reducers/reduceAuth.js'
 
-export class AuthenticationModal extends Component {
+export class LoginModal extends Component {
   render() {
-    let mainHeading = this.props.returningUser ? 'Have an account?' : 'Join Phrase Today.'
-    let mainButton = this.props.returningUser ? 'Log in' : 'Sign up'
-    let alternateHeading = this.props.returningUser ? 'New to Phrase?' : 'Already have an account?'
-    let alternateButton = this.props.returningUser ? 'Sign up' : 'Log in'
-    let loadingIcon = this.props.requestingAuth ? '...' : null
-
     return (
       <Modal
         bsSize="small"
-        show={true}
+        show
         onHide={this.closeModal}
       >
         <Modal.Body>
           <button type="button" className="close">&times;</button>
           <div className="form-group">
-            <h4 className="text-center">{mainHeading}</h4>
+            <h4 className="text-center">Have an account?</h4>
           </div>
-          <form onSubmit={e => this.login(e) }>
-            <div className="form-group">
+          <form onSubmit={this.login} noValidate>
+            <div className="form-group" style={{marginBottom: 10}}>
               <input
                 className="form-control" type="email"
                 placeholder="Email"  ref={(ref) => this.email = ref}
@@ -35,16 +30,23 @@ export class AuthenticationModal extends Component {
                 className="form-control" type="password"
                 placeholder="Password" ref={(ref) => this.password = ref}
               />
+              <p className="text-right">
+                <a><small>Forgot Password</small></a>
+              </p>
             </div>
-            <button className="btn btn-block btn-dark" type="submit">
-              {mainButton}
-              {loadingIcon}
-            </button>
+            <LaddaButton
+              className="btn btn-block btn-dark" buttonStyle="zoom-in"
+              loading={this.props.requestingAuth} type="submit"
+            >
+              Log in
+            </LaddaButton>
+            <p className="text-danger text-center" style={{marginTop:5}}>
+              {this.props.errorMessage}
+            </p>
           </form>
-          <br/>
           <p className="text-center">
-            <span>{alternateHeading} </span>
-            <a><strong>{alternateButton}</strong></a>
+            <span>New to Phrase? </span>
+            <a><strong>Sign up</strong></a>
           </p>
         </Modal.Body>
       </Modal>
@@ -65,9 +67,16 @@ export class AuthenticationModal extends Component {
   }
 }
 
-AuthenticationModal.propTypes = {
+LoginModal.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
-  requestingAuth: React.PropTypes.bool.isRequired,
+  requestingAuth: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
 }
 
-export default connect()(AuthenticationModal)
+function mapStateToProps(state) {
+  return {
+    ...state.auth
+  }
+}
+
+export default connect(mapStateToProps)(LoginModal)

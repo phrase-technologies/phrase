@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 
-import AuthenticationModal from './AuthenticationModal'
+import LoginModal from './LoginModal.js'
 
 import { logout } from '../reducers/reduceAuth.js'
 
@@ -13,7 +13,7 @@ export class UserNavigation extends Component {
         <div className="header-user-navigation">
           <button className="btn btn-dark" type="button">Log in</button>
           <button className="btn btn-bright" type="button">Sign up</button>
-          <AuthenticationModal returningUser={true} {...this.props} />
+          <LoginModal />
         </div>
       )
     }
@@ -24,7 +24,7 @@ export class UserNavigation extends Component {
       <Dropdown id="header-user-navigation-dropdown" className="header-user-navigation" pullRight>
         <a className="dropdown-toggle" bsRole="toggle" onClick={this.preventDefault}>
           <img className="header-user-profile-pic" src={profileImageUrl} />
-          <span className="header-user-name">{this.props.user.email} <span className="caret" /></span>
+          <span className="header-user-name">{this.props.user.username || this.props.user.email} <span className="caret" /></span>
         </a>
         <Dropdown.Menu>
           <li><a>Profile</a></li>

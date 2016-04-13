@@ -10,15 +10,6 @@ export let login = ({ email, password }) => {
   return (dispatch) => {
     dispatch({ type: AUTH_REQUEST })
 
-    if (!isAValidEmail(email)) {
-      dispatch({
-        type: LOGIN_FAIL,
-        payload: { message: `Invalid email` },
-      })
-
-      return
-    }
-
     loginHelper({ email, password }, response => {
       if (response.success) {
         dispatch({
@@ -45,7 +36,7 @@ export let signup = ({ email, password }) => {
     if (!isAValidEmail(email)) {
       dispatch({
         type: LOGIN_FAIL,
-        payload: { message: `Invalid email` },
+        payload: { message: `Invalid email.` },
       })
 
       return
@@ -86,6 +77,7 @@ let intialState = {
   loggedIn: !!localStorage.token,
   requestingAuth: false,
   user: { email: localStorage.email },
+  errorMessage: null,
 }
 
 export default (state = intialState, action) => {
@@ -96,6 +88,7 @@ export default (state = intialState, action) => {
       return {
         ...state,
         requestingAuth: true,
+        errorMessage: null,
       }
 
     case LOGIN_SUCCESS:
@@ -104,11 +97,20 @@ export default (state = intialState, action) => {
         loggedIn: action.payload.loggedIn,
         user: action.payload.user,
         requestingAuth: false,
+        errorMessage: null,
       }
 
     case LOGOUT:
       return {
         loggedIn: false,
+        errorMessage: null,
+      }
+
+    case LOGIN_FAIL:
+      return {
+        ...state,
+        errorMessage: action.payload.message,
+        requestingAuth: false,
       }
 
     default:

@@ -2,7 +2,6 @@
 // Modal Dialogs
 // ============================================================================
 import { modal } from '../actions/actions.js'
-
 import u from 'updeep'
 
 let defaultState = {

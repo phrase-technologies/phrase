@@ -10,9 +10,11 @@ $fa-font-path: "./../node_modules/font-awesome/fonts";
 $modal-backdrop-bg: #888;
 $modal-backdrop-opacity: 0.25;
 
-$border-radius-base:        3px !default;
-$border-radius-large:       4px !default;
-$border-radius-small:       2px !default;
+$border-radius-base:  3px;
+$border-radius-large: 4px;
+$border-radius-small: 2px;
+
+$alert-padding: 5px 10px;
 
 // ============================================================================
 // Bootstrap
@@ -50,7 +52,7 @@ $border-radius-small:       2px !default;
 //@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_badges.scss";
 //@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_jumbotron.scss";
 //@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_thumbnails.scss";
-//@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_alerts.scss";
+@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_alerts.scss";
 //@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_progress-bars.scss";
 //@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_media.scss";
 @import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_list-group.scss";
@@ -67,6 +69,11 @@ $border-radius-small:       2px !default;
 // Utility classes
 @import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_utilities.scss";
 @import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_responsive-utilities.scss";
+
+// ============================================================================
+// 3rd Party Styles
+// ============================================================================
+@import "./../node_modules/ladda/dist/ladda.min.css";
 
 // ============================================================================
 // Custom Styles.
