@@ -11,7 +11,9 @@ import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
 import { mixer,
          pianoroll,
-         phrase } from '../actions/actions.js'
+         phrase,
+         transport,
+        } from '../actions/actions.js'
 import { getTracksHeight } from '../helpers/trackHelpers.js'
 import { shiftInterval } from '../helpers/intervalHelpers.js'
 
@@ -153,6 +155,18 @@ export default function reduceAll(state = {}, action) {
           xMin: targetBarMin,
           xMax: targetBarMax
         }
+      }, state)
+
+      // Transport STOP button is pressed
+      case transport.STOP:
+        if (!state.transport.playing) {
+          return u({
+            phrase: { playhead: 0.000 }
+          }, state)
+        }
+
+      return u({
+        transport: { playing: false }
       }, state)
 
     // ------------------------------------------------------------------------
