@@ -1,19 +1,19 @@
 import { login as loginHelper, signup as signupHelper } from 'helpers/authHelpers'
 import isAValidEmail from 'helpers/isEmail'
+import { modal } from '../actions/actions.js'
+import { auth } from '../actions/actions.js'
 
-export let AUTH_REQUEST = `LOGIN_REQUEST`
-export let LOGIN_SUCCESS = `LOGIN_SUCCESS`
-export let LOGIN_FAIL = `LOGIN_FAIL`
-export let LOGOUT = `LOGOUT`
-
+// ============================================================================
+// Authentication Action Creators
+// ============================================================================
 export let login = ({ email, password }) => {
   return (dispatch) => {
-    dispatch({ type: AUTH_REQUEST })
+    dispatch({ type: auth.LOGIN_REQUEST })
 
     loginHelper({ email, password }, response => {
       if (response.success) {
         dispatch({
-          type: LOGIN_SUCCESS,
+          type: auth.LOGIN_SUCCESS,
           payload: {
             loggedIn: response.success,
             user: response.user,
@@ -22,30 +22,21 @@ export let login = ({ email, password }) => {
       }
 
       else dispatch({
-        type: LOGIN_FAIL,
+        type: auth.LOGIN_FAIL,
         payload: { message: response.message },
       })
     })
   }
 }
 
-export let signup = ({ email, password }) => {
+export let signup = ({ email, username, password }) => {
   return (dispatch) => {
-    dispatch({ type: AUTH_REQUEST })
+    dispatch({ type: auth.LOGIN_REQUEST })
 
-    if (!isAValidEmail(email)) {
-      dispatch({
-        type: LOGIN_FAIL,
-        payload: { message: `Invalid email.` },
-      })
-
-      return
-    }
-
-    signupHelper({ email, password }, response => {
+    signupHelper({ email, username, password }, response => {
       if (response.success) {
         dispatch({
-          type: LOGIN_SUCCESS,
+          type: auth.LOGIN_SUCCESS,
           payload: {
             loggedIn: response.success,
             user: response.user,
@@ -54,24 +45,29 @@ export let signup = ({ email, password }) => {
       }
 
       else dispatch({
-        type: LOGIN_FAIL,
+        type: auth.LOGIN_FAIL,
         payload: { message: response.message },
       })
     })
   }
 }
 
-export let logout = () =>
-  dispatch => {
+export let logout = () => {
+  return (dispatch) => {
     localStorage.clear()
 
-    dispatch({
-      type: LOGOUT,
-      payload: { loggedIn: false },
-    })
+    setTimeout(() => {
+      dispatch({
+        type: auth.LOGOUT,
+        payload: { loggedIn: false },
+      })
+    }, 250)
   }
+}
 
-/*----------------------------------------------------------------------------*/
+// ============================================================================
+// Authentication Reducer
+// ============================================================================
 
 let intialState = {
   loggedIn: !!localStorage.token,
@@ -83,15 +79,27 @@ let intialState = {
 export default (state = intialState, action) => {
 
   switch (action.type) {
+    // ------------------------------------------------------------------------
+    // Clear out old auth error messages before launching auth modals
+    case modal.OPEN:
+      if (['LoginModal', 'SignupModal'].find(x => x === action.modalComponent)) {
+        return {
+          ...state,
+          errorMessage: null,
+        }
+      }
+      return state
 
-    case AUTH_REQUEST:
+    // ------------------------------------------------------------------------
+    case auth.LOGIN_REQUEST:
       return {
         ...state,
         requestingAuth: true,
         errorMessage: null,
       }
 
-    case LOGIN_SUCCESS:
+    // ------------------------------------------------------------------------
+    case auth.LOGIN_SUCCESS:
       return {
         ...state,
         loggedIn: action.payload.loggedIn,
@@ -100,19 +108,22 @@ export default (state = intialState, action) => {
         errorMessage: null,
       }
 
-    case LOGOUT:
+    // ------------------------------------------------------------------------
+    case auth.LOGOUT:
       return {
         loggedIn: false,
         errorMessage: null,
       }
 
-    case LOGIN_FAIL:
+    // ------------------------------------------------------------------------
+    case auth.LOGIN_FAIL:
       return {
         ...state,
         errorMessage: action.payload.message,
         requestingAuth: false,
       }
 
+    // ------------------------------------------------------------------------
     default:
       return state
   }

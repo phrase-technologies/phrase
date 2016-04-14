@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 
-import LoginModal from './LoginModal.js'
-
+import { modalOpen } from '../reducers/reduceModal.js'
 import { logout } from '../reducers/reduceAuth.js'
 
 export class UserNavigation extends Component {
@@ -11,9 +10,12 @@ export class UserNavigation extends Component {
     if (!this.props.loggedIn) {
       return (
         <div className="header-user-navigation">
-          <button className="btn btn-dark" type="button">Log in</button>
-          <button className="btn btn-bright" type="button">Sign up</button>
-          <LoginModal />
+          <button className="btn btn-dark" onClick={this.openLoginModal}>
+            Log in
+          </button>
+          <button className="btn btn-bright" onClick={this.openSignupModal}>
+            Sign up
+          </button>
         </div>
       )
     }
@@ -36,8 +38,9 @@ export class UserNavigation extends Component {
   }
 
   preventDefault = (e) => e.preventDefault()
-
   logout = () => this.props.dispatch(logout())
+  openLoginModal  = () => this.props.dispatch(modalOpen({ modalComponent: 'LoginModal'  }))
+  openSignupModal = () => this.props.dispatch(modalOpen({ modalComponent: 'SignupModal' }))
 }
 
 function mapStateToProps(state) {

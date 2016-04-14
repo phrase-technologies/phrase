@@ -1,5 +1,15 @@
 import { namespaceActions } from '../helpers/actionsHelpers.js'
 
+export const auth = namespaceActions(
+  'auth',
+  [
+    'LOGIN_REQUEST',
+    'LOGIN_SUCCESS',
+    'LOGIN_FAIL',
+    'LOGOUT',
+  ]
+)
+
 export const layout = namespaceActions(
   'layout',
   [

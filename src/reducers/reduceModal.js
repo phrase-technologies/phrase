@@ -1,11 +1,31 @@
-// ============================================================================
-// Modal Dialogs
-// ============================================================================
-import { modal } from '../actions/actions.js'
 import u from 'updeep'
+import { modal } from '../actions/actions.js'
+import { auth } from '../actions/actions.js'
 
+// ============================================================================
+// Modal Action Creators
+// ============================================================================
+export let modalOpen = ({ modalComponent }) => {
+  return (dispatch) => {
+    dispatch({
+      type: modal.CLOSE,
+    })
+    setTimeout(() => {
+      dispatch({
+        type: modal.OPEN,
+        modalComponent,
+      })
+    }, 10)
+  }
+}
+export let modalClose = () => ({ type: modal.CLOSE })
+
+// ============================================================================
+// Modal Reducer
+// ============================================================================
 let defaultState = {
-  activeModal: null
+  show: false,
+  activeModal: null,
 }
 
 export default function reduceModals(state = defaultState, action) {
@@ -13,18 +33,19 @@ export default function reduceModals(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case modal.OPEN:
       return u({
+        show: true,
         activeModal: action.modalComponent
       }, state)
 
     // ------------------------------------------------------------------------
     case modal.CLOSE:
+    case auth.LOGIN_SUCCESS: // Close modals after successful login
       return u({
-        activeModal: null
+        show: false
       }, state)
 
     // ------------------------------------------------------------------------
     default:
       return state
-
   }
 }
