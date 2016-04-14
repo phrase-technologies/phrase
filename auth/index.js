@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken'
 import User from '../models/User'
+import isValidEmail from '../helpers/isEmail'
+import isValidUsername from '../helpers/isUsername'
 
 export default ({
   api,
@@ -7,33 +9,59 @@ export default ({
 }) => {
   app.post(`/signup`, (req, res) => {
 
-    let { email, password } = req.body
+    let { email, username, password } = req.body
 
-    if (email && password) {
+    let trimmedEmail = email.trim()
+    let trimmedUsername = username.trim()
+    let trimmedPassword = password.trim()
+
+    if (!trimmedEmail || !isValidEmail(trimmedEmail)) {
+      res.json({
+        success: false,
+        message: { emailError: `Invalid email.` },
+      })
+    } else {
       User.findOne({ email }, (err, user) => {
         if (err) throw err
-        if (user) res.json({
-          success: false,
-          message: `An account with this email already exists.`,
-        })
-        else {
-
-          /*
-           *  TODO: hash password
-           */
-
-          let user = new User({ email, password, plan: `free` })
-
-          user.save((err, user) => {
+        if (user) {
+          res.json({
+            success: false,
+            message: { emailError: `An account with this email already exists.` },
+          })
+        } else if (!trimmedUsername || !isValidUsername(trimmedUsername)) {
+          res.json({
+            success: false,
+            message: { usernameError: `Invalid username.` },
+          })
+        } else {
+          User.findOne({ username }, (err, user) => {
             if (err) throw err
-            res.json({ success: true, user })
+            if (user) {
+              res.json({
+                success: false,
+                message: { usernameError: `Sorry, the username "${username}" is taken.` },
+              })
+            } else if (!trimmedPassword) {
+              res.json({
+                success: false,
+                message: { passwordError: `Invalid password.` },
+              })
+            } else {
+              /*
+               *  TODO: hash password
+               */
+
+              let user = new User({ email, password, plan: `free` })
+
+              user.save((err, user) => {
+                if (err) throw err
+                res.json({ success: true, user })
+              })
+            }
           })
         }
       })
-    } else res.json({
-      success: false,
-      message: `Must provide email and password.`,
-    })
+    }
   })
 
   api.post(`/login`, (req, res) => {
