@@ -157,13 +157,13 @@ export default function reduceAll(state = {}, action) {
         }
       }, state)
 
-      // Transport STOP button is pressed
-      case transport.STOP:
-        if (!state.transport.playing) {
-          return u({
-            phrase: { playhead: 0.000 }
-          }, state)
-        }
+    // Transport STOP button is pressed
+    case transport.STOP:
+      if (!state.transport.playing) {
+        return u({
+          phrase: { playhead: 0.000 }
+        }, state)
+      }
 
       return u({
         transport: { playing: false }
