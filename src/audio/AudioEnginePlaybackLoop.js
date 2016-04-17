@@ -11,7 +11,7 @@ import { fireNote,
 // ============================================================================
 // This function initializes a tight setInterval loop. In this loop, the next
 // few milliseconds worth of midi commands are scheduled, and the playhead is
-// moved. 
+// moved.
 //
 // TODO: Use WebWorkers to trigger each tick of the loop, to avoid playback
 //       stutter when tab moves to the background. Example:
@@ -22,8 +22,9 @@ export function startPlayback(engine, state, dispatch) {
 
   // Keep track of when playback began
   engine.isPlaying = true
-  engine.playStartTime = engine.ctx.currentTime
   engine.playheadPositionBars = state.phrase.playhead
+
+  engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars
 
   // Nothing to play? Ignore
   if (engine.midiCommands.length == 0) {
@@ -134,4 +135,3 @@ function playTimeToBar(time, engine, state) {
 
   return (time - playStartTime) / 120 * state.phrase.tempo
 }
-
