@@ -14,19 +14,19 @@ import reduceAuth from './reduceAuth'
 
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
+import undoable from 'redux-undo'
 
 let reduceBranches = combineReducers({
   routing: routerReducer,
   modal: reduceModal,
   navigation: reduceNavigation,
   transport: reduceTransport,
-  phrase: reducePhrase,
+  phrase: undoable(reducePhrase),
   mixer: reduceMixer,
   pianoroll: reducePianoroll,
   cursor: reduceCursor,
   auth: reduceAuth,
 })
-
 
 // ============================================================================
 // Top Level Reducers

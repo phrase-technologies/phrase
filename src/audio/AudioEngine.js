@@ -61,7 +61,7 @@ export default function createAudioEngine(STORE) {
       stopPlayback(engine, state)
 
     // Tracks and Effects Chains
-    if (state.phrase.tracks !== engine.lastState.tracks)
+    if (state.phrase.present.tracks !== engine.lastState.tracks)
       updateNodes(engine, state)
 
     // Notes

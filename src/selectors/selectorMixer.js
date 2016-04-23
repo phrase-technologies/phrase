@@ -4,12 +4,12 @@ import u from 'updeep'
 import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
-const tracksSelector            = (state) => ( state.phrase.tracks )
-const clipsSelector             = (state) => ( state.phrase.clips )
-const clipSelectionOffsetStart  = (state) => ( state.phrase.clipSelectionOffsetStart )
-const clipSelectionOffsetEnd    = (state) => ( state.phrase.clipSelectionOffsetEnd )
-const clipSelectionOffsetLooped = (state) => ( state.phrase.clipSelectionOffsetLooped )
-const clipSelectionOffsetTrack  = (state) => ( state.phrase.clipSelectionOffsetTrack )
+const tracksSelector            = (state) => ( state.phrase.present.tracks )
+const clipsSelector             = (state) => ( state.phrase.present.clips )
+const clipSelectionOffsetStart  = (state) => ( state.phrase.present.clipSelectionOffsetStart )
+const clipSelectionOffsetEnd    = (state) => ( state.phrase.present.clipSelectionOffsetEnd )
+const clipSelectionOffsetLooped = (state) => ( state.phrase.present.clipSelectionOffsetLooped )
+const clipSelectionOffsetTrack  = (state) => ( state.phrase.present.clipSelectionOffsetTrack )
 export const selectedClipsSelector = createSelector(
   clipsSelector,
   (clips) => {
@@ -55,5 +55,5 @@ export const atleastOneTrackSoloedSelector = createSelector(
   tracksSelector,
   (tracks) => {
     return tracks.some(track => track.solo)
-  }  
+  }
 )

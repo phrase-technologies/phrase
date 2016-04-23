@@ -27,19 +27,19 @@ export default function reduceAll(state = {}, action) {
     case mixer.SCROLL_X:
     case mixer.RESIZE_WIDTH:
       return u({
-        mixer: restrictTimelineZoom(state.mixer, state.phrase.barCount)
+        mixer: restrictTimelineZoom(state.mixer, state.phrase.present.barCount)
       }, state)
     case pianoroll.SCROLL_X:
     case pianoroll.RESIZE_WIDTH:
       return u({
-        pianoroll: restrictTimelineZoom(state.pianoroll, state.phrase.barCount)
+        pianoroll: restrictTimelineZoom(state.pianoroll, state.phrase.present.barCount)
       }, state)
 
     // ------------------------------------------------------------------------
     // Track absolute height to control vertical scrollbar overflow
     case phrase.CREATE_TRACK:
     case mixer.RESIZE_HEIGHT:
-      var contentHeight = getTracksHeight(state.phrase.tracks)
+      var contentHeight = getTracksHeight(state.phrase.present.tracks)
       if (contentHeight <= state.mixer.height) {
         return u({
           mixer: {
@@ -91,22 +91,23 @@ export default function reduceAll(state = {}, action) {
       // Update selected notes, deselect any selected clips, clear selection box
       return u({
         phrase: {
-          notes: notes => {
-            return notes.map(note => {
-              // Inside Selection Box
-              if (selectedNoteIDs.includes(note.id)) {
-                return u({
-                  selected: action.union ? !note.selected : true
-                }, note)
-              // Outside Selection Box
-              } else {
+          present: {
+            notes: notes => {
+              return notes.map(note => {
+                // Inside Selection Box
+                if (selectedNoteIDs.includes(note.id)) {
+                  return u({
+                    selected: action.union ? !note.selected : true
+                  }, note)
+                // Outside Selection Box
+                }
                 return u({
                   selected: action.union ? note.selected : false
                 }, note)
-              }
-            })
-          },
-          clips: u.updateIn(['*', 'selected'], false)
+              })
+            },
+            clips: u.updateIn(['*', 'selected'], false)
+          }
         },
         pianoroll: {
           selectionStartX: null,
@@ -120,23 +121,23 @@ export default function reduceAll(state = {}, action) {
     // Set the Pianoroll's focus window
     case pianoroll.SET_FOCUS_WINDOW:
       // Figure out the measurements
-      var foundClip = state.phrase.clips.find(clip => clip.id == action.clipID)
+      var foundClip = state.phrase.present.clips.find(clip => clip.id == action.clipID)
       var clipLength = foundClip.end - foundClip.start
-      var windowBarLength = (state.pianoroll.xMax - state.pianoroll.xMin) * state.phrase.barCount
+      var windowBarLength = (state.pianoroll.xMax - state.pianoroll.xMin) * state.phrase.present.barCount
       var spacing = Math.min(0.5, Math.max(0.125*windowBarLength, 0.125))
       var targetBarMin, targetBarMax
 
       // Specially commanded to zoom tight to the clip
       if (action.tight) {
-        targetBarMin = Math.max( foundClip.start - spacing, 0                     ) / state.phrase.barCount
-        targetBarMax = Math.min( foundClip.end   + spacing, state.phrase.barCount ) / state.phrase.barCount
+        targetBarMin = Math.max( foundClip.start - spacing, 0                     ) / state.phrase.present.barCount
+        targetBarMax = Math.min( foundClip.end   + spacing, state.phrase.present.barCount ) / state.phrase.present.barCount
       }
 
       // Loose focus shift - let's figure out the best place to shift the window to
       else {
         var shiftAmount = 0         // Don't shift if not necessary, by default
-        var shiftAmountMax = foundClip.end   + spacing - state.pianoroll.xMax * state.phrase.barCount // Does the target clip end beyond the ending of the window?
-        var shiftAmountMin = foundClip.start - spacing - state.pianoroll.xMin * state.phrase.barCount // Does the target clip start before the beginning of the window?
+        var shiftAmountMax = foundClip.end   + spacing - state.pianoroll.xMax * state.phrase.present.barCount // Does the target clip end beyond the ending of the window?
+        var shiftAmountMin = foundClip.start - spacing - state.pianoroll.xMin * state.phrase.present.barCount // Does the target clip start before the beginning of the window?
         // If newly focused clip DOES NOT fit in the window, focus to the beginning of it
         if (spacing + clipLength + spacing > windowBarLength)
           shiftAmount = shiftAmountMin
@@ -145,7 +146,7 @@ export default function reduceAll(state = {}, action) {
                if (shiftAmountMax > 0) { shiftAmount = shiftAmountMax }
           else if (shiftAmountMin < 0) { shiftAmount = shiftAmountMin }
         }
-        [targetBarMin, targetBarMax] = shiftInterval([state.pianoroll.xMin, state.pianoroll.xMax], shiftAmount/state.phrase.barCount)
+        [targetBarMin, targetBarMax] = shiftInterval([state.pianoroll.xMin, state.pianoroll.xMax], shiftAmount/state.phrase.present.barCount)
       }
 
       // Make the change!

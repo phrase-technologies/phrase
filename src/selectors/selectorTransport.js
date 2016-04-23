@@ -2,9 +2,9 @@ import { createSelector } from 'reselect'
 import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
 import { loopedNoteSelector } from './selectorPianoroll.js'
 
-const tracksSelector = (state) => ( state.phrase.tracks )
-const clipsSelector  = (state) => ( state.phrase.clips )
-const notesSelector  = (state) => ( state.phrase.notes )
+const tracksSelector = (state) => ( state.phrase.present.tracks )
+const clipsSelector  = (state) => ( state.phrase.present.clips )
+const notesSelector  = (state) => ( state.phrase.present.notes )
 const noteMidiSelector = createLargeCacheSelector(
   note => note,
   (note) => {

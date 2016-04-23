@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { ActionCreators } from 'redux-undo'
 
 import { transportPlayToggle,
-         transportStop } from '../actions/actionsTransport.js'
-import { phraseDeleteSelection } from '../actions/actionsPhrase.js'
+         transportStop } from '../actions/actionsTransport'
+import { phraseDeleteSelection } from '../actions/actionsPhrase'
 
 // ============================================================================
 // Hotkey Provider
@@ -41,10 +42,18 @@ class HotkeyProvider extends Component {
 
     // Everything else, override!
     e.preventDefault()
+
+    let { dispatch } = this.props
+
+    switch(e.code) {
+      // undo last action
+      case 'KeyZ': if (e.metaKey) dispatch(ActionCreators.undo()); break
+      case 'KeyY': if (e.metaKey) dispatch(ActionCreators.redo()); break
+    }
   }
 
   handleKeyUp(e) {
-    let dispatch = this.props.dispatch
+    let { dispatch } = this.props
 
     // Prevent doublebooking events with form <inputs>
     if (e.target.tagName === 'INPUT')

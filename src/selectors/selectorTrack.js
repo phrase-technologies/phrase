@@ -1,19 +1,19 @@
 import { createSelector } from 'reselect'
 
 const barCountSelector = (state) => {
-  return state.phrase.barCount
+  return state.phrase.present.barCount
 }
 const clipsSelector = (state) => {
-  return state.phrase.clips
+  return state.phrase.present.clips
 }
 const trackSelector = (state, props) => {
   return props.track
 }
 const selectionOffsetBar = (state) => {
-  return state.phrase.clipSelectionOffsetBar
+  return state.phrase.present.clipselectionOffsetBar
 }
 const selectionOffsetTrack = (state) => {
-  return state.phrase.clipSelectionOffsetTrack
+  return state.phrase.present.clipselectionOffsetTrack
 }
 
 export const mapClipsToTrack = createSelector(

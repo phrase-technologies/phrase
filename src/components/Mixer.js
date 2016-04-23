@@ -106,15 +106,15 @@ function mapStateToProps(state) {
     focusedTrack: state.pianoroll.currentTrack,
     focusBarMin: state.pianoroll.xMin,
     focusBarMax: state.pianoroll.xMax,
-    tracks: state.phrase.tracks,
+    tracks: state.phrase.present.tracks,
     atleastOneTrackSoloed: atleastOneTrackSoloedSelector(state),
     clips: renderedClipsSelector(state),
-    barCount: state.phrase.barCount,
+    barCount: state.phrase.present.barCount,
     xMin: state.mixer.xMin,
     xMax: state.mixer.xMax,
     yMin: state.mixer.yMin,
     yMax: state.mixer.yMax,
-    playhead: state.phrase.playhead,
+    playhead: state.phrase.present.playhead,
     cursor: state.mixer.cursor
   }
 }

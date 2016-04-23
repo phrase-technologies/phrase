@@ -22,7 +22,7 @@ export function startPlayback(engine, state, dispatch) {
 
   // Keep track of when playback began
   engine.isPlaying = true
-  engine.playheadPositionBars = state.phrase.playhead
+  engine.playheadPositionBars = state.phrase.present.playhead
 
   engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars
 
@@ -125,7 +125,7 @@ function barToPlayTime(bar, engine, state) {
   // If not provided, default to now.
   var playStartTime = engine.playStartTime || engine.ctx.currentTime
 
-  return bar * 120 / state.phrase.tempo + playStartTime
+  return bar * 120 / state.phrase.present.tempo + playStartTime
 }
 
 function playTimeToBar(time, engine, state) {
@@ -133,5 +133,5 @@ function playTimeToBar(time, engine, state) {
   // If not provided, default to now.
   var playStartTime = engine.playStartTime || engine.ctx.currentTime
 
-  return (time - playStartTime) / 120 * state.phrase.tempo
+  return (time - playStartTime) / 120 * state.phrase.present.tempo
 }

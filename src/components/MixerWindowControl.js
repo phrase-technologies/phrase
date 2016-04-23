@@ -24,7 +24,7 @@ import { phraseCreateClip,
          phraseSelectClip,
          phraseDragClipSelection,
          phraseDropClipSelection } from '../actions/actionsPhrase.js'
-import { pianorollSetFocusWindow } from '../actions/actionsPianoroll.js'         
+import { pianorollSetFocusWindow } from '../actions/actionsPianoroll.js'
 import { cursorResizeLeft,
          cursorResizeRight,
          cursorResizeLoop,
@@ -32,7 +32,7 @@ import { cursorResizeLeft,
          cursorResizeRightLoop,
          cursorResizeRightClipped,
          cursorResizeRightLooped,
-         cursorClear } from '../actions/actionsCursor.js'         
+         cursorClear } from '../actions/actionsCursor.js'
 
 import CanvasComponent from './CanvasComponent'
 
@@ -91,7 +91,7 @@ export class MixerWindowControl extends Component {
 
     switch(e.which) {
       default:
-      case 1: 
+      case 1:
       case 2: this.leftClickEvent(e);  break
       case 3: this.rightClickEvent(e); break
     }
@@ -258,7 +258,7 @@ export class MixerWindowControl extends Component {
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else {
       this.props.dispatch( cursorClear('implicit') )
-    }    
+    }
   }
 
   mouseUpEvent(e) {
@@ -320,9 +320,9 @@ export class MixerWindowControl extends Component {
       return null
     } else if (!strict) {   // Strict = false: treat the gaps between each track as actual tracks to facilitate smooth drag and drop
       if (cursorPosition < 0)
-        return this.props.tracks[0].id
+        return (this.props.tracks[0] || {}).id
       else
-        return this.props.tracks[this.props.tracks.length - 1].id
+        return (this.props.tracks[this.props.tracks.length - 1] || {}).id
     }
   }
 
@@ -370,7 +370,7 @@ export class MixerWindowControl extends Component {
     var changeDetected = propsToCheck.some(prop => {
       return nextProps[prop] != this.props[prop]
     })
-    return changeDetected    
+    return changeDetected
   }
 }
 

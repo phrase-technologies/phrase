@@ -3,20 +3,20 @@ import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
 import u from 'updeep'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
-const barCountSelector          = (state) => (state.phrase.barCount)
-const playheadSelector          = (state) => (state.phrase.playhead)
-const clipsSelector             = (state) => (state.phrase.clips)
-const notesSelector             = (state) => (state.phrase.notes)
+const barCountSelector          = (state) => (state.phrase.present.barCount)
+const playheadSelector          = (state) => (state.phrase.present.playhead)
+const clipsSelector             = (state) => (state.phrase.present.clips)
+const notesSelector             = (state) => (state.phrase.present.notes)
 const pianorollSelector         = (state) => (state.pianoroll)
-const clipSelectionOffsetStart  = (state) => (state.phrase.clipSelectionOffsetStart)
-const clipSelectionOffsetEnd    = (state) => (state.phrase.clipSelectionOffsetEnd)
-const clipSelectionOffsetLooped = (state) => (state.phrase.clipSelectionOffsetLooped)
-const clipSelectionOffsetTrack  = (state) => (state.phrase.clipSelectionOffsetTrack)
-const noteSelectionOffsetStart  = (state) => (state.phrase.noteSelectionOffsetStart)
-const noteSelectionOffsetEnd    = (state) => (state.phrase.noteSelectionOffsetEnd)
-const noteSelectionOffsetKey    = (state) => (state.phrase.noteSelectionOffsetKey)
+const clipSelectionOffsetStart  = (state) => (state.phrase.present.clipselectionOffsetStart)
+const clipSelectionOffsetEnd    = (state) => (state.phrase.present.clipselectionOffsetEnd)
+const clipSelectionOffsetLooped = (state) => (state.phrase.present.clipselectionOffsetLooped)
+const clipSelectionOffsetTrack  = (state) => (state.phrase.present.clipselectionOffsetTrack)
+const noteSelectionOffsetStart  = (state) => (state.phrase.present.noteSelectionOffsetStart)
+const noteSelectionOffsetEnd    = (state) => (state.phrase.present.noteSelectionOffsetEnd)
+const noteSelectionOffsetKey    = (state) => (state.phrase.present.noteSelectionOffsetKey)
 const currentTrackSelector      = (state) => {
-  return state.phrase.tracks.find(track => track.id === state.pianoroll.currentTrack)
+  return state.phrase.present.tracks.find(track => track.id === state.pianoroll.currentTrack)
 }
 const currentClipsSelector = createSelector(
   clipsSelector,

@@ -6,12 +6,12 @@ const OUTPUT_METER_SIZE = 2048
 // VIRTUAL AUDIO GRAPH NODES
 // ============================================================================
 // This function abstracts out the creation, routing, updating and removal of
-// Web Audio API Nodes as dictated by changes in the `state`. 
+// Web Audio API Nodes as dictated by changes in the `state`.
 export function updateNodes(engine, state) {
 
   // Remove tracks as required
   Object.keys(engine.trackModules).forEach(trackID => {
-    var foundTrack = state.phrase.tracks.find(track => track.id == trackID)
+    var foundTrack = state.phrase.present.tracks.find(track => track.id == trackID)
     if (!foundTrack) {
       var trackModuleToRemove = engine.trackModules[trackID]
       delete engine.trackModules[trackID]
@@ -20,8 +20,8 @@ export function updateNodes(engine, state) {
   })
 
   // Add/update tracks as required
-  var atleastOneTrackSoloed = state.phrase.tracks.some(track => track.solo)
-  state.phrase.tracks.forEach(track => {
+  let atleastOneTrackSoloed = state.phrase.present.tracks.some(track => track.solo)
+  state.phrase.present.tracks.forEach(track => {
     // Add new tracks
     if (!engine.trackModules[track.id]) {
       engine.trackModules[track.id] = createTrackModule(engine, track)
@@ -31,7 +31,7 @@ export function updateNodes(engine, state) {
     else {
       let muteTrack = atleastOneTrackSoloed && !track.solo || track.mute
       let trackModule = engine.trackModules[track.id]
-          trackModule.outputFinal.gain.value = 1.0 * !muteTrack
+      trackModule.outputFinal.gain.value = 1.0 * !muteTrack
     }
   })
 }
@@ -41,7 +41,7 @@ function destroyTrackModule(trackModule) {
   trackModule.outputFinal.disconnect()
   trackModule.outputGain.disconnect()
   trackModule.outputPan.disconnect()
-  trackModule.effectsChain.forEach(effect => effect.disconnect())
+  trackModule.effectsChain.forEach(effect => effect.disconnect && effect.disconnect())
 }
 
 // This function births a new trackModule
