@@ -3,7 +3,7 @@
 // ============================================================================
 
 import u from 'updeep'
-import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
+import { uIncrement, uAppend } from '../helpers/arrayHelpers.js'
 
 import { phrase } from '../actions/actions.js'
 import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
@@ -115,7 +115,7 @@ export default function reducePhrase(state = defaultState, action) {
         notes: u.updateIn(['*', 'selected'], false),
         clips: u.updateIn(['*'], u.ifElse(
           (clip) => clip.id === action.clipID,
-          (clip) => u({selected: (action.union ? !clip.selected : true )}, clip),
+          (clip) => u({selected: (action.union ? !clip.selected : true)}, clip),
           (clip) => u({selected: (action.union ?  clip.selected : false)}, clip)
         ))
       }, state)
@@ -126,7 +126,7 @@ export default function reducePhrase(state = defaultState, action) {
         clips: u.updateIn(['*', 'selected'], false),
         notes: u.updateIn(['*'], u.ifElse(
           (note) => note.id === action.noteID,
-          (note) => u({selected: (action.union ? !note.selected : true )}, note),
+          (note) => u({selected: (action.union ? !note.selected : true)}, note),
           (note) => u({selected: (action.union ?  note.selected : false)}, note)
         ))
       }, state)
@@ -147,11 +147,9 @@ export default function reducePhrase(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
       // If clips were deleted, must keep track to delete corresponding notes
-      var selectedClipIDs = state.clips
+      let selectedClipIDs = state.clips
         .filter(clip => clip.selected)
         .map(clip => clip.id)
-
-      console.log( selectedClipIDs )
 
       return u({
         clips: u.reject(clip => clip.selected),
@@ -159,28 +157,27 @@ export default function reducePhrase(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
-    case phrase.DRAG_CLIP_SELECTION:
-      var offsetStart = action.start
-      var offsetEnd   = action.end
-      var offsetTrack = action.track
-      var targetClip = state.clips.find(clip => clip.id == action.clipID)
-      var gridUnit = 0.125
-      var selectedClips = state.clips.filter(clip => clip.selected)
+    case phrase.DRAG_CLIP_SELECTION: {
+      let offsetStart = action.start
+      let offsetEnd   = action.end
+      let offsetTrack = action.track
+      let targetClip = state.clips.find(clip => clip.id === action.clipID)
+      let gridUnit = 0.125
+      let selectedClips = state.clips.filter(clip => clip.selected)
 
       // Snap drag offset to closest grid lines
-      var [snappedOffsetStart, snappedOffsetEnd]
+      let [snappedOffsetStart, snappedOffsetEnd]
         = action.snap
         ? snapNoteOffset(offsetStart, offsetEnd, targetClip, gridUnit)
         : [offsetStart, offsetEnd]
 
-      // Avoid negative clip lengths!
-      var [finalOffsetStart, finalOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
-
-      // Avoid negative clip positions!
-      var [finalOffsetStart, finalOffsetEnd] = validateOffsetPosition(snappedOffsetStart, snappedOffsetEnd, selectedClips)
+      // Avoid negative clip lengths and positions!
+      let finalOffsetStart, finalOffsetEnd
+      [finalOffsetStart, finalOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
+      [finalOffsetStart, finalOffsetEnd] = validateOffsetPosition(snappedOffsetStart, snappedOffsetEnd, selectedClips)
 
       // Validate Track Offset
-      var finalOffsetTrack = validateTrackOffset(offsetTrack, state.tracks, state.clips)
+      let finalOffsetTrack = validateTrackOffset(offsetTrack, state.tracks, state.clips)
 
       return u({
         clipSelectionOffsetStart: finalOffsetStart,
@@ -188,29 +185,31 @@ export default function reducePhrase(state = defaultState, action) {
         clipSelectionOffsetLooped: action.looped,
         clipSelectionOffsetTrack: finalOffsetTrack
       }, state)
+    }
 
     // ------------------------------------------------------------------------
-    case phrase.DRAG_NOTE_SELECTION:
-      var offsetStart = action.start
-      var offsetEnd   = action.end
-      var targetNote = state.notes.find(note => note.id == action.noteID)
-      var gridUnit = 0.125
-      var selectedNotes = state.notes.filter(note => note.selected)
+    case phrase.DRAG_NOTE_SELECTION: {
+      let offsetStart = action.start
+      let offsetEnd   = action.end
+      let targetNote = state.notes.find(note => note.id === action.noteID)
+      let gridUnit = 0.125
+      let selectedNotes = state.notes.filter(note => note.selected)
 
       // Snap drag offset to closest grid lines
-      var [snappedOffsetStart, snappedOffsetEnd]
+      let [snappedOffsetStart, snappedOffsetEnd]
         = action.snap
         ? snapNoteOffset(offsetStart, offsetEnd, targetNote, gridUnit)
         : [offsetStart, offsetEnd]
 
       // Avoid negative note lengths!
-      var [finalOffsetStart, finalOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedNotes)
+      let [finalOffsetStart, finalOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedNotes)
 
       return u({
         noteSelectionOffsetStart: finalOffsetStart,
         noteSelectionOffsetEnd:   finalOffsetEnd,
-        noteSelectionOffsetKey:   Math.round( action.key )
+        noteSelectionOffsetKey:   Math.round(action.key)
       }, state)
+    }
 
     // ------------------------------------------------------------------------
     case phrase.DROP_CLIP_SELECTION:
@@ -218,19 +217,18 @@ export default function reducePhrase(state = defaultState, action) {
         clips: clips => {
           return clips.map(clip => {
             // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
-            var validatedOffsetLooped = state.clipSelectionOffsetLooped || (clip.end - clip.start != clip.loopLength)
+            let validatedOffsetLooped = state.clipSelectionOffsetLooped || (clip.end - clip.start !== clip.loopLength)
 
             if (clip.selected) {
               return u({
                 start:  clip.start  + state.clipSelectionOffsetStart,
                 end:    clip.end    + state.clipSelectionOffsetEnd,
-                offset: validatedOffsetLooped && state.clipSelectionOffsetStart != state.clipSelectionOffsetEnd ? negativeModulus(clip.offset - state.clipSelectionOffsetStart, clip.loopLength) : clip.offset,
+                offset: validatedOffsetLooped && state.clipSelectionOffsetStart !== state.clipSelectionOffsetEnd ? negativeModulus(clip.offset - state.clipSelectionOffsetStart, clip.loopLength) : clip.offset,
                 loopLength: validatedOffsetLooped ? clip.loopLength : clip.end + state.clipSelectionOffsetEnd - clip.start - state.clipSelectionOffsetStart,
                 trackID: getOffsetedTrackID(clip.trackID, state.clipSelectionOffsetTrack, state.tracks)
               }, clip)
-            } else {
-              return clip
             }
+            return clip
           })
         },
         notes: notes => {
@@ -239,16 +237,15 @@ export default function reducePhrase(state = defaultState, action) {
             return notes
 
           // Change of track occured - make sure appropriate notes are moved also!
-          var selectedClips = state.clips.filter(clip => clip.selected)
+          let selectedClips = state.clips.filter(clip => clip.selected)
           return notes.map(note => {
-            var clipMoved = selectedClips.find(clip => clip.id == note.clipID)
+            let clipMoved = selectedClips.find(clip => clip.id === note.clipID)
             if (clipMoved) {
               return u({
                 trackID: getOffsetedTrackID(note.trackID, state.clipSelectionOffsetTrack, state.tracks)
               }, note)
-            } else {
-              return note
             }
+            return note
           })
         },
         clipSelectionOffsetStart: null,
@@ -267,9 +264,8 @@ export default function reducePhrase(state = defaultState, action) {
                 end:    note.end    + state.noteSelectionOffsetEnd,
                 keyNum: note.keyNum + state.noteSelectionOffsetKey
               }, note)
-            } else {
-              return note
             }
+            return note
           })
         },
         noteSelectionOffsetStart: null,
@@ -279,10 +275,10 @@ export default function reducePhrase(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.MOVE_PLAYHEAD:
-      var playhead = Math.max(action.bar, 0)
+      let playhead = Math.max(action.bar, 0)
           playhead = Math.min(playhead, state.barCount)
       return u({
-        playhead: playhead
+        playhead
       }, state)
 
     // ------------------------------------------------------------------------
@@ -303,8 +299,8 @@ function reduceCreateClip(state, action) {
   }, state)
 
   // Create new clip
-  var snappedClipStart = Math.floor(action.bar) + 0.00
-  var newClip = u.freeze({
+  let snappedClipStart = Math.floor(action.bar) + 0.00
+  let newClip = u.freeze({
     id:         state.clipAutoIncrement,
     trackID:    action.trackID,
     start:      snappedClipStart,
@@ -327,8 +323,8 @@ function reduceCreateNote(state, action) {
     return state
 
   // Create clip if necessary
-  var state = reduceCreateClip(state, action)
-  var foundClip = getClipAtBar(state, action.bar, action.trackID)
+  state = reduceCreateClip(state, action)
+  let foundClip = getClipAtBar(state, action.bar, action.trackID)
 
   // Deselect all existing clips and notes
   state = u({
@@ -337,9 +333,9 @@ function reduceCreateNote(state, action) {
   }, state)
 
   // Insert note, snap to same length as most previously created note
-  var snappedNoteKey   = Math.ceil(action.key)
-  var snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast
-  var newNote = u.freeze({
+  let snappedNoteKey   = Math.ceil(action.key)
+  let snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast
+  let newNote = u.freeze({
     id:       state.noteAutoIncrement,
     trackID:  action.trackID,
     clipID:   foundClip.id,
@@ -358,20 +354,20 @@ function reduceCreateNote(state, action) {
 
 export function getClipAtBar(state, bar, trackID) {
   return state.clips.find((clip) => {
-    return clip.trackID == trackID && bar >= clip.start && bar < clip.end
+    return clip.trackID === trackID && bar >= clip.start && bar < clip.end
   })
 }
 
 export function getNoteAtKeyBar(state, key, bar, trackID) {
-  var snappedNoteKey = Math.ceil(key)
+  let snappedNoteKey = Math.ceil(key)
   return state.notes.find(note => {
     // Ignore notes on different keys
-    if (note.keyNum != snappedNoteKey)
+    if (note.keyNum !== snappedNoteKey)
       return false
 
     // Find corresponding clip
-    var clip = state.clips.find(clip => {
-      return clip.trackID == trackID && clip.id == note.clipID
+    let clip = state.clips.find(clip => {
+      return clip.trackID === trackID && clip.id === note.clipID
     })
 
     // Ignore notes on different tracks
@@ -383,7 +379,7 @@ export function getNoteAtKeyBar(state, key, bar, trackID) {
       return false
 
     // Find iteration of the clip's loops that the note would fall into
-    var loopStart = clip.start + clip.offset - (!!clip.offset * clip.loopLength)
+    let loopStart = clip.start + clip.offset - (!!clip.offset * clip.loopLength)
     while(loopStart + clip.loopLength < bar) {
       loopStart += clip.loopLength
     }
@@ -403,12 +399,12 @@ function snapNoteOffset(offsetStart, offsetEnd, note, snapUnit = 0.125) {
   // --------------------------------------------------------------------------
   // Snap both the start and end by the same amount, based on either the
   // starting point or the ending point of the note - which ever snaps closer
-  if (offsetStart == offsetEnd) {
-    var snappedClosestGridLineStart = snapValueToClosestGridLine(snapUnit, offsetStart, note.start)
-    var snappedClosestGridLineEnd   = snapValueToClosestGridLine(snapUnit, offsetStart, note.end)
-    var snappedClosestUnitAway      = snapValueToClosestUnitAway(snapUnit, offsetStart)
-    var snappings = [snappedClosestGridLineStart, snappedClosestGridLineEnd, snappedClosestUnitAway]
-    var [closestSnap, closestSnapDistance] = snappings
+  if (offsetStart === offsetEnd) {
+    let snappedClosestGridLineStart = snapValueToClosestGridLine(snapUnit, offsetStart, note.start)
+    let snappedClosestGridLineEnd   = snapValueToClosestGridLine(snapUnit, offsetStart, note.end)
+    let snappedClosestUnitAway      = snapValueToClosestUnitAway(snapUnit, offsetStart)
+    let snappings = [snappedClosestGridLineStart, snappedClosestGridLineEnd, snappedClosestUnitAway]
+    let [closestSnap, closestSnapDistance] = snappings
       .map(snapping => [snapping, Math.abs(snapping - offsetStart)])
       .sort((a, b) => a[1] - b[1])
       [0]
@@ -436,37 +432,36 @@ function snapNoteOffset(offsetStart, offsetEnd, note, snapUnit = 0.125) {
 }
 
 function snapValueToClosestUnitAway(snapUnit, offset) {
-  return Math.round( offset  / snapUnit ) * snapUnit
+  return Math.round(offset / snapUnit) * snapUnit
 }
 function snapValueToClosestGridLine(snapUnit, offset, originalValue) {
-  return Math.round( (originalValue + offset) / snapUnit ) * snapUnit - originalValue
+  return Math.round((originalValue + offset) / snapUnit) * snapUnit - originalValue
 }
 function snapValueToBestFit(snapUnit, offset, originalValue) {
   // Snap an individual grip either to the next unit distance or to the closest grid line,
   // Whichever fits best.
-  var snappedOffsetToClosestUnitAway = snapValueToClosestGridLine(snapUnit, offset, originalValue)
-  var snappedOffsetToClosestGridLine = snapValueToClosestUnitAway(snapUnit, offset)
+  let snappedOffsetToClosestUnitAway = snapValueToClosestGridLine(snapUnit, offset, originalValue)
+  let snappedOffsetToClosestGridLine = snapValueToClosestUnitAway(snapUnit, offset)
 
-  var snapAmountUnitAway = Math.abs( snappedOffsetToClosestUnitAway - offset )
-  var snapAmountGridLine = Math.abs( snappedOffsetToClosestGridLine - offset )
+  let snapAmountUnitAway = Math.abs(snappedOffsetToClosestUnitAway - offset)
+  let snapAmountGridLine = Math.abs(snappedOffsetToClosestGridLine - offset)
 
   // Don't do any snapping if we aren't at least within 20% within range
   if (snapAmountUnitAway > 0.20*snapUnit && snapAmountGridLine > 0.25*snapUnit)
     return offset
   // Snap to the closest 1 unit delta
-  if( snapAmountUnitAway < snapAmountGridLine )
+  if (snapAmountUnitAway < snapAmountGridLine)
     return snappedOffsetToClosestUnitAway
   // Snap to the closest gridline
-  else
-    return snappedOffsetToClosestGridLine
+  return snappedOffsetToClosestGridLine
 }
 
 // Works for both notes and clips
 function validateOffsetLengths(offsetStart, offsetEnd, selectedClips) {
-  var adjustment = 0
-  var proposedLengthChange = offsetEnd - offsetStart
+  let adjustment = 0
+  let proposedLengthChange = offsetEnd - offsetStart
   if (proposedLengthChange < 0) {
-    var shortestClipLength = selectedClips.reduce((shortestLength, clip) => {
+    let shortestClipLength = selectedClips.reduce((shortestLength, clip) => {
       return Math.min(shortestLength, clip.end - clip.start)
     }, 12345678) // Really long dummy number
     adjustment = Math.min(0, shortestClipLength + proposedLengthChange - MINIMUM_UNIT_LENGTH)
@@ -478,39 +473,38 @@ function validateOffsetLengths(offsetStart, offsetEnd, selectedClips) {
 
 function validateOffsetPosition(offsetStart, offsetEnd, selectedNotes) {
   // Calculate the limit
-  var firstNote = selectedNotes.reduce((earliestNote, note) => {
+  let firstNote = selectedNotes.reduce((earliestNote, note) => {
     return earliestNote.start < note.start ? earliestNote : note
   })
-  var largestAllowableOffset = -firstNote.start
+  let largestAllowableOffset = -firstNote.start
 
   // Drag Entire Note
-  if (offsetStart == offsetEnd) {
+  if (offsetStart === offsetEnd) {
     return offsetStart < largestAllowableOffset
       ? [largestAllowableOffset, largestAllowableOffset]
       : [offsetStart, offsetEnd]
-  // Resize Start/End of Note
-  } else {
-    return offsetStart < largestAllowableOffset
-      ? [largestAllowableOffset, offsetEnd]
-      : [offsetStart, offsetEnd]
   }
+  // Resize Start/End of Note
+  return offsetStart < largestAllowableOffset
+    ? [largestAllowableOffset, offsetEnd]
+    : [offsetStart, offsetEnd]
 }
 
 function validateTrackOffset(offsetTrack, tracks, clips) {
   // Which clips are we offsetting?
-  var selectedClips = clips.filter(clip => clip.selected)
+  let selectedClips = clips.filter(clip => clip.selected)
 
   // Calculate the largest offset allowable to both top and bottom directions
-  var firstTrackWithSelectedClip = tracks.length // Default to largest possible value
-  var lastTrackWithSelectedClip  = 0             // Default to smallest possible value
+  let firstTrackWithSelectedClip = tracks.length // Default to largest possible value
+  let lastTrackWithSelectedClip  = 0             // Default to smallest possible value
   selectedClips.forEach(clip => {
-    var currentTrackPosition = tracks.findIndex(track => track.id === clip.trackID)
+    let currentTrackPosition = tracks.findIndex(track => track.id === clip.trackID)
     firstTrackWithSelectedClip = Math.min(firstTrackWithSelectedClip,  currentTrackPosition)
     lastTrackWithSelectedClip  = Math.max(lastTrackWithSelectedClip, currentTrackPosition)
   })
 
   // Validate the target offset is within limits
-  var maxTrackOffsetTop    = -firstTrackWithSelectedClip
-  var maxTrackOffsetBottom = tracks.length - 1 - lastTrackWithSelectedClip
+  let maxTrackOffsetTop    = -firstTrackWithSelectedClip
+  let maxTrackOffsetBottom = tracks.length - 1 - lastTrackWithSelectedClip
   return Math.min(Math.max(maxTrackOffsetTop, offsetTrack), maxTrackOffsetBottom)
 }
