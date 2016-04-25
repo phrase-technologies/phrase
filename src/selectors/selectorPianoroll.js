@@ -63,6 +63,7 @@ export const currentNotesSelector = createSelector(
   noteSelectionOffsetEnd,
   noteSelectionOffsetKey,
   (currentClips, notes, currentTrack, offsetStart, offsetEnd, offsetKey) => {
+    if (!currentTrack) return
     let currentNotes = notes
       .filter(note => note.trackID === currentTrack.id)
 

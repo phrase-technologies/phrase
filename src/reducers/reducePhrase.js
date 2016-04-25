@@ -51,6 +51,7 @@ export default function reducePhrase(state = defaultState, action) {
   {
     // ------------------------------------------------------------------------
     case phrase.CREATE_TRACK:
+      console.log(state.trackAutoIncrement)
       return u({
         tracks: uAppend(
           {
@@ -115,7 +116,7 @@ export default function reducePhrase(state = defaultState, action) {
         clips: u.updateIn(['*'], u.ifElse(
           (clip) => clip.id === action.clipID,
           (clip) => u({selected: (action.union ? !clip.selected : true )}, clip),
-          (clip) => u({selected: (action.union ?  clip.selected : false)}, clip)          
+          (clip) => u({selected: (action.union ?  clip.selected : false)}, clip)
         ))
       }, state)
 
@@ -126,7 +127,7 @@ export default function reducePhrase(state = defaultState, action) {
         notes: u.updateIn(['*'], u.ifElse(
           (note) => note.id === action.noteID,
           (note) => u({selected: (action.union ? !note.selected : true )}, note),
-          (note) => u({selected: (action.union ?  note.selected : false)}, note)          
+          (note) => u({selected: (action.union ?  note.selected : false)}, note)
         ))
       }, state)
 
@@ -168,7 +169,7 @@ export default function reducePhrase(state = defaultState, action) {
 
       // Snap drag offset to closest grid lines
       var [snappedOffsetStart, snappedOffsetEnd]
-        = action.snap 
+        = action.snap
         ? snapNoteOffset(offsetStart, offsetEnd, targetClip, gridUnit)
         : [offsetStart, offsetEnd]
 
@@ -198,7 +199,7 @@ export default function reducePhrase(state = defaultState, action) {
 
       // Snap drag offset to closest grid lines
       var [snappedOffsetStart, snappedOffsetEnd]
-        = action.snap 
+        = action.snap
         ? snapNoteOffset(offsetStart, offsetEnd, targetNote, gridUnit)
         : [offsetStart, offsetEnd]
 
@@ -287,7 +288,7 @@ export default function reducePhrase(state = defaultState, action) {
     // ------------------------------------------------------------------------
     default:
       return state
-  }  
+  }
 }
 
 function reduceCreateClip(state, action) {
@@ -324,7 +325,7 @@ function reduceCreateNote(state, action) {
   // Skip if note already exists
   if (getNoteAtKeyBar(state, action.key, action.bar, action.trackID))
     return state
-  
+
   // Create clip if necessary
   var state = reduceCreateClip(state, action)
   var foundClip = getClipAtBar(state, action.bar, action.trackID)
@@ -368,7 +369,7 @@ export function getNoteAtKeyBar(state, key, bar, trackID) {
     if (note.keyNum != snappedNoteKey)
       return false
 
-    // Find corresponding clip 
+    // Find corresponding clip
     var clip = state.clips.find(clip => {
       return clip.trackID == trackID && clip.id == note.clipID
     })
@@ -400,7 +401,7 @@ function snapNoteOffset(offsetStart, offsetEnd, note, snapUnit = 0.125) {
   // --------------------------------------------------------------------------
   // Moving the whole note
   // --------------------------------------------------------------------------
-  // Snap both the start and end by the same amount, based on either the 
+  // Snap both the start and end by the same amount, based on either the
   // starting point or the ending point of the note - which ever snaps closer
   if (offsetStart == offsetEnd) {
     var snappedClosestGridLineStart = snapValueToClosestGridLine(snapUnit, offsetStart, note.start)

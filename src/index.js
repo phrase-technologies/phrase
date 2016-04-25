@@ -18,20 +18,31 @@ import EngineProvider from 'audio/AudioEngineProvider.js'
 import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { Router, Route, browserHistory } from 'react-router'
-import { syncHistoryWithStore } from 'react-router-redux'
+import { phraseCreateTrack } from 'actions/actionsPhrase.js'
+
+// import { syncHistoryWithStore } from 'react-router-redux'
 import finalReducer from './reducers/reduce.js'
+import * as storage from 'redux-storage'
+import createEngine from 'redux-storage-engine-localstorage'
+
+const localStorageEngine = createEngine(`phrase`)
+const localStorageMiddleware = storage.createMiddleware(localStorageEngine)
 
 const finalCreateStore = compose(
-  applyMiddleware(thunk),
+  applyMiddleware(thunk, localStorageMiddleware),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore)
-const STORE = finalCreateStore(finalReducer)
-const HISTORY = syncHistoryWithStore(browserHistory, STORE)
 
-// Setup initial state - 2 tracks by default
-import { phraseCreateTrack } from 'actions/actionsPhrase.js'
-STORE.dispatch(phraseCreateTrack())
-STORE.dispatch(phraseCreateTrack())
+const STORE = finalCreateStore(storage.reducer(finalReducer))
+// const HISTORY = syncHistoryWithStore(browserHistory, STORE)
+
+const load = storage.createLoader(localStorageEngine)
+load(STORE).then(state => {
+  let numTracks = state.phrase.present.tracks.length
+  for (let i = numTracks; i < 2; i++) {
+    STORE.dispatch(phraseCreateTrack())
+  }
+})
 
 // ============================================================================
 // Setup Audio Engine god object
@@ -57,7 +68,7 @@ window.onload = () => {
         <CursorProvider>
           <HotkeyProvider>
 
-            <Router history={HISTORY}>
+            <Router history={browserHistory}>
               <Route path="/" component={App} />
               <Route path="/edit" component={App} />
               <Route path="/*" component={Error404}/>

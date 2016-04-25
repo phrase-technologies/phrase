@@ -18,11 +18,6 @@ import MixerTrackNew from './MixerTrackNew.js'
 
 export default class MixerTracks extends Component {
 
-  constructor() {
-    super()
-    this.addNewTrack = this.addNewTrack.bind(this)
-  }
-
   render() {
     var contentHeight = getTracksHeight(this.props.tracks)
     var scrollOffset = this.props.yMin * contentHeight * -1
@@ -47,7 +42,7 @@ export default class MixerTracks extends Component {
     )
   }
 
-  addNewTrack() {
+  addNewTrack = () => {
     this.props.dispatch(phraseCreateTrack())
   }
 
@@ -61,7 +56,7 @@ export default class MixerTracks extends Component {
     var changeDetected = propsToCheck.some(prop => {
       return nextProps[prop] != this.props[prop]
     })
-    return changeDetected    
+    return changeDetected
   }
 }
 
@@ -72,4 +67,3 @@ MixerTracks.propTypes = {
   yMin:         React.PropTypes.number.isRequired,
   yMax:         React.PropTypes.number.isRequired
 }
-

@@ -178,7 +178,7 @@ export class PianorollWindowDisplay extends Component {
         currentLoopStart += clip.loopLength
         currentLoopStartCutoff = 0
         currentLoopEndCutoff = Math.min(clip.loopLength, clip.end - currentLoopStart)
-      }    
+      }
     })
   }
 
@@ -189,6 +189,7 @@ export class PianorollWindowDisplay extends Component {
     canvasContext.font = fontSize + 'px Helvetica Neue, Helvetica, Arial, sans-serif'
     canvasContext.lineWidth = this.props.grid.pixelScale
 
+    notes &&
     notes.forEach(note => {
       var top    = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum     ), this.props.grid.pixelScale ) + 1   // Extra pixel to account for stroke width
       var bottom = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum + 1 ), this.props.grid.pixelScale ) + 1   // Extra pixel to account for stroke width
