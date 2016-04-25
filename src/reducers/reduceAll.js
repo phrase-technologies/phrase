@@ -6,7 +6,6 @@
 // will be given access to the ENTIRE state, for those reductions that need it.
 import u from 'updeep'
 import { zoomInterval } from '../helpers/intervalHelpers.js'
-import { uIncrement, uAppend, uReplace } from '../helpers/arrayHelpers.js'
 
 import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
 import { mixer,
@@ -39,7 +38,7 @@ export default function reduceAll(state = {}, action) {
     // Track absolute height to control vertical scrollbar overflow
     case phrase.CREATE_TRACK:
     case mixer.RESIZE_HEIGHT:
-      var contentHeight = getTracksHeight(state.phrase.present.tracks)
+      let contentHeight = getTracksHeight(state.phrase.present.tracks)
       if (contentHeight <= state.mixer.height) {
         return u({
           mixer: {
@@ -47,38 +46,38 @@ export default function reduceAll(state = {}, action) {
             yMax: 1.000
           }
         }, state)
-      } else {
-        let fulcrum
-             if( state.mixer.yMin < 0.001 ) { fulcrum = 0.000 }
-        else if( state.mixer.yMax > 0.999 ) { fulcrum = 1.000 }
-
-        let oldWindow = state.mixer.yMax - state.mixer.yMin
-        let newWindow = state.mixer.height / contentHeight
-        let zoomFactor = newWindow/oldWindow
-        let [newMin, newMax] = zoomInterval([state.mixer.yMin, state.mixer.yMax], zoomFactor, fulcrum)
-
-        return u({
-          mixer: {
-            yMin: newMin,
-            yMax: newMax
-          }
-        }, state)
       }
+
+      let fulcrum
+           if (state.mixer.yMin < 0.001) { fulcrum = 0.000 }
+      else if (state.mixer.yMax > 0.999) { fulcrum = 1.000 }
+
+      let oldWindow = state.mixer.yMax - state.mixer.yMin
+      let newWindow = state.mixer.height / contentHeight
+      let zoomFactor = newWindow/oldWindow
+      let [newMin, newMax] = zoomInterval([state.mixer.yMin, state.mixer.yMax], zoomFactor, fulcrum)
+
+      return u({
+        mixer: {
+          yMin: newMin,
+          yMax: newMax
+        }
+      }, state)
 
     // ------------------------------------------------------------------------
     // Select a Phrase's Notes via the Pianoroll
     case pianoroll.SELECTION_BOX_APPLY:
       // Outer Bounds
-      var left   = Math.min( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
-      var right  = Math.max( state.pianoroll.selectionStartX, state.pianoroll.selectionEndX )
-      var top    = Math.max( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )
-      var bottom = Math.min( state.pianoroll.selectionStartY, state.pianoroll.selectionEndY )
+      let left   = Math.min(state.pianoroll.selectionStartX, state.pianoroll.selectionEndX)
+      let right  = Math.max(state.pianoroll.selectionStartX, state.pianoroll.selectionEndX)
+      let top    = Math.max(state.pianoroll.selectionStartY, state.pianoroll.selectionEndY)
+      let bottom = Math.min(state.pianoroll.selectionStartY, state.pianoroll.selectionEndY)
 
       // Find selected notes, even in loop iterations
-      var selectedNoteIDs = currentNotesSelector(state)
+      let selectedNoteIDs = currentNotesSelector(state)
         .filter(note => {
           return (
-            note.trackID == state.pianoroll.currentTrack &&
+            note.trackID === state.pianoroll.currentTrack &&
             note.start  <  right &&
             note.end    >= left &&
             note.keyNum <= top + 1 &&
@@ -121,23 +120,23 @@ export default function reduceAll(state = {}, action) {
     // Set the Pianoroll's focus window
     case pianoroll.SET_FOCUS_WINDOW:
       // Figure out the measurements
-      var foundClip = state.phrase.present.clips.find(clip => clip.id == action.clipID)
-      var clipLength = foundClip.end - foundClip.start
-      var windowBarLength = (state.pianoroll.xMax - state.pianoroll.xMin) * state.phrase.present.barCount
-      var spacing = Math.min(0.5, Math.max(0.125*windowBarLength, 0.125))
-      var targetBarMin, targetBarMax
+      let foundClip = state.phrase.present.clips.find(clip => clip.id === action.clipID)
+      let clipLength = foundClip.end - foundClip.start
+      let windowBarLength = (state.pianoroll.xMax - state.pianoroll.xMin) * state.phrase.present.barCount
+      let spacing = Math.min(0.5, Math.max(0.125*windowBarLength, 0.125))
+      let targetBarMin, targetBarMax
 
       // Specially commanded to zoom tight to the clip
       if (action.tight) {
-        targetBarMin = Math.max( foundClip.start - spacing, 0                     ) / state.phrase.present.barCount
-        targetBarMax = Math.min( foundClip.end   + spacing, state.phrase.present.barCount ) / state.phrase.present.barCount
+        targetBarMin = Math.max(foundClip.start - spacing, 0) / state.phrase.present.barCount
+        targetBarMax = Math.min(foundClip.end   + spacing, state.phrase.present.barCount) / state.phrase.present.barCount
       }
 
       // Loose focus shift - let's figure out the best place to shift the window to
       else {
-        var shiftAmount = 0         // Don't shift if not necessary, by default
-        var shiftAmountMax = foundClip.end   + spacing - state.pianoroll.xMax * state.phrase.present.barCount // Does the target clip end beyond the ending of the window?
-        var shiftAmountMin = foundClip.start - spacing - state.pianoroll.xMin * state.phrase.present.barCount // Does the target clip start before the beginning of the window?
+        let shiftAmount = 0         // Don't shift if not necessary, by default
+        let shiftAmountMax = foundClip.end   + spacing - state.pianoroll.xMax * state.phrase.present.barCount // Does the target clip end beyond the ending of the window?
+        let shiftAmountMin = foundClip.start - spacing - state.pianoroll.xMin * state.phrase.present.barCount // Does the target clip start before the beginning of the window?
         // If newly focused clip DOES NOT fit in the window, focus to the beginning of it
         if (spacing + clipLength + spacing > windowBarLength)
           shiftAmount = shiftAmountMin
@@ -181,13 +180,13 @@ export default function reduceAll(state = {}, action) {
 // Make sure timeline doesn't zoom too close
 const maxBarWidth = 1000
 function restrictTimelineZoom(stateBranch, barCount) {
-  var timelineWidth = stateBranch.width / (stateBranch.xMax - stateBranch.xMin)
-  var barWidth = timelineWidth / barCount
+  let timelineWidth = stateBranch.width / (stateBranch.xMax - stateBranch.xMin)
+  let barWidth = timelineWidth / barCount
   if (barWidth > maxBarWidth) {
     let [xMin, xMax] = zoomInterval([stateBranch.xMin, stateBranch.xMax], barWidth/maxBarWidth)
     stateBranch = u({
-      xMin: xMin,
-      xMax: xMax
+      xMin,
+      xMax
     }, stateBranch)
   }
   return stateBranch
