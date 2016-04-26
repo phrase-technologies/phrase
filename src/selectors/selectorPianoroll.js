@@ -4,7 +4,7 @@ import u from 'updeep'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
 const barCountSelector          = (state) => (state.phrase.present.barCount)
-const playheadSelector          = (state) => (state.phrase.present.playhead)
+const playheadSelector          = (state) => (state.transport.playhead)
 const clipsSelector             = (state) => (state.phrase.present.clips)
 const notesSelector             = (state) => (state.phrase.present.notes)
 const pianorollSelector         = (state) => (state.pianoroll)

@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 
 import { mapPianorollToProps } from '../selectors/selectorPianoroll.js'
 import { pianorollScrollX,
-         pianorollScrollY } from '../actions/actionsPianoroll.js'
+         pianorollScrollY
+       } from '../reducers/reducePianoroll.js'
 
 import PianorollTimelineDisplay from './PianorollTimelineDisplay.js'
 import PianorollTimelineControl from './PianorollTimelineControl.js'

@@ -12,7 +12,6 @@ import { negativeModulus } from '../helpers/intervalHelpers.js'
 export const defaultState = {
   barCount: 16.00,
   tempo: 120,
-  playhead: 0.000,
   tracks: [],
   clips: [],
   notes: [],
@@ -271,14 +270,6 @@ export default function reducePhrase(state = defaultState, action) {
         noteSelectionOffsetStart: null,
         noteSelectionOffsetEnd:   null,
         noteSelectionOffsetKey:   null
-      }, state)
-
-    // ------------------------------------------------------------------------
-    case phrase.MOVE_PLAYHEAD:
-      let playhead = Math.max(action.bar, 0)
-          playhead = Math.min(playhead, state.barCount)
-      return u({
-        playhead
       }, state)
 
     // ------------------------------------------------------------------------

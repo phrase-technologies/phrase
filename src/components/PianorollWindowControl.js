@@ -13,7 +13,7 @@ import { pianorollScrollX,
          pianorollMoveCursor,
          pianorollSelectionBoxStart,
          pianorollSelectionBoxResize,
-         pianorollSelectionBoxApply } from '../actions/actionsPianoroll.js'
+         pianorollSelectionBoxApply } from '../reducers/reducePianoroll.js'
 import { phraseCreateNote,
          phraseSelectNote,
          phraseDeleteNote,
@@ -21,7 +21,7 @@ import { phraseCreateNote,
          phraseDropNoteSelection } from '../actions/actionsPhrase.js'
 import { cursorResizeLeft,
          cursorResizeRight,
-         cursorClear } from '../actions/actionsCursor.js'         
+         cursorClear } from '../actions/actionsCursor.js'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
 const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
@@ -81,16 +81,16 @@ export class PianorollWindowControl extends Component {
 
     switch(e.which) {
       default:
-      case 1: 
+      case 1:
       case 2: this.leftClickEvent(e);  break
       case 3: this.rightClickEvent(e); break
     }
   }
 
   leftClickEvent(e) {
-    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
-    var key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount)
-    var foundNote = this.getNoteAtBarKey(bar, key)
+    let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
+    let key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount)
+    let foundNote = this.getNoteAtBarKey(bar, key)
 
     if (foundNote) {
       this.noteEvent(e, bar, key, foundNote)
@@ -105,16 +105,15 @@ export class PianorollWindowControl extends Component {
 
     // Second Click - Note
     if (this.lastEvent &&
-        this.lastEvent.action == CLICK_NOTE) {
+        this.lastEvent.action === CLICK_NOTE) {
       // Double click - Delete Note
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
-        this.props.dispatch( phraseDeleteNote(foundNote.id) )
+        this.props.dispatch(phraseDeleteNote(foundNote.id))
         this.lastEvent = null
         return
       // Too slow, treat as new first click
-      } else {
-        this.lastEvent = null
       }
+      this.lastEvent = null
     }
 
     // First Click - Start Selection
@@ -122,28 +121,28 @@ export class PianorollWindowControl extends Component {
       this.lastEvent = {
         action: SELECT_NOTE,
         noteID: foundNote.id,
-        bar: bar,
-        key: key,
+        bar,
+        key,
         time: Date.now()
       }
-      var noteLength = foundNote.end - foundNote.start
-      var threshold = Math.min(
+      let noteLength = foundNote.end - foundNote.start
+      let threshold = Math.min(
         8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
         0.25*noteLength
       )
 
       if (!foundNote.selected) {
-        this.props.dispatch( phraseSelectNote(foundNote.id, e.shiftKey) )
+        this.props.dispatch(phraseSelectNote(foundNote.id, e.shiftKey))
       }
 
       if (bar < foundNote.start + threshold) {
-        this.props.dispatch( cursorResizeLeft('explicit') )
+        this.props.dispatch(cursorResizeLeft('explicit'))
         this.lastEvent.grip = 'MIN'
       } else if (bar > foundNote.end - threshold) {
-        this.props.dispatch( cursorResizeRight('explicit') )
+        this.props.dispatch(cursorResizeRight('explicit'))
         this.lastEvent.grip = 'MAX'
       } else {
-        this.props.dispatch( cursorClear('explicit') )
+        this.props.dispatch(cursorClear('explicit'))
         this.lastEvent.grip = 'MID'
       }
     }
@@ -152,26 +151,25 @@ export class PianorollWindowControl extends Component {
   emptyAreaEvent(e, bar, key) {
     // Second Click - Empty Area
     if (this.lastEvent &&
-        this.lastEvent.action == CLICK_EMPTY_AREA) {
+        this.lastEvent.action === CLICK_EMPTY_AREA) {
       // Double click - Create Note
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
-        this.props.dispatch( phraseCreateNote(this.props.currentTrack.id, bar, key) )
+        this.props.dispatch(phraseCreateNote(this.props.currentTrack.id, bar, key))
         this.previewNoteSound([key])
         this.lastEvent = null
         return
       // Too slow, treat as new first click
-      } else {
-        this.lastEvent = null
       }
+      this.lastEvent = null
     }
 
     // First Click - Start Selection
     if (!this.lastEvent) {
-      this.props.dispatch( pianorollSelectionBoxStart(bar, key) )
+      this.props.dispatch(pianorollSelectionBoxStart(bar, key))
       this.lastEvent = {
         action: SELECT_EMPTY_AREA,
-        bar: bar,
-        key: key,
+        bar,
+        key,
         time: Date.now()
       }
       return
@@ -179,32 +177,33 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseMoveEvent(e) {
-    var bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
-    var key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount
+    let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
+    let key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount
 
     // Drag Selected Note(s)?
     if (this.lastEvent &&
-       (this.lastEvent.action == SELECT_NOTE ||
-        this.lastEvent.action == DRAG_NOTE)) {
+       (this.lastEvent.action === SELECT_NOTE ||
+        this.lastEvent.action === DRAG_NOTE)) {
       // Adjust Note
+      let offsetStart, offsetEnd, offsetKey
       let offsetBar = bar - this.lastEvent.bar
       switch (this.lastEvent.grip) {
-        case 'MIN': var offsetStart = offsetBar; var offsetEnd =         0; var offsetKey = 0; break
-        case 'MID': var offsetStart = offsetBar; var offsetEnd = offsetBar; var offsetKey = key - this.lastEvent.key; break
-        case 'MAX': var offsetStart =         0; var offsetEnd = offsetBar; var offsetKey = 0; break
+        case 'MIN': offsetStart = offsetBar; offsetEnd =         0; offsetKey = 0; break
+        case 'MID': offsetStart = offsetBar; offsetEnd = offsetBar; offsetKey = key - this.lastEvent.key; break
+        case 'MAX': offsetStart =         0; offsetEnd = offsetBar; offsetKey = 0; break
       }
-      this.props.dispatch( phraseDragNoteSelection(this.lastEvent.noteID, offsetStart, offsetEnd, offsetKey, !e.altKey) )
-      this.previewDragSound( offsetKey )
+      this.props.dispatch(phraseDragNoteSelection(this.lastEvent.noteID, offsetStart, offsetEnd, offsetKey, !e.altKey))
+      this.previewDragSound(offsetKey)
       this.lastEvent.action = DRAG_NOTE
       return
     }
 
     // Selection Box?
     if (this.lastEvent &&
-       (this.lastEvent.action == SELECT_EMPTY_AREA ||
-        this.lastEvent.action == SELECTION_BOX) ) {
+       (this.lastEvent.action === SELECT_EMPTY_AREA ||
+        this.lastEvent.action === SELECTION_BOX)) {
       // Resize Selection Box
-      this.props.dispatch( pianorollSelectionBoxResize(bar, key) )
+      this.props.dispatch(pianorollSelectionBoxResize(bar, key))
       this.lastEvent.action = SELECTION_BOX
       return
     }
@@ -220,25 +219,25 @@ export class PianorollWindowControl extends Component {
     if (e.target !== this.container)
       return
 
-    var foundNote = this.getNoteAtBarKey(bar, key)
+    let foundNote = this.getNoteAtBarKey(bar, key)
     if (foundNote) {
-      var noteLength = foundNote.end - foundNote.start
-      var threshold = Math.min(
+      let noteLength = foundNote.end - foundNote.start
+      let threshold = Math.min(
         8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
         0.25*noteLength
       )
 
       if (bar < foundNote.start + threshold) {
-        this.props.dispatch( cursorResizeLeft('implicit') )
+        this.props.dispatch(cursorResizeLeft('implicit'))
       } else if (bar > foundNote.end - threshold) {
-        this.props.dispatch( cursorResizeRight('implicit') )
+        this.props.dispatch(cursorResizeRight('implicit'))
       } else {
-        this.props.dispatch( cursorClear('implicit') )
+        this.props.dispatch(cursorClear('implicit'))
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
-    } else if (e.target == this.container) {
-      this.props.dispatch( cursorClear('implicit') )
-    }    
+    } else if (e.target === this.container) {
+      this.props.dispatch(cursorClear('implicit'))
+    }
   }
 
   mouseUpEvent(e) {
@@ -247,18 +246,18 @@ export class PianorollWindowControl extends Component {
 
     // First Click - Empty Area
     if (this.lastEvent &&
-        this.lastEvent.action == SELECT_EMPTY_AREA) {
+        this.lastEvent.action === SELECT_EMPTY_AREA) {
       // Prepare for possibility of second click
       this.lastEvent.action = CLICK_EMPTY_AREA
-      this.props.dispatch( pianorollSelectionBoxApply(e.shiftKey) )
+      this.props.dispatch(pianorollSelectionBoxApply(e.shiftKey))
       return
     }
 
     // First Click - Note
     if (this.lastEvent &&
-        this.lastEvent.action == SELECT_NOTE) {
+        this.lastEvent.action === SELECT_NOTE) {
       // Cancel Cursor
-      this.props.dispatch( cursorClear('explicit') )
+      this.props.dispatch(cursorClear('explicit'))
 
       // Prepare for possibility of second click
       this.lastEvent.action = CLICK_NOTE
@@ -267,16 +266,16 @@ export class PianorollWindowControl extends Component {
 
     // Selection Box Completed
     if (this.lastEvent &&
-        this.lastEvent.action == SELECTION_BOX) {
-      this.props.dispatch( pianorollSelectionBoxApply(e.shiftKey) )
+        this.lastEvent.action === SELECTION_BOX) {
+      this.props.dispatch(pianorollSelectionBoxApply(e.shiftKey))
       this.lastEvent = null
       return
     }
 
     // Selected Notes Dragged
     if (this.lastEvent &&
-        this.lastEvent.action == DRAG_NOTE) {
-      this.props.dispatch( phraseDropNoteSelection() )
+        this.lastEvent.action === DRAG_NOTE) {
+      this.props.dispatch(phraseDropNoteSelection())
       this.lastEvent = null
       return
     }
@@ -287,7 +286,7 @@ export class PianorollWindowControl extends Component {
 
   previewNoteSound(keyNum) {
     // Cancel any previous key
-    if (this.lastKeysPlayed && (this.lastKeysPlayed.length > 1 || this.lastKeysPlayed[0] != keyNum))
+    if (this.lastKeysPlayed && (this.lastKeysPlayed.length > 1 || this.lastKeysPlayed[0] !== keyNum))
       this.killPreviewSound()
 
     // Play new key
@@ -297,7 +296,7 @@ export class PianorollWindowControl extends Component {
   }
 
   previewDragSound(offsetKey) {
-    var selectedKeys = _.chain(this.props.notes)
+    let selectedKeys = _.chain(this.props.notes)
       .filter(note => note.selected)
       .map(note => note.keyNum + Math.round(offsetKey))
       .uniq()
@@ -305,8 +304,8 @@ export class PianorollWindowControl extends Component {
       .value()
 
     // Cancel keys only if there has been a change
-    var addedKeys = _.difference(selectedKeys, this.lastKeysPlayed)
-    var lostKeys  = _.difference(this.lastKeysPlayed, selectedKeys)
+    let addedKeys = _.difference(selectedKeys, this.lastKeysPlayed)
+    let lostKeys  = _.difference(this.lastKeysPlayed, selectedKeys)
     if (addedKeys.length > 0 || lostKeys.length > 0)
       this.killPreviewSound()
 
@@ -327,15 +326,15 @@ export class PianorollWindowControl extends Component {
   }
 
   handleResize() {
-    this.props.dispatch(pianorollResizeWidth( this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft))
-    this.props.dispatch(pianorollResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ))
+    this.props.dispatch(pianorollResizeWidth(this.props.grid.width  / this.props.grid.pixelScale - this.props.grid.marginLeft))
+    this.props.dispatch(pianorollResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop))
   }
 
   getNoteAtBarKey(bar, key) {
     return this.props.notes.find(note => (
-      Math.ceil(key) == note.keyNum &&
+      Math.ceil(key) === note.keyNum &&
       bar >= note.start &&
-      bar <= note.end          
+      bar <= note.end
     ))
   }
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { ActionCreators } from 'redux-undo'
 
 import { transportPlayToggle,
-         transportStop } from '../actions/actionsTransport'
+       } from '../reducers/reduceTransport'
 import { phraseDeleteSelection } from '../actions/actionsPhrase'
 
 // ============================================================================

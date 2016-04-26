@@ -22,6 +22,7 @@ export const transport = namespaceActions(
   'transport',
   [
     'PLAY_TOGGLE',
+    'MOVE_PLAYHEAD',
     'STOP',
     'REWIND',
     'RECORD',
@@ -46,7 +47,6 @@ export const phrase = namespaceActions(
     'DRAG_NOTE_SELECTION',
     'DROP_CLIP_SELECTION',
     'DROP_NOTE_SELECTION',
-    'MOVE_PLAYHEAD'
   ]
 )
 

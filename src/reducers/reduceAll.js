@@ -5,35 +5,20 @@
 // one branch of the state. We will call these "Top Level Reducers," and they
 // will be given access to the ENTIRE state, for those reductions that need it.
 import u from 'updeep'
-import { zoomInterval } from '../helpers/intervalHelpers.js'
+import { zoomInterval,
+         shiftInterval,
+       } from '../helpers/intervalHelpers.js'
 
 import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
 import { mixer,
          pianoroll,
          phrase,
-         transport,
-        } from '../actions/actions.js'
+       } from '../actions/actions.js'
 import { getTracksHeight } from '../helpers/trackHelpers.js'
-import { shiftInterval } from '../helpers/intervalHelpers.js'
 
 export default function reduceAll(state = {}, action) {
 
   switch (action.type) {
-
-    // ------------------------------------------------------------------------
-    // Ensure the timeline doesn't zoom too close
-    // (looks awkward when a single quarter note takes the entire screen)
-    case mixer.SCROLL_X:
-    case mixer.RESIZE_WIDTH:
-      return u({
-        mixer: restrictTimelineZoom(state.mixer, state.phrase.present.barCount)
-      }, state)
-    case pianoroll.SCROLL_X:
-    case pianoroll.RESIZE_WIDTH:
-      return u({
-        pianoroll: restrictTimelineZoom(state.pianoroll, state.phrase.present.barCount)
-      }, state)
-
     // ------------------------------------------------------------------------
     // Track absolute height to control vertical scrollbar overflow
     case phrase.CREATE_TRACK:
@@ -157,37 +142,9 @@ export default function reduceAll(state = {}, action) {
         }
       }, state)
 
-    // Transport STOP button is pressed
-    case transport.STOP:
-      if (!state.transport.playing) {
-        return u({
-          phrase: { playhead: 0.000 }
-        }, state)
-      }
-
-      return u({
-        transport: { playing: false }
-      }, state)
-
     // ------------------------------------------------------------------------
     default:
       return state
 
   }
-}
-
-
-// Make sure timeline doesn't zoom too close
-const maxBarWidth = 1000
-function restrictTimelineZoom(stateBranch, barCount) {
-  let timelineWidth = stateBranch.width / (stateBranch.xMax - stateBranch.xMin)
-  let barWidth = timelineWidth / barCount
-  if (barWidth > maxBarWidth) {
-    let [xMin, xMax] = zoomInterval([stateBranch.xMin, stateBranch.xMax], barWidth/maxBarWidth)
-    stateBranch = u({
-      xMin,
-      xMax
-    }, stateBranch)
-  }
-  return stateBranch
 }

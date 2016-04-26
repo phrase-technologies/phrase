@@ -39,7 +39,10 @@ export default function createAudioEngine(STORE) {
     playheadPositionBars: null,
     stopQueued: false,
     unsubscribeStoreChanges: null,
-    lastState: { tracks: null },
+    lastState: {
+      tracks: null,
+      phrase: null,
+    }
   }
   engine.masterGain = engine.ctx.createGain()
   engine.masterGain.connect(engine.ctx.destination)
@@ -94,6 +97,8 @@ export default function createAudioEngine(STORE) {
     if (state.phrase !== engine.lastState.phrase)
       updateMidiCommands(engine, state)
 
+    // Keep track of last state to avoid duplicated updates
+    engine.lastState.phrase = state.phrase
   })
 
   // --------------------------------------------------------------------------

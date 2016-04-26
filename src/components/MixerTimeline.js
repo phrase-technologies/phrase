@@ -5,7 +5,8 @@ import provideGridScroll from './GridScrollProvider'
 import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js'
 import { mixerScrollX,
-         mixerMoveCursor } from '../actions/actionsMixer.js'
+         mixerMoveCursor,
+       } from '../reducers/reduceMixer.js'
 
 import CanvasComponent from './CanvasComponent'
 
@@ -87,7 +88,7 @@ export class MixerTimeline extends Component {
       canvasContext.beginPath()
       drawLine( canvasContext, xPosition, yPosition, xPosition, this.props.grid.height )
       canvasContext.stroke()
-    }    
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -101,8 +102,8 @@ export class MixerTimeline extends Component {
     var changeDetected = propsToCheck.some(prop => {
       return nextProps[prop] != this.props[prop]
     })
-    return changeDetected    
-  }  
+    return changeDetected
+  }
 }
 
 MixerTimeline.propTypes = {
@@ -111,7 +112,7 @@ MixerTimeline.propTypes = {
   barCount:     React.PropTypes.number.isRequired,
   xMin:       React.PropTypes.number.isRequired,
   xMax:       React.PropTypes.number.isRequired
-}  
+}
 
 export default provideGridSystem(
   provideGridScroll(

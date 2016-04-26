@@ -1,18 +1,75 @@
-// ============================================================================
-// Transport Controls
-// ============================================================================
-
+import u from 'updeep'
 import { transport } from '../actions/actions.js'
 
-export default function reduceTransport(state = {}, action) {
+// ============================================================================
+// Transport Action Creators
+// ============================================================================
+export const transportPlayToggle = () => ({type: transport.PLAY_TOGGLE})
+export const transportMovePlayhead = (bar) => {
+  // We need to know the length of the phrase - use a thunk to access other state branches
+  return (dispatch, getState) => {
+    let state = getState()
+    let barCount = state.phrase.present.barCount
+    dispatch({ type: transport.MOVE_PLAYHEAD, bar, barCount })
+  }
+}
+export const transportStop = () => ({type: transport.STOP})
+export const transportRecord = () => ({type: transport.RECORD})
+export const transportSetTempo = () => ({type: transport.SET_TEMPO})
+
+
+// ============================================================================
+// Transport Reducer
+// ============================================================================
+let defaultState = {
+  playing: false,
+  playhead: 0.000,
+  recording: false,
+  tempo: 120,
+}
+
+export default function reduceTransport(state = defaultState, action) {
   switch (action.type)
   {
+    // ------------------------------------------------------------------------
     case transport.PLAY_TOGGLE:
-      return Object.assign({}, state, {playing: !state.playing})
+      return u({
+        playing: !state.playing
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case transport.MOVE_PLAYHEAD:
+      let playhead = Math.max(action.bar, 0)
+          playhead = Math.min(playhead, action.barCount)
+      return u({
+        playhead
+      }, state)
+
+    // ------------------------------------------------------------------------
     case transport.RECORD:
-      return Object.assign({}, state, {recording: !state.recording})
+      return u({
+        recording: !state.recording
+      }, state)
+
+    // ------------------------------------------------------------------------
     case transport.SET_TEMPO:
-      return Object.assign({}, state, {tempo: action.tempo})
+      return u({
+        tempo: action.tempo
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case transport.STOP:
+      if (!state.playing) {
+        return u({
+          playhead: 0.000
+        }, state)
+      }
+
+      return u({
+        playing: false
+      }, state)
+
+    // ------------------------------------------------------------------------
     default:
       return state
   }

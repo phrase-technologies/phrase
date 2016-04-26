@@ -16,9 +16,6 @@ export function updateMidiCommands(engine, state) {
     })
   }
 
-  // Keep track of last state to avoid duplicated updates
-  engine.lastState.phrase = state.phrase
-
 }
 
 

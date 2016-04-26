@@ -1,7 +1,8 @@
 import _ from 'lodash'
 
-import { transportStop } from '../actions/actionsTransport.js'
-import { phraseMovePlayhead } from '../actions/actionsPhrase.js'
+import { transportStop,
+         transportMovePlayhead
+       } from '../reducers/reduceTransport.js'
 
 import { fireNote,
          killNote } from './AudioEngineMidiTriggers.js'
@@ -22,24 +23,24 @@ export function startPlayback(engine, state, dispatch) {
 
   // Keep track of when playback began
   engine.isPlaying = true
-  engine.playheadPositionBars = state.phrase.present.playhead
+  engine.playheadPositionBars = state.transport.playhead
 
   engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars
 
   // Nothing to play? Ignore
-  if (engine.midiCommands.length == 0) {
+  if (engine.midiCommands.length === 0) {
     // Leave a delay so the PLAYING state will be visible momentarily to the user.
     setTimeout(() => {
-      dispatch( phraseMovePlayhead(0) ) // TODO: redundant, activate on transportStop()
-      dispatch( transportStop() )
+      dispatch(transportMovePlayhead(0)) // TODO: redundant, activate on transportStop()
+      dispatch(transportStop())
     }, 250)
     return
   }
 
   // Setup first iteration
   engine.iCommand = 0
-  var currentCommand = engine.midiCommands[engine.iCommand]
-  var currentCommandTime = barToPlayTime(currentCommand.bar, engine, state)
+  let currentCommand = engine.midiCommands[engine.iCommand]
+  let currentCommandTime = barToPlayTime(currentCommand.bar, engine, state)
 
   // BEGIN!!!
   engine.scheduleLooper = setInterval(() => {
@@ -69,7 +70,7 @@ export function startPlayback(engine, state, dispatch) {
 
     // Update playhead
     engine.playheadPositionBars = playTimeToBar(engine.ctx.currentTime, engine, state)
-    dispatch( phraseMovePlayhead(engine.playheadPositionBars) )
+    dispatch(transportMovePlayhead(engine.playheadPositionBars))
 
     // Reached the end of loop
     if (engine.iCommand >= engine.midiCommands.length) {
@@ -79,8 +80,8 @@ export function startPlayback(engine, state, dispatch) {
         engine.stopQueued = true
 
         setTimeout(() => {
-          dispatch( phraseMovePlayhead(0) ) // TODO: redundant, activate on transportStop()
-          dispatch( transportStop() )
+          dispatch(transportMovePlayhead(0)) // TODO: redundant, activate on transportStop()
+          dispatch(transportStop())
         }, 1000*(currentCommandTime - engine.ctx.currentTime))
       }
 
@@ -102,7 +103,7 @@ export function stopPlayback(engine, state) {
 
   // Kill all active sounds
   _.forOwn(engine.trackModules, (track, trackID) => {
-    for (var keyNum = 1; keyNum <= 88; keyNum++)
+    for (let keyNum = 1; keyNum <= 88; keyNum++)
       killNote(engine, trackID, keyNum)
   })
 
@@ -123,7 +124,7 @@ export function stopPlayback(engine, state) {
 function barToPlayTime(bar, engine, state) {
   // Playstart is the moment when the "PLAY" button was pressed.
   // If not provided, default to now.
-  var playStartTime = engine.playStartTime || engine.ctx.currentTime
+  let playStartTime = engine.playStartTime || engine.ctx.currentTime
 
   return bar * 120 / state.phrase.present.tempo + playStartTime
 }
@@ -131,7 +132,7 @@ function barToPlayTime(bar, engine, state) {
 function playTimeToBar(time, engine, state) {
   // Playstart is the moment when the "PLAY" button was pressed.
   // If not provided, default to now.
-  var playStartTime = engine.playStartTime || engine.ctx.currentTime
+  let playStartTime = engine.playStartTime || engine.ctx.currentTime
 
   return (time - playStartTime) / 120 * state.phrase.present.tempo
 }

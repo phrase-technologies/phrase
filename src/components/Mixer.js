@@ -12,7 +12,8 @@ import _ from 'lodash'
 import { shiftInterval,
          zoomInterval } from '../helpers/intervalHelpers.js'
 import { mixerScrollX,
-         mixerScrollY } from '../actions/actionsMixer.js'
+         mixerScrollY,
+       } from '../reducers/reduceMixer.js'
 import { renderedClipsSelector,
          atleastOneTrackSoloedSelector } from '../selectors/selectorMixer.js'
 
@@ -114,7 +115,7 @@ function mapStateToProps(state) {
     xMax: state.mixer.xMax,
     yMin: state.mixer.yMin,
     yMax: state.mixer.yMax,
-    playhead: state.phrase.present.playhead,
+    playhead: state.transport.playhead,
     cursor: state.mixer.cursor
   }
 }

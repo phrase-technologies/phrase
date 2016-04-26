@@ -1,26 +1,24 @@
 import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
-import connectEngine from '../audio/AudioEngineConnect.js'
-import engineShape   from '../audio/AudioEnginePropTypes.js'
 
 import { pianorollResizeHeight,
-         pianorollScrollY } from '../actions/actionsPianoroll.js'
+         pianorollScrollY } from '../reducers/reducePianoroll.js'
 
 import PianorollKeyboardKey from './PianorollKeyboardKey.js'
 
 export class PianorollKeyboard extends Component {
 
   render() {
-    var keyWindow = this.props.yMax - this.props.yMin
-    var keybedHeight = ( this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ) / keyWindow
-    var keybedOffset = ( this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop ) / keyWindow * this.props.yMin
+    let keyWindow = this.props.yMax - this.props.yMin
+    let keybedHeight = (this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop) / keyWindow
+    let keybedOffset = (this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop) / keyWindow * this.props.yMin
         keybedOffset = Math.round(keybedOffset)
-    var keybedWidth = keybedHeight / 12.5
+    let keybedWidth = keybedHeight / 12.5
 
-    var isCompact = keybedWidth < 100
+    let isCompact = keybedWidth < 100
 
-    var style = {
+    let style = {
       transform: 'translate3d(0,'+(-keybedOffset)+'px,0)',
       height: keybedHeight+'px',
       width: keybedWidth+'px'
@@ -36,16 +34,16 @@ export class PianorollKeyboard extends Component {
   }
 
   renderKeys(isCompact) {
-    var octave = 8
-    var octaves = []
-    var keys = []
-    for (var key = 88; key > 0; key--) {
+    let octave = 8
+    let octaves = []
+    let keys = []
+    for (let key = 88; key > 0; key--) {
       // Specific sequence of black and white keys
       let keyClass = 'pianoroll-key'
-          keyClass += ( key % 12 in {2:true, 0:true, 10: true, 7: true, 5: true} ) ? ' black' : ' white'
-          keyClass += ( key % 12 in {2:true,  7:true} ) ? ' higher' : ''
-          keyClass += ( key % 12 in {10:true, 5:true} ) ? ' lower' : ''
-          keyClass += ( key % 12 in {6:true} ) ? ' thinner' : ''
+          keyClass += (key % 12 in {2:true, 0:true, 10: true, 7: true, 5: true}) ? ' black' : ' white'
+          keyClass += (key % 12 in {2:true,  7:true}) ? ' higher' : ''
+          keyClass += (key % 12 in {10:true, 5:true}) ? ' lower' : ''
+          keyClass += (key % 12 in {6:true}) ? ' thinner' : ''
           keyClass += isCompact ? ' compact' : ''
       let keyLabel =  {1:'A', 11:'G', 9:'F', 8:'E', 6:'D', 4:'C', 3:'B'}[ key%12 ]
           keyLabel = keyLabel ? (keyLabel + octave) : null
@@ -61,7 +59,7 @@ export class PianorollKeyboard extends Component {
       )
 
       // Next keys into octave Group
-      if (key % 12 === 4 || key == 1) {
+      if (key % 12 === 4 || key === 1) {
         // Add Octave Label for full octaves
         let label = isCompact ? 'C' + octave : ''
         keys.unshift(<div className="pianoroll-octave-label" key={label}><div>{label}</div></div>)
@@ -91,7 +89,7 @@ export class PianorollKeyboard extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    var propsToCheck = [
+    let propsToCheck = [
       'ENGINE',
       'dispatch',
       'currentTrack',
@@ -99,8 +97,8 @@ export class PianorollKeyboard extends Component {
       'yMin',
       'yMax'
     ]
-    var changeDetected = propsToCheck.some(prop => {
-      return nextProps[prop] != this.props[prop]
+    let changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] !== this.props[prop]
     })
     return changeDetected
   }
@@ -119,7 +117,7 @@ PianorollKeyboard.propTypes = {
   yMax:         React.PropTypes.number.isRequired
 }
 
-export default 
+export default
   provideGridSystem(
     provideGridScroll(
       PianorollKeyboard,

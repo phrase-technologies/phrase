@@ -13,24 +13,23 @@ export const phraseDeleteNote             = (noteID)                  => ({type:
 export const phraseDragClipSelection = (clipID, start, end, looped, track, snap) => {
   return {
     type: phrase.DRAG_CLIP_SELECTION,
-    clipID: clipID,
-    start: start,
-    end: end,
-    looped: looped,
-    track: track,
-    snap: snap
+    clipID,
+    start,
+    end,
+    looped,
+    track,
+    snap
   }
 }
 export const phraseDragNoteSelection = (noteID, start, end, key, snap) => {
   return {
     type: phrase.DRAG_NOTE_SELECTION,
-    noteID: noteID,
-    start: start,
-    end: end,
-    key: key,
-    snap: snap
+    noteID,
+    start,
+    end,
+    key,
+    snap
   }
 }
 export const phraseDropNoteSelection = () => ({type: phrase.DROP_NOTE_SELECTION})
 export const phraseDropClipSelection = () => ({type: phrase.DROP_CLIP_SELECTION})
-export const phraseMovePlayhead           = (bar)                     => ({type: phrase.MOVE_PLAYHEAD, bar})
