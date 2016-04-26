@@ -9,7 +9,7 @@ import { pianorollScrollX,
 import { phraseCreateClip,
          phraseSelectClip,
          phraseDragClipSelection,
-         phraseDropClipSelection } from '../actions/actionsPhrase.js'
+         phraseDropClipSelection } from '../reducers/reducePhrase.js'
 import { cursorResizeLeft,
          cursorResizeRight,
          cursorResizeRightClip,

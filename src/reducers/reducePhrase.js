@@ -1,14 +1,64 @@
-// ============================================================================
-// Phrase Tracks
-// ============================================================================
-
 import u from 'updeep'
 import { uIncrement, uAppend } from '../helpers/arrayHelpers.js'
 
-import { phrase } from '../actions/actions.js'
-import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
+import { phrase, mixer } from '../actions/actions.js'
+import { getOffsetedTrackID,
+         getTracksHeight,
+       } from '../helpers/trackHelpers.js'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
+// ============================================================================
+// Phrase Action Creators
+// ============================================================================
+export const phraseCreateTrack = () => {
+  // We need to know the height of the mixer - use a thunk to access other state branches
+  return (dispatch, getState) => {
+    dispatch({type: phrase.CREATE_TRACK})
+
+    // Take measurements after the new track is created
+    let state = getState()
+    let mixerContentHeight = getTracksHeight(state.phrase.present.tracks)
+    let height = state.mixer.height
+    dispatch({type: mixer.RESIZE_HEIGHT, height, mixerContentHeight})
+  }
+}
+export const phraseArmTrack               = (trackID)                 => ({type: phrase.ARM_TRACK, trackID})
+export const phraseMuteTrack              = (trackID)                 => ({type: phrase.MUTE_TRACK, trackID})
+export const phraseSoloTrack              = (trackID)                 => ({type: phrase.SOLO_TRACK, trackID})
+export const phraseCreateClip             = (trackID, bar)            => ({type: phrase.CREATE_CLIP, trackID, bar})
+export const phraseCreateNote             = (trackID, bar, key)       => ({type: phrase.CREATE_NOTE, trackID, bar, key})
+export const phraseSelectClip             = (clipID, union)           => ({type: phrase.SELECT_CLIP, clipID, union})
+export const phraseSelectNote             = (noteID, union)           => ({type: phrase.SELECT_NOTE, noteID, union})
+export const phraseDeleteSelection        = ()                        => ({type: phrase.DELETE_SELECTION})
+export const phraseDeleteNote             = (noteID)                  => ({type: phrase.DELETE_NOTE, noteID})
+export const phraseDragClipSelection = (clipID, start, end, looped, track, snap) => {
+  return {
+    type: phrase.DRAG_CLIP_SELECTION,
+    clipID,
+    start,
+    end,
+    looped,
+    track,
+    snap
+  }
+}
+export const phraseDragNoteSelection = (noteID, start, end, key, snap) => {
+  return {
+    type: phrase.DRAG_NOTE_SELECTION,
+    noteID,
+    start,
+    end,
+    key,
+    snap
+  }
+}
+export const phraseDropNoteSelection = () => ({type: phrase.DROP_NOTE_SELECTION})
+export const phraseDropClipSelection = () => ({type: phrase.DROP_CLIP_SELECTION})
+
+
+// ============================================================================
+// Phrase Reducer
+// ============================================================================
 export const defaultState = {
   barCount: 16.00,
   tempo: 120,

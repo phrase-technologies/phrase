@@ -18,7 +18,7 @@ import { phraseCreateNote,
          phraseSelectNote,
          phraseDeleteNote,
          phraseDragNoteSelection,
-         phraseDropNoteSelection } from '../actions/actionsPhrase.js'
+         phraseDropNoteSelection } from '../reducers/reducePhrase.js'
 import { cursorResizeLeft,
          cursorResizeRight,
          cursorClear } from '../actions/actionsCursor.js'

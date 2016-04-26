@@ -5,50 +5,15 @@
 // one branch of the state. We will call these "Top Level Reducers," and they
 // will be given access to the ENTIRE state, for those reductions that need it.
 import u from 'updeep'
-import { zoomInterval,
-         shiftInterval,
+import { shiftInterval,
        } from '../helpers/intervalHelpers.js'
 
 import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
-import { mixer,
-         pianoroll,
-         phrase,
-       } from '../actions/actions.js'
-import { getTracksHeight } from '../helpers/trackHelpers.js'
+import { pianoroll } from '../actions/actions.js'
 
 export default function reduceAll(state = {}, action) {
 
   switch (action.type) {
-    // ------------------------------------------------------------------------
-    // Track absolute height to control vertical scrollbar overflow
-    case phrase.CREATE_TRACK:
-    case mixer.RESIZE_HEIGHT:
-      let contentHeight = getTracksHeight(state.phrase.present.tracks)
-      if (contentHeight <= state.mixer.height) {
-        return u({
-          mixer: {
-            yMin: 0.000,
-            yMax: 1.000
-          }
-        }, state)
-      }
-
-      let fulcrum
-           if (state.mixer.yMin < 0.001) { fulcrum = 0.000 }
-      else if (state.mixer.yMax > 0.999) { fulcrum = 1.000 }
-
-      let oldWindow = state.mixer.yMax - state.mixer.yMin
-      let newWindow = state.mixer.height / contentHeight
-      let zoomFactor = newWindow/oldWindow
-      let [newMin, newMax] = zoomInterval([state.mixer.yMin, state.mixer.yMax], zoomFactor, fulcrum)
-
-      return u({
-        mixer: {
-          yMin: newMin,
-          yMax: newMax
-        }
-      }, state)
-
     // ------------------------------------------------------------------------
     // Select a Phrase's Notes via the Pianoroll
     case pianoroll.SELECTION_BOX_APPLY:

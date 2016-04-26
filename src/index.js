@@ -18,14 +18,14 @@ import EngineProvider from 'audio/AudioEngineProvider.js'
 import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { Router, Route, browserHistory } from 'react-router'
-import { phraseCreateTrack } from 'actions/actionsPhrase.js'
+import { phraseCreateTrack } from 'reducers/reducePhrase.js'
 
 // import { syncHistoryWithStore } from 'react-router-redux'
 import finalReducer from './reducers/reduce.js'
 import * as storage from 'redux-storage'
-import createEngine from 'redux-storage-engine-localstorage'
+import createStorageEngine from 'redux-storage-engine-localstorage'
 
-const localStorageEngine = createEngine(`phrase`)
+const localStorageEngine = createStorageEngine(`phrase`)
 const localStorageMiddleware = storage.createMiddleware(localStorageEngine)
 
 const finalCreateStore = compose(
@@ -38,8 +38,9 @@ const STORE = finalCreateStore(storage.reducer(finalReducer))
 
 const load = storage.createLoader(localStorageEngine)
 load(STORE).then(state => {
-  let numTracks = state.phrase.present.tracks.length
-  for (let i = numTracks; i < 2; i++) {
+  // Setup initial state - 2 tracks by default
+  if (state.phrase && state.phrase.past && state.phrase.past.length === 0) {
+    STORE.dispatch(phraseCreateTrack())
     STORE.dispatch(phraseCreateTrack())
   }
 })

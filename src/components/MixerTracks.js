@@ -7,11 +7,8 @@
 
 import React, { Component } from 'react'
 
-import _ from 'lodash'
-import { closestHalfPixel,
-         drawLine } from '../helpers/canvasHelpers.js'
 import { getTracksHeight } from '../helpers/trackHelpers.js'
-import { phraseCreateTrack } from '../actions/actionsPhrase.js'
+import { phraseCreateTrack } from '../reducers/reducePhrase.js'
 
 import MixerTrack from './MixerTrack.js'
 import MixerTrackNew from './MixerTrackNew.js'
@@ -19,9 +16,9 @@ import MixerTrackNew from './MixerTrackNew.js'
 export default class MixerTracks extends Component {
 
   render() {
-    var contentHeight = getTracksHeight(this.props.tracks)
-    var scrollOffset = this.props.yMin * contentHeight * -1
-    var emptyAreaOffset = contentHeight + scrollOffset - 54 - 2
+    let contentHeight = getTracksHeight(this.props.tracks)
+    let scrollOffset = this.props.yMin * contentHeight * -1
+    let emptyAreaOffset = contentHeight + scrollOffset - 54 - 2
 
     return (
       <div className="mixer-track-list-gutter">
@@ -31,7 +28,7 @@ export default class MixerTracks extends Component {
               key={track.id}
               dispatch={this.props.dispatch}
               track={track}
-              focused={track.id == this.props.currentTrack}
+              focused={track.id === this.props.currentTrack}
               atleastOneTrackSoloed={this.props.atleastOneTrackSoloed}
             />
           ))}
@@ -47,14 +44,14 @@ export default class MixerTracks extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    var propsToCheck = [
+    let propsToCheck = [
       'dispatch',
       'tracks',
       'yMin',
       'yMax'
     ]
-    var changeDetected = propsToCheck.some(prop => {
-      return nextProps[prop] != this.props[prop]
+    let changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] !== this.props[prop]
     })
     return changeDetected
   }

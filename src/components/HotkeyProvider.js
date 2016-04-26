@@ -4,7 +4,7 @@ import { ActionCreators } from 'redux-undo'
 
 import { transportPlayToggle,
        } from '../reducers/reduceTransport'
-import { phraseDeleteSelection } from '../actions/actionsPhrase'
+import { phraseDeleteSelection } from '../reducers/reducePhrase'
 
 // ============================================================================
 // Hotkey Provider

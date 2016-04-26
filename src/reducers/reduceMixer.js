@@ -1,5 +1,8 @@
 import u from 'updeep'
-import { restrictTimelineZoom } from '../helpers/intervalHelpers.js'
+import { zoomInterval,
+         restrictTimelineZoom,
+       } from '../helpers/intervalHelpers.js'
+import { getTracksHeight } from '../helpers/trackHelpers.js'
 import { mixer } from '../actions/actions.js'
 
 // ============================================================================
@@ -14,7 +17,14 @@ export const mixerScrollX = (min, max) => {
     dispatch({ type: mixer.SCROLL_X, min, max, barCount })
   }
 }
-export const mixerResizeHeight = (height) => ({type: mixer.RESIZE_HEIGHT, height})
+export const mixerResizeHeight = (height) => {
+  // We need to know the height of the phrase-tracks in the mixer - use a thunk to access other state branches
+  return (dispatch, getState) => {
+    let state = getState()
+    let mixerContentHeight = getTracksHeight(state.phrase.present.tracks)
+    dispatch({type: mixer.RESIZE_HEIGHT, height, mixerContentHeight})
+  }
+}
 export const mixerResizeWidth = (width) => {
   // We need to know the length of the phrase - use a thunk to access other state branches
   return (dispatch, getState) => {
@@ -60,9 +70,30 @@ export default function reduceMixer(state = defaultState, action) {
     // ------------------------------------------------------------------------
     // Track absolute height to control vertical scrollbar overflow
     case mixer.RESIZE_HEIGHT:
-      return Object.assign({}, state, {
+      state = u({
         height: action.height
-      })
+      }, state)
+
+      if (action.mixerContentHeight <= state.height) {
+        return u({
+          yMin: 0.000,
+          yMax: 1.000
+        }, state)
+      }
+
+      let fulcrum
+           if (state.yMin < 0.001) { fulcrum = 0.000 }
+      else if (state.yMax > 0.999) { fulcrum = 1.000 }
+
+      let oldWindow = state.yMax - state.yMin
+      let newWindow = state.height / action.mixerContentHeight
+      let zoomFactor = newWindow/oldWindow
+      let [newMin, newMax] = zoomInterval([state.yMin, state.yMax], zoomFactor, fulcrum)
+
+      return u({
+        yMin: newMin,
+        yMax: newMax
+      }, state)
 
     // ------------------------------------------------------------------------
     case mixer.SCROLL_X:
