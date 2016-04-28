@@ -3,13 +3,11 @@ import u from 'updeep'
 
 import { getOffsetedTrackID } from '../helpers/trackHelpers.js'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
+import { clipSelectionOffsetValidated } from './selectorPianoroll.js'
 
-const tracksSelector            = (state) => ( state.phrase.present.tracks )
-const clipsSelector             = (state) => ( state.phrase.present.clips )
-const clipSelectionOffsetStart  = (state) => ( state.phrase.present.clipSelectionOffsetStart )
-const clipSelectionOffsetEnd    = (state) => ( state.phrase.present.clipSelectionOffsetEnd )
-const clipSelectionOffsetLooped = (state) => ( state.phrase.present.clipSelectionOffsetLooped )
-const clipSelectionOffsetTrack  = (state) => ( state.phrase.present.clipSelectionOffsetTrack )
+const tracksSelector            = (state) => (state.phrase.present.tracks)
+const clipsSelector             = (state) => (state.phrase.present.clips)
+
 export const selectedClipsSelector = createSelector(
   clipsSelector,
   (clips) => {
@@ -20,24 +18,21 @@ export const renderedClipsSelector = createSelector(
   tracksSelector,
   clipsSelector,
   selectedClipsSelector,
-  clipSelectionOffsetStart,
-  clipSelectionOffsetEnd,
-  clipSelectionOffsetLooped,
-  clipSelectionOffsetTrack,
-  (tracks, clips, selectedClips, offsetStart, offsetEnd, offsetLooped, offsetTrack) => {
+  clipSelectionOffsetValidated,
+  (tracks, clips, selectedClips, { offsetStart, offsetEnd, offsetTrack, offsetLooped }) => {
     // Render Offseted Selections
-    var selectedClipsRendered = []
+    let selectedClipsRendered = []
     if (offsetStart || offsetEnd || offsetTrack) {
       selectedClipsRendered = selectedClips
         .map(clip => {
           // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
-          var validatedOffsetLooped = offsetLooped || (clip.end - clip.start != clip.loopLength)
+          let validatedOffsetLooped = offsetLooped || (clip.end - clip.start !== clip.loopLength)
 
           return u.freeze({
             ...clip,
             start:  clip.start  + offsetStart,
             end:    clip.end    + offsetEnd,
-            offset: validatedOffsetLooped && offsetStart != offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
+            offset: validatedOffsetLooped && offsetStart !== offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
             loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
             trackID: getOffsetedTrackID(clip.trackID, offsetTrack, tracks),
             selected: offsetStart && offsetEnd || offsetTrack ? false : true

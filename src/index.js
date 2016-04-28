@@ -24,6 +24,7 @@ import { phraseCreateTrack } from 'reducers/reducePhrase.js'
 import finalReducer from './reducers/reduce.js'
 import * as storage from 'redux-storage'
 import createStorageEngine from 'redux-storage-engine-localstorage'
+import { ActionCreators as UndoActions } from 'redux-undo'
 
 const localStorageEngine = createStorageEngine(`phrase`)
 const localStorageMiddleware = storage.createMiddleware(localStorageEngine)
@@ -42,6 +43,7 @@ load(STORE).then(state => {
   if (state.phrase && state.phrase.past && state.phrase.past.length === 0) {
     STORE.dispatch(phraseCreateTrack())
     STORE.dispatch(phraseCreateTrack())
+    STORE.dispatch(UndoActions.clearHistory())
   }
 })
 

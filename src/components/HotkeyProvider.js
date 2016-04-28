@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { ActionCreators } from 'redux-undo'
+import { ActionCreators as UndoActions } from 'redux-undo'
 
 import { transportPlayToggle,
        } from '../reducers/reduceTransport'
@@ -46,9 +46,13 @@ class HotkeyProvider extends Component {
     let { dispatch } = this.props
 
     switch(e.code) {
-      // undo last action
-      case 'KeyZ': if (e.metaKey) dispatch(ActionCreators.undo()); break
-      case 'KeyY': if (e.metaKey) dispatch(ActionCreators.redo()); break
+      // Undo last action
+      case 'KeyZ':
+        if (e.metaKey && e.shiftKey) { dispatch(UndoActions.redo()) }
+        else if (e.metaKey) { dispatch(UndoActions.undo()) }
+        break
+      case 'KeyY':
+        if (e.metaKey) dispatch(UndoActions.redo()); break
     }
   }
 

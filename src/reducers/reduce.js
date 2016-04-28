@@ -7,6 +7,7 @@ import reduceModal from './reduceModal.js'
 import reduceNavigation from './reduceNavigation.js'
 import reduceTransport from './reduceTransport.js'
 import reducePhrase from './reducePhrase.js'
+import reduceSelection from './reduceSelection.js'
 import reduceMixer from './reduceMixer.js'
 import reducePianoroll from './reducePianoroll.js'
 import reduceCursor from './reduceCursor.js'
@@ -22,6 +23,7 @@ let reduceBranches = combineReducers({
   navigation: reduceNavigation,
   transport: reduceTransport,
   phrase: undoable(reducePhrase),
+  selection: reduceSelection,
   mixer: reduceMixer,
   pianoroll: reducePianoroll,
   cursor: reduceCursor,
