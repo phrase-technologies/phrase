@@ -1,6 +1,7 @@
 import u from 'updeep'
 import { zoomInterval,
-         restrictTimelineZoom
+         shiftInterval,
+         restrictTimelineZoom,
        } from '../helpers/intervalHelpers.js'
 
 import { pianoroll } from '../actions/actions.js'
@@ -15,8 +16,16 @@ export const pianorollResizeHeight        = (height)          => ({type: pianoro
 export const pianorollSelectionBoxStart   = (x, y)            => ({type: pianoroll.SELECTION_BOX_START,  x, y})
 export const pianorollSelectionBoxResize  = (x, y)            => ({type: pianoroll.SELECTION_BOX_RESIZE, x, y})
 export const pianorollSelectionBoxApply   = (union)           => ({type: pianoroll.SELECTION_BOX_APPLY, union})
-export const pianorollSetFocusWindow      = (clipID, tight)   => ({type: pianoroll.SET_FOCUS_WINDOW, clipID, tight})
 export const pianorollMoveCursor          = (percent)         => ({type: pianoroll.MOVE_CURSOR, percent})
+export const pianorollSetFocusWindow  = (clipID, tight) => {
+  // We need to know the selection offsets - use a thunk to access other state branches
+  return (dispatch, getState) => {
+    let state = getState()
+    let barCount = state.phrase.present.barCount
+    let foundClip = state.phrase.present.clips.find(clip => clip.id === clipID)
+    dispatch({type: pianoroll.SET_FOCUS_WINDOW, foundClip, barCount, tight})
+  }
+}
 
 
 // ============================================================================
@@ -95,6 +104,44 @@ export default function reducePianoroll(state = defaultState, action) {
     case pianoroll.MOVE_CURSOR:
       return u({
         cursor: action.percent
+      }, state)
+
+    // ------------------------------------------------------------------------
+    // Set the Pianoroll's focus window
+    case pianoroll.SET_FOCUS_WINDOW:
+      // Figure out the measurements
+      let clipLength = action.foundClip.end - action.foundClip.start
+      let windowBarLength = (state.xMax - state.xMin) * action.barCount
+      let spacing = Math.min(0.5, Math.max(0.125*windowBarLength, 0.125))
+      let targetBarMin, targetBarMax
+
+      // Specially commanded to zoom tight to the clip
+      if (action.tight) {
+        targetBarMin = Math.max(action.foundClip.start - spacing, 0) / action.barCount
+        targetBarMax = Math.min(action.foundClip.end   + spacing, action.barCount) / action.barCount
+      }
+
+      // Loose focus shift - let's figure out the best place to shift the window to
+      else {
+        let shiftAmount = 0         // Don't shift if not necessary, by default
+        let shiftAmountMax = action.foundClip.end   + spacing - state.xMax * action.barCount // Does the target clip end beyond the ending of the window?
+        let shiftAmountMin = action.foundClip.start - spacing - state.xMin * action.barCount // Does the target clip start before the beginning of the window?
+        // If newly focused clip DOES NOT fit in the window, focus to the beginning of it
+        if (spacing + clipLength + spacing > windowBarLength)
+          shiftAmount = shiftAmountMin
+        // If newly focused clip is able to fit in the window, we might need to shift to one end
+        else {
+               if (shiftAmountMax > 0) { shiftAmount = shiftAmountMax }
+          else if (shiftAmountMin < 0) { shiftAmount = shiftAmountMin }
+        }
+        [targetBarMin, targetBarMax] = shiftInterval([state.xMin, state.xMax], shiftAmount/action.barCount)
+      }
+
+      // Make the change!
+      return u({
+        currentTrack: action.foundClip.trackID,
+        xMin: targetBarMin,
+        xMax: targetBarMax,
       }, state)
 
     // ------------------------------------------------------------------------

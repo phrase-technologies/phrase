@@ -109,7 +109,6 @@ export default function reducePhrase(state = defaultState, action) {
   {
     // ------------------------------------------------------------------------
     case phrase.CREATE_TRACK:
-      console.log(state.trackAutoIncrement)
       return u({
         tracks: uAppend(
           {
