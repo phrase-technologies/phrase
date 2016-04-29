@@ -10,7 +10,7 @@
     "cors": "^2.7.1",
     "express": "^4.13.4",
     "jsonwebtoken": "^5.5.4",
-    "mongoose": "^4.4.3",
+    "rethinkdb": "^2.3.1",
     "socket.io": "^1.4.5"
   },
   "devDependencies": {

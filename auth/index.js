@@ -1,13 +1,22 @@
 import jwt from 'jsonwebtoken'
-import User from '../models/User'
 import isValidEmail from '../helpers/isEmail'
 import isValidUsername from '../helpers/isUsername'
+import r from 'rethinkdb'
+import crypto from 'crypto'
+import { secret } from '../config'
+
+let hash = password => crypto.createHmac(`sha256`, secret)
+  .update(password)
+  .digest(`hex`)
+
+let doubleHash = password => hash(hash(password))
 
 export default ({
   api,
   app,
+  db,
 }) => {
-  app.post(`/signup`, (req, res) => {
+  app.post(`/signup`, async (req, res) => {
 
     let { email, username, password } = req.body
 
@@ -21,80 +30,74 @@ export default ({
         message: { emailError: `Invalid email.` },
       })
     } else {
-      User.findOne({ email }, (err, user) => {
-        if (err) throw err
-        if (user) {
+
+      let user = await r.table(`users`).get(email).run(db)
+
+      if (user) {
+        res.json({
+          success: false,
+          message: { emailError: `An account with this email already exists.` },
+        })
+      } else if (!trimmedUsername || !isValidUsername(trimmedUsername)) {
+        res.json({
+          success: false,
+          message: { usernameError: `Invalid username.` },
+        })
+      } else {
+        let cursor = await r.table(`users`).getAll(username, { index: `username` }).limit(1).run(db)
+        let users = await cursor.toArray()
+        //
+        if (users.length) {
           res.json({
             success: false,
-            message: { emailError: `An account with this email already exists.` },
+            message: { usernameError: `Sorry, the username "${username}" is taken.` },
           })
-        } else if (!trimmedUsername || !isValidUsername(trimmedUsername)) {
+        } else if (!trimmedPassword) {
           res.json({
             success: false,
-            message: { usernameError: `Invalid username.` },
+            message: { passwordError: `Invalid password.` },
           })
         } else {
-          User.findOne({ username }, (err, user) => {
-            if (err) throw err
-            if (user) {
-              res.json({
-                success: false,
-                message: { usernameError: `Sorry, the username "${username}" is taken.` },
-              })
-            } else if (!trimmedPassword) {
-              res.json({
-                success: false,
-                message: { passwordError: `Invalid password.` },
-              })
-            } else {
-              /*
-               *  TODO: hash password
-               */
+          let user = await r.table(`users`).insert({
+            username,
+            email,
+            password: doubleHash(password),
+          }).run(db)
 
-              let user = new User({ email, password, plan: `free` })
-
-              user.save((err, user) => {
-                if (err) throw err
-                res.json({ success: true, user })
-              })
-            }
-          })
+          res.json({ success: true, user })
         }
-      })
+      }
     }
   })
 
-  api.post(`/login`, (req, res) => {
+  api.post(`/login`, async (req, res) => {
 
     let { email, password } = req.body
 
-    User.findOne({ email }, (err, user) => {
+    let user = await r.table(`users`).get(email).run(db)
 
-      if (err) throw err
+    if (!user) {
+      res.json({
+        success: false,
+        message: `User not found.`,
+      })
+    } else if (user.password !== doubleHash(password)) {
+      res.json({
+        success: false,
+        message: `Bad email/password combination.`,
+      })
+    } else {
+      let token = jwt.sign(user, app.get(`superSecret`), {
+        expiresInMinutes: 1440, // expires in 24 hours
+      })
 
-      if (!user) {
-        res.json({
-          success: false,
-          message: `User not found.`,
-        })
-      } else if (user.password !== password) {
-        res.json({
-          success: false,
-          message: `Bad email/password combination.`,
-        })
-      } else {
-        let token = jwt.sign(user, app.get(`superSecret`), {
-          expiresInMinutes: 1440, // expires in 24 hours
-        })
-
-        res.json({
-          success: true,
-          message: `Enjoy your token!`,
-          token,
-          user,
-        })
-      }
-    })
+      res.json({
+        success: true,
+        message: `Enjoy your token!`,
+        token,
+        user,
+      })
+    }
   })
 
   api.use((req, res, next) => {

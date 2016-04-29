@@ -3,14 +3,13 @@
 ### Dependencies
 
   - [node](https://github.com/creationix/nvm)
-  - [mongodb](https://docs.mongodb.org/manual/installation/)
+  - [rethinkdb](https://www.rethinkdb.com/docs/install/)
+
+### Start rethinkdb
+
+    rethinkdb
 
 ### Install / Run
 
     npm install
-    npm run watch
-
-### TODO
-
-  - postgres
-  - graphql
+    npm start
