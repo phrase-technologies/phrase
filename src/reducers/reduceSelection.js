@@ -1,12 +1,18 @@
 import _ from 'lodash'
 import u from 'updeep'
-import { phrase } from '../actions/actions.js'
+import { phrase, pianoroll } from '../actions/actions.js'
 
 // ============================================================================
 // Selection Reducer
 // ============================================================================
+// Which clips and notes are currently selected by the user?
+//
+// If the user is performing drag and drop of the current selection, track
+// those offsets here so we can show temporary previews of drag
+// 
 // These parameters probably make more sense in reducePhrase.js, but have been
 // pulled out because we don't want their changes recorded in undo/history.
+
 export const defaultState = {
   clipSelectionIDs: [],
   clipSelectionTargetID: null,
@@ -42,6 +48,39 @@ export default function reducePhrase(state = defaultState, action) {
         noteSelectionIDs: action.union
           ? _.xor(state.noteSelectionIDs, [action.noteID])
           : [action.noteID]
+      }, state)
+
+    // ------------------------------------------------------------------------
+    // Select a Phrase's Notes via the Pianoroll
+    case pianoroll.SELECTION_BOX_APPLY:
+      // Outer Bounds
+      let left   = Math.min(action.selectionStartX, action.selectionEndX)
+      let right  = Math.max(action.selectionStartX, action.selectionEndX)
+      let top    = Math.max(action.selectionStartY, action.selectionEndY)
+      let bottom = Math.min(action.selectionStartY, action.selectionEndY)
+
+      // Find selected notes, even in loop iterations
+      let selectedNoteIDs = action.renderedNotes
+        .filter(note => {
+          return (
+            note.trackID === action.currentTrackID &&
+            note.start  <  right &&
+            note.end    >= left &&
+            note.keyNum <= top + 1 &&
+            note.keyNum >= bottom
+          )
+        })
+        .map(note => note.id)
+      selectedNoteIDs = _.uniq(selectedNoteIDs)
+
+      // Replace or Union/Difference to existing selection?
+      let updatedNoteSelectionIDs = action.union
+        ? _.xor(state.noteSelectionIDs, selectedNoteIDs)
+        : selectedNoteIDs
+
+      return u({
+        clipSelectionIDs: [],
+        noteSelectionIDs: updatedNoteSelectionIDs,
       }, state)
 
     // ------------------------------------------------------------------------

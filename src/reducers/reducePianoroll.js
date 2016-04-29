@@ -5,6 +5,7 @@ import { zoomInterval,
        } from '../helpers/intervalHelpers.js'
 
 import { pianoroll } from '../actions/actions.js'
+import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
 
 // ============================================================================
 // Pianoroll Action Creators
@@ -15,7 +16,22 @@ export const pianorollResizeWidth         = (width)           => ({type: pianoro
 export const pianorollResizeHeight        = (height)          => ({type: pianoroll.RESIZE_HEIGHT, height })
 export const pianorollSelectionBoxStart   = (x, y)            => ({type: pianoroll.SELECTION_BOX_START,  x, y})
 export const pianorollSelectionBoxResize  = (x, y)            => ({type: pianoroll.SELECTION_BOX_RESIZE, x, y})
-export const pianorollSelectionBoxApply   = (union)           => ({type: pianoroll.SELECTION_BOX_APPLY, union})
+export const pianorollSelectionBoxApply = (union) => {
+  // We need to know the selection box - use a thunk to access other state branches
+  return (dispatch, getState) => {
+    let state = getState()
+    dispatch({
+      type: pianoroll.SELECTION_BOX_APPLY,
+      renderedNotes: currentNotesSelector(state),
+      currentTrackID: state.pianoroll.currentTrack,
+      selectionStartX: state.pianoroll.selectionStartX,
+      selectionStartY: state.pianoroll.selectionStartY,
+      selectionEndX: state.pianoroll.selectionEndX,
+      selectionEndY: state.pianoroll.selectionEndY,
+      union,
+    })
+  }
+}
 export const pianorollMoveCursor          = (percent)         => ({type: pianoroll.MOVE_CURSOR, percent})
 export const pianorollSetFocusWindow  = (clipID, tight) => {
   // We need to know the selection offsets - use a thunk to access other state branches
@@ -98,6 +114,16 @@ export default function reducePianoroll(state = defaultState, action) {
       return u({
         selectionEndX: action.x,
         selectionEndY: action.y
+      }, state)
+
+    // ------------------------------------------------------------------------
+    // Select a Phrase's Notes via the Pianoroll
+    case pianoroll.SELECTION_BOX_APPLY:
+      return u({
+        selectionStartX: null,
+        selectionStartY: null,
+        selectionEndX: null,
+        selectionEndY: null
       }, state)
 
     // ------------------------------------------------------------------------
