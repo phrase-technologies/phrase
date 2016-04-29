@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect'
 import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
-import u from 'updeep'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
 
 export const MINIMUM_UNIT_LENGTH = 0.0078125
@@ -11,6 +10,7 @@ const tracksSelector            = (state) => (state.phrase.present.tracks)
 const clipsSelector             = (state) => (state.phrase.present.clips)
 const notesSelector             = (state) => (state.phrase.present.notes)
 const pianorollSelector         = (state) => (state.pianoroll)
+const clipSelectionIDs          = (state) => (state.selection.clipSelectionIDs)
 const clipSelectionTargetID     = (state) => (state.selection.clipSelectionTargetID)
 const clipSelectionOffsetStart  = (state) => (state.selection.clipSelectionOffsetStart)
 const clipSelectionOffsetEnd    = (state) => (state.selection.clipSelectionOffsetEnd)
@@ -19,6 +19,7 @@ const clipSelectionOffsetLooped = (state) => (state.selection.clipSelectionOffse
 const clipSelectionOffsetSnap   = (state) => (state.selection.clipSelectionOffsetSnap)
 export const clipSelectionOffsetValidated = createSelector(
   clipsSelector,
+  clipSelectionIDs,
   clipSelectionTargetID,
   clipSelectionOffsetStart,
   clipSelectionOffsetEnd,
@@ -26,9 +27,9 @@ export const clipSelectionOffsetValidated = createSelector(
   clipSelectionOffsetLooped,
   clipSelectionOffsetSnap,
   tracksSelector,
-  (clips, targetClipID, offsetStart, offsetEnd, offsetTrack, offsetLooped, offsetSnap, tracks) => {
+  (clips, clipSelectionIDs, targetClipID, offsetStart, offsetEnd, offsetTrack, offsetLooped, offsetSnap, tracks) => {
     let targetClip = clips.find(clip => clip.id === targetClipID)
-    let selectedClips = clips.filter(clip => clip.selected)
+    let selectedClips = clips.filter(clip => clipSelectionIDs.some(x => x === clip.id))
     // Escape if there is no selection or selection offset
     if (!targetClip || !selectedClips) {
       return {
@@ -52,7 +53,7 @@ export const clipSelectionOffsetValidated = createSelector(
     [finalOffsetStart, finalOffsetEnd] = validateOffsetPosition(snappedOffsetStart, snappedOffsetEnd, selectedClips)
 
     // Validate Track Offset
-    let finalOffsetTrack = validateTrackOffset(offsetTrack, tracks, clips)
+    let finalOffsetTrack = validateTrackOffset(offsetTrack, tracks, selectedClips)
 
     return {
       offsetStart: finalOffsetStart,
@@ -62,6 +63,7 @@ export const clipSelectionOffsetValidated = createSelector(
     }
   }
 )
+const noteSelectionIDs          = (state) => (state.selection.noteSelectionIDs)
 const noteSelectionTargetID     = (state) => (state.selection.noteSelectionTargetID)
 const noteSelectionOffsetStart  = (state) => (state.selection.noteSelectionOffsetStart)
 const noteSelectionOffsetEnd    = (state) => (state.selection.noteSelectionOffsetEnd)
@@ -69,14 +71,15 @@ const noteSelectionOffsetKey    = (state) => (state.selection.noteSelectionOffse
 const noteSelectionOffsetSnap   = (state) => (state.selection.noteSelectionOffsetSnap)
 export const noteSelectionOffsetValidated = createSelector(
   notesSelector,
+  noteSelectionIDs,
   noteSelectionTargetID,
   noteSelectionOffsetStart,
   noteSelectionOffsetEnd,
   noteSelectionOffsetKey,
   noteSelectionOffsetSnap,
-  (notes, targetNoteID, offsetStart, offsetEnd, offsetKey, offsetSnap) => {
+  (notes, noteSelectionIDs, targetNoteID, offsetStart, offsetEnd, offsetKey, offsetSnap) => {
     let targetNote = notes.find(note => note.id === targetNoteID)
-    let selectedNotes = notes.filter(note => note.selected)
+    let selectedNotes = notes.filter(note => noteSelectionIDs.some(x => x === note.id))
     // Escape if there is no selection or selection offset
     if (!targetNote || !selectedNotes) {
       return {
@@ -103,72 +106,91 @@ export const noteSelectionOffsetValidated = createSelector(
     }
   }
 )
-const currentTrackSelector      = (state) => {
+const currentTrackSelector = (state) => {
   return state.phrase.present.tracks.find(track => track.id === state.pianoroll.currentTrack)
 }
 const currentClipsSelector = createSelector(
   clipsSelector,
+  clipSelectionIDs,
   currentTrackSelector,
   clipSelectionOffsetValidated,
-  (clips, currentTrack, { offsetStart, offsetEnd, offsetTrack, offsetLooped }) => {
+  (clips, clipSelectionIDs, currentTrack, { offsetStart, offsetEnd, offsetTrack, offsetLooped }) => {
     // Current Track's Clips
     let currentClips = currentTrack ? clips.filter(clip => clip.trackID === currentTrack.id) : []
 
     // Render Offseted Selections
-    let selectedClipsRendered = []
-    if (offsetStart || offsetEnd || offsetTrack) {
-      selectedClipsRendered = currentClips
-        .filter(clip => clip.selected)
-        .map(clip => {
+    let clipSelectionOffsetPreview = []
+    currentClips = currentClips
+      .map(clip => {
+        let isClipSelected = clipSelectionIDs.some(x => x === clip.id)
+        if (isClipSelected) {
+          // Generate a preview of any offset on clip selection (from drag and drop)
+          if (offsetStart || offsetEnd || offsetTrack) {
+            clipSelectionOffsetPreview.push({
+              ...clip,
+              start:  clip.start  + offsetStart,
+              end:    clip.end    + offsetEnd,
+              offset: validatedOffsetLooped && offsetStart !== offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
+              loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
+              trackID: clip.trackID,// + Math.round(offsetTrack), // Don't show any feedback for yet-to-be-finalized track changes
+            })
+          }
+
           // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
           let validatedOffsetLooped = offsetLooped || (clip.end - clip.start !== clip.loopLength)
-
-          return u.freeze({
+          // Render the selected clip as selected
+          return {
             ...clip,
-            start:  clip.start  + offsetStart,
-            end:    clip.end    + offsetEnd,
-            offset: validatedOffsetLooped && offsetStart !== offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
-            loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
-            trackID: clip.trackID,// + Math.round(offsetTrack), // Don't show any feedback for yet-to-be-finalized track changes
-            selected: offsetStart && offsetEnd || Math.round(offsetTrack) ? false : true
-          })
-        })
-    }
+            selected: true,
+          }
+        }
+        return clip
+      })
 
     // Render a copy of each clip with their rendered selections appended
     return currentClips
-      .concat(selectedClipsRendered)
+      .concat(clipSelectionOffsetPreview)
   }
 )
 export const currentNotesSelector = createSelector(
   currentClipsSelector,
   notesSelector,
+  noteSelectionIDs,
   currentTrackSelector,
   noteSelectionOffsetValidated,
-  (currentClips, notes, currentTrack, { offsetStart, offsetEnd, offsetKey }) => {
+  (currentClips, notes, noteSelectionIDs, currentTrack, { offsetStart, offsetEnd, offsetKey }) => {
     if (!currentTrack) return
 
     let currentNotes = notes
       .filter(note => note.trackID === currentTrack.id)
 
-    let selectedNotesRendered = []
-    if (offsetStart || offsetEnd || offsetKey) {
-      selectedNotesRendered = currentNotes
-      .filter(note => note.selected)
+    // Render selected notes
+    let noteSelectionOffsetPreview = []
+    currentNotes = currentNotes
       .map(note => {
-        return {
-          ...note,
-          start:  note.start  + offsetStart,
-          end:    note.end    + offsetEnd,
-          keyNum: Math.round(note.keyNum + offsetKey),
-          selected: offsetStart && offsetEnd || Math.round(offsetKey) ? false : true
+        let isNoteSelected = noteSelectionIDs.some(x => x === note.id)
+        if (isNoteSelected) {
+          // Generate a preview of any offset on note selection (from drag and drop)
+          if (offsetStart || offsetEnd || offsetKey) {
+            noteSelectionOffsetPreview.push({
+              ...note,
+              start:  note.start  + offsetStart,
+              end:    note.end    + offsetEnd,
+              keyNum: Math.round(note.keyNum + offsetKey),
+            })
+          }
+          // Render the selected note as selected
+          return {
+            ...note,
+            selected: true,
+          }
         }
+        return note
       })
-    }
 
     // Render a copy of each note for each loop iteration of it's respective clip
     return currentNotes
-      .concat(selectedNotesRendered)
+      .concat(noteSelectionOffsetPreview)
       .reduce((allLoopedNotes, note) => {
         let loopedNote = loopedNoteSelector(note, currentClips)
         return allLoopedNotes.concat(loopedNote)
@@ -285,10 +307,7 @@ export function validateOffsetPosition(offsetStart, offsetEnd, selectedNotes) {
     : [offsetStart, offsetEnd]
 }
 
-export function validateTrackOffset(offsetTrack, tracks, clips) {
-  // Which clips are we offsetting?
-  let selectedClips = clips.filter(clip => clip.selected)
-
+export function validateTrackOffset(offsetTrack, tracks, selectedClips) {
   // Calculate the largest offset allowable to both top and bottom directions
   let firstTrackWithSelectedClip = tracks.length // Default to largest possible value
   let lastTrackWithSelectedClip  = 0             // Default to smallest possible value

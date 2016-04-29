@@ -14,22 +14,41 @@ import { negativeModulus } from '../helpers/intervalHelpers.js'
 // Phrase Action Creators
 // ============================================================================
 export const phraseCreateTrack = () => {
-  // We need to know the height of the mixer - use a thunk to access other state branches
   return (dispatch, getState) => {
-    dispatch({type: phrase.CREATE_TRACK})
+    dispatch({ type: phrase.CREATE_TRACK })
 
-    // Take measurements after the new track is created
+    // Take measurements after the new track is created, adjust height
     let state = getState()
     let mixerContentHeight = getTracksHeight(state.phrase.present.tracks)
     let height = state.mixer.height
-    dispatch({type: mixer.RESIZE_HEIGHT, height, mixerContentHeight})
+    dispatch({ type: mixer.RESIZE_HEIGHT, height, mixerContentHeight })
   }
 }
 export const phraseArmTrack               = (trackID)                 => ({type: phrase.ARM_TRACK, trackID})
 export const phraseMuteTrack              = (trackID)                 => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack              = (trackID)                 => ({type: phrase.SOLO_TRACK, trackID})
-export const phraseCreateClip             = (trackID, bar)            => ({type: phrase.CREATE_CLIP, trackID, bar})
-export const phraseCreateNote             = (trackID, bar, key)       => ({type: phrase.CREATE_NOTE, trackID, bar, key})
+export const phraseCreateClip = (trackID, bar) => {
+  return (dispatch, getState) => {
+    dispatch({ type: phrase.CREATE_CLIP, trackID, bar })
+
+    // Select the clip after it's created
+    let state = getState()
+    let clips = state.phrase.present.clips
+    let newClip = clips[clips.length - 1]
+    dispatch({ type: phrase.SELECT_CLIP, clipID: newClip.id, union: false })
+  }
+}
+export const phraseCreateNote = (trackID, bar, key) => {
+  return (dispatch, getState) => {
+    dispatch({ type: phrase.CREATE_NOTE, trackID, bar, key })
+
+    // Select the note after it's created
+    let state = getState()
+    let notes = state.phrase.present.notes
+    let newNote = notes[notes.length - 1]
+    dispatch({ type: phrase.SELECT_NOTE, noteID: newNote.id, union: false })
+  }
+}
 export const phraseSelectClip             = (clipID, union)           => ({type: phrase.SELECT_CLIP, clipID, union})
 export const phraseSelectNote             = (noteID, union)           => ({type: phrase.SELECT_NOTE, noteID, union})
 export const phraseDeleteSelection        = ()                        => ({type: phrase.DELETE_SELECTION})
@@ -60,7 +79,8 @@ export const phraseDropClipSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetTrack, offsetLooped } = clipSelectionOffsetValidated(state)
-    dispatch({ type: phrase.DROP_CLIP_SELECTION, offsetStart, offsetEnd, offsetTrack, offsetLooped })
+    let clipIDs = state.selection.clipSelectionIDs
+    dispatch({ type: phrase.DROP_CLIP_SELECTION, clipIDs, offsetStart, offsetEnd, offsetTrack, offsetLooped })
   }
 }
 export const phraseDropNoteSelection = () => {
@@ -68,7 +88,8 @@ export const phraseDropNoteSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetKey } = noteSelectionOffsetValidated(state)
-    dispatch({ type: phrase.DROP_NOTE_SELECTION, offsetStart, offsetEnd, offsetKey })
+    let noteIDs = state.selection.noteSelectionIDs
+    dispatch({ type: phrase.DROP_NOTE_SELECTION, noteIDs, offsetStart, offsetEnd, offsetKey })
   }
 }
 
@@ -105,6 +126,7 @@ const TRACK_COLORS = [
 ]
 
 export default function reducePhrase(state = defaultState, action) {
+console.log( state.clips, state.notes )
   switch (action.type)
   {
     // ------------------------------------------------------------------------
@@ -167,28 +189,6 @@ export default function reducePhrase(state = defaultState, action) {
       )
 
     // ------------------------------------------------------------------------
-    case phrase.SELECT_CLIP:
-      return u({
-        notes: u.updateIn(['*', 'selected'], false),
-        clips: u.updateIn(['*'], u.ifElse(
-          (clip) => clip.id === action.clipID,
-          (clip) => u({selected: (action.union ? !clip.selected : true)}, clip),
-          (clip) => u({selected: (action.union ?  clip.selected : false)}, clip)
-        ))
-      }, state)
-
-    // ------------------------------------------------------------------------
-    case phrase.SELECT_NOTE:
-      return u({
-        clips: u.updateIn(['*', 'selected'], false),
-        notes: u.updateIn(['*'], u.ifElse(
-          (note) => note.id === action.noteID,
-          (note) => u({selected: (action.union ? !note.selected : true)}, note),
-          (note) => u({selected: (action.union ?  note.selected : false)}, note)
-        ))
-      }, state)
-
-    // ------------------------------------------------------------------------
     case phrase.DELETE_NOTE:
       return u({
         notes: u.reject(note => note.id === action.noteID)
@@ -221,7 +221,7 @@ export default function reducePhrase(state = defaultState, action) {
             // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
             let validatedOffsetLooped = action.offsetLooped || (clip.end - clip.start !== clip.loopLength)
 
-            if (clip.selected) {
+            if (action.clipIDs.some(x => x === clip.id)) {
               return u({
                 start:  clip.start  + action.offsetStart,
                 end:    clip.end    + action.offsetEnd,
@@ -234,12 +234,12 @@ export default function reducePhrase(state = defaultState, action) {
           })
         },
         notes: notes => {
-          // Do nothing if no change of track occured
+          // Do nothing if no change of track occurred
           if (!action.offsetTrack)
             return notes
 
           // Change of track occured - make sure appropriate notes are moved also!
-          let selectedClips = state.clips.filter(clip => clip.selected)
+          let selectedClips = state.clips.filter(clip => action.clipIDs.some(x => x === clip.id))
           return notes.map(note => {
             let clipMoved = selectedClips.find(clip => clip.id === note.clipID)
             if (clipMoved) {
@@ -257,7 +257,7 @@ export default function reducePhrase(state = defaultState, action) {
       return u({
         notes: notes => {
           return notes.map(note => {
-            if (note.selected) {
+            if (action.noteIDs.some(x => x === note.id)) {
               return u({
                 start:  note.start  + action.offsetStart,
                 end:    note.end    + action.offsetEnd,
@@ -280,12 +280,6 @@ function reduceCreateClip(state, action) {
   if (getClipAtBar(state, action.bar, action.trackID))
     return state
 
-  // Deselect all existing clips and notes
-  state = u({
-    clips: u.updateIn(['*', 'selected'], false),
-    notes: u.updateIn(['*', 'selected'], false)
-  }, state)
-
   // Create new clip
   let snappedClipStart = Math.floor(action.bar) + 0.00
   let newClip = u.freeze({
@@ -295,7 +289,6 @@ function reduceCreateClip(state, action) {
     end:        snappedClipStart + 1.00,
     offset:     0.00,
     loopLength: 1.00,
-    selected:   true
   })
 
   // Insert
@@ -314,12 +307,6 @@ function reduceCreateNote(state, action) {
   state = reduceCreateClip(state, action)
   let foundClip = getClipAtBar(state, action.bar, action.trackID)
 
-  // Deselect all existing clips and notes
-  state = u({
-    clips: u.updateIn(['*', 'selected'], false),
-    notes: u.updateIn(['*', 'selected'], false)
-  }, state)
-
   // Insert note, snap to same length as most previously created note
   let snappedNoteKey   = Math.ceil(action.key)
   let snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast
@@ -330,7 +317,6 @@ function reduceCreateNote(state, action) {
     keyNum:   snappedNoteKey,
     start:    snappedNoteStart - foundClip.start,
     end:      snappedNoteStart - foundClip.start + state.noteLengthLast,
-    selected: true
   })
 
   // Update State

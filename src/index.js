@@ -40,7 +40,7 @@ const STORE = finalCreateStore(storage.reducer(finalReducer))
 const load = storage.createLoader(localStorageEngine)
 load(STORE).then(state => {
   // Setup initial state - 2 tracks by default
-  if (state.phrase && state.phrase.past && state.phrase.past.length === 0) {
+  if (!state.phrase || state.phrase.past.length === 0 && state.phrase.present.tracks.length === 0) {
     STORE.dispatch(phraseCreateTrack())
     STORE.dispatch(phraseCreateTrack())
     STORE.dispatch(UndoActions.clearHistory())

@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import u from 'updeep'
 import { phrase } from '../actions/actions.js'
 
@@ -25,6 +26,24 @@ export const defaultState = {
 export default function reducePhrase(state = defaultState, action) {
   switch (action.type)
   {
+    // ------------------------------------------------------------------------
+    case phrase.SELECT_CLIP:
+      return u({
+        noteSelectionIDs: [],
+        clipSelectionIDs: action.union
+          ? _.xor(state.clipSelectionIDs, [action.clipID])
+          : [action.clipID]
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.SELECT_NOTE:
+      return u({
+        clipSelectionIDs: [],
+        noteSelectionIDs: action.union
+          ? _.xor(state.noteSelectionIDs, [action.noteID])
+          : [action.noteID]
+      }, state)
+
     // ------------------------------------------------------------------------
     case phrase.DRAG_CLIP_SELECTION: {
       return u({
