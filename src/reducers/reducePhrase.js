@@ -1,4 +1,5 @@
 import u from 'updeep'
+import { api } from 'helpers/ajaxHelpers'
 import { uIncrement, uAppend } from 'helpers/arrayHelpers'
 
 import { phrase, mixer } from 'actions/actions'
@@ -92,8 +93,17 @@ export const phraseDropNoteSelection = () => {
     dispatch({ type: phrase.DROP_NOTE_SELECTION, noteIDs, offsetStart, offsetEnd, offsetKey })
   }
 }
-export const phraseLoad = state => ({ type: phrase.LOAD, payload: state })
 
+export const phraseLoadFromMemory = state => ({ type: phrase.LOAD, payload: state })
+
+export const phraseLoadFromDb = phrasename => {
+  return async (dispatch) => {
+    let { loadedPhrase } = await api({ endpoint: `loadOne`, body: { phrasename } })
+    if (loadedPhrase) {
+      dispatch({ type: phrase.LOAD, payload: loadedPhrase.state })
+    }
+  }
+}
 // ============================================================================
 // Phrase Reducer
 // ============================================================================

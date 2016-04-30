@@ -74,6 +74,7 @@ window.onload = () => {
             <Router history={browserHistory}>
               <Route path="/" component={App} />
               <Route path="/edit" component={App} />
+              <Route path="/edit/:username/:phrasename" component={App} />
               <Route path="/*" component={Error404}/>
             </Router>
 

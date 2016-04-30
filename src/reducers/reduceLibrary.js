@@ -1,11 +1,13 @@
 import { library } from 'actions/actions'
 import { api } from 'helpers/ajaxHelpers'
+import { browserHistory } from 'react-router'
 
 export const librarySave = () => {
   return async (dispatch, getState) => {
     let phraseState = getState().phrase
-    await api({ endpoint: `save`, body: { phraseState }})
+    let data = await api({ endpoint: `save`, body: { phraseState }})
     dispatch({ type: library.SAVE })
+    browserHistory.push(`/edit/${localstorage.username}/`)
   }
 }
 export const libraryLoadAll = () => {

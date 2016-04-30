@@ -23,7 +23,6 @@ import { combineReducers } from 'redux'
 import undoable, { excludeAction } from 'redux-undo'
 import { phrase } from 'actions/actions'
 
-
 function reinstate (reducer) {
 
   return function (state, action) {

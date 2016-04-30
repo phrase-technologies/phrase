@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { layoutConsoleSplit } from '../actions/actionsLayout.js'
+import { layoutConsoleSplit } from 'actions/actionsLayout'
 
-import WorkstationHeader from './WorkstationHeader.js'
-import WorkstationSplit from './WorkstationSplit.js'
-import Mixer from './Mixer.js'
-import Pianoroll from './Pianoroll.js'
+import WorkstationHeader from './WorkstationHeader'
+import WorkstationSplit from './WorkstationSplit'
+import Mixer from './Mixer'
+import Pianoroll from './Pianoroll'
 
 export class Workstation extends Component {
 
