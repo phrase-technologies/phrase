@@ -10,8 +10,26 @@ import { Server } from 'http'
 
 import router from './router'
 
-r.connect({ host: `localhost`, db: `phrase`, port: 28015 })
-  .then(db => {
+async function bootstrap () {
+  try {
+
+    /*
+     *  Connect to rethink!
+     */
+
+    let db = await r.connect({ host: `localhost`, db: `phrase`, port: 28015 })
+
+    /*
+     *  Setup database!
+     */
+
+    try {
+      await r.dbCreate(`phrase`).run(db)
+      await r.tableCreate(`phrases`).run(db)
+      await r.tableCreate(`users`, { primaryKey: `email` }).run(db)
+      await r.table(`users`).indexCreate(`username`).run(db)
+    }
+    catch (err) { console.log(err) }
 
     let app = express()
     let http = Server(app)
@@ -30,4 +48,11 @@ r.connect({ host: `localhost`, db: `phrase`, port: 28015 })
     http.listen(port, () => {
       console.log(chalk.white(`☆ listening on localhost:${port}`))
     })
-  })
+  }
+
+  catch (err) {
+    console.log(err)
+  }
+}
+
+bootstrap()

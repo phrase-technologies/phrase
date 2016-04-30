@@ -12,8 +12,9 @@ export default ({ app, db }) => {
       let phrases = await cursor.toArray()
       res.json({ phrases })
     } catch (error) {
-      console.log(error)
-      res.json({ error })
+      await r.tableCreate(`phrases`).run(db)
+      console.log(`phrases table created`)
+      res.json({ phrases: [] })
     }
   })
 
