@@ -21,8 +21,9 @@ r.connect({ host: `localhost`, db: `phrase`, port: 28015 })
     app.set(`superSecret`, secret)
 
     app.use(cors())
-    app.use(bodyParser.urlencoded({ extended: false }))
-    app.use(bodyParser.json())
+
+    app.use(bodyParser.json({ limit: `50mb` }))
+    app.use(bodyParser.urlencoded({ limit: `50mb`, extended: true }))
 
     app.use(`/api`, router({ app, db }))
 
