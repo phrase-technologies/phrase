@@ -28,14 +28,14 @@ export const phraseMidiSelector = createSelector(
   notesSelector,
   (clips, notes) => {
     // Render a copy of each note for each loop iteration of it's respective clip
-    var allLoopedNotes = notes
+    let allLoopedNotes = (notes || [])
       .reduce((allLoopedNotes, note) => {
-        var loopedNote = loopedNoteSelector(note, clips)
+        let loopedNote = loopedNoteSelector(note, clips)
         return [...allLoopedNotes, ...loopedNote]
       }, [])
 
     // Convert each note into a start and stop MIDI command
-    var midiCommands = allLoopedNotes
+    let midiCommands = (allLoopedNotes || [])
       .reduce((midiCommands, note) => {
         return [...midiCommands, ...noteMidiSelector(note)]
       }, [])

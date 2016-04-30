@@ -11,7 +11,7 @@
 import u from 'updeep'
 
 import { cursor,
-         phrase } from '../actions/actions.js'
+         phrase } from 'actions/actions'
 
 let defaultState = {
   icon: null
@@ -59,5 +59,5 @@ export default function reduceCursor(state = defaultState, action) {
 
     default:
       return state
-  }  
+  }
 }

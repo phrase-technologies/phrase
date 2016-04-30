@@ -11,7 +11,7 @@ export function updateNodes(engine, state) {
 
   // Remove tracks as required
   Object.keys(engine.trackModules).forEach(trackID => {
-    var foundTrack = state.phrase.present.tracks.find(track => track.id == trackID)
+    var foundTrack = (state.phrase.present.tracks || []).find(track => track.id == trackID)
     if (!foundTrack) {
       var trackModuleToRemove = engine.trackModules[trackID]
       delete engine.trackModules[trackID]
@@ -19,9 +19,10 @@ export function updateNodes(engine, state) {
     }
   })
 
+
   // Add/update tracks as required
-  let atleastOneTrackSoloed = state.phrase.present.tracks.some(track => track.solo)
-  state.phrase.present.tracks.forEach(track => {
+  let atleastOneTrackSoloed = (state.phrase.present.tracks || []).some(track => track.solo)
+  ;(state.phrase.present.tracks || []).forEach(track => {
     // Add new tracks
     if (!engine.trackModules[track.id]) {
       engine.trackModules[track.id] = createTrackModule(engine, track)

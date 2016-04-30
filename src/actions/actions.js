@@ -47,6 +47,15 @@ export const phrase = namespaceActions(
     'DRAG_NOTE_SELECTION',
     'DROP_CLIP_SELECTION',
     'DROP_NOTE_SELECTION',
+    'LOAD',
+  ]
+)
+
+export const library = namespaceActions(
+  `library`,
+  [
+    'SAVE',
+    'LOAD_ALL',
   ]
 )
 

@@ -11,6 +11,7 @@ export let api = async ({ endpoint, body }) => {
     body: JSON.stringify({
       token: localStorage.token,
       email: localStorage.email,
+      username: localStorage.username,
       _id: localStorage.userId,
       ...(body || {})
     }),

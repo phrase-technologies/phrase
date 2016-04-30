@@ -28,8 +28,8 @@ export const clipSelectionOffsetValidated = createSelector(
   clipSelectionOffsetSnap,
   tracksSelector,
   (clips, clipSelectionIDs, targetClipID, offsetStart, offsetEnd, offsetTrack, offsetLooped, offsetSnap, tracks) => {
-    let targetClip = clips.find(clip => clip.id === targetClipID)
-    let selectedClips = clips.filter(clip => clipSelectionIDs.some(x => x === clip.id))
+    let targetClip = (clips || []).find(clip => clip.id === targetClipID)
+    let selectedClips = (clips || []).filter(clip => clipSelectionIDs.some(x => x === clip.id))
     // Escape if there is no selection or selection offset
     if (!targetClip || !selectedClips) {
       return {
@@ -78,8 +78,8 @@ export const noteSelectionOffsetValidated = createSelector(
   noteSelectionOffsetKey,
   noteSelectionOffsetSnap,
   (notes, noteSelectionIDs, targetNoteID, offsetStart, offsetEnd, offsetKey, offsetSnap) => {
-    let targetNote = notes.find(note => note.id === targetNoteID)
-    let selectedNotes = notes.filter(note => noteSelectionIDs.some(x => x === note.id))
+    let targetNote = (notes || []).find(note => note.id === targetNoteID)
+    let selectedNotes = (notes || []).filter(note => noteSelectionIDs.some(x => x === note.id))
     // Escape if there is no selection or selection offset
     if (!targetNote || !selectedNotes) {
       return {

@@ -9,7 +9,7 @@ export function getTrackHeight(track) {
 
 // Calculates the total content height of the tracks in the mixer.
 export function getTracksHeight(tracks) {
-  return tracks.reduce((contentHeight, track) => {
+  return (tracks || []).reduce((contentHeight, track) => {
     return contentHeight + getTrackHeight(track)
   }, 55) // The "+Add Track" button is 55px tall
 }

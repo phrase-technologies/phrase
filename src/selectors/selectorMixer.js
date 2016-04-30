@@ -16,7 +16,7 @@ export const renderedClipsSelector = createSelector(
   (tracks, clips, clipSelectionIDs, { offsetStart, offsetEnd, offsetTrack, offsetLooped }) => {
     // Render Offseted Selections
     let clipSelectionOffsetPreview = []
-    clips = clips
+    clips = (clips || [])
       .map(clip => {
         let isClipSelected = clipSelectionIDs.some(x => x === clip.id)
         if (isClipSelected) {
@@ -52,6 +52,6 @@ export const renderedClipsSelector = createSelector(
 export const atleastOneTrackSoloedSelector = createSelector(
   tracksSelector,
   (tracks) => {
-    return tracks.some(track => track.solo)
+    return (tracks || []).some(track => track.solo)
   }
 )

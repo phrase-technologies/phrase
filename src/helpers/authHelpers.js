@@ -25,6 +25,7 @@ export let login = async (body, callback) =>  {
     localStorage.token = token
     localStorage.userId = user._id
     localStorage.email = user.email
+    localStorage.username = user.username
     callback({ success, message, user })
   }
   else callback({ message })

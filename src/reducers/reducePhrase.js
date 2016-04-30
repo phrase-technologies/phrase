@@ -1,14 +1,14 @@
 import u from 'updeep'
-import { uIncrement, uAppend } from '../helpers/arrayHelpers.js'
+import { uIncrement, uAppend } from 'helpers/arrayHelpers'
 
-import { phrase, mixer } from '../actions/actions.js'
+import { phrase, mixer } from 'actions/actions'
 import { clipSelectionOffsetValidated,
          noteSelectionOffsetValidated,
-       } from '../selectors/selectorPianoroll.js'
+       } from 'selectors/selectorPianoroll'
 import { getOffsetedTrackID,
          getTracksHeight,
-       } from '../helpers/trackHelpers.js'
-import { negativeModulus } from '../helpers/intervalHelpers.js'
+       } from 'helpers/trackHelpers'
+import { negativeModulus } from 'helpers/intervalHelpers'
 
 // ============================================================================
 // Phrase Action Creators
@@ -92,7 +92,7 @@ export const phraseDropNoteSelection = () => {
     dispatch({ type: phrase.DROP_NOTE_SELECTION, noteIDs, offsetStart, offsetEnd, offsetKey })
   }
 }
-
+export const phraseLoad = state => ({ type: phrase.LOAD, payload: state })
 
 // ============================================================================
 // Phrase Reducer

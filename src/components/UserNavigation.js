@@ -1,10 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 
 import { modalOpen } from '../reducers/reduceModal.js'
 import { logout } from '../reducers/reduceAuth.js'
 import profileImageUrl from '../img/user/anson-kao.jpg'
+
+import { librarySave } from 'reducers/reduceLibrary'
 
 export let UserNavigation = props => !props.loggedIn
   ? notLoggedIn(props)
@@ -14,7 +16,13 @@ let notLoggedIn = ({ dispatch }) =>
   <div className="header-user-navigation">
     <button
       className="btn btn-dark"
-      onClick={() => dispatch(modalOpen({ modalComponent: 'LoginModal'  }))}
+      onClick={() => dispatch(librarySave())}
+    >
+      Save
+    </button>
+    <button
+      className="btn btn-dark"
+      onClick={() => dispatch(modalOpen({ modalComponent: 'LoginModal' }))}
     >
       Log in
     </button>
