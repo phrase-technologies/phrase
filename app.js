@@ -25,9 +25,10 @@ async function bootstrap () {
 
     try {
       await r.dbCreate(`phrase`).run(db)
-      await r.tableCreate(`phrases`).run(db)
       await r.tableCreate(`users`, { primaryKey: `email` }).run(db)
       await r.table(`users`).indexCreate(`username`).run(db)
+      await r.tableCreate(`phrases`).run(db)
+      await r.table(`phrases`).indexCreate(`phrasename`).run(db)
     }
     catch (err) { console.log(err) }
 

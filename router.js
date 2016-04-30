@@ -12,22 +12,33 @@ export default ({ app, db }) => {
       let phrases = await cursor.toArray()
       res.json({ phrases })
     } catch (error) {
-      await r.tableCreate(`phrases`).run(db)
-      console.log(`phrases table created`)
-      res.json({ phrases: [] })
+      res.json({ error })
+    }
+  })
+
+  api.post(`/loadOne`, async (req, res) => {
+    let { phrasename } = req.body
+    try {
+      let cursor = await r.table(`phrases`)
+        .getAll(phrasename, { index: `phrasename` }).limit(1).run(db)
+
+      let phrases = await cursor.toArray()
+      res.json({ loadedPhrase: phrases[0] })
+    } catch (error) {
+      res.json({ error })
     }
   })
 
   api.post(`/save`, async (req, res) => {
     let { phraseState, email = `guest` } = req.body
     try {
-      let name = `phrase-${+new Date()}`
+      let phrasename = `phrase-${+new Date()}`
 
       await r.table(`phrases`).insert({
         state: phraseState,
         public: true,
         saved_date: +new Date(),
-        name,
+        phrasename,
         email,
       }).run(db)
 
