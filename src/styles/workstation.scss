@@ -1,7 +1,7 @@
 $workstation-mixer-width: 240px;
 $workstation-mixer-z-index: 200;          // Above Page
-$workstation-header-top: 55px;
-$workstation-header-height: 45px;
+$workstation-header-top: 60px;
+$workstation-header-height: 55px;
 $workstation-header-z-index: 300;         // Above Page & Mixer
 $workstation-clip-width: 240px;
 $workstation-clip-z-index: 400;           // Above Page & Mixer
@@ -26,12 +26,14 @@ body {
   right: 0;
   height: 100%;
 
+  color: #CCC;
+
   overflow: hidden;
   pointer-events: none;
 
   // Use CSS translations (CPU Optimized) for smooth minimization and maximization
   transition: transform 0.1s;
-  transform: translateY(-100px);
+  transform: translateY(-115px);
   &.workstation-maximized {
     transform: translateY(-100%);
   }
@@ -49,8 +51,100 @@ body {
   background: #444;
   background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
   // background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
+  padding: 10px;
+  text-align: left;
 
   pointer-events: all;
+
+  > .transport {
+    display: inline-block;
+
+    > .btn {
+      font-size: 16px;
+      padding: 8px 10px 8px 11px;
+    }
+  }
+}
+.transport {
+  color: #FFF;
+}
+.transport-tempo-container {
+  position: relative;
+
+  > span {
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    font-size: 10px;
+    pointer-events: none;
+  }
+}
+.transport-tempo {
+  width: 75px;
+  padding: 0 35px 0 0;
+  text-align: right;
+}
+.transport-time-a,
+.transport-time-b,
+.transport-time-c,
+.transport-time-d {
+  display: inline-block;
+  width: 18px;
+  padding: 0;
+  text-align: right;
+}
+.transport-time-a,
+.transport-time-d {
+  width: 28px;
+}
+.workstation-header-info {
+  float: right;
+  display: inline-block;
+}
+.workstation-header-title-wrapper {
+  display: inline-block;
+  position: relative;
+
+  > span {
+    position: absolute;
+    top: 12px;
+    right: 8px;
+    pointer-events: none;
+    color: #AAA;
+  }
+}
+.workstation-header-title {
+  padding: 4px 8px;
+  height: 25px;
+  font-size: 16px;
+  padding-right: 25px;
+}
+.workstation-header-author {
+  display: inline-block;
+  color: #AAA;
+  margin-right: 10px;
+
+  text-decoration: none !important;
+}
+.workstation-header-share {
+  display: inline-block;
+  height: 35px;
+  width: 64px;
+  line-height: 35px;
+  text-align: right;
+}
+.workstation-header-profile-pic {
+  display: inline-block;
+
+  border: 3px solid #383838;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  margin-bottom: 3px;
+
+  + .workstation-header-profile-pic {
+    margin-left: -7px;
+  }
 }
 .workstation-body {
   position: absolute;

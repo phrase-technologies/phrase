@@ -1,4 +1,4 @@
-$header-height: 55px;
+$header-height: 60px;
 
 .header {
   position: absolute;
@@ -9,7 +9,7 @@ $header-height: 55px;
 
   background: #303030;
   background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100%);
-  border-bottom: 1px solid #000
+  border-bottom: 4px solid #000
 }
 .header-logo {
   position: absolute;
@@ -29,15 +29,8 @@ $header-height: 55px;
   width: 300px;
   height: 35px;
 
-  border: 1px solid transparent;
   border-radius: 18px;
-  background: #222;
-  background-image: linear-gradient(0deg, #222 0%, #111 100% );
-  box-shadow:
-    inset 0px 1px 1px #000,
-    0px 1px 1px #888;
   padding: 0 15px;
-  color: #FFF;
 }
 .header-user-navigation {
   position: absolute;

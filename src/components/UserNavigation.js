@@ -28,15 +28,6 @@ let notLoggedIn = ({ dispatch }) =>
 
 let loggedIn = ({ user, dispatch }) =>
   <div style={{ display: `flex` }}>
-    <div>
-      <button
-        className="btn btn-dark"
-        style={{ float: `right` }}
-        onClick={() => dispatch(modalOpen({ modalComponent: 'LoginModal'  }))}
-      >
-        Project
-      </button>
-    </div>
     <Dropdown id="header-user-navigation-dropdown" className="header-user-navigation" pullRight>
       <a className="dropdown-toggle" bsRole="toggle" onClick={e => e.preventDefault()}>
         <img className="header-user-profile-pic" src={profileImageUrl} />

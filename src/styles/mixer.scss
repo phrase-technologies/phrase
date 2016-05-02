@@ -6,22 +6,6 @@ $mixer-track-control: 200px;
 @import './mixer-tracks.scss';
 
 // ============================================================================
-// Mixer Layout - Transport Controls
-// ============================================================================
-.transport {
-  position: absolute;
-  top: 2px;
-  left: 8px;
-  height: 30px;
-  width: 220px;
-
-  .btn {
-    font-size: 16px;
-    padding: 8px 10px 8px 11px;
-  }
-}
-
-// ============================================================================
 // Mixer Console
 // ============================================================================
 .mixer {
@@ -56,7 +40,7 @@ $mixer-track-control: 200px;
 
     border-radius: 0 0 $mixer-corner+3px $mixer-corner+3px;
     box-shadow: inset 0 -10px 10px -8px #000;
-  }  
+  }
 
   > .timeline-cursor-window {
     top: -$mixer-timeline;
@@ -231,7 +215,7 @@ $mixer-track-control: 200px;
 // ----------------------------------------------------------------------------
 // Mixer Window Focus
 // ----------------------------------------------------------------------------
-// The focus consists of 3 elements: 
+// The focus consists of 3 elements:
 // 1) .mixer-window-focus-grid
 // 2) .mixer-window-focus-box
 // 3) .mixer-window-focus-ring
@@ -279,6 +263,3 @@ $mixer-track-control: 200px;
     inset 0 0 3px 1px #000,
           0 0 3px 1px #000;
 }
-
-
-

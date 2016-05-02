@@ -126,7 +126,6 @@ const TRACK_COLORS = [
 ]
 
 export default function reducePhrase(state = defaultState, action) {
-console.log( state.clips, state.notes )
   switch (action.type)
   {
     // ------------------------------------------------------------------------

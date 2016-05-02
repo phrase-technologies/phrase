@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 
 import { layoutConsoleSplit } from '../actions/actionsLayout.js'
 
+import WorkstationHeader from './WorkstationHeader.js'
 import WorkstationSplit from './WorkstationSplit.js'
 import Mixer from './Mixer.js'
-import Transport from './Transport.js'
 import Pianoroll from './Pianoroll.js'
 
 export class Workstation extends Component {
@@ -18,9 +18,7 @@ export class Workstation extends Component {
 
     return (
       <div className={workstationClasses}>
-        <div className="workstation-header" onClick={this.maximize}>
-          <Transport />
-        </div>
+        <WorkstationHeader maximize={this.maximize} />
         <div className="workstation-body">
           <div className="workstation-main" style={this.getMainSplit()}>
             <div className="workstation-mixer" style={this.getMixerSplit()}>
