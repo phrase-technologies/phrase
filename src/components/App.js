@@ -5,12 +5,7 @@ import Header from 'components/Header.js'
 import Library from 'components/Library.js'
 import Workstation from 'components/Workstation.js'
 
-import LoginModal from 'components/modals/LoginModal.js'
-import SignupModal from 'components/modals/SignupModal.js'
-export const AllModals = {
-  LoginModal,
-  SignupModal,
-}
+import * as AllModals from 'components/modals'
 
 export let App = (props) => {
   let ActiveModal = props.activeModal ? AllModals[props.activeModal] : 'div'
