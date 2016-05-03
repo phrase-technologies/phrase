@@ -9,7 +9,7 @@ import { phrase, pianoroll } from '../actions/actions.js'
 //
 // If the user is performing drag and drop of the current selection, track
 // those offsets here so we can show temporary previews of drag
-// 
+//
 // These parameters probably make more sense in reducePhrase.js, but have been
 // pulled out because we don't want their changes recorded in undo/history.
 
@@ -48,6 +48,13 @@ export default function reducePhrase(state = defaultState, action) {
         noteSelectionIDs: action.union
           ? _.xor(state.noteSelectionIDs, [action.noteID])
           : [action.noteID]
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.DELETE_SELECTION:
+      return u({
+        clipSelectionIDs: [],
+        noteSelectionIDs: [],
       }, state)
 
     // ------------------------------------------------------------------------

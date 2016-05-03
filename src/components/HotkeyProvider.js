@@ -67,6 +67,7 @@ class HotkeyProvider extends Component {
     e.preventDefault()
     switch(e.code) {
       case 'Space': dispatch(transportPlayToggle()); break
+      case 'Backspace':
       case 'Delete': dispatch(phraseDeleteSelection()); break
     }
   }

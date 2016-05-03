@@ -52,7 +52,15 @@ export const phraseCreateNote = (trackID, bar, key) => {
 }
 export const phraseSelectClip             = (clipID, union)           => ({type: phrase.SELECT_CLIP, clipID, union})
 export const phraseSelectNote             = (noteID, union)           => ({type: phrase.SELECT_NOTE, noteID, union})
-export const phraseDeleteSelection        = ()                        => ({type: phrase.DELETE_SELECTION})
+export const phraseDeleteSelection = () => {
+  // We need to know the selection - use a thunk to access other state branches
+  return (dispatch, getState) => {
+    let state = getState()
+    let clipIDs = state.selection.clipSelectionIDs
+    let noteIDs = state.selection.noteSelectionIDs
+    dispatch({ type: phrase.DELETE_SELECTION, clipIDs, noteIDs })
+  }
+}
 export const phraseDeleteNote             = (noteID)                  => ({type: phrase.DELETE_NOTE, noteID})
 export const phraseDragClipSelection = (clipID, start, end, looped, track, snap) => {
   return {
@@ -212,14 +220,9 @@ export default function reducePhrase(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
-      // If clips were deleted, must keep track to delete corresponding notes
-      let selectedClipIDs = state.clips
-        .filter(clip => clip.selected)
-        .map(clip => clip.id)
-
       return u({
-        clips: u.reject(clip => clip.selected),
-        notes: u.reject(note => note.selected || selectedClipIDs.includes(note.clipID))
+        clips: u.reject(clip => action.clipIDs.includes(clip.id)),
+        notes: u.reject(note => action.noteIDs.includes(note.id) || action.clipIDs.includes(note.clipID))
       }, state)
 
     // ------------------------------------------------------------------------
