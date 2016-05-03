@@ -53,5 +53,21 @@ export default ({ app, db }) => {
    *  Everything below here requires a valid token.
    */
 
+  api.post(`/update`, async (req, res) => {
+    let { phraseState, phraseId } = req.body
+
+    try {
+      let result = await r.table(`phrases`).get(phraseId).update({
+        state: phraseState,
+        saved_date: +new Date(),
+      }).run(db)
+      console.log(result)
+      res.json({ message: `autosave success` })
+    }
+    catch (error) {
+      res.json({ error })
+    }
+  })
+
   return api
 }
