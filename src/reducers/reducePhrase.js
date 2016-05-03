@@ -28,6 +28,7 @@ export const phraseCreateTrack = () => {
 export const phraseArmTrack               = (trackID)                 => ({type: phrase.ARM_TRACK, trackID})
 export const phraseMuteTrack              = (trackID)                 => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack              = (trackID)                 => ({type: phrase.SOLO_TRACK, trackID})
+export const phraseSetTempo               = (tempo)                   => ({type: phrase.SET_TEMPO, tempo})
 export const phraseCreateClip = (trackID, bar) => {
   return (dispatch, getState) => {
     dispatch({ type: phrase.CREATE_CLIP, trackID, bar })
@@ -189,6 +190,12 @@ export default function reducePhrase(state = defaultState, action) {
           (track) => track.id === action.trackID,
           (track) => u({solo: !track.solo}, track)
         ))
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.SET_TEMPO:
+      return u({
+        tempo: action.tempo
       }, state)
 
     // ------------------------------------------------------------------------

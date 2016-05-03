@@ -42,6 +42,7 @@ module.exports = {
        reducers: 'src/reducers',
        actions: 'src/actions',
        audio: 'src/audio',
+       img: 'src/img',
        helpers: 'src/helpers',
        selectors: 'src/selectors',
      },

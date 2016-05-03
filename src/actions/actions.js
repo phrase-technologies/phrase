@@ -37,6 +37,7 @@ export const phrase = namespaceActions(
     'ARM_TRACK',
     'MUTE_TRACK',
     'SOLO_TRACK',
+    'SET_TEMPO',
     'CREATE_CLIP',
     'CREATE_NOTE',
     'SELECT_CLIP',

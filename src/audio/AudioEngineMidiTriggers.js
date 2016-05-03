@@ -20,10 +20,6 @@ export function updateMidiCommands(engine, state) {
 
 
 // TODO REFACTOR AS VIRTUAL AUDIO GRAPH STYLE
-let oscillators = []
-let amplitudeEnvelopes = []
-let masterBus
-let easing = 0.001
 let keyFrequency = [] // Set the frequencies for the notes
 for (let i = 1; i <= 88; i++)
   keyFrequency[i] = Math.pow(2, (i-49)/12) * 440

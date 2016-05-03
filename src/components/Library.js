@@ -8,7 +8,7 @@ let Library = ({ phrases, dispatch }) => {
     <div className="library">
       <h1>Search Phrases</h1>
 
-      { phrases.map(phrase =>
+      {(phrases || []).map(phrase =>
         <div
           key={phrase.id}
           style={{cursor: `pointer`}}

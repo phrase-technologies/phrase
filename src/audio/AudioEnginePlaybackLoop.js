@@ -25,7 +25,7 @@ export function startPlayback(engine, state, dispatch) {
   engine.isPlaying = true
   engine.playheadPositionBars = state.transport.playhead
 
-  engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars
+  engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * 120/state.phrase.present.tempo
 
   // Nothing to play? Ignore
   if (engine.midiCommands.length === 0) {
