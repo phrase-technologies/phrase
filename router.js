@@ -17,13 +17,10 @@ export default ({ app, db }) => {
   })
 
   api.post(`/loadOne`, async (req, res) => {
-    let { phrasename } = req.body
+    let { phraseId } = req.body
     try {
-      let cursor = await r.table(`phrases`)
-        .getAll(phrasename, { index: `phrasename` }).limit(1).run(db)
-
-      let phrases = await cursor.toArray()
-      res.json({ loadedPhrase: phrases[0] })
+      let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
+      res.json({ loadedPhrase })
     } catch (error) {
       res.json({ error })
     }
@@ -34,7 +31,7 @@ export default ({ app, db }) => {
     try {
       let phrasename = `phrase-${+new Date()}`
 
-      await r.table(`phrases`).insert({
+      let result = await r.table(`phrases`).insert({
         state: phraseState,
         public: true,
         saved_date: +new Date(),
@@ -42,7 +39,7 @@ export default ({ app, db }) => {
         email,
       }).run(db)
 
-      res.json({ message: `Project Saved!`, projectName: name })
+      res.json({ message: `Project Saved!`, phraseId: result.generated_keys })
 
     } catch (err) {
       console.log(err)
