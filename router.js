@@ -1,4 +1,5 @@
 import express from 'express'
+import chalk from 'chalk'
 import r from 'rethinkdb'
 import auth from './auth'
 
@@ -21,13 +22,18 @@ export default ({ app, db }) => {
     try {
       let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
       res.json({ loadedPhrase })
+
+      console.log(chalk.cyan(
+        `Phrase ${phraseId} loaded!`
+      ))
+      
     } catch (error) {
       res.json({ error })
     }
   })
 
   api.post(`/save`, async (req, res) => {
-    let { phraseState, email = `guest` } = req.body
+    let { phraseState, email = `guest`, username } = req.body
     try {
       let phrasename = `phrase-${+new Date()}`
 
@@ -36,8 +42,13 @@ export default ({ app, db }) => {
         public: true,
         saved_date: +new Date(),
         phrasename,
+        username,
         email,
       }).run(db)
+
+      console.log(chalk.cyan(
+        `Phrase ${result.generated_keys} added!`
+      ))
 
       res.json({ message: `Project Saved!`, phraseId: result.generated_keys })
 
@@ -61,7 +72,11 @@ export default ({ app, db }) => {
         state: phraseState,
         saved_date: +new Date(),
       }).run(db)
-      console.log(result)
+
+      console.log(chalk.cyan(
+        `Phrase ${phraseId} ${!result.skipped ? `updated!` : `not found!`}`
+      ))
+
       res.json({ message: `autosave success` })
     }
     catch (error) {

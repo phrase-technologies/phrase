@@ -68,6 +68,8 @@ export default ({
               password: doubleHash(password),
             }).run(db)
 
+            console.log(`${username} signed up!`)
+
             res.json({ success: true, user })
           }
         }
@@ -85,7 +87,9 @@ export default ({
 
     try {
 
-      let user = await r.table(`users`).get(email).run(db)
+      let cursor = await r.table(`users`).getAll(email, { index: `email` }).limit(1).run(db)
+      let users = await cursor.toArray()
+      let user = users[0]
 
       if (!user) {
         res.json({
@@ -125,6 +129,7 @@ export default ({
         }
 
         req.decoded = decoded
+
         next()
       })
 
