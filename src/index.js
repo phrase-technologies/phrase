@@ -17,10 +17,10 @@ import { Provider as StoreProvider } from 'react-redux'
 import EngineProvider from 'audio/AudioEngineProvider.js'
 import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
-import { Router, Route, browserHistory } from 'react-router'
+import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import { phraseCreateTrack } from 'reducers/reducePhrase.js'
 
-// import { syncHistoryWithStore } from 'react-router-redux'
+import { syncHistoryWithStore } from 'react-router-redux'
 import finalReducer from './reducers/reduce.js'
 import * as storage from 'redux-storage'
 import createStorageEngine from 'redux-storage-engine-localstorage'
@@ -35,7 +35,7 @@ const finalCreateStore = compose(
 )(createStore)
 
 const STORE = finalCreateStore(storage.reducer(finalReducer))
-// const HISTORY = syncHistoryWithStore(browserHistory, STORE)
+const HISTORY = syncHistoryWithStore(browserHistory, STORE)
 
 const load = storage.createLoader(localStorageEngine)
 load(STORE).then(state => {
@@ -59,6 +59,8 @@ const ENGINE = createAudioEngine(STORE)
 import CursorProvider from 'components/CursorProvider.js'
 import HotkeyProvider from 'components/HotkeyProvider.js'
 import App from 'components/App.js'
+import Library from 'components/Library.js'
+import About from 'components/About.js'
 import Error404 from 'components/Error404.js'
 
 // window.onload - Require all assets to be loaded before rendering.
@@ -71,11 +73,15 @@ window.onload = () => {
         <CursorProvider>
           <HotkeyProvider>
 
-            <Router history={browserHistory}>
-              <Route path="/" component={App} />
-              <Route path="/edit" component={App} />
-              <Route path="/edit/:username/:phrasename" component={App} />
-              <Route path="/*" component={Error404}/>
+            <Router history={HISTORY}>
+              <Route path="/" component={App}>
+                <IndexRoute phraseMode={false} component={Library} />
+                <Route phraseOpen={true}  path="/phrase/new" />
+                <Route phraseOpen={true}  path="/phrase/:username/:phraseId/:phrasename" />
+                <Route phraseOpen={false} path="/about" component={About}/>
+                <Route phraseOpen={false} path="/developers" component={About}/>
+                <Route phraseOpen={false} path="*" component={Error404}/>
+              </Route>
             </Router>
 
           </HotkeyProvider>

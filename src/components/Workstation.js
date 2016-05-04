@@ -43,7 +43,8 @@ export class Workstation extends Component {
   }
 
   maximize = () => {
-    this.context.router.push('/edit')
+    let phraseURL = localStorage.getItem('lastOpenPhrase') || '/phrase/new'
+    this.context.router.push(phraseURL)
   }
 
   setConsoleSplit = (ratio) => {

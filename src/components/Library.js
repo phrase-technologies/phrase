@@ -6,9 +6,7 @@ import { phraseLoadFromMemory } from 'reducers/reducePhrase'
 let Library = ({ phrases, dispatch }) => {
   return (
     <div className="library">
-      <div className="library-browser">
-        Search Phrases
-      </div>
+      <h1>Search Phrases</h1>
 
       { phrases.map(phrase =>
         <div

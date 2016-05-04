@@ -7,20 +7,6 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
 
-// Placeholders (MUST INDIVIDUALLY SPECIFIED TO WORK)
-::-webkit-input-placeholder {
-  font-style: italic !important;
-  text-shadow: none !important;
-}
-::-moz-placeholder {
-  font-style: italic !important;
-  text-shadow: none !important;
-}
-:-ms-input-placeholder {
-  font-style: italic !important;
-  text-shadow: none !important;
-}
-
 .form-control-dark {
   border: 1px solid transparent;
   background: #222;

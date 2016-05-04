@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import Header from 'components/Header'
-import Library from 'components/Library'
 import Workstation from 'components/Workstation'
 
 import * as AllModals from 'components/modals'
@@ -15,10 +14,7 @@ export class App extends Component {
     let { dispatch, params } = this.props
     dispatch(libraryLoadAll())
 
-    /*
-     *  Attempt to load user's phrase from url.
-     */
-
+    // Attempt to load user's phrase from url.
     if (params.phrasename) {
       dispatch(phraseLoadFromDb(params.phrasename))
     }
@@ -26,13 +22,19 @@ export class App extends Component {
 
   render() {
     let ActiveModal = this.props.activeModal ? AllModals[this.props.activeModal] : 'div'
-    let maximized = this.props.route.path.includes('/edit')
+    let phraseOpen = this.props.routes[1].phraseOpen
+    let headerTheme = phraseOpen ? 'solid' : 'clear'
+    let bodyClasses = 'body' + (phraseOpen ? ' body-faded' : '')
+    if (phraseOpen)
+      localStorage.setItem('lastOpenPhrase', this.props.routes[1].path)
 
     return (
       <div>
-        <Header />
-        <Library />
-        <Workstation maximized={maximized} />
+        <Header theme={headerTheme} />
+        <div className={bodyClasses}>
+          { this.props.children }
+        </div>
+        <Workstation maximized={phraseOpen} />
         <ActiveModal show={this.props.show} />
       </div>
     )

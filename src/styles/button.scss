@@ -7,7 +7,7 @@ a,
 }
 // Dark themed links
 .link-dark {
-  color: #FFF;
+  color: #AAA;
 
   &:active, &.active,
   &:focus, &.focus,
@@ -16,6 +16,9 @@ a,
   }
 }
 
+.btn-link {
+  text-decoration: none !important;
+}
 
 .btn {
   //outline: none !important;
@@ -35,10 +38,10 @@ a,
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 .btn-dark {
-  border-color: #000;
+  border-color: #111;
   box-shadow: inset 0 1px 6px -2px #AAA;
-  background: #444;
-  background-image: linear-gradient(to bottom, #444, #222);
+  background: #666;
+  background-image: linear-gradient(to bottom, #666, #444);
   color: #CCC;
 
   &.disabled,
@@ -52,7 +55,7 @@ a,
   border-top: 2px solid rgb(33, 207, 40);
 }
 .btn-bright {
-  border-color: #000;
+  border-color: #222;
   box-shadow: inset 0 1px 6px -1px #FFF;
   background: #444;
   background-image: linear-gradient(to bottom, #AAA, #888);

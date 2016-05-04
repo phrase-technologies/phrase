@@ -1,0 +1,131 @@
+$header-height: 55px;
+$header-transition: 0.125s;
+
+html,
+body {
+  overflow: hidden;
+  height: 100%;
+
+  background: #EEE;
+}
+
+// ============================================================================
+// Header
+// ============================================================================
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $header-height;
+
+  border-bottom: 1px solid #CCC;
+  background: #FFF;
+  // Clear/Bright theme for the header
+  // ---------------------------------
+  // background: transparentize(#EEE, 0.1);
+  // box-shadow: 0 0 10px 10px transparentize(#EEE, 0.1);
+  padding: 10px;
+
+  z-index: 2; // So outer box-shadow flows ver the Body (1) and under the Workstation (3)
+  transition: background $header-transition, height $header-transition;
+}
+.header-solid {
+  border-bottom: 1px solid #000;
+  background: #444;
+  background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100%);
+  // Clear/Bright theme for the header
+  // ---------------------------------
+  // box-shadow: none;
+  box-shadow: 0 0 3px #222;
+
+
+  color: #FFF;
+
+  .header-user-name {
+    color: #FFF;
+  }
+}
+.header-logo {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 110px;
+  height: 45px;
+  margin-left: -55px;
+
+  background-image: url('img/phrase-logo-white-text-2015-12-09.png');
+  background-position: -2px -2px;
+  background-size: 110px;
+}
+.header-search-wrapper {
+  display: inline-block;
+  position: relative;
+}
+.header-search-icon {
+  position: absolute;
+  top: 9px;
+  right: 12px;
+  z-index: 2;
+  color: #888;
+}
+.header-search {
+  width: 250px;
+
+  border-radius: 18px;
+  padding: 0 15px;
+}
+.header-nav-active {
+  font-weight: bold;
+  color: #CCC;
+}
+.header-user-navigation {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 35px;
+  text-align: right;
+  line-height: 35px;
+
+  > .btn {
+    margin-left: 10px;
+  }
+
+  .dropdown-toggle {
+    text-decoration: none !important;
+    box-shadow: none !important;
+  }
+}
+.header-user-profile-pic {
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+}
+.header-user-name {
+  font-size: 14px;
+  padding-right: 10px;
+}
+
+// ============================================================================
+// Body
+// ============================================================================
+.body {
+  position: absolute;
+  top: $header-height;
+  left: 0;
+  right: 0;
+  bottom: 55px;
+
+  background: transparent;
+  padding: 20px;
+  border-bottom: 1px solid #000;
+
+  overflow: auto;
+  z-index: 1; // Under the Header (1)
+  transition: background $header-transition;
+}
+// If the Phrase is maximized, we fade the body to black for a nice transition
+.body-faded {
+  background: #222;
+}
