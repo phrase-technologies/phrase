@@ -14,9 +14,8 @@ export default class WorkstationHeaderTitle extends Component {
       <div className="workstation-header-title-wrapper">
         <AutosizeInput inputClassName="form-control form-control-glow workstation-header-title"
           name="project-name" value={this.props.title || this.state.title}
-          placeholder="Untitled Project"
-          onChange={this.handleChange}
-          onBlur={this.handleBlur}
+          placeholder="Untitled Project" inputStyle={{ textOverflow: 'ellipsis' }}
+          onChange={this.handleChange} onBlur={this.handleBlur}
         />
         <span className="fa fa-pencil" />
       </div>

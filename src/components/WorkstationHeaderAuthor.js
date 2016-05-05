@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router'
+
+import { modalOpen } from 'reducers/reduceModal.js'
 import ansonImage from '../img/user/anson-kao.jpg'
 import deadmau5Image from '../img/user/deadmau5.jpg'
 
-export default class WorkstationHeaderAuthor extends Component {
+export class WorkstationHeaderAuthor extends Component {
   render() {
     switch(this.props.authors.length) {
       default:
@@ -14,24 +18,23 @@ export default class WorkstationHeaderAuthor extends Component {
 
   renderNoAuthor() {
     return (
-      <a className="link-dark workstation-header-author" href="#">
-        <span className="text-warning"> ... </span>
-        <span className="fa fa-warning text-warning" />
-        <span className="text-warning"> Unsaved</span>
+      <a className="link-dark workstation-header-author" onClick={this.login}>
+        <em> by Unknown</em>
       </a>
     )
   }
 
   renderSingleAuthor() {
     let author = this.props.authors[0]
+    let profileUri = `/user/${author.username}`
 
     return (
-      <a className="link-dark workstation-header-author" href="#">
+      <Link className="link-dark workstation-header-author" to={profileUri}>
         <span> by </span>
         <img className="workstation-header-profile-pic" src={author.image} />
         <span> {author.username}</span>
         {/*<span className="caret" />*/}
-      </a>
+      </Link>
     )
   }
 
@@ -50,6 +53,12 @@ export default class WorkstationHeaderAuthor extends Component {
       </a>
     )
   }
+
+  login = () => {
+    this.props.dispatch(modalOpen({
+      modalComponent: 'SignupModal',
+    }))
+  }
 }
 
 WorkstationHeaderAuthor.defaultProps = {
@@ -58,9 +67,11 @@ WorkstationHeaderAuthor.defaultProps = {
     //   username: "anson_kao",
     //   image: ansonImage,
     // },
-    {
-      username: "deadmau5",
-      image: deadmau5Image,
-    },
+    // {
+    //   username: "deadmau5",
+    //   image: deadmau5Image,
+    // },
   ]
 }
+
+export default connect()(WorkstationHeaderAuthor)

@@ -39,7 +39,7 @@ export class SignupModal extends Component {
         <Modal.Body>
           <button type="button" className="close" onClick={this.closeModal}>&times;</button>
           <div className="form-group">
-            <h4 className="text-center">Join Phrase Today.</h4>
+            <h4 className="text-center">Create an Account.</h4>
           </div>
           <form onSubmit={this.signup} noValidate>
             <div className={emailGroupClass} style={{marginBottom: 10}}>
@@ -79,14 +79,15 @@ export class SignupModal extends Component {
               Sign up
             </LaddaButton>
           </form>
-          <br/>
+        </Modal.Body>
+        <Modal.Footer>
           <p className="text-center">
             <span>Already have an account? </span>
             <a href="" onClick={this.openLoginModal}>
               <strong>Log in</strong>
             </a>
           </p>
-        </Modal.Body>
+        </Modal.Footer>
       </Modal>
     )
   }

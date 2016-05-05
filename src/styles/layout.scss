@@ -27,8 +27,13 @@ body {
   // box-shadow: 0 0 10px 10px transparentize(#EEE, 0.1);
   padding: 10px;
 
-  z-index: 2; // So outer box-shadow flows ver the Body (1) and under the Workstation (3)
+  z-index: 3; // So outer box-shadow + dropdown flows ver the Body (1) and over the Workstation (2)
   transition: background $header-transition, height $header-transition;
+
+  .dropdown-toggle {
+    text-decoration: none !important;
+    box-shadow: none !important;
+  }
 }
 .header-solid {
   border-bottom: 1px solid #000;
@@ -79,23 +84,6 @@ body {
   font-weight: bold;
   color: #CCC;
 }
-.header-user-navigation {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  height: 35px;
-  text-align: right;
-  line-height: 35px;
-
-  > .btn {
-    margin-left: 10px;
-  }
-
-  .dropdown-toggle {
-    text-decoration: none !important;
-    box-shadow: none !important;
-  }
-}
 .header-user-profile-pic {
   border-radius: 50%;
   width: 25px;
@@ -128,4 +116,21 @@ body {
 // If the Phrase is maximized, we fade the body to black for a nice transition
 .body-faded {
   background: #222;
+}
+
+// ============================================================================
+// Modal
+// ============================================================================
+.modal-header {
+  border-top-left-radius: $border-radius-base;
+  border-top-right-radius: $border-radius-base;
+  background: #DDD;
+  border-color: #AAA;
+}
+
+.modal-footer {
+  border-bottom-left-radius: $border-radius-base;
+  border-bottom-right-radius: $border-radius-base;
+  background: #DDD;
+  border-color: #AAA;
 }

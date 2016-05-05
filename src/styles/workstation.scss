@@ -2,7 +2,7 @@ $workstation-minimize-transition: 0.125s;
 $workstation-mixer-width: 240px;
 $workstation-mixer-z-index: 200;          // Above Page
 $workstation-header-top: 55px + 3px;
-$workstation-header-height: 55px;
+$workstation-header-height: 110px;
 $workstation-header-z-index: 300;         // Above Page & Mixer
 $workstation-clip-width: 240px;
 $workstation-clip-z-index: 400;           // Above Page & Mixer
@@ -22,12 +22,12 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   color: #CCC;
 
   overflow: hidden;
-  z-index: 3; // Over the Header (2) to cover it's outer box-shadow
+  z-index: 2; // Over the Body (1) and below the Header (3)
   pointer-events: none;
 
   // Use CSS translations (CPU Optimized) for smooth minimization and maximization
   transition: transform $workstation-minimize-transition;
-  transform: translateY(- $workstation-header-top - $workstation-header-height);
+  transform: translateY(- $workstation-header-top - $workstation-header-height + 55px);
   &.workstation-maximized {
     transform: translateY(-100%);
   }
@@ -65,6 +65,13 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
     box-shadow: inset  0px  1px 1px -1px #FFF,
                 inset  0px -1px 0px  0px #111;
   }
+}
+.workstation-divider {
+  margin: 10px auto 6px;
+  width: 90%;
+  height: 4px;
+  background-image:
+    radial-gradient(at top, #000, transparent, transparent);
 }
 .transport {
   color: #FFF;

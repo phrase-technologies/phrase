@@ -60,6 +60,7 @@ import CursorProvider from 'components/CursorProvider.js'
 import HotkeyProvider from 'components/HotkeyProvider.js'
 import App from 'components/App.js'
 import Library from 'components/Library.js'
+import UserProfile from 'components/UserProfile.js'
 import About from 'components/About.js'
 import Error404 from 'components/Error404.js'
 
@@ -76,11 +77,12 @@ window.onload = () => {
             <Router history={HISTORY}>
               <Route path="/" component={App}>
                 <IndexRoute phraseMode={false} component={Library} />
+                <Route phraseOpen={false} path="/user/:userId" component={UserProfile} />
                 <Route phraseOpen={true}  path="/phrase/new" />
                 <Route phraseOpen={true}  path="/phrase/:username/:phraseId/:phrasename" />
-                <Route phraseOpen={false} path="/about" component={About}/>
-                <Route phraseOpen={false} path="/developers" component={About}/>
-                <Route phraseOpen={false} path="*" component={Error404}/>
+                <Route phraseOpen={false} path="/about" component={About} />
+                <Route phraseOpen={false} path="/developers" component={About} />
+                <Route phraseOpen={false} path="*" component={Error404} />
               </Route>
             </Router>
 

@@ -41,17 +41,19 @@ export class LoginModal extends Component {
             >
               Log in
             </LaddaButton>
-            <p className="text-danger text-center" style={{marginTop:5}}>
+            <p className="text-danger text-center" style={{ marginTop: 5, marginBottom: 0 }}>
               {this.props.errorMessage}
             </p>
           </form>
+        </Modal.Body>
+        <Modal.Footer>
           <p className="text-center">
             <span>New to Phrase? </span>
             <a href="" onClick={this.openSignupModal}>
               <strong>Sign up</strong>
             </a>
           </p>
-        </Modal.Body>
+        </Modal.Footer>
       </Modal>
     )
   }

@@ -35,7 +35,7 @@ let notLoggedIn = ({ dispatch }) => {
 
 let loggedIn = ({ user, dispatch }) => {
   return (
-    <Dropdown id="header-user-navigation-dropdown" pullRight>
+    <Dropdown id="header-user-navigation-dropdown" pullRight style={{ marginTop: 5 }}>
       <a className="dropdown-toggle" bsRole="toggle" onClick={e => e.preventDefault()}>
         <img className="header-user-profile-pic" src={profileImageUrl} />
         <span className="header-user-name">{user.username || user.email} <span className="caret" /></span>

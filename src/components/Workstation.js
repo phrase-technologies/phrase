@@ -43,6 +43,10 @@ export class Workstation extends Component {
   }
 
   maximize = () => {
+    // Do nothing if already maximized
+    if (this.props.maximized)
+      return
+
     let phraseURL = localStorage.getItem('lastOpenPhrase') || '/phrase/new'
     this.context.router.push(phraseURL)
   }

@@ -34,7 +34,7 @@ export default function reduceModals(state = defaultState, action) {
     case modal.OPEN:
       return u({
         show: true,
-        activeModal: action.modalComponent
+        activeModal: action.modalComponent,
       }, state)
 
     // ------------------------------------------------------------------------

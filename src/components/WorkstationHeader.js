@@ -10,16 +10,25 @@ import TransportControls from './TransportControls.js'
 export default (props) => {
   return (
     <div className="workstation-header" onClick={props.maximize}>
-      <div className="btn-toolbar pull-left">
-        <TransportTempo />
-        <TransportControls />
-      </div>
-      <div className="btn-toolbar pull-right">
+      <button className="btn btn-bright" style={{ position: 'absolute', top: 10, right: 10 }}>
+        <span className="fa fa-pencil-square-o" />
+        <span> Open Phrase Editor</span>
+      </button>
+      <div className="text-center">
         <div className="btn-group">
           <WorkstationHeaderTitle title="" />
           <WorkstationHeaderAuthor />
         </div>
-        <WorkstationHeaderStorage />
+      </div>
+      <div className="workstation-divider" />
+      <WorkstationHeaderStorage style={{ position: 'absolute', top: 65, left: 10 }} />
+      <div className="text-center">
+        <div className="btn-toolbar" style={{ display: 'inline-block' }}>
+          <TransportTempo />
+          <TransportControls />
+        </div>
+      </div>
+      <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 10 }}>
         <div className="btn-group">
           <span className="workstation-header-share">
             Share:
