@@ -22,28 +22,26 @@ import { phraseCreateTrack } from 'reducers/reducePhrase.js'
 
 import { syncHistoryWithStore } from 'react-router-redux'
 import finalReducer from './reducers/reduce.js'
-import * as storage from 'redux-storage'
-import createStorageEngine from 'redux-storage-engine-localstorage'
 import { ActionCreators as UndoActions } from 'redux-undo'
-
-const localStorageEngine = createStorageEngine(`phrase`)
-const localStorageMiddleware = storage.createMiddleware(localStorageEngine)
+import { persistStore } from 'redux-persist'
 
 const finalCreateStore = compose(
-  applyMiddleware(thunk, localStorageMiddleware),
+  applyMiddleware(thunk),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore)
 
-const STORE = finalCreateStore(storage.reducer(finalReducer))
-const load = storage.createLoader(localStorageEngine)
-load(STORE).then(state => {
+const STORE = finalCreateStore(finalReducer)
+
+persistStore(STORE, { whitelist: [ `phrase` ] }, () => {
   // Setup initial state - 2 tracks by default
+  let state = STORE.getState()
   if (!state.phrase || state.phrase.past.length === 0 && state.phrase.present.tracks.length === 0) {
     STORE.dispatch(phraseCreateTrack())
     STORE.dispatch(phraseCreateTrack())
     STORE.dispatch(UndoActions.clearHistory())
   }
 })
+
 const HISTORY = syncHistoryWithStore(browserHistory, STORE)
 
 // ============================================================================

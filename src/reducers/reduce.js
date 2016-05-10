@@ -23,14 +23,22 @@ import { combineReducers } from 'redux'
 import undoable, { excludeAction } from 'redux-undo'
 import { phrase } from 'actions/actions'
 
-function reinstate (reducer) {
+import { REHYDRATE } from 'redux-persist/constants'
+
+function rehydrate (reducer) {
 
   return function (state, action) {
     switch (action.type) {
+      case REHYDRATE:
+        return action.payload.phrase
+          ? { ...action.payload.phrase }
+          : reducer(state, action)
+
       case phrase.LOAD:
         return {
           ...action.payload
         }
+
       default:
         return reducer(state, action)
     }
@@ -42,7 +50,7 @@ let finalReducer = combineReducers({
   modal: reduceModal,
   navigation: reduceNavigation,
   transport: reduceTransport,
-  phrase: reinstate(undoable(reducePhrase, { filter: excludeAction(phrase.LOAD) })),
+  phrase: rehydrate(undoable(reducePhrase, { filter: excludeAction(phrase.LOAD) })),
   library: reduceLibrary,
   selection: reduceSelection,
   mixer: reduceMixer,
