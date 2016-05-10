@@ -14,6 +14,7 @@ import { negativeModulus } from 'helpers/intervalHelpers'
 // ============================================================================
 // Phrase Action Creators
 // ============================================================================
+export const phraseRename = (name) => ({ type: phrase.RENAME, name })
 export const phraseCreateTrack = () => {
   return (dispatch, getState) => {
     dispatch({ type: phrase.CREATE_TRACK })
@@ -117,6 +118,7 @@ export const phraseLoadFromDb = phrasename => {
 // Phrase Reducer
 // ============================================================================
 export const defaultState = {
+  name: null,
   barCount: 16.00,
   tempo: 120,
   tracks: [],
@@ -147,6 +149,12 @@ const TRACK_COLORS = [
 export default function reducePhrase(state = defaultState, action) {
   switch (action.type)
   {
+    // ------------------------------------------------------------------------
+    case phrase.RENAME:
+      return u({
+        name: action.name,
+      }, state)
+
     // ------------------------------------------------------------------------
     case phrase.CREATE_TRACK:
       return u({

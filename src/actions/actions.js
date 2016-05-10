@@ -33,6 +33,7 @@ export const transport = namespaceActions(
 export const phrase = namespaceActions(
   'phrase',
   [
+    'RENAME',
     'CREATE_TRACK',
     'ARM_TRACK',
     'MUTE_TRACK',

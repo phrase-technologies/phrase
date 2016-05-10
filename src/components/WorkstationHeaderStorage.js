@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { ActionCreators as UndoActions } from 'redux-undo'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
+import { modalOpen } from 'reducers/reduceModal.js'
 import { isMacPlatform } from 'helpers/localizationHelpers.js'
 
 export class WorkstationHeaderStorage extends Component {
@@ -54,7 +55,7 @@ export class WorkstationHeaderStorage extends Component {
       return null
 
     return (
-      <button className="btn btn-bright" style={{ borderRadius: 18 }}>
+      <button className="btn btn-bright" style={{ borderRadius: 18 }} onClick={this.login}>
         <span className="fa fa-save" />
         <span> Save</span>
       </button>
@@ -93,6 +94,12 @@ export class WorkstationHeaderStorage extends Component {
 
   redo = () => {
     this.props.dispatch(UndoActions.redo())
+  }
+
+  login = () => {
+    this.props.dispatch(modalOpen({
+      modalComponent: 'SignupModal',
+    }))
   }
 }
 

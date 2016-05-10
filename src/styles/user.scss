@@ -1,0 +1,61 @@
+// ============================================================================
+// User Profile
+// ============================================================================
+.user-profile-header {
+  background: #EEE;
+  padding: 20px;
+  border-bottom: 1px solid #DDD;
+  margin-bottom: 20px;
+}
+.user-profile-pic {
+  float: left;
+  position: relative;
+  margin-right: 15px;
+
+  > img {
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(0,0,0,0.125);
+    border-radius: 50%;
+  }
+}
+.user-profile-pic-verified {
+  position: absolute;
+  z-index: 2;
+
+  right: 4px;
+  bottom: 4px;
+  border: 3px solid #EEE;
+  border-radius: 50%;
+  padding: 2px;
+  background: #4AF;
+  font-size: 11px;
+  color: #FFF;
+}
+.user-profile-username {
+  margin-top: 20px;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.user-profile-action {
+  font-size: 12px;
+  padding: 4px 8px;
+}
+.user-profile-action-count {
+  &::before {
+    content: '';
+    border-left: 1px solid #555;
+    height: 5px;
+    margin: 0 8px;
+  }
+}

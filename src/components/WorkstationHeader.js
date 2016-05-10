@@ -8,16 +8,25 @@ import TransportTempo from './TransportTempo.js'
 import TransportControls from './TransportControls.js'
 
 export default (props) => {
+  let maximizeButton = props.maximized ? null : (
+    <button className="btn btn-bright"
+      style={{ position: 'absolute', top: 0, right: 15 }}
+      onClick={props.maximize}
+    >
+      <span className="fa fa-pencil-square-o" />
+      <span> Open in Phrase Editor</span>
+    </button>
+  )
+
   return (
-    <div className="workstation-header" onClick={props.maximize}>
-      <button className="btn btn-bright" style={{ position: 'absolute', top: 10, right: 10 }}>
-        <span className="fa fa-pencil-square-o" />
-        <span> Open Phrase Editor</span>
-      </button>
-      <div className="text-center">
-        <div className="btn-group">
-          <WorkstationHeaderTitle title="" />
-          <WorkstationHeaderAuthor />
+    <div className="workstation-header">
+      <div className="container" style={{ position: 'relative' }}>
+        {maximizeButton}
+        <div className="text-center">
+          <div className="btn-group">
+            <WorkstationHeaderTitle />
+            <WorkstationHeaderAuthor />
+          </div>
         </div>
       </div>
       <div className="workstation-divider" />

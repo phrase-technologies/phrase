@@ -22,7 +22,7 @@ export class LoginModal extends Component {
           <form onSubmit={this.login} noValidate>
             <div className="form-group" style={{marginBottom: 10}}>
               <input
-                className="form-control" type="email"
+                className="form-control" type="email" autoComplete
                 placeholder="Email or Username" ref={(ref) => this.email = ref}
               />
             </div>

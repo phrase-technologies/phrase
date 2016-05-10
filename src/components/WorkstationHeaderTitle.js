@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import AutosizeInput from 'react-input-autosize'
+import { phraseRename } from 'reducers/reducePhrase.js'
 
-export default class WorkstationHeaderTitle extends Component {
+export class WorkstationHeaderTitle extends Component {
   constructor(props) {
     super()
     this.state = {
@@ -13,8 +15,8 @@ export default class WorkstationHeaderTitle extends Component {
     return (
       <div className="workstation-header-title-wrapper">
         <AutosizeInput inputClassName="form-control form-control-glow workstation-header-title"
-          name="project-name" value={this.props.title || this.state.title}
-          placeholder="Untitled Project" inputStyle={{ textOverflow: 'ellipsis' }}
+          name="project-name" value={this.state.title}
+          placeholder="Untitled Phrase" inputStyle={{ textOverflow: 'ellipsis' }}
           onChange={this.handleChange} onBlur={this.handleBlur}
         />
         <span className="fa fa-pencil" />
@@ -22,12 +24,23 @@ export default class WorkstationHeaderTitle extends Component {
     )
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ title: nextProps.title })
+  }
+
   handleChange = (e) => {
     this.setState({ title: e.target.value })
   }
 
   handleBlur = (e) => {
-    // this.dispatch(phraseRename(e.target.value))
-    this.setState({ title: "" })
+    this.props.dispatch(phraseRename(e.target.value))
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    title: state.phrase.present.name,
+  }
+}
+
+export default connect(mapStateToProps)(WorkstationHeaderTitle)

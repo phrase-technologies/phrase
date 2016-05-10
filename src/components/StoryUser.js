@@ -10,7 +10,7 @@ export default class StoryUser extends Component {
         return (<a><img className="story-user-photo" src={this.props.userPhoto} /></a>)
       case 'text':
         return null
-    }    
+    }
   }
 
   getText() {
@@ -21,7 +21,7 @@ export default class StoryUser extends Component {
         return (<a className="story-user-name">{this.props.userName}</a>)
       case 'icon':
         return null
-    }    
+    }
   }
 
   render() {

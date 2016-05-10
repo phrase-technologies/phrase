@@ -110,6 +110,11 @@ a,
   }
 }
 
+// When against a light background, reduce contrast
+.btn-light-bg {
+  border-color: #777;
+}
+
 .ladda-button {
   -webkit-font-smoothing: auto;
 }

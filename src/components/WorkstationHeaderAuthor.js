@@ -63,10 +63,10 @@ export class WorkstationHeaderAuthor extends Component {
 
 WorkstationHeaderAuthor.defaultProps = {
   authors: [
-    // {
-    //   username: "anson_kao",
-    //   image: ansonImage,
-    // },
+    {
+      username: "anson_kao",
+      image: ansonImage,
+    },
     // {
     //   username: "deadmau5",
     //   image: deadmau5Image,

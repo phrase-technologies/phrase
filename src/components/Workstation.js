@@ -18,7 +18,7 @@ export class Workstation extends Component {
 
     return (
       <div className={workstationClasses}>
-        <WorkstationHeader maximize={this.maximize} />
+        <WorkstationHeader maximize={this.maximize} maximized={this.props.maximized} />
         <div className="workstation-body">
           <div className="workstation-main" style={this.getMainSplit()}>
             <div className="workstation-mixer" style={this.getMixerSplit()}>
@@ -97,10 +97,6 @@ export class Workstation extends Component {
 
 Workstation.contextTypes = {
   router: React.PropTypes.object.isRequired
-}
-
-Workstation.propTypes = {
-  maximized: React.PropTypes.bool.isRequired
 }
 
 function mapStateToProps(state) {

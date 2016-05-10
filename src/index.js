@@ -35,8 +35,6 @@ const finalCreateStore = compose(
 )(createStore)
 
 const STORE = finalCreateStore(storage.reducer(finalReducer))
-const HISTORY = syncHistoryWithStore(browserHistory, STORE)
-
 const load = storage.createLoader(localStorageEngine)
 load(STORE).then(state => {
   // Setup initial state - 2 tracks by default
@@ -46,6 +44,7 @@ load(STORE).then(state => {
     STORE.dispatch(UndoActions.clearHistory())
   }
 })
+const HISTORY = syncHistoryWithStore(browserHistory, STORE)
 
 // ============================================================================
 // Setup Audio Engine god object
