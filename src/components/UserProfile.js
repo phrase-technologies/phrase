@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import _ from 'lodash'
 import Numeral from 'numeral'
 
-import Story from 'components/Story.js'
 import PhraseCard from 'components/PhraseCard.js'
 import deadmau5Image from '../img/user/deadmau5.jpg'
 
@@ -39,7 +38,7 @@ export class UserProfile extends Component {
                 return (
                   <PhraseCard
                     userPhoto={story.user.userPhoto}
-                    userName={story.user.userName}
+                    username={story.user.username}
                     action={story.action}
                     timestamp={story.timestamp}
                     trackCover={story.item.trackCover}
@@ -127,52 +126,52 @@ let users = [
   {
     id:           1,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'Eminem'
+    username:     'Eminem'
   },
   {
     id:           2,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'anson_kao'
+    username:     'anson_kao'
   },
   {
     id:           3,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'Revolvr'
+    username:     'Revolvr'
   },
   {
     id:           4,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'CRAZYDN'
+    username:     'CRAZYDN'
   },
   {
     id:           5,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'MarkZou87'
+    username:     'MarkZou87'
   },
   {
     id:           6,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'Alesso'
+    username:     'Alesso'
   },
   {
     id:           7,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'Bobby Schmurda'
+    username:     'Bobby Schmurda'
   },
   {
     id:           8,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'Andrew Rayel'
+    username:     'Andrew Rayel'
   },
   {
     id:           9,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'ARMIN VAN BUUREN'
+    username:     'ARMIN VAN BUUREN'
   },
   {
     id:           10,
     userPhoto:    require('../img/user/'+photos.shift()),
-    userName:     'b3li3b3r'
+    username:     'b3li3b3r'
   }
 ]
 

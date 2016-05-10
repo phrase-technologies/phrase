@@ -19,7 +19,7 @@ let PhraseCard = (props) => {
           <span className="story-contributors-address">By </span>
           <StoryUser
             userPhoto={props.userPhoto}
-            userName={props.userName}
+            userName={props.username}
           />
         </div>
         <h3 className="story-track-name">
@@ -54,17 +54,8 @@ let PhraseCard = (props) => {
 }
 
 PhraseCard.propTypes = {
-  trackCover:   React.PropTypes.string.isRequired,
-  trackName:    React.PropTypes.string.isRequired,
-  contributors: React.PropTypes.arrayOf(
-                  React.PropTypes.shape({
-                    userPhoto:  React.PropTypes.string.isRequired,
-                    userName:   React.PropTypes.string.isRequired
-                  })
-                ),
-  plays:        React.PropTypes.number.isRequired,
-  likes:        React.PropTypes.number.isRequired,
-  comments:     React.PropTypes.number.isRequired
+  userPhoto:  React.PropTypes.string.isRequired,
+  username:   React.PropTypes.string.isRequired,
 }
 
 export default PhraseCard
