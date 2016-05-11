@@ -75,6 +75,10 @@ async function bootstrap () {
     app.use(bodyParser.json({ limit: `50mb` }))
     app.use(bodyParser.urlencoded({ limit: `50mb`, extended: true }))
 
+    // Add intentional latency to all responses to simulate real life
+    if (!process.env.PRODUCTION)  // TODO use a real flag here
+      app.use((req, res, next) => { setTimeout(next, 640) })
+
     app.use(`/api`, router({ app, db, io }))
 
     http.listen(port, () => {
