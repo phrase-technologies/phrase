@@ -48,29 +48,26 @@ export default function createAudioEngine(STORE) {
   engine.masterGain.connect(engine.ctx.destination)
   engine.masterGain.gain.value = 0.25
 
-  // --------------------------------------------------------------------------
-  // State-driven behaviours
-  // --------------------------------------------------------------------------
-  engine.unsubscribeStoreChanges = STORE.subscribe(() => {
+  // MIDI Connection
+  function onMIDIMessage (event) {
     let state = STORE.getState()
+    let [ type, key, velocity ] = event.data
 
-    function onMIDIMessage (event) {
-      let [ type, key, velocity ] = event.data
+    /*
+     *  TODO:
+     *    - add note to track if recording
+     *    - pitch bends / knobs / sliders etc
+     *    - make mapping for event types, eg - 144: note on/off, 224: pitch bend
+     */
 
-      /*
-       *  TODO:
-       *    - add note to track if recording
-       *    - pitch bends / knobs / sliders etc
-       *    - make mapping for event types, eg - 144: note on/off, 224: pitch bend
-       */
-
-      let armedTrack = state.phrase.present.tracks.find(x => x.arm)
-      if (armedTrack && type === 144) {
-        if (velocity) fireNote(engine, armedTrack.id, key, velocity)
-        else killNote(engine, armedTrack.id, key, velocity)
-      }
+    let armedTrack = state.phrase.present.tracks.find(x => x.arm)
+    if (armedTrack && type === 144) {
+      if (velocity) fireNote(engine, armedTrack.id, key, velocity)
+      else killNote(engine, armedTrack.id, key, velocity)
     }
+  }
 
+  try {
     navigator.requestMIDIAccess().then(
       midiAccess => {
         engine.midiAccess = midiAccess
@@ -80,6 +77,15 @@ export default function createAudioEngine(STORE) {
       },
       error => console.log(`Failed to get MIDI access - ${error}`)
     )
+  } catch (error) {
+    console.error(`Failed to get MIDI access - ${error}`)
+  }
+
+  // --------------------------------------------------------------------------
+  // State-driven behaviours
+  // --------------------------------------------------------------------------
+  engine.unsubscribeStoreChanges = STORE.subscribe(() => {
+    let state = STORE.getState()
 
     // PLAY Playback state
     if (state.transport.playing && !engine.isPlaying)
