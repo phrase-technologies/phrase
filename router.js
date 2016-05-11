@@ -26,7 +26,7 @@ export default ({ app, db }) => {
       console.log(chalk.cyan(
         `Phrase ${phraseId} loaded!`
       ))
-      
+
     } catch (error) {
       res.json({ error })
     }
@@ -35,7 +35,7 @@ export default ({ app, db }) => {
   api.post(`/save`, async (req, res) => {
     let { phraseState, email = `guest`, username } = req.body
     try {
-      let phrasename = `phrase-${+new Date()}`
+      let phrasename = null
 
       let result = await r.table(`phrases`).insert({
         state: phraseState,
@@ -65,10 +65,10 @@ export default ({ app, db }) => {
    */
 
   api.post(`/update`, async (req, res) => {
-    let { phraseState, phraseId } = req.body
-
+    let { phraseId, phraseName, phraseState } = req.body
     try {
       let result = await r.table(`phrases`).get(phraseId).update({
+        phrasename: phraseName,
         state: phraseState,
         saved_date: +new Date(),
       }).run(db)
