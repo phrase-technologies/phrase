@@ -10,6 +10,7 @@ import { getOffsetedTrackID,
          getTracksHeight,
        } from 'helpers/trackHelpers'
 import { negativeModulus } from 'helpers/intervalHelpers'
+import { push } from 'react-router-redux'
 
 // ============================================================================
 // Phrase Action Creators
@@ -106,11 +107,17 @@ export const phraseDropNoteSelection = () => {
 
 export const phraseLoadFromMemory = state => ({ type: phrase.LOAD, payload: state })
 
-export const phraseLoadFromDb = phrasename => {
+export const phraseLoadFromDb = phraseId => {
   return async (dispatch) => {
-    let { loadedPhrase } = await api({ endpoint: `loadOne`, body: { phrasename } })
+    let { loadedPhrase } = await api({ endpoint: `loadOne`, body: { phraseId } })
+
     if (loadedPhrase) {
       dispatch({ type: phrase.LOAD, payload: loadedPhrase.state })
+    }
+
+    else {
+      console.log('asdasdasd')
+      dispatch(push(`/`))
     }
   }
 }

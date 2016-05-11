@@ -20,13 +20,15 @@ import thunk from 'redux-thunk'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import { phraseCreateTrack } from 'reducers/reducePhrase.js'
 
-import { syncHistoryWithStore } from 'react-router-redux'
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import finalReducer from './reducers/reduce.js'
 import { ActionCreators as UndoActions } from 'redux-undo'
 import { persistStore } from 'redux-persist'
 
+import autosave from 'middleware/autosave'
+
 const finalCreateStore = compose(
-  applyMiddleware(thunk),
+  applyMiddleware(thunk, routerMiddleware(browserHistory), autosave),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore)
 
@@ -76,6 +78,7 @@ window.onload = () => {
                 <IndexRoute phraseMode={false} component={Library} />
                 <Route phraseOpen={false} path="/user/:userId" component={UserProfile} />
                 <Route phraseOpen={true}  path="/phrase/new" />
+                <Route phraseOpen={true}  path="/phrase/:username/:phraseId" />
                 <Route phraseOpen={true}  path="/phrase/:username/:phraseId/:phrasename" />
                 <Route phraseOpen={false} path="/about" component={About} />
                 <Route phraseOpen={false} path="/developers" component={About} />

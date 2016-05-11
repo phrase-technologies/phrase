@@ -8,18 +8,18 @@ let Library = ({ phrases, dispatch }) => {
     <div className="library">
       <h1>Search Phrases</h1>
 
-      {(phrases || []).map(phrase =>
+      { phrases.map(phrase =>
         <div
           key={phrase.id}
           style={{cursor: `pointer`}}
           onClick={
             () => {
               dispatch(phraseLoadFromMemory(phrase.state))
-              dispatch(push('/edit'))
+              dispatch(push(`/phrase/${phrase.username}/${phrase.id}`))
             }
           }
         >
-          {phrase.name}
+          {phrase.id}
         </div>
       )}
     </div>

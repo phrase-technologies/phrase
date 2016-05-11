@@ -15,8 +15,8 @@ export class App extends Component {
     dispatch(libraryLoadAll())
 
     // Attempt to load user's phrase from url.
-    if (params.phrasename) {
-      dispatch(phraseLoadFromDb(params.phrasename))
+    if (params.phraseId) {
+      dispatch(phraseLoadFromDb(params.phraseId))
     }
   }
 

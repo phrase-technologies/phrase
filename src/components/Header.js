@@ -1,8 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router'
 import UserNavigation from 'components/UserNavigation.js'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
+import { libraryLoadAll } from 'reducers/reduceLibrary'
 
-let Header = (props) => {
+let Header = ({ dispatch, ...props }) => {
   let theme = 'solid' || props.theme
   let headerClasses = "header"
       headerClasses += (theme === 'solid') ? ' header-solid' : ''
@@ -18,8 +21,15 @@ let Header = (props) => {
           <div className="btn-group">
             <div className="header-search-wrapper">
               <input
+                onFocus={
+                  () => {
+                    dispatch(push('/'))
+                    dispatch(libraryLoadAll())
+                  }
+                }
                 className={searchClasses}
-                type="text" placeholder="Search Phrases"
+                type="text"
+                placeholder="Search Phrases"
               />
               <span className="header-search-icon fa fa-search" />
             </div>
@@ -51,4 +61,4 @@ let Header = (props) => {
     </div>
   )
 }
-export default Header
+export default connect()(Header)

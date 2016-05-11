@@ -1,15 +1,16 @@
 import { library } from 'actions/actions'
 import { api } from 'helpers/ajaxHelpers'
-import { browserHistory } from 'react-router'
+import { push } from 'react-router-redux'
 
 export const librarySave = () => {
   return async (dispatch, getState) => {
     let phraseState = getState().phrase
-    let data = await api({ endpoint: `save`, body: { phraseState }})
+    let { phraseId } = await api({ endpoint: `save`, body: { phraseState }})
     dispatch({ type: library.SAVE })
-    browserHistory.push(`/edit/${localstorage.username}/`)
+    dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
   }
 }
+
 export const libraryLoadAll = () => {
   return async (dispatch) => {
     let { phrases } = await api({ endpoint: `load`, })

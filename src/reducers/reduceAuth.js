@@ -1,13 +1,13 @@
 import { login as loginHelper, signup as signupHelper } from 'helpers/authHelpers'
-import isAValidEmail from 'helpers/isEmail'
 import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
+import { librarySave } from 'reducers/reduceLibrary'
 
 // ============================================================================
 // Authentication Action Creators
 // ============================================================================
 export let login = ({ email, password }) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({ type: auth.LOGIN_REQUEST })
 
     loginHelper({ email, password }, response => {
@@ -19,6 +19,10 @@ export let login = ({ email, password }) => {
             user: response.user,
           },
         })
+
+        if (getState().phrase.past.length) {
+          dispatch(librarySave())
+        }
       }
 
       else dispatch({
@@ -30,7 +34,7 @@ export let login = ({ email, password }) => {
 }
 
 export let signup = ({ email, username, password }) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({ type: auth.LOGIN_REQUEST })
 
     signupHelper({ email, username, password }, response => {
@@ -42,6 +46,10 @@ export let signup = ({ email, username, password }) => {
             user: response.user,
           },
         })
+
+        if (getState().phrase.past.length) {
+          dispatch(librarySave())
+        }
       }
 
       else dispatch({

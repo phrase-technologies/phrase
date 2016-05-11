@@ -45,6 +45,7 @@ module.exports = {
        img: 'src/img',
        helpers: 'src/helpers',
        selectors: 'src/selectors',
+       middleware: 'src/middleware',
      },
      extensions: ['', '.js', '.scss'],
   },
