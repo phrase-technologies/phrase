@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Helmet from "react-helmet"
 
 import Header from 'components/Header'
 import Workstation from 'components/Workstation'
@@ -30,6 +31,11 @@ export class App extends Component {
 
     return (
       <div>
+        <Helmet
+          link={[
+            {"rel": "icon", "href": require('../img/favicon.ico'), "type": "img/ico"}
+           ]}
+         />
         <Header theme={headerTheme} />
         <div className={bodyClasses}>
           { this.props.children }

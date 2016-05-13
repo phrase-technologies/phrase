@@ -17,7 +17,7 @@ export class UserProfile extends Component {
 
     return (
       <div className="user-profile">
-        <div className="user-profile-header">
+        <div className="user-profile-header page-header">
           <div className="container">
             <div className="user-profile-pic">
               <img src={user.image} />

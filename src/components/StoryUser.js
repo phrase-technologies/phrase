@@ -3,30 +3,20 @@ import React, { Component } from 'react'
 export default class StoryUser extends Component {
 
   getIcon() {
-    switch(this.props.mode)
-    {
-      default:
-      case 'icon':
-        return (<a><img className="story-user-photo" src={this.props.userPhoto} /></a>)
-      case 'text':
-        return null
-    }
+    if (this.props.userPhoto)
+      return (<a><img className="story-user-photo" src={this.props.userPhoto} /></a>)
+    return null
   }
 
   getText() {
-    switch(this.props.mode)
-    {
-      default:
-      case 'text':
-        return (<a className="story-user-name">{this.props.userName}</a>)
-      case 'icon':
-        return null
-    }
+    if (this.props.userName)
+      return (<a className="story-user-name">{this.props.userName}</a>)
+    return (<span className="story-user-name">anonymous</span>)
   }
 
   render() {
-    var icon = this.getIcon()
-    var text = this.getText()
+    let icon = this.getIcon()
+    let text = this.getText()
 
     return (
       <span className="story-user">

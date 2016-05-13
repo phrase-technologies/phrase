@@ -1,5 +1,56 @@
 // ============================================================================
 // Phrase Library
 // ============================================================================
+$library-header-height: 60px;
 .library {
+  height: 100%;
+}
+.library-header {
+  height: $library-header-height;
+  box-sizing: border-box;
+
+  h1 {
+    font-size: 18px;
+    padding-left: 15px;
+    margin: 0;
+  }
+}
+.library-body {
+  position: absolute;
+  // top: $library-header-height;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.library-body-container {
+  position: relative;
+  height: 100%;
+}
+.library-selection-pane {
+  position: absolute;
+  top: 0;
+  left: 0.5*$grid-gutter-width;
+  right: 60%;
+  bottom: 0;
+
+  overflow: auto;
+
+  border-left: 1px solid #DDD;
+}
+.library-selection-pane-end {
+  padding: 15px 15px 25px;
+}
+.library-preview-pane {
+  position: absolute;
+  top: 0;
+  left: 40%;
+  right: 0.5*$grid-gutter-width;
+  bottom: 0;
+
+  overflow: auto;
+
+  border-left: 1px solid #DDD;
+  border-right: 1px solid #DDD;
+  text-align: center;
 }

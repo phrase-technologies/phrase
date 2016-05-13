@@ -6,20 +6,50 @@ $story-corner: 5px;
 // ============================================================================
 .story-phrase {
   position: relative;
+  padding: 15px;
+  border-top: 1px solid #DDD;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  border-bottom: 1px solid #DDD;
+  margin-top: -1px;
 
-  + .story-phrase {
-    border-top: 1px solid #DDD;
-    margin-top: 15px;
-    padding-top: 15px;
+  &:last-child {
+    border-bottom: 0;
   }
 
   .story-contributors {
     margin-bottom: 5px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
+  .story-track-name {
+    margin-bottom: 3px;
+  }
+
+  // Rephrase button
   &:hover {
     .story-phrase-rephrase {
       @extend .btn-bright;
+    }
+  }
+
+  &:active,
+  &.active {
+    border-color: $input-border-focus;
+    border-left: 1px solid $input-border-focus;
+    border-right: 1px solid $input-border-focus;
+    background: lighten($input-border-focus, 20%);
+    z-index: 2;
+  }
+  &:hover,
+  &.selected {
+    background: #F8F8F8;
+
+    &.active {
+      background: lighten($input-border-focus, 20%);
     }
   }
 }
@@ -52,6 +82,7 @@ $story-corner: 5px;
 // ============================================================================
 .stories {
   padding-left: 0;
+  margin: 0;
 }
 .story {
   list-style: none;
@@ -97,7 +128,6 @@ $story-corner: 5px;
   line-height: 18px;
 }
 .story-user-timestamp {
-  font-weight: bold;
   color: #888;
 
   vertical-align: middle;
@@ -168,7 +198,7 @@ $story-track-cover: 80px;
   width: 100%;
 
   font-size: 18px;
-  font-weight: bold;
+  // font-weight: bold;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
