@@ -4,6 +4,8 @@ import Helmet from "react-helmet"
 
 import Header from 'components/Header'
 import Workstation from 'components/Workstation'
+import CursorProvider from 'components/CursorProvider.js'
+import HotkeyProvider from 'components/HotkeyProvider.js'
 
 import * as AllModals from 'components/modals'
 
@@ -30,19 +32,25 @@ export class App extends Component {
       localStorage.setItem('lastOpenPhrase', this.props.routes[1].path)
 
     return (
-      <div>
-        <Helmet
-          link={[
-            {"rel": "icon", "href": require('../img/favicon.ico'), "type": "img/ico"}
-           ]}
-         />
-        <Header theme={headerTheme} />
-        <div className={bodyClasses}>
-          { this.props.children }
-        </div>
-        <Workstation maximized={phraseOpen} />
-        <ActiveModal show={this.props.show} />
-      </div>
+      <CursorProvider>
+        <HotkeyProvider>
+
+          <div>
+            <Helmet
+              link={[
+                {"rel": "icon", "href": require('../img/favicon.ico'), "type": "img/ico"}
+               ]}
+             />
+            <Header theme={headerTheme} />
+            <div className={bodyClasses}>
+              { this.props.children }
+            </div>
+            <Workstation maximized={phraseOpen} />
+            <ActiveModal show={this.props.show} />
+          </div>
+
+        </HotkeyProvider>
+      </CursorProvider>
     )
   }
 }

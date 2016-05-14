@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PhraseCard from 'components/PhraseCard.js'
 import Helmet from "react-helmet"
 
-let Library = ({ phrases, dispatch }) => {
+export let Library = ({ phrases, dispatch }) => {
   let searchTerm = "Blah"
 
   return (

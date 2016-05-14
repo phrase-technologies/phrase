@@ -21,14 +21,16 @@ class HotkeyProvider extends Component {
 
   constructor() {
     super()
-    this.handleKeyDown = this.handleKeyDown.bind(this)
-    this.handleKeyUp   = this.handleKeyUp.bind(this)
     document.addEventListener('keydown', this.handleKeyDown)
-    document.addEventListener('keyup',   this.handleKeyUp)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown)
   }
 
   handleKeyDown = (e) => {
-    // Prevent doublebooking events with form <inputs>
+    // -----------------------------------------------------------------------
+    // Bypass - Prevent doublebooking events with form <inputs>
     if (e.target.tagName === 'INPUT')
       return
     if (e.target.tagName === 'SELECT')
@@ -40,37 +42,46 @@ class HotkeyProvider extends Component {
     if (e.target.tagName === 'BUTTON')
       return
 
-    // Everything else, override!
-    e.preventDefault()
-
+      // -----------------------------------------------------------------------
+    // Overrides
     let { dispatch } = this.props
-
-    switch(e.code) {
-      // Undo last action
-      case 'KeyZ':
-        if (e.metaKey && e.shiftKey) { dispatch(UndoActions.redo()) }
-        else if (e.metaKey) { dispatch(UndoActions.undo()) }
+    switch(e.keyCode) {
+      case 70:  // CTRL/CMD+F - Search
+        if (e.metaKey || e.ctrlKey) {
+          this.context.router.push('/search')
+          e.preventDefault()
+        }
         break
-      case 'KeyY':
-        if (e.metaKey) dispatch(UndoActions.redo()); break
+      case 90:  // CTRL/CMD+Z - Undo last action
+        if (e.metaKey && e.shiftKey) {
+          dispatch(UndoActions.redo())
+          e.preventDefault()
+        } else if (e.metaKey) {
+          dispatch(UndoActions.undo())
+          e.preventDefault()
+        }
+        break
+      case 89:  // CTRL/CMD+Y - Redo last action
+        if (e.metaKey) {
+          dispatch(UndoActions.redo())
+          e.preventDefault()
+        }
+        break
+      case 32:  // Space - Toggle Playback
+        dispatch(transportPlayToggle())
+        e.preventDefault()
+        break
+      case 8:   // Backspace - Delete Selection
+      case 46:  // Delete
+        dispatch(phraseDeleteSelection())
+        e.preventDefault()
+        break
     }
   }
+}
 
-  handleKeyUp(e) {
-    let { dispatch } = this.props
-
-    // Prevent doublebooking events with form <inputs>
-    if (e.target.tagName === 'INPUT')
-      return
-
-    // Everything else, override with custom hotkeys!
-    e.preventDefault()
-    switch(e.code) {
-      case 'Space': dispatch(transportPlayToggle()); break
-      case 'Backspace':
-      case 'Delete': dispatch(phraseDeleteSelection()); break
-    }
-  }
+HotkeyProvider.contextTypes = {
+  router: React.PropTypes.object.isRequired
 }
 
 HotkeyProvider.propTypes = {
