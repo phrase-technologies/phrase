@@ -28,13 +28,17 @@ import { persistStore } from 'redux-persist'
 import autosave from 'middleware/autosave'
 
 const finalCreateStore = compose(
-  applyMiddleware(thunk, routerMiddleware(browserHistory), autosave),
+  applyMiddleware(
+    thunk,
+    routerMiddleware(browserHistory),
+    autosave,
+  ),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore)
 
 const STORE = finalCreateStore(finalReducer)
 
-persistStore(STORE, { whitelist: [ `phrase` ] }, () => {
+persistStore(STORE, { whitelist: [ `phrase`, `phraseMeta` ] }, () => {
   // Setup initial state - 2 tracks by default
   let state = STORE.getState()
   if (!state.phrase || state.phrase.past.length === 0 && state.phrase.present.tracks.length === 0) {

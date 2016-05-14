@@ -39,7 +39,7 @@ export class WorkstationHeaderTitle extends Component {
 
 function mapStateToProps(state) {
   return {
-    title: state.phrase.present.name,
+    title: state.phraseMeta.phraseName,
   }
 }
 

@@ -6,7 +6,7 @@ import { clipSelectionOffsetValidated } from './selectorPianoroll.js'
 
 const tracksSelector            = (state) => (state.phrase.present.tracks)
 const clipsSelector             = (state) => (state.phrase.present.clips)
-const clipSelectionIDs          = (state) => (state.selection.clipSelectionIDs)
+const clipSelectionIDs          = (state) => (state.phraseMeta.clipSelectionIDs)
 
 export const renderedClipsSelector = createSelector(
   tracksSelector,

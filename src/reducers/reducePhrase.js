@@ -59,8 +59,8 @@ export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches
   return (dispatch, getState) => {
     let state = getState()
-    let clipIDs = state.selection.clipSelectionIDs
-    let noteIDs = state.selection.noteSelectionIDs
+    let clipIDs = state.phraseMeta.clipSelectionIDs
+    let noteIDs = state.phraseMeta.noteSelectionIDs
     dispatch({ type: phrase.DELETE_SELECTION, clipIDs, noteIDs })
   }
 }
@@ -91,7 +91,7 @@ export const phraseDropClipSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetTrack, offsetLooped } = clipSelectionOffsetValidated(state)
-    let clipIDs = state.selection.clipSelectionIDs
+    let clipIDs = state.phraseMeta.clipSelectionIDs
     dispatch({ type: phrase.DROP_CLIP_SELECTION, clipIDs, offsetStart, offsetEnd, offsetTrack, offsetLooped })
   }
 }
@@ -100,23 +100,35 @@ export const phraseDropNoteSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetKey } = noteSelectionOffsetValidated(state)
-    let noteIDs = state.selection.noteSelectionIDs
+    let noteIDs = state.phraseMeta.noteSelectionIDs
     dispatch({ type: phrase.DROP_NOTE_SELECTION, noteIDs, offsetStart, offsetEnd, offsetKey })
   }
 }
-
-export const phraseLoadFromMemory = state => ({ type: phrase.LOAD, payload: state })
-
+export const phraseLoadFromMemory = ({ id, name, state }) => {
+  return {
+    type: phrase.LOAD,
+    payload: {
+      id,
+      name,
+      state
+    }
+  }
+}
 export const phraseLoadFromDb = phraseId => {
   return async (dispatch) => {
     let { loadedPhrase } = await api({ endpoint: `loadOne`, body: { phraseId } })
 
     if (loadedPhrase) {
-      dispatch({ type: phrase.LOAD, payload: loadedPhrase.state })
-    }
-
-    else {
-      console.log('asdasdasd')
+      dispatch({
+        type: phrase.LOAD,
+        payload: {
+          id: phraseId,
+          name: loadedPhrase.phrasename,
+          state: loadedPhrase.state,
+        }
+      })
+    } else {
+      console.error('phraseLoadFromDb() Failed!')
       dispatch(push(`/`))
     }
   }
@@ -125,7 +137,6 @@ export const phraseLoadFromDb = phraseId => {
 // Phrase Reducer
 // ============================================================================
 export const defaultState = {
-  name: null,
   barCount: 16.00,
   tempo: 120,
   tracks: [],
@@ -156,12 +167,6 @@ const TRACK_COLORS = [
 export default function reducePhrase(state = defaultState, action) {
   switch (action.type)
   {
-    // ------------------------------------------------------------------------
-    case phrase.RENAME:
-      return u({
-        name: action.name,
-      }, state)
-
     // ------------------------------------------------------------------------
     case phrase.CREATE_TRACK:
       return u({

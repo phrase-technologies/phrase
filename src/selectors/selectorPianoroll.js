@@ -10,13 +10,13 @@ const tracksSelector            = (state) => (state.phrase.present.tracks)
 const clipsSelector             = (state) => (state.phrase.present.clips)
 const notesSelector             = (state) => (state.phrase.present.notes)
 const pianorollSelector         = (state) => (state.pianoroll)
-const clipSelectionIDs          = (state) => (state.selection.clipSelectionIDs)
-const clipSelectionTargetID     = (state) => (state.selection.clipSelectionTargetID)
-const clipSelectionOffsetStart  = (state) => (state.selection.clipSelectionOffsetStart)
-const clipSelectionOffsetEnd    = (state) => (state.selection.clipSelectionOffsetEnd)
-const clipSelectionOffsetTrack  = (state) => (state.selection.clipSelectionOffsetTrack)
-const clipSelectionOffsetLooped = (state) => (state.selection.clipSelectionOffsetLooped)
-const clipSelectionOffsetSnap   = (state) => (state.selection.clipSelectionOffsetSnap)
+const clipSelectionIDs          = (state) => (state.phraseMeta.clipSelectionIDs)
+const clipSelectionTargetID     = (state) => (state.phraseMeta.clipSelectionTargetID)
+const clipSelectionOffsetStart  = (state) => (state.phraseMeta.clipSelectionOffsetStart)
+const clipSelectionOffsetEnd    = (state) => (state.phraseMeta.clipSelectionOffsetEnd)
+const clipSelectionOffsetTrack  = (state) => (state.phraseMeta.clipSelectionOffsetTrack)
+const clipSelectionOffsetLooped = (state) => (state.phraseMeta.clipSelectionOffsetLooped)
+const clipSelectionOffsetSnap   = (state) => (state.phraseMeta.clipSelectionOffsetSnap)
 export const clipSelectionOffsetValidated = createSelector(
   clipsSelector,
   clipSelectionIDs,
@@ -63,12 +63,12 @@ export const clipSelectionOffsetValidated = createSelector(
     }
   }
 )
-const noteSelectionIDs          = (state) => (state.selection.noteSelectionIDs)
-const noteSelectionTargetID     = (state) => (state.selection.noteSelectionTargetID)
-const noteSelectionOffsetStart  = (state) => (state.selection.noteSelectionOffsetStart)
-const noteSelectionOffsetEnd    = (state) => (state.selection.noteSelectionOffsetEnd)
-const noteSelectionOffsetKey    = (state) => (state.selection.noteSelectionOffsetKey)
-const noteSelectionOffsetSnap   = (state) => (state.selection.noteSelectionOffsetSnap)
+const noteSelectionIDs          = (state) => (state.phraseMeta.noteSelectionIDs)
+const noteSelectionTargetID     = (state) => (state.phraseMeta.noteSelectionTargetID)
+const noteSelectionOffsetStart  = (state) => (state.phraseMeta.noteSelectionOffsetStart)
+const noteSelectionOffsetEnd    = (state) => (state.phraseMeta.noteSelectionOffsetEnd)
+const noteSelectionOffsetKey    = (state) => (state.phraseMeta.noteSelectionOffsetKey)
+const noteSelectionOffsetSnap   = (state) => (state.phraseMeta.noteSelectionOffsetSnap)
 export const noteSelectionOffsetValidated = createSelector(
   notesSelector,
   noteSelectionIDs,

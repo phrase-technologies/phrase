@@ -11,8 +11,8 @@ import reduceModal from './reduceModal'
 import reduceNavigation from './reduceNavigation'
 import reduceTransport from './reduceTransport'
 import reducePhrase from './reducePhrase'
+import reducePhraseMeta from './reducePhraseMeta'
 import reduceLibrary from './reduceLibrary'
-import reduceSelection from './reduceSelection'
 import reduceMixer from './reduceMixer'
 import reducePianoroll from './reducePianoroll'
 import reduceCursor from './reduceCursor'
@@ -25,9 +25,8 @@ import { phrase } from 'actions/actions'
 
 import { REHYDRATE } from 'redux-persist/constants'
 
-function rehydrate (reducer) {
-
-  return function (state, action) {
+function rehydratePhrase (reducer) {
+  return (state, action) => {
     switch (action.type) {
       case REHYDRATE:
         return action.payload.phrase
@@ -36,8 +35,22 @@ function rehydrate (reducer) {
 
       case phrase.LOAD:
         return {
-          ...action.payload
+          ...action.payload.state
         }
+
+      default:
+        return reducer(state, action)
+    }
+  }
+}
+
+function rehydratePhraseMeta (reducer) {
+  return (state, action) => {
+    switch (action.type) {
+      case REHYDRATE:
+        return action.payload.phraseMeta
+          ? { ...action.payload.phraseMeta }
+          : reducer(state, action)
 
       default:
         return reducer(state, action)
@@ -50,9 +63,9 @@ let finalReducer = combineReducers({
   modal: reduceModal,
   navigation: reduceNavigation,
   transport: reduceTransport,
-  phrase: rehydrate(undoable(reducePhrase, { filter: excludeAction(phrase.LOAD) })),
+  phrase: rehydratePhrase(undoable(reducePhrase, { filter: excludeAction(phrase.LOAD) })),
+  phraseMeta: rehydratePhraseMeta(reducePhraseMeta),
   library: reduceLibrary,
-  selection: reduceSelection,
   mixer: reduceMixer,
   pianoroll: reducePianoroll,
   cursor: reduceCursor,

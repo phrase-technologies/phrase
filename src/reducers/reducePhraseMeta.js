@@ -3,17 +3,21 @@ import u from 'updeep'
 import { phrase, pianoroll } from '../actions/actions.js'
 
 // ============================================================================
-// Selection Reducer
+// Phrase META Reducer
 // ============================================================================
-// Which clips and notes are currently selected by the user?
+// This reducer contains all parameters that probably make more sense in
+// reducePhrase.js, but have been pulled out because we don't want their changes
+// recorded in undo/history.
 //
-// If the user is performing drag and drop of the current selection, track
-// those offsets here so we can show temporary previews of drag
+// - Primary Key of Phrase `phraseId`
+// - Which clips and notes are currently selected by the user?
+// - If the user is performing drag and drop of the current selection, track
+//   those offsets here so we can show temporary previews of drag
 //
-// These parameters probably make more sense in reducePhrase.js, but have been
-// pulled out because we don't want their changes recorded in undo/history.
 
 export const defaultState = {
+  phraseId: null,
+  phraseName: null,
   clipSelectionIDs: [],
   clipSelectionTargetID: null,
   clipSelectionOffsetStart: null,
@@ -29,9 +33,22 @@ export const defaultState = {
   noteSelectionOffsetSnap: true,
 }
 
-export default function reducePhrase(state = defaultState, action) {
+export default function reducePhraseMeta(state = defaultState, action) {
   switch (action.type)
   {
+    // ------------------------------------------------------------------------
+    case phrase.LOAD:
+      return u({
+        phraseId: action.payload.id,
+        phraseName: action.payload.name,
+      }, defaultState)  // Clear everything else to default!
+
+    // ------------------------------------------------------------------------
+    case phrase.RENAME:
+      return u({
+        phraseName: action.name,
+      }, state)
+
     // ------------------------------------------------------------------------
     case phrase.SELECT_CLIP:
       return u({

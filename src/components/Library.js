@@ -29,10 +29,7 @@ let Library = ({ phrases, dispatch }) => {
                 phrases.map((phrase) => {
                   return (
                     <PhraseCard
-                      userPhoto={null}
-                      username={phrase.username}
-                      trackName={phrase.phrasename}
-                      timestamp={phrase.saved_date}
+                      phrase={phrase}
                       plays={125}
                       likes={2}
                       comments={1}
