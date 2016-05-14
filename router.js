@@ -80,6 +80,7 @@ export default ({ app, db }) => {
       res.json({ message: `autosave success` })
     }
     catch (error) {
+      console.log(chalk.magenta(error))
       res.json({ error })
     }
   })
