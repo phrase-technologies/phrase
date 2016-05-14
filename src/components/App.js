@@ -41,7 +41,7 @@ export class App extends Component {
                 {"rel": "icon", "href": require('../img/favicon.ico'), "type": "img/ico"}
                ]}
              />
-            <Header theme={headerTheme} />
+            <Header theme={headerTheme} params={this.props.params}/>
             <div className={bodyClasses}>
               { this.props.children }
             </div>
