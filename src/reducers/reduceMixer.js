@@ -1,6 +1,7 @@
 import u from 'updeep'
 import { zoomInterval,
          restrictTimelineZoom,
+         maxBarWidth,
        } from '../helpers/intervalHelpers.js'
 import { getTracksHeight } from '../helpers/trackHelpers.js'
 import { mixer } from '../actions/actions.js'
@@ -8,13 +9,13 @@ import { mixer } from '../actions/actions.js'
 // ============================================================================
 // Mixer Action Creators
 // ============================================================================
-export const mixerScrollY = (min, max) => ({type: mixer.SCROLL_Y, min, max})
-export const mixerScrollX = (min, max) => {
+export const mixerScrollY = ({ min, max, delta, fulcrum }) => ({ type: mixer.SCROLL_Y, min, max, delta, fulcrum })
+export const mixerScrollX = ({ min, max, delta, fulcrum }) => {
   // We need to know the length of the phrase - use a thunk to access other state branches
   return (dispatch, getState) => {
     let state = getState()
     let barCount = state.phrase.present.barCount
-    dispatch({ type: mixer.SCROLL_X, min, max, barCount })
+    dispatch({ type: mixer.SCROLL_X, min, max, barCount, delta, fulcrum })
   }
 }
 export const mixerResizeHeight = (height) => {
@@ -22,7 +23,7 @@ export const mixerResizeHeight = (height) => {
   return (dispatch, getState) => {
     let state = getState()
     let mixerContentHeight = getTracksHeight(state.phrase.present.tracks)
-    dispatch({type: mixer.RESIZE_HEIGHT, height, mixerContentHeight})
+    dispatch({ type: mixer.RESIZE_HEIGHT, height, mixerContentHeight })
   }
 }
 export const mixerResizeWidth = (width) => {
@@ -97,17 +98,34 @@ export default function reduceMixer(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case mixer.SCROLL_X:
+      // Zoom X
+      if (action.fulcrum !== undefined) {
+        let zoomFactor = (action.delta + 500) / 500
+        let [newMin, newMax] = zoomInterval([state.xMin, state.xMax], zoomFactor, action.fulcrum)
+        let oldBarWidth = state.width / (state.xMax - state.xMin) / action.barCount
+
+        // Already at limit - bypass
+        if (zoomFactor < 1 && oldBarWidth > maxBarWidth - 0.0001)
+          return state
+
+        state = u({
+          xMin: Math.max(0.0, newMin),
+          xMax: Math.min(1.0, newMax),
+        }, state)
+        return restrictTimelineZoom(state, action.barCount)
+      }
+
       state = u({
-        xMin: action.min === null ? state.xMin : Math.max(0.0, action.min),
-        xMax: action.max === null ? state.xMax : Math.min(1.0, action.max)
+        xMin: action.min === undefined ? state.xMin : Math.max(0.0, action.min),
+        xMax: action.max === undefined ? state.xMax : Math.min(1.0, action.max)
       }, state)
       return restrictTimelineZoom(state, action.barCount)
 
     // ------------------------------------------------------------------------
     case mixer.SCROLL_Y:
       return u({
-        yMin: action.min === null ? state.yMin : Math.max(0.0, action.min),
-        yMax: action.max === null ? state.yMax : Math.min(1.0, action.max)
+        yMin: action.min === undefined ? state.yMin : Math.max(0.0, action.min),
+        yMax: action.max === undefined ? state.yMax : Math.min(1.0, action.max)
       }, state)
 
     // ------------------------------------------------------------------------

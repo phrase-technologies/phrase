@@ -68,64 +68,65 @@ export default class Scrollbar extends Component {
     this.data.startMax = this.props.max
 
     // If no draggableEndpoints, treat min/max refs as bar
-    var currentTarget = this.props.draggableEndpoints
+    let currentTarget = this.props.draggableEndpoints
                       ? this.data.startTarget
                       : ReactDOM.findDOMNode(this.bar)
+    let cursorType
 
-    switch( currentTarget )
+    switch(currentTarget)
     {
       // MIN-end of the Bar
       case ReactDOM.findDOMNode(this.min):
-        var cursorType = this.props.vertical ? cursorResizeTop : cursorResizeLeft
+        cursorType = this.props.vertical ? cursorResizeTop : cursorResizeLeft
         break
       // Middle of the Bar
       case ReactDOM.findDOMNode(this.bar):
-        var cursorType = this.props.vertical ? cursorResizeY : cursorResizeX
+        cursorType = this.props.vertical ? cursorResizeY : cursorResizeX
         break
       // MAX-end of the Bar
       case ReactDOM.findDOMNode(this.max):
-        var cursorType = this.props.vertical ? cursorResizeBottom : cursorResizeRight
+        cursorType = this.props.vertical ? cursorResizeBottom : cursorResizeRight
         break
     }
-    this.props.dispatch( cursorType('explicit') )
+    this.props.dispatch(cursorType('explicit'))
   }
 
   handleDrag(e) {
     // Ignore moves that aren't drag-initiated
-    if( !this.data.isDragging )
+    if(!this.data.isDragging)
       return
 
-    var pixelDelta = this.props.vertical
+    let pixelDelta = this.props.vertical
                    ? e.clientY - this.data.startY
                    : e.clientX - this.data.startX    // How many pixels have we moved from start position
-    var percentDelta = pixelDelta / this.data.length // What percent have we moved from the start position
+    let percentDelta = pixelDelta / this.data.length // What percent have we moved from the start position
 
     // If no draggableEndpoints, treat min/max refs as bar
-    var currentTarget = this.props.draggableEndpoints
+    let currentTarget = this.props.draggableEndpoints
                       ? this.data.startTarget
                       : ReactDOM.findDOMNode(this.bar)
 
-    switch( currentTarget )
+    switch(currentTarget)
     {
       // MIN-end of the Bar
       case ReactDOM.findDOMNode(this.min):
       {
-        var newMin = Math.max( this.data.startMin + percentDelta, 0.0 )
-        this.props.setScroll(newMin, null)
+        let newMin = Math.max(this.data.startMin + percentDelta, 0.0)
+        this.props.setScroll({ min: newMin })
         break
       }
       // Middle of the Bar
       case ReactDOM.findDOMNode(this.bar):
       {
-        var [newMin, newMax] = shiftInterval([this.data.startMin, this.data.startMax], percentDelta)
-        this.props.setScroll(newMin, newMax)
+        let [newMin, newMax] = shiftInterval([this.data.startMin, this.data.startMax], percentDelta)
+        this.props.setScroll({ min: newMin, max: newMax })
         break
       }
       // MAX-end of the Bar
       case ReactDOM.findDOMNode(this.max):
       {
-        var newMax = Math.min( this.data.startMax + percentDelta, 1.0 )
-        this.props.setScroll(null, newMax)
+        let newMax = Math.min(this.data.startMax + percentDelta, 1.0)
+        this.props.setScroll({ max: newMax })
         break
       }
     }
@@ -133,39 +134,40 @@ export default class Scrollbar extends Component {
 
   handleDrop(e) {
     // Ignore left clicks - those are not drops
-    if( e.type == 'mousedown' && e.which == 1 )
+    if (e.type === 'mousedown' && e.which === 1)
       return
 
     // End the drag
     this.data.isDragging = false
     this.forceUpdate()
-    this.props.dispatch( cursorClear('explicit') )    
+    this.props.dispatch(cursorClear('explicit'))
   }
 
   handlePaging(e) {
     // Ensure scrollbar wasn't clicked
-    if( e.target != this.gutter )
+    if (e.target !== this.gutter)
       return false
 
-    var clickPosition = this.props.vertical
+    let clickPosition = this.props.vertical
                       ? (e.clientY - this.gutter.getBoundingClientRect().top)  / this.data.length
                       : (e.clientX - this.gutter.getBoundingClientRect().left) / this.data.length
-    
+    let newMin, newMax
+
     // Page DOWN
-    if( clickPosition < this.props.min )
-      var [newMin, newMax] = shiftInterval([this.props.min, this.props.max], this.props.min - this.props.max)
+    if (clickPosition < this.props.min)
+      [newMin, newMax] = shiftInterval([this.props.min, this.props.max], this.props.min - this.props.max)
     // Page UP
-    else if( clickPosition > this.props.max )
-      var [newMin, newMax] = shiftInterval([this.props.min, this.props.max], this.props.max - this.props.min)
+    else if (clickPosition > this.props.max)
+      [newMin, newMax] = shiftInterval([this.props.min, this.props.max], this.props.max - this.props.min)
     // Do nothing
     else
       return
 
-    this.props.setScroll(newMin, newMax)
+    this.props.setScroll({ min: newMin, max: newMax })
   }
 
   gutterClass() {
-    var classes  = 'scrollbar-gutter'
+    let classes  = 'scrollbar-gutter'
         classes += (this.data && this.data.isDragging || this.props.forceHover) ? ' hover' : ''
         classes += this.props.vertical ? ' scrollbar-vertical' : ' scrollbar-horizontal'
         classes += this.props.draggableEndpoints ? ' scrollbar-draggable-endpoints' : ''
@@ -173,7 +175,7 @@ export default class Scrollbar extends Component {
   }
 
   render() {
-    var scrollPosition = this.props.vertical
+    let scrollPosition = this.props.vertical
                        ? { top:  100*this.props.min+'%', bottom: 100*(1-this.props.max)+'%' }
                        : { left: 100*this.props.min+'%', right:  100*(1-this.props.max)+'%' }
     return (

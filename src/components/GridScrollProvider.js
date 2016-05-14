@@ -13,7 +13,7 @@ import React, { Component } from 'react'
 import { shiftInterval,
          zoomInterval } from '../helpers/intervalHelpers.js'
 
-var provideGridScroll = function(
+let provideGridScroll = function(
   ChildComponent,
   {
     scrollXActionCreator = null,
@@ -56,53 +56,44 @@ var provideGridScroll = function(
       // e.stopPropagation(); propogation is needed for vertical scrolling on the mixer
 
       // Zoom when CTRL or META key pressed
-      if( e.ctrlKey || e.metaKey )
+      if (e.ctrlKey || e.metaKey)
         this.handleZoom(e)
 
       // Scroll otherwise - snap the scroll to either X or Y direction, feels too jumpy when dual XY scrolling
-      else if( Math.abs(e.deltaX) >= Math.abs(e.deltaY) )
+      else if (Math.abs(e.deltaX) >= Math.abs(e.deltaY))
         this.handleScrollX(e)
       else
         this.handleScrollY(e)
     }
     handleZoom(e) {
-      var zoomFactor = (e.deltaY + 500) / 500
-
-      if( scrollXActionCreator && enableZoomX )
-      {
-        var fulcrumX = this.props.grid.getMouseXPercent(e)
-        var [newBarMin, newBarMax] = zoomInterval([this.props.xMin, this.props.xMax], zoomFactor, fulcrumX)
-        this.props.dispatch(scrollXActionCreator(newBarMin, newBarMax))
+      if (scrollXActionCreator && enableZoomX) {
+        let fulcrumX = this.props.grid.getMouseXPercent(e)
+        this.props.dispatch(scrollXActionCreator({ delta: e.deltaY, fulcrum: fulcrumX }))
       }
-      if( scrollYActionCreator && enableZoomY )
-      {
-        var fulcrumY = this.props.grid.getMouseYPercent(e)
-        var [newKeyMin, newKeyMax] = zoomInterval([this.props.yMin, this.props.yMax], zoomFactor, fulcrumY)
-        this.props.dispatch(scrollYActionCreator(newKeyMin, newKeyMax))
+      if (scrollYActionCreator && enableZoomY) {
+        let fulcrumY = this.props.grid.getMouseYPercent(e)
+        this.props.dispatch(scrollYActionCreator({ delta: e.deltaY, fulcrum: fulcrumY }))
       }
     }
     handleScrollX(e) {
-      if( scrollXActionCreator )
-      {
-        var barWindow = this.props.xMax - this.props.xMin
-        var barStepSize = e.deltaX / this.props.grid.container.clientWidth * barWindow
-        var [newBarMin, newBarMax] = shiftInterval([this.props.xMin, this.props.xMax], barStepSize)
-        this.props.dispatch(scrollXActionCreator(newBarMin, newBarMax))
+      if (scrollXActionCreator) {
+        let barWindow = this.props.xMax - this.props.xMin
+        let barStepSize = e.deltaX / this.props.grid.container.clientWidth * barWindow
+        let [newBarMin, newBarMax] = shiftInterval([this.props.xMin, this.props.xMax], barStepSize)
+        this.props.dispatch(scrollXActionCreator({ min: newBarMin, max: newBarMax }))
       }
     }
     handleScrollY(e) {
-      if( scrollYActionCreator )
-      {
-        var keyWindow = this.props.yMax - this.props.yMin
-        var keyStepSize = e.deltaY / this.props.grid.container.clientHeight * keyWindow
-        var [newKeyMin, newKeyMax] = shiftInterval([this.props.yMin, this.props.yMax], keyStepSize)
-        this.props.dispatch(scrollYActionCreator(newKeyMin, newKeyMax))
+      if (scrollYActionCreator) {
+        let keyWindow = this.props.yMax - this.props.yMin
+        let keyStepSize = e.deltaY / this.props.grid.container.clientHeight * keyWindow
+        let [newKeyMin, newKeyMax] = shiftInterval([this.props.yMin, this.props.yMax], keyStepSize)
+        this.props.dispatch(scrollYActionCreator({ min: newKeyMin, max: newKeyMax }))
       }
     }
     handleMouseMove(e) {
-      if( cursorActionCreator )
-      {
-        var percent = this.props.grid.getMouseXPercent(e)
+      if (cursorActionCreator) {
+        let percent = this.props.grid.getMouseXPercent(e)
         this.props.dispatch(cursorActionCreator(percent))
       }
     }

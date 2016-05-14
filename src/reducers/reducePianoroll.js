@@ -2,6 +2,7 @@ import u from 'updeep'
 import { zoomInterval,
          shiftInterval,
          restrictTimelineZoom,
+         maxBarWidth,
        } from '../helpers/intervalHelpers.js'
 
 import { pianoroll } from '../actions/actions.js'
@@ -10,8 +11,16 @@ import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
 // ============================================================================
 // Pianoroll Action Creators
 // ============================================================================
-export const pianorollScrollX             = (min, max)        => ({type: pianoroll.SCROLL_X, min, max})
-export const pianorollScrollY             = (min, max)        => ({type: pianoroll.SCROLL_Y, min, max})
+export const pianorollScrollY = ({ min, max, delta, fulcrum }) => ({type: pianoroll.SCROLL_Y, min, max, delta, fulcrum})
+export const pianorollScrollX = ({ min, max, delta, fulcrum }) => {
+  // We need to know the length of the phrase - use a thunk to access other state branches
+  return (dispatch, getState) => {
+    let state = getState()
+    let barCount = state.phrase.present.barCount
+    dispatch({ type: pianoroll.SCROLL_X, min, max, delta, fulcrum, barCount})
+  }
+}
+
 export const pianorollResizeWidth         = (width)           => ({type: pianoroll.RESIZE_WIDTH,  width })
 export const pianorollResizeHeight        = (height)          => ({type: pianoroll.RESIZE_HEIGHT, height })
 export const pianorollSelectionBoxStart   = (x, y)            => ({type: pianoroll.SELECTION_BOX_START,  x, y})
@@ -85,14 +94,51 @@ export default function reducePianoroll(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_X:
+      // Zoom X
+      if (action.fulcrum !== undefined) {
+        let zoomFactor = (action.delta + 500) / 500
+        let [newMin, newMax] = zoomInterval([state.xMin, state.xMax], zoomFactor, action.fulcrum)
+        let oldBarWidth = state.width / (state.xMax - state.xMin) / action.barCount
+
+        // Already at limit - bypass
+        if (zoomFactor < 1 && oldBarWidth > maxBarWidth - 0.0001)
+          return state
+
+        state = u({
+          xMin: Math.max(0.0, newMin),
+          xMax: Math.min(1.0, newMax),
+        }, state)
+        return restrictTimelineZoom(state, action.barCount)
+      }
+
+      // Regular Scroll X
       state = u({
-        xMin: action.min === null ? state.xMin : Math.max(0.0, action.min),
-        xMax: action.max === null ? state.xMax : Math.min(1.0, action.max)
+        xMin: action.min === undefined ? state.xMin : Math.max(0.0, action.min),
+        xMax: action.max === undefined ? state.xMax : Math.min(1.0, action.max)
       }, state)
       return restrictTimelineZoom(state, action.barCount)
 
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_Y:
+      // Zoom Y
+      if (action.fulcrum !== undefined) {
+        let zoomFactor = (action.delta + 500) / 500
+        let [newMin, newMax] = zoomInterval([state.yMin, state.yMax], zoomFactor, action.fulcrum)
+        let oldKeyboardHeight = state.height / (state.yMax - state.yMin)
+
+        // Already at limit - bypass
+        if (zoomFactor < 1 && oldKeyboardHeight > maxKeyboardHeight - 0.0001)
+          return state
+        if (zoomFactor > 1 && oldKeyboardHeight < minKeyboardHeight + 0.0001)
+          return state
+
+        return u({
+          yMin: newMin,
+          yMax: newMax,
+        }, state)
+      }
+
+      // Regular Scroll Y
       return restrictKeyboardZoom(
         u({
           yMin: action.min === null ? state.yMin : Math.max(0.0, action.min),
