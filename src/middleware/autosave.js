@@ -13,9 +13,9 @@ let autosave = store => next => action => {
     api({
       endpoint: `update`,
       body: {
-        phraseId: store.getState().phraseMeta.phraseId,
-        phraseName: store.getState().phraseMeta.phraseName,
-        phraseState: store.getState().phrase,
+        phraseId: newState.phraseMeta.phraseId,
+        phraseName: newState.phraseMeta.phraseName,
+        phraseState: newState.phrase,
       },
     })
   }
