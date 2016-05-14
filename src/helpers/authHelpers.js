@@ -1,4 +1,4 @@
-import { serverUrl } from 'helpers/ajaxHelpers'
+import { serverUrl } from 'config'
 
 export let signup = async (body, callback) => {
   let response = await fetch(`${serverUrl}/signup`, {

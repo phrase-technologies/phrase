@@ -1,8 +1,6 @@
 /* global JSON, localStorage */
 
-export let protocol = `http`
-export let domain = `localhost:5000`
-export let serverUrl = `${protocol}://${domain}`
+import { serverUrl } from 'config'
 
 export let api = async ({ endpoint, body }) => {
   let response = await fetch(`${serverUrl}/api/${endpoint}`, {

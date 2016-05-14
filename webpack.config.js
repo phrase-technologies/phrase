@@ -46,6 +46,7 @@ module.exports = {
        helpers: 'src/helpers',
        selectors: 'src/selectors',
        middleware: 'src/middleware',
+       config: path.join(__dirname, 'config', process.env.NODE_ENV),
      },
      extensions: ['', '.js', '.scss'],
   },

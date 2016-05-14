@@ -4,7 +4,8 @@
   "description": "Attempt at using React for this sequencer prototype!",
   "scripts": {
     "prestart": "npm install",
-    "start": "node server.js",
+    "start": "NODE_ENV=development node server.js",
+    "start-prod": "NODE_ENV=production node server.js",
     "test": "find ./src -name '*.test.js' | xargs mocha --require babel-core/register --compilers jpg:./mocha.config.js --compilers png:./mocha.config.js",
     "lint": "eslint src",
     "lint-fix": "eslint --fix src"
