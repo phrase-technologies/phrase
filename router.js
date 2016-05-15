@@ -47,10 +47,10 @@ export default ({ app, db }) => {
       }).run(db)
 
       console.log(chalk.cyan(
-        `Phrase ${result.generated_keys} added!`
+        `Phrase ${result.generated_keys[0]} added!`
       ))
 
-      res.json({ message: `Project Saved!`, phraseId: result.generated_keys })
+      res.json({ message: `Project Saved!`, phraseId: result.generated_keys[0] })
 
     } catch (err) {
       console.log(err)
@@ -65,23 +65,30 @@ export default ({ app, db }) => {
    */
 
   api.post(`/update`, async (req, res) => {
-    let { phraseId, phraseName, phraseState } = req.body
-    try {
-      let result = await r.table(`phrases`).get(phraseId).update({
-        phrasename: phraseName,
-        state: phraseState,
-        saved_date: +new Date(),
-      }).run(db)
+    let { phraseId, phraseName, phraseState, userId } = req.body
 
-      console.log(chalk.cyan(
-        `Phrase ${phraseId} ${!result.skipped ? `updated!` : `not found!`}`
-      ))
+    if (userId === req.decoded.userId) {
+      try {
+        let result = await r.table(`phrases`).get(phraseId).update({
+          phrasename: phraseName,
+          state: phraseState,
+          saved_date: +new Date(),
+        }).run(db)
 
-      res.json({ message: `autosave success` })
+        console.log(chalk.cyan(
+          `Phrase ${phraseId} ${!result.skipped ? `updated!` : `not found!`}`
+        ))
+
+        res.json({ message: `autosave success` })
+      }
+      catch (error) {
+        console.log(chalk.magenta(error))
+        res.json({ error })
+      }
     }
-    catch (error) {
-      console.log(chalk.magenta(error))
-      res.json({ error })
+
+    else {
+      res.json({ message: `Not authorized!` })
     }
   })
 

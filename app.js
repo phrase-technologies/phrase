@@ -56,7 +56,7 @@ async function bootstrap () {
 
       socket.on(`disconnect`, async () => {
         try { await r.table(`connections`).get(socket.id).delete().run(db) }
-        catch (e) { console.log(chalk.white(e)) }
+        catch (e) { console.log(chalk.magenta(e)) }
 
         let count = await r.table(`connections`).count().run(db)
 
