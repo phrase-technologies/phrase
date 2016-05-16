@@ -9,7 +9,11 @@ let autosave = store => next => action => {
   let newState = store.getState()
 
   // Only update if an existing phrase has changed
-  if (hasPhraseChanged({ oldState, newState }) && action.type !== phrase.LOAD) {
+  if (
+    localStorage.userId && 
+    action.type !== phrase.LOAD &&
+    hasPhraseChanged({ oldState, newState })
+    ) {
     api({
       endpoint: `update`,
       body: {

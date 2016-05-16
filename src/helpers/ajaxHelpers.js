@@ -10,7 +10,7 @@ export let api = async ({ endpoint, body }) => {
       token: localStorage.token,
       email: localStorage.email,
       username: localStorage.username,
-      _id: localStorage.userId,
+      userId: localStorage.userId,
       ...(body || {})
     }),
   })
