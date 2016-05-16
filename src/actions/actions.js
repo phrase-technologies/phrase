@@ -50,6 +50,7 @@ export const phrase = namespaceActions(
     'DROP_CLIP_SELECTION',
     'DROP_NOTE_SELECTION',
     'LOAD',
+    'NEW_PHRASE',
   ]
 )
 

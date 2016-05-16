@@ -1,5 +1,6 @@
 import _ from 'lodash'
-import { phrase } from 'actions/actions'
+import { phrase, library } from 'actions/actions'
+import { librarySave } from 'reducers/reduceLibrary'
 import { api } from 'helpers/ajaxHelpers'
 
 let autosave = store => next => action => {
@@ -10,7 +11,8 @@ let autosave = store => next => action => {
 
   // Only update if an existing phrase has changed
   if (
-    localStorage.userId && 
+    localStorage.userId &&
+    localStorage.userId !== 'undefined' &&
     action.type !== phrase.LOAD &&
     hasPhraseChanged({ oldState, newState })
     ) {
@@ -22,6 +24,20 @@ let autosave = store => next => action => {
         phraseState: newState.phrase,
       },
     })
+  }
+
+  //TODO: look into refactoring using `meta` key
+
+  // If you're logged in and make an edit to a new phrase, save it right away
+  if (
+    action.type !== library.SAVE &&
+    action.type !== phrase.NEW_PHRASE &&
+    localStorage.userId &&
+    localStorage.userId !== `undefined` &&
+    !newState.phraseMeta.phraseId &&
+    newState.phrase.past.length > oldState.phrase.past.length
+  ) {
+    if (action.meta !== `autosaveIgnore`) store.dispatch(librarySave())
   }
 
   return result

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import u from 'updeep'
-import { phrase, pianoroll } from '../actions/actions.js'
+import { phrase, pianoroll, library } from '../actions/actions.js'
 
 // ============================================================================
 // Phrase META Reducer
@@ -37,6 +37,13 @@ export default function reducePhraseMeta(state = defaultState, action) {
   switch (action.type)
   {
     // ------------------------------------------------------------------------
+
+    case library.SAVE:
+      return {
+        ...state,
+        phraseId: action.payload.phraseId,
+      }
+
     case phrase.LOAD:
       return u({
         phraseId: action.payload.id,
@@ -150,6 +157,11 @@ export default function reducePhraseMeta(state = defaultState, action) {
         noteSelectionOffsetKey: null,
         noteSelectionOffsetSnap: true,
       }, state)
+
+    // ------------------------------------------------------------------------
+
+    case phrase.NEW_PHRASE:
+      return defaultState
 
     // ------------------------------------------------------------------------
     default:

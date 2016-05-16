@@ -6,7 +6,8 @@ export const librarySave = () => {
   return async (dispatch, getState) => {
     let phraseState = getState().phrase
     let { phraseId } = await api({ endpoint: `save`, body: { phraseState }})
-    dispatch({ type: library.SAVE })
+    console.log(phraseId)
+    dispatch({ type: library.SAVE, payload: { phraseId } })
     dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
   }
 }

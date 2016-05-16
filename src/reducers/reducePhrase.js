@@ -11,14 +11,15 @@ import { getOffsetedTrackID,
        } from 'helpers/trackHelpers'
 import { negativeModulus } from 'helpers/intervalHelpers'
 import { push } from 'react-router-redux'
+import { ActionCreators as UndoActions } from 'redux-undo'
 
 // ============================================================================
 // Phrase Action Creators
 // ============================================================================
 export const phraseRename = (name) => ({ type: phrase.RENAME, name })
-export const phraseCreateTrack = () => {
+export const phraseCreateTrack = (actionConfig) => {
   return (dispatch, getState) => {
-    dispatch({ type: phrase.CREATE_TRACK })
+    dispatch({ type: phrase.CREATE_TRACK, ...actionConfig })
 
     // Take measurements after the new track is created, adjust height
     let state = getState()
@@ -133,6 +134,15 @@ export const phraseLoadFromDb = phraseId => {
     }
   }
 }
+
+export const phraseNewPhrase = () => {
+  return dispatch => {
+    dispatch({ type: phrase.NEW_PHRASE })
+    dispatch(phraseCreateTrack({ meta: `autosaveIgnore` }))
+    dispatch(phraseCreateTrack({ meta: `autosaveIgnore` }))
+  }
+}
+
 // ============================================================================
 // Phrase Reducer
 // ============================================================================
@@ -307,6 +317,11 @@ export default function reducePhrase(state = defaultState, action) {
           })
         },
       }, state)
+
+    // ------------------------------------------------------------------------
+
+    case phrase.NEW_PHRASE:
+      return defaultState
 
     // ------------------------------------------------------------------------
     default:

@@ -1,15 +1,52 @@
 import React from 'react'
+import { push } from 'react-router-redux'
+import { phraseNewPhrase } from 'reducers/reducePhrase'
 import HeaderSearch from 'components/HeaderSearch.js'
 import UserNavigation from 'components/UserNavigation.js'
 import { connect } from 'react-redux'
 
-let handleNewPhraseClick = (dispatch, params) => {
-  if (params.phraseId) {
+let handleNewPhraseClick = ({
+  dispatch,
+  params,
+  phrase,
+}) => {
 
+  // If not logged in:
+
+  if (!localStorage.userId) {
+
+    // If on existing phrase
+
+    if (params.phraseId) {
+      dispatch(phraseNewPhrase())
+      dispatch(push(`/phrase/new`))
+      localStorage.removeItem('reduxPersist:phrase')
+      localStorage.removeItem('reduxPersist:phraseMeta')
+    }
+
+    else {
+      if (phrase.past.length) alert(`you're gonna lose your stuff bro, login first!`)
+      else {
+        dispatch(phraseNewPhrase())
+        dispatch(push(`/phrase/new`))
+      }
+    }
+  }
+
+  // logged in:
+
+  else {
+    dispatch(phraseNewPhrase())
+    dispatch(push(`/phrase/new`))
   }
 }
 
-let Header = ({ dispatch, ...props }) => {
+let Header = ({
+  dispatch,
+  phrase,
+  params,
+  ...props,
+}) => {
   let theme = 'solid' || props.theme
   let headerClasses = "header"
       headerClasses += (theme === 'solid') ? ' header-solid' : ''
@@ -24,7 +61,7 @@ let Header = ({ dispatch, ...props }) => {
           <div className="btn-group">
             <a
               className={buttonClasses}
-              onClick={() => handleNewPhraseClick(dispatch, props.params)}
+              onClick={() => handleNewPhraseClick({ dispatch, params, phrase })}
             >
               <span>+ </span>
               <span className="fa fa-file" />
@@ -39,4 +76,4 @@ let Header = ({ dispatch, ...props }) => {
   )
 }
 
-export default connect()(Header)
+export default connect(state => ({ phrase: state.phrase }))(Header)
