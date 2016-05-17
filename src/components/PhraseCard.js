@@ -19,7 +19,7 @@ let PhraseCard = (props) => {
   let timestamp = Moment(props.phrase.saved_date).fromNow()
 
   return (
-    <div className="story-phrase" onClick={(e) => handleClick(e, props)}>
+    <div className="story-phrase" onClick={() => handleClick(props)} onDoubleClick={() => handleDoubleClick(props)}>
       {/*
       <div className="story-phrase-transport">
         <button className="btn btn-dark story-phrase-play" onClick={handleClick}>
@@ -74,12 +74,18 @@ let PhraseCard = (props) => {
 
 export default connect()(PhraseCard)
 
-let handleClick = (e, props) => {
+let handleClick = (props) => {
   let { dispatch, phrase } = props
   dispatch(phraseLoadFromMemory({
     id: phrase.id,
     name: phrase.phrasename,
+    username: phrase.username,
+    dateCreated: phrase.saved_date,
     state: phrase.state,
   }))
+}
+
+let handleDoubleClick = (props) => {
+  let { dispatch, phrase } = props
   dispatch(push(`/phrase/${phrase.username}/${phrase.id}`))
 }

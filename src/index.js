@@ -38,7 +38,13 @@ const finalCreateStore = compose(
 
 const STORE = finalCreateStore(finalReducer)
 
-persistStore(STORE, { whitelist: [ `phrase`, `phraseMeta` ] }, () => {
+const persistConfig = {
+  whitelist: [
+    `phrase`,
+    `phraseMeta`
+  ]
+}
+persistStore(STORE, persistConfig, () => {
   // Setup initial state - 2 tracks by default
   let state = STORE.getState()
   if (!state.phrase || state.phrase.past.length === 0 && state.phrase.present.tracks.length === 0) {
@@ -60,6 +66,7 @@ const ENGINE = createAudioEngine(STORE)
 // APPLICATION ENTRY POINT
 // ============================================================================
 import App from 'components/App.js'
+import Workstation from 'components/Workstation.js'
 import Library from 'components/Library.js'
 import UserProfile from 'components/UserProfile.js'
 import About from 'components/About.js'
@@ -76,15 +83,15 @@ window.onload = () => {
         <Router history={HISTORY}>
           <Route path="/" component={App}>
             <IndexRoute phraseMode={false} component={Library} />
-            <Route phraseOpen={false} path="/search" component={Library} />
-            <Route phraseOpen={false} path="/search/:searchTerm" component={Library} />
-            <Route phraseOpen={false} path="/user/:userId" component={UserProfile} />
-            <Route phraseOpen={true}  path="/phrase/new" />
-            <Route phraseOpen={true}  path="/phrase/:username/:phraseId" />
-            <Route phraseOpen={true}  path="/phrase/:username/:phraseId/:phrasename" />
-            <Route phraseOpen={false} path="/about" component={About} />
-            <Route phraseOpen={false} path="/developers" component={About} />
-            <Route phraseOpen={false} path="*" component={Error404} />
+            <Route path="/search" component={Library} />
+            <Route path="/search/:searchTerm" component={Library} />
+            <Route path="/user/:userId" component={UserProfile} />
+            <Route path="/phrase/new" component={Workstation} />
+            <Route path="/phrase/:username/:phraseId" component={Workstation} />
+            <Route path="/phrase/:username/:phraseId/:phrasename" component={Workstation} />
+            <Route path="/about" component={About} />
+            <Route path="/developers" component={About} />
+            <Route path="*" component={Error404} />
           </Route>
         </Router>
 

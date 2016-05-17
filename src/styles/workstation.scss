@@ -1,7 +1,7 @@
 $workstation-minimize-transition: 0.125s;
 $workstation-mixer-width: 240px;
 $workstation-mixer-z-index: 200;          // Above Page
-$workstation-header-top: 55px + 3px;
+$workstation-header-top: 3px; //55px + 3px;
 $workstation-header-height: 110px;
 $workstation-header-z-index: 300;         // Above Page & Mixer
 $workstation-clip-width: 240px;
@@ -19,6 +19,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   right: 0;
   height: 100%;
 
+  background: #222;
   color: #CCC;
 
   overflow: hidden;

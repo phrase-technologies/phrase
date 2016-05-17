@@ -17,8 +17,7 @@ $library-header-height: 60px;
 }
 .library-body {
   position: absolute;
-  // top: $library-header-height;
-  top: 0;
+  top: $library-header-height;
   left: 0;
   right: 0;
   bottom: 0;
@@ -38,6 +37,11 @@ $library-header-height: 60px;
 
   border-left: 1px solid #DDD;
 }
+.library-selection-pane-start {
+  padding: 15px;
+  background: #EEE;
+  font-size: 18px;
+}
 .library-selection-pane-end {
   padding: 15px 15px 25px;
 }
@@ -52,5 +56,26 @@ $library-header-height: 60px;
 
   border-left: 1px solid #DDD;
   border-right: 1px solid #DDD;
+  padding: 30px;
   text-align: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.library-preview-phrase-title {
+  font-size: 24px;
+  margin: 0 0 10px;
+}
+.library-preview-phrase-author {
+  font-size: 16px;
+  margin: 0 0 20px;
+}
+.library-preview-transport {
+  margin: 0 0 20px;
+}
+.library-preview-timestamp {
+  font-size: 11px;
+  color: #888;
+  margin-top: 10px;
 }

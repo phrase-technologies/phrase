@@ -105,13 +105,15 @@ export const phraseDropNoteSelection = () => {
     dispatch({ type: phrase.DROP_NOTE_SELECTION, noteIDs, offsetStart, offsetEnd, offsetKey })
   }
 }
-export const phraseLoadFromMemory = ({ id, name, state }) => {
+export const phraseLoadFromMemory = ({ id, name, username, dateCreated, state }) => {
   return {
     type: phrase.LOAD,
     payload: {
       id,
       name,
-      state
+      username,
+      dateCreated,
+      state,
     }
   }
 }
@@ -125,6 +127,8 @@ export const phraseLoadFromDb = phraseId => {
         payload: {
           id: phraseId,
           name: loadedPhrase.phrasename,
+          username: loadedPhrase.username,
+          dateCreated: loadedPhrase.saved_date,
           state: loadedPhrase.state,
         }
       })

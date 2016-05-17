@@ -13,6 +13,11 @@ $story-corner: 5px;
   border-bottom: 1px solid #DDD;
   margin-top: -1px;
 
+  &:first-child {
+    margin-top: 0;
+    border-top-color: transparent;
+  }
+
   &:last-child {
     border-bottom: 0;
   }
@@ -27,6 +32,7 @@ $story-corner: 5px;
 
   .story-track-name {
     margin-bottom: 3px;
+    font-weight: normal;
   }
 
   // Rephrase button
@@ -36,12 +42,11 @@ $story-corner: 5px;
     }
   }
 
-  &:active,
   &.active {
-    border-color: $input-border-focus;
-    border-left: 1px solid $input-border-focus;
-    border-right: 1px solid $input-border-focus;
-    background: lighten($input-border-focus, 20%);
+    border-color: #AAA;
+    border-left: 1px solid #AAA;
+    border-right: 1px solid #AAA;
+    background: #DDD;
     z-index: 2;
   }
   &:hover,
@@ -51,6 +56,16 @@ $story-corner: 5px;
     &.active {
       background: lighten($input-border-focus, 20%);
     }
+  }
+}
+.stories {
+  .story-phrase:active,
+  &:focus .story-phrase.active {
+    border-color: $input-border-focus;
+    border-left: 1px solid $input-border-focus;
+    border-right: 1px solid $input-border-focus;
+    background: lighten($input-border-focus, 20%);
+    z-index: 2;
   }
 }
 .story-phrase-transport {
@@ -63,7 +78,7 @@ $story-corner: 5px;
   width: 40px;
 }
 .story-phrase-info {
-  display: table-cell;
+  // display: table-cell; // Needed to offset against button/pic on the left
 }
 .story-phrase-rephrase {
   border-color: transparent;
@@ -83,6 +98,7 @@ $story-corner: 5px;
 .stories {
   padding-left: 0;
   margin: 0;
+  outline: none;
 }
 .story {
   list-style: none;

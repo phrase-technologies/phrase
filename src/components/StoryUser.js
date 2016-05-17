@@ -27,7 +27,7 @@ export default class StoryUser extends Component {
 }
 
 StoryUser.propTypes = {
-  userPhoto:    React.PropTypes.string.isRequired,
-  userName:     React.PropTypes.string.isRequired,
+  userPhoto:    React.PropTypes.string,
+  userName:     React.PropTypes.string,
   mode:         React.PropTypes.oneOf(['text','icon','full',null])
 }

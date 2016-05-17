@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 
 import { layoutConsoleSplit } from 'actions/actionsLayout'
 
@@ -11,14 +12,12 @@ import Pianoroll from './Pianoroll'
 export class Workstation extends Component {
 
   render() {
-    let workstationClasses = "workstation disable-select"
-        workstationClasses += this.props.maximized ? ' workstation-maximized' : ''
     let minimizeMixer = this.props.consoleSplitRatio < 0.2 && this.props.focusedTrack !== null
     let minimizeClipEditor = this.props.consoleSplitRatio > 0.8 || this.props.focusedTrack === null
 
     return (
-      <div className={workstationClasses}>
-        <WorkstationHeader maximize={this.maximize} maximized={this.props.maximized} />
+      <div className="workstation workstation-maximized disable-select">
+        <WorkstationHeader />
         <div className="workstation-body">
           <div className="workstation-main" style={this.getMainSplit()}>
             <div className="workstation-mixer" style={this.getMixerSplit()}>
@@ -40,15 +39,6 @@ export class Workstation extends Component {
         </div>
       </div>
     )
-  }
-
-  maximize = () => {
-    // Do nothing if already maximized
-    if (this.props.maximized)
-      return
-
-    let phraseURL = localStorage.getItem('lastOpenPhrase') || '/phrase/new'
-    this.context.router.push(phraseURL)
   }
 
   setConsoleSplit = (ratio) => {
@@ -86,10 +76,12 @@ export class Workstation extends Component {
     }
 
     let propsToCheck = [
+      'phraseId',
+      'phraseName',
+      'authorUsername',
       'focusedTrack',
       'consoleEmbedded',
       'consoleSplitRatio',
-      'maximized'
     ]
     return propsToCheck.some(prop => nextProps[prop] !== this.props[prop])
   }
@@ -101,6 +93,9 @@ Workstation.contextTypes = {
 
 function mapStateToProps(state) {
   return {
+    phraseId: state.phraseMeta.phraseId,
+    phraseName: state.phraseMeta.phraseName,
+    authorUsername: state.phraseMeta.authorUsername,
     focusedTrack: state.pianoroll.currentTrack,
     consoleEmbedded:   state.navigation.consoleEmbedded,
     consoleSplitRatio: state.navigation.consoleSplitRatio

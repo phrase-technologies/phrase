@@ -103,11 +103,10 @@ body {
   top: $header-height;
   left: 0;
   right: 0;
-  bottom: 55px;
+  bottom: 0;
 
   background: transparent;
   padding: 0;
-  border-bottom: 1px solid #000;
 
   overflow: auto;
   z-index: 1; // Under the Header (1)

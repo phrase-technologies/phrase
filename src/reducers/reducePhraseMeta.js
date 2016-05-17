@@ -18,6 +18,8 @@ import { phrase, pianoroll, library } from '../actions/actions.js'
 export const defaultState = {
   phraseId: null,
   phraseName: null,
+  authorUsername: null,
+  dateCreated: null,
   clipSelectionIDs: [],
   clipSelectionTargetID: null,
   clipSelectionOffsetStart: null,
@@ -44,10 +46,13 @@ export default function reducePhraseMeta(state = defaultState, action) {
         phraseId: action.payload.phraseId,
       }
 
+    // ------------------------------------------------------------------------
     case phrase.LOAD:
       return u({
         phraseId: action.payload.id,
         phraseName: action.payload.name,
+        authorUsername: action.payload.username,
+        dateCreated: action.payload.dateCreated,
       }, defaultState)  // Clear everything else to default!
 
     // ------------------------------------------------------------------------

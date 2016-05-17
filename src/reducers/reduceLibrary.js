@@ -6,7 +6,6 @@ export const librarySave = () => {
   return async (dispatch, getState) => {
     let phraseState = getState().phrase
     let { phraseId } = await api({ endpoint: `save`, body: { phraseState }})
-    console.log(phraseId)
     dispatch({ type: library.SAVE, payload: { phraseId } })
     dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
   }
@@ -22,7 +21,7 @@ export const libraryLoadAll = () => {
 export const librarySearch = value => ({ type: library.SEARCH, payload: value })
 
 let defaultState = {
-  phrases: [],
+  phrases: null, // null => loading, [] => 0 results
   searchTerm: ``,
 }
 
