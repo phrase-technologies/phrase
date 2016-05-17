@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { libraryLoadAll } from 'reducers/reduceLibrary'
+import { libraryLoadAll, librarySearch } from 'reducers/reduceLibrary'
 
 export class HeaderSearch extends Component {
 
@@ -14,8 +14,11 @@ export class HeaderSearch extends Component {
       <div className="btn-group">
         <div className="header-search-wrapper">
           <input
-            className={searchClasses} type="text"
-            placeholder="Search Phrases" ref={(ref) => this.inputField = ref}
+            className={searchClasses}
+            type="text"
+            placeholder="Search Phrases"
+            ref={(ref) => this.inputField = ref}
+            onChange={() => this.props.dispatch(librarySearch(this.inputField.value))}
             onFocus={this.searchFocus}
           />
           <span className="header-search-icon fa fa-search" />
@@ -50,7 +53,6 @@ export class HeaderSearch extends Component {
         break
       // ESCAPE - Return to Phrase Editor
       case 27:
-
     }
   }
 

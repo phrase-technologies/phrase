@@ -59,6 +59,7 @@ export const library = namespaceActions(
   [
     'SAVE',
     'LOAD_ALL',
+    'SEARCH',
   ]
 )
 

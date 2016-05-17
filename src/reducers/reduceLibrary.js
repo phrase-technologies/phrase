@@ -19,8 +19,11 @@ export const libraryLoadAll = () => {
   }
 }
 
+export const librarySearch = value => ({ type: library.SEARCH, payload: value })
+
 let defaultState = {
-  phrases: []
+  phrases: [],
+  searchTerm: ``,
 }
 
 export default function reduceLibrary(state = defaultState, action) {
@@ -28,7 +31,14 @@ export default function reduceLibrary(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case library.LOAD_ALL:
       return {
+        ...state,
         phrases: action.payload
+      }
+
+    case library.SEARCH:
+      return {
+        ...state,
+        searchTerm: action.payload,
       }
 
     // ------------------------------------------------------------------------

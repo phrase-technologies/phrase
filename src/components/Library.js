@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import PhraseCard from 'components/PhraseCard.js'
 import Helmet from "react-helmet"
 
-export let Library = ({ phrases, dispatch }) => {
-  let searchTerm = "Blah"
+export let Library = ({ phrases, searchTerm, dispatch }) => {
 
   return (
     <div className="library">
@@ -26,7 +25,9 @@ export let Library = ({ phrases, dispatch }) => {
           <div className="library-selection-pane">
             <ul className="stories">
               {
-                phrases.map((phrase) => {
+                phrases
+                  .filter(p => searchTerm ? (p.phrasename || ``).includes(searchTerm) : true)
+                  .map((phrase) => {
                   return (
                     <PhraseCard
                       phrase={phrase}
