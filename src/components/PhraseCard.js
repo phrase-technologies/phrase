@@ -7,6 +7,8 @@ import { push } from 'react-router-redux'
 import { phraseLoadFromMemory } from 'reducers/reducePhrase'
 
 let PhraseCard = (props) => {
+  let storyPhraseClasses = "story-phrase"
+      storyPhraseClasses += props.active ? " active" : ""
   let trackName = props.phrase.phrasename
     ? (<span>{props.phrase.phrasename} </span>)
     : (<em>Untitled phrase </em>)
@@ -19,7 +21,7 @@ let PhraseCard = (props) => {
   let timestamp = Moment(props.phrase.saved_date).fromNow()
 
   return (
-    <div className="story-phrase" onClick={() => handleClick(props)} onDoubleClick={() => handleDoubleClick(props)}>
+    <div className={storyPhraseClasses} onClick={() => handleClick(props)} onDoubleClick={() => handleDoubleClick(props)}>
       {/*
       <div className="story-phrase-transport">
         <button className="btn btn-dark story-phrase-play" onClick={handleClick}>

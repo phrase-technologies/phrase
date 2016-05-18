@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import { phraseLoadFromMemory } from 'reducers/reducePhrase'
 
 import Helmet from "react-helmet"
 import Moment from 'moment'
@@ -60,15 +61,19 @@ export class Library extends Component {
         </div>
       )
 
-    return phrases.map((phrase) => (
-      <PhraseCard
-        phrase={phrase}
-        plays={125}
-        likes={2}
-        comments={1}
-        key={phrase.id}
-      />
-    )).concat(
+    return phrases.map((phrase) => {
+      let active = phrase.id === this.props.phraseId
+      return (
+        <PhraseCard
+          phrase={phrase}
+          active={active}
+          plays={125}
+          likes={2}
+          comments={1}
+          key={phrase.id}
+        />
+      )
+    }).concat(
       <div className="library-selection-pane-end text-center" key="end">
         <span className="fa fa-anchor" style={{ color: '#CCC' }} />
       </div>
@@ -148,21 +153,44 @@ export class Library extends Component {
     )
   }
 
-  handleClickPrev() {
-    alert("Prev TODO!")
+  handleClickPrev = () => {
+    let activePhraseIndex = this.props.phrases.findIndex(phrase => {
+      return phrase.id === this.props.phraseId
+    })
+
+    // Already at beginning, do nothing
+    if (activePhraseIndex === 0)
+      return
+
+    // Load previous Phrase
+    let previousPhrase = this.props.phrases[activePhraseIndex-1]
+    this.props.dispatch(phraseLoadFromMemory({
+      id: previousPhrase.id,
+      name: previousPhrase.phrasename,
+      username: previousPhrase.username,
+      dateCreated: previousPhrase.saved_date,
+      state: previousPhrase.state,
+    }))
   }
 
-  handleClickNext() {
-    alert("Next TODO!")
-    /*
-    dispatch(phraseLoadFromMemory({
-      id: phrase.id,
-      name: phrase.phrasename,
-      username: phrase.username,
-      dateCreated: phrase.saved_date,
-      state: phrase.state,
+  handleClickNext = () => {
+    let activePhraseIndex = this.props.phrases.findIndex(phrase => {
+      return phrase.id === this.props.phraseId
+    })
+
+    // Already at end, do nothing
+    if (activePhraseIndex === this.props.phrases.length - 1)
+      return
+
+    // Load next Phrase
+    let nextPhrase = this.props.phrases[activePhraseIndex+1]
+    this.props.dispatch(phraseLoadFromMemory({
+      id: nextPhrase.id,
+      name: nextPhrase.phrasename,
+      username: nextPhrase.username,
+      dateCreated: nextPhrase.saved_date,
+      state: nextPhrase.state,
     }))
-    */
   }
 
 }
