@@ -69,7 +69,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 }
 .workstation-divider {
   margin: 10px auto 6px;
-  width: 90%;
+  width: 100%;
   height: 4px;
   background-image:
     radial-gradient(at top, #000, transparent, transparent);
@@ -114,7 +114,9 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   display: inline-block;
   position: relative;
 
+  // Pencil
   > span {
+    display: none;  // Temporarily hide
     position: absolute;
     top: 12px;
     right: 8px;
@@ -126,7 +128,9 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   padding: 4px 8px;
   height: 25px;
   font-size: 16px;
-  padding-right: 25px;
+
+  // For Pencil icon
+  // padding-right: 25px;
 
   // Placeholders (MUST INDIVIDUALLY SPECIFIED TO WORK)
   &::-webkit-input-placeholder {
@@ -163,7 +167,12 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   border-radius: 50%;
   width: 25px;
   height: 25px;
-  margin-bottom: 3px;
+  margin-bottom: 1px;
+
+  // If no image, use text initials
+  background: #000;
+  color: #FFF;
+  font-size: 14px;
 
   + .workstation-header-profile-pic {
     margin-left: -7px;

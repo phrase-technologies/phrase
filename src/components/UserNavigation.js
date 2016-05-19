@@ -58,9 +58,9 @@ let loggedIn = ({ user, dispatch }) => {
   let userProfileUri = `/user/${user.username}`
 
   return (
-    <Dropdown id="header-user-navigation-dropdown" pullRight style={{ marginTop: 5 }}>
+    <Dropdown id="header-user-navigation-dropdown" pullRight style={{ marginTop: 7 }}>
       <a className="dropdown-toggle" bsRole="toggle">
-        <img className="header-user-profile-pic" src={profileImageUrl} />
+        {/*<img className="header-user-profile-pic" src={profileImageUrl} />*/}
         <span className="header-user-name">{user.username || user.email} <span className="caret" /></span>
       </a>
       <Dropdown.Menu>

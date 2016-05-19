@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
 import { modalOpen } from 'reducers/reduceModal.js'
-import ansonImage from '../img/user/anson-kao.jpg'
-import deadmau5Image from '../img/user/deadmau5.jpg'
+// import ansonImage from '../img/user/anson-kao.jpg'
 
 export class WorkstationHeaderAuthor extends Component {
   render() {
@@ -19,7 +18,8 @@ export class WorkstationHeaderAuthor extends Component {
   renderNoAuthor() {
     return (
       <a className="link-dark workstation-header-author" onClick={this.login}>
-        <em> by Unknown</em>
+        <span style={{ paddingRight: 5 }}> by </span>
+        <em> Unknown</em>
       </a>
     )
   }
@@ -30,8 +30,8 @@ export class WorkstationHeaderAuthor extends Component {
 
     return (
       <Link className="link-dark workstation-header-author" to={profileUri}>
-        <span> by </span>
-        <img className="workstation-header-profile-pic" src={author.image} />
+        <span style={{ paddingRight: 5 }}> by </span>
+        {/*<img className="workstation-header-profile-pic" src={author.image} />*/}
         <span> {author.username}</span>
         {/*<span className="caret" />*/}
       </Link>
@@ -61,17 +61,21 @@ export class WorkstationHeaderAuthor extends Component {
   }
 }
 
-WorkstationHeaderAuthor.defaultProps = {
-  authors: [
-    {
-      username: "anson_kao",
-      image: ansonImage,
-    },
-    // {
-    //   username: "deadmau5",
-    //   image: deadmau5Image,
-    // },
-  ]
+function mapStateToProps(state) {
+  let authors = []
+
+  // Existing Phrase
+  if (state.phraseMeta.phraseId) {
+    authors.push({ username: state.phraseMeta.authorUsername })
+  }
+
+  // New Phrase and Logged in
+  else if (state.auth.user.username)
+    authors.push({ username: state.auth.user.username })
+
+  return {
+    authors
+  }
 }
 
-export default connect()(WorkstationHeaderAuthor)
+export default connect(mapStateToProps)(WorkstationHeaderAuthor)
