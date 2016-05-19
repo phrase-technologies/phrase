@@ -80,7 +80,12 @@ export let logout = () => {
 let intialState = {
   loggedIn: !!localStorage.token,
   requestingAuth: false,
-  user: { email: localStorage.email },
+  user: {
+    id: localStorage.id,
+    email: localStorage.email,
+    password: localStorage.password,
+    username: localStorage.username,
+  },
   errorMessage: null,
 }
 
