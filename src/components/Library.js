@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { phraseLoadFromMemory } from 'reducers/reducePhrase'
+import { transportPlayToggle } from '../reducers/reduceTransport.js'
 
 import Helmet from "react-helmet"
 import Moment from 'moment'
@@ -110,6 +111,8 @@ export class Library extends Component {
     // Preview Phrase
     let { dispatch, phraseId, authorUsername } = this.props
     let timestamp = Moment(this.props.dateCreated).fromNow()
+    let playIconClasses = "fa fa-fw fa-2x "
+        playIconClasses += this.props.playing ? " fa-pause" : " fa-play"
 
     return (
       <div className="library-preview-phrase">
@@ -124,8 +127,8 @@ export class Library extends Component {
             <button className="btn btn-link" onClick={this.handleClickPrev}>
               <span className="fa fa-fw fa-2x fa-backward" />
             </button>
-            <button className="btn btn-link">
-              <span className="fa fa-fw fa-2x fa-play" />
+            <button className="btn btn-link" onClick={this.handleTogglePlay}>
+              <span className={playIconClasses} />
             </button>
             <button className="btn btn-link" onClick={this.handleClickNext}>
               <span className="fa fa-fw fa-2x fa-forward" />
@@ -173,6 +176,10 @@ export class Library extends Component {
     }))
   }
 
+  handleTogglePlay = () => {
+    this.props.dispatch(transportPlayToggle())
+  }
+
   handleClickNext = () => {
     let activePhraseIndex = this.props.phrases.findIndex(phrase => {
       return phrase.id === this.props.phraseId
@@ -203,6 +210,7 @@ function mapStateToProps(state) {
     phraseName: state.phraseMeta.phraseName,
     authorUsername: state.phraseMeta.authorUsername,
     dateCreated: state.phraseMeta.dateCreated,
+    playing: state.transport.playing,
   }
 }
 
