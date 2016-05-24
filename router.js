@@ -67,7 +67,7 @@ export default ({ app, db }) => {
   api.post(`/update`, async (req, res) => {
     let { phraseId, phraseName, phraseState, userId } = req.body
 
-    if (userId === req.decoded.userId) {
+    if (userId === req.decoded.id) {
       try {
         let result = await r.table(`phrases`).get(phraseId).update({
           phrasename: phraseName,
