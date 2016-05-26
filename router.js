@@ -9,10 +9,16 @@ export default ({ app, db }) => {
 
   api.post(`/load`, async (req, res) => {
     try {
-      let cursor = await r.table(`phrases`).run(db)
+      let cursor = await r
+        .table(`phrases`)
+        .eqJoin(`userId`, r.table(`users`))
+        .without({right: [`id`, `password`, `email`]})
+        .zip()
+        .run(db)
       let phrases = await cursor.toArray()
       res.json({ phrases })
     } catch (error) {
+      console.log(`/load:`, chalk.magenta(err))
       res.json({ error })
     }
   })
@@ -21,6 +27,8 @@ export default ({ app, db }) => {
     let { phraseId } = req.body
     try {
       let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
+      let phraseAuthor = await r.table(`users`).get(loadedPhrase.userId).run(db)
+      loadedPhrase.username = phraseAuthor.username
       res.json({ loadedPhrase })
 
       console.log(chalk.cyan(
@@ -28,22 +36,20 @@ export default ({ app, db }) => {
       ))
 
     } catch (error) {
+      console.log(`/loadOne:`, chalk.magenta(err))
       res.json({ error })
     }
   })
 
   api.post(`/save`, async (req, res) => {
-    let { phraseState, email = `guest`, username } = req.body
+    let { phraseState, phraseName, userId } = req.body
     try {
-      let phrasename = null
-
       let result = await r.table(`phrases`).insert({
         state: phraseState,
         public: true,
         saved_date: +new Date(),
-        phrasename,
-        username,
-        email,
+        phrasename: phraseName,
+        userId,
       }).run(db)
 
       console.log(chalk.cyan(
@@ -53,7 +59,7 @@ export default ({ app, db }) => {
       res.json({ message: `Project Saved!`, phraseId: result.generated_keys[0] })
 
     } catch (err) {
-      console.log(err)
+      console.log(`/save:`, chalk.magenta(err))
       res.json({ error: true, message: `something went wrong!` })
     }
   })
@@ -69,26 +75,33 @@ export default ({ app, db }) => {
 
     if (userId === req.decoded.id) {
       try {
-        let result = await r.table(`phrases`).get(phraseId).update({
+        let phrase = await r.table(`phrases`).get(phraseId)
+
+        // Edit Permissions?
+        let authorId = await phrase.getField(`userId`).run(db)
+        if (authorId !== userId)
+          throw Error(`You do not have permission to edit this Phrase.`)
+
+        let result = await phrase.update({
           phrasename: phraseName,
           state: phraseState,
           saved_date: +new Date(),
         }).run(db)
 
         console.log(chalk.cyan(
-          `Phrase ${phraseId} ${!result.skipped ? `updated!` : `not found!`}`
+          `Phrase ${phraseId} ${!result.skipped ? `Updated!` : `Not found!`}`
         ))
 
-        res.json({ message: `autosave success` })
+        res.json({ message: `Autosave success.` })
       }
       catch (error) {
-        console.log(chalk.magenta(error))
+        console.log(`/update:`, chalk.magenta(error))
         res.json({ error })
       }
     }
 
     else {
-      res.json({ message: `Not authorized!` })
+      res.json({ message: `Please login in order to make changes.` })
     }
   })
 
