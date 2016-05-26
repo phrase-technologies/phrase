@@ -47,7 +47,8 @@ export default ({ app, db }) => {
       let result = await r.table(`phrases`).insert({
         state: phraseState,
         public: true,
-        saved_date: +new Date(),
+        dateCreated: +new Date(),
+        dateModified: +new Date(),
         phrasename: phraseName,
         userId,
       }).run(db)
@@ -85,7 +86,7 @@ export default ({ app, db }) => {
         let result = await phrase.update({
           phrasename: phraseName,
           state: phraseState,
-          saved_date: +new Date(),
+          dateModified: +new Date(),
         }).run(db)
 
         console.log(chalk.cyan(
