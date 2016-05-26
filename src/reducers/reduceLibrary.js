@@ -19,6 +19,7 @@ export const librarySaveNew = () => {
         phraseId,
         authorUsername: getState().auth.user.username,
         dateCreated: Date.now(),
+        dateModified: Date.now(),
       }
     })
     dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))

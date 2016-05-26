@@ -117,7 +117,8 @@ export class Library extends Component {
 
     // Preview Phrase
     let { dispatch, phraseId, authorUsername } = this.props
-    let timestamp = Moment(this.props.dateCreated).fromNow()
+    let dateCreated = Moment(this.props.dateCreated).fromNow().toString()
+    let dateModified = Moment(this.props.dateModified).fromNow().toString()
     let playIconClasses = "fa fa-fw fa-2x "
         playIconClasses += this.props.playing ? " fa-pause" : " fa-play"
 
@@ -157,7 +158,9 @@ export class Library extends Component {
           </div>
         </div>
         <div className="library-preview-timestamp">
-          {"Created " + timestamp.toString()}
+          {"Last changed " + dateModified}
+          <br/>
+          {"Created " + dateCreated}
         </div>
       </div>
     )
@@ -178,7 +181,8 @@ export class Library extends Component {
       id: previousPhrase.id,
       name: previousPhrase.phrasename,
       username: previousPhrase.username,
-      dateCreated: previousPhrase.saved_date,
+      dateCreated: previousPhrase.dateCreated,
+      dateModified: previousPhrase.dateModified,
       state: previousPhrase.state,
     }))
   }
@@ -202,7 +206,8 @@ export class Library extends Component {
       id: nextPhrase.id,
       name: nextPhrase.phrasename,
       username: nextPhrase.username,
-      dateCreated: nextPhrase.saved_date,
+      dateCreated: nextPhrase.dateCreated,
+      dateModified: nextPhrase.dateModified,
       state: nextPhrase.state,
     }))
   }
@@ -217,6 +222,7 @@ function mapStateToProps(state) {
     phraseName: state.phraseMeta.phraseName,
     authorUsername: state.phraseMeta.authorUsername,
     dateCreated: state.phraseMeta.dateCreated,
+    dateModified: state.phraseMeta.dateModified,
     playing: state.transport.playing,
   }
 }

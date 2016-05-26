@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Numeral from 'numeral'
 import Moment from 'moment'
 import StoryUser from './StoryUser.js'
 import { push } from 'react-router-redux'
@@ -18,7 +17,7 @@ let PhraseCard = (props) => {
   let numLikes      = Numeral(props.likes).format('0,0[.][0]')    + ((props.likes    === 1) ? ' like'    : ' likes')
   let numComments   = Numeral(props.comments).format('0,0[.][0]') + ((props.comments === 1) ? ' comment' : ' comments')
   */
-  let timestamp = Moment(props.phrase.saved_date).fromNow()
+  let dateModified = Moment(props.phrase.dateModified).fromNow().toString()
 
   return (
     <div className={storyPhraseClasses} onClick={() => handleClick(props)} onDoubleClick={() => handleDoubleClick(props)}>
@@ -46,7 +45,7 @@ let PhraseCard = (props) => {
             userName={props.phrase.username}
           />
           <span className="separator-bullet"> &bull; </span>
-          <span className="story-user-timestamp">{timestamp.toString()}</span>
+          <span className="story-user-timestamp">{dateModified}</span>
         </div>
         {/*
         <div className="story-stats">
@@ -82,7 +81,8 @@ let handleClick = (props) => {
     id: phrase.id,
     name: phrase.phrasename,
     username: phrase.username,
-    dateCreated: phrase.saved_date,
+    dateCreated: phrase.dateCreated,
+    dateModified: phrase.dateModified,
     state: phrase.state,
   }))
 }

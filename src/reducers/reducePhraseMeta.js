@@ -22,6 +22,7 @@ export const defaultState = {
   phraseName: null,
   authorUsername: null,
   dateCreated: null,
+  dateModified: null,
   clipSelectionIDs: [],
   clipSelectionTargetID: null,
   clipSelectionOffsetStart: null,
@@ -48,6 +49,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
         phraseId: action.payload.phraseId,
         authorUsername: action.payload.authorUsername,
         dateCreated: action.payload.dateCreated,
+        dateModified: action.payload.dateModified,
       }, state)
 
     // ------------------------------------------------------------------------
@@ -64,6 +66,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
         phraseName: action.payload.name,
         authorUsername: action.payload.username,
         dateCreated: action.payload.dateCreated,
+        dateModified: action.payload.dateModified,
       }, defaultState)  // Clear everything else to default!
 
     // ------------------------------------------------------------------------
@@ -76,7 +79,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
     case phrase.SAVE_FINISH:
       return u({
         saving: false,
-        dateCreated: action.payload.timestamp,
+        dateModified: action.payload.timestamp,
       }, state)
 
     // ------------------------------------------------------------------------

@@ -122,7 +122,7 @@ function mapStateToProps(state) {
     pristine: !state.phrase.past.length && !state.phrase.future.length,
     existingPhrase: state.phraseMeta.phraseId,
     saving: state.phraseMeta.saving,
-    lastSavedTimestamp: state.phraseMeta.dateCreated,
+    lastSavedTimestamp: state.phraseMeta.dateModified,
   }
 }
 
