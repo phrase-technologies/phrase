@@ -16,6 +16,8 @@ import { phrase, pianoroll, library } from '../actions/actions.js'
 //
 
 export const defaultState = {
+  loading: true,
+  saving: false,
   phraseId: null,
   phraseName: null,
   authorUsername: null,
@@ -40,20 +42,42 @@ export default function reducePhraseMeta(state = defaultState, action) {
   {
     // ------------------------------------------------------------------------
 
-    case library.SAVE:
-      return {
-        ...state,
+    case library.SAVE_NEW:
+      return u({
+        saving: "DO_NOT_RELOAD",
         phraseId: action.payload.phraseId,
-      }
+        authorUsername: action.payload.authorUsername,
+        dateCreated: action.payload.dateCreated,
+      }, state)
 
     // ------------------------------------------------------------------------
-    case phrase.LOAD:
+    case phrase.LOAD_START:
       return u({
+        loading: true,
+      }, defaultState)  // Clear everything else to default!
+
+    // ------------------------------------------------------------------------
+    case phrase.LOAD_FINISH:
+      return u({
+        loading: false,
         phraseId: action.payload.id,
         phraseName: action.payload.name,
         authorUsername: action.payload.username,
         dateCreated: action.payload.dateCreated,
       }, defaultState)  // Clear everything else to default!
+
+    // ------------------------------------------------------------------------
+    case phrase.SAVE_START:
+      return u({
+        saving: true,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.SAVE_FINISH:
+      return u({
+        saving: false,
+        dateCreated: action.payload.timestamp,
+      }, state)
 
     // ------------------------------------------------------------------------
     case phrase.RENAME:
@@ -164,9 +188,16 @@ export default function reducePhraseMeta(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
-
     case phrase.NEW_PHRASE:
-      return defaultState
+      return u({
+        loading: true,
+      }, defaultState)
+
+    // ------------------------------------------------------------------------
+    case phrase.NEW_PHRASE_LOADED:
+      return u({
+        loading: false,
+      }, state)
 
     // ------------------------------------------------------------------------
     default:

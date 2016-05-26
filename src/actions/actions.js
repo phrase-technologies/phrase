@@ -49,15 +49,19 @@ export const phrase = namespaceActions(
     'DRAG_NOTE_SELECTION',
     'DROP_CLIP_SELECTION',
     'DROP_NOTE_SELECTION',
-    'LOAD',
+    'LOAD_START',
+    'LOAD_FINISH',
+    'SAVE_START',
+    'SAVE_FINISH',
     'NEW_PHRASE',
+    'NEW_PHRASE_LOADED',
   ]
 )
 
 export const library = namespaceActions(
   `library`,
   [
-    'SAVE',
+    'SAVE_NEW',
     'LOAD_ALL',
     'SEARCH',
   ]

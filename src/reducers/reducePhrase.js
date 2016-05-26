@@ -107,7 +107,7 @@ export const phraseDropNoteSelection = () => {
 }
 export const phraseLoadFromMemory = ({ id, name, username, dateCreated, state }) => {
   return {
-    type: phrase.LOAD,
+    type: phrase.LOAD_FINISH,
     payload: {
       id,
       name,
@@ -119,11 +119,11 @@ export const phraseLoadFromMemory = ({ id, name, username, dateCreated, state })
 }
 export const phraseLoadFromDb = phraseId => {
   return async (dispatch) => {
+    dispatch({ type: phrase.LOAD_START })
     let { loadedPhrase } = await api({ endpoint: `loadOne`, body: { phraseId } })
-
     if (loadedPhrase) {
       dispatch({
-        type: phrase.LOAD,
+        type: phrase.LOAD_FINISH,
         payload: {
           id: phraseId,
           name: loadedPhrase.phrasename,
@@ -134,35 +134,27 @@ export const phraseLoadFromDb = phraseId => {
       })
     } else {
       console.error('phraseLoadFromDb() Failed!')
-      dispatch(push(`/`))
     }
   }
 }
-
+export const phraseSaveStart  = () => ({ type: phrase.SAVE_START  })
+export const phraseSaveFinish = () => ({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
 export const phraseNewPhrase = () => {
   return dispatch => {
+    dispatch(push(`/phrase/new`))
     dispatch({ type: phrase.NEW_PHRASE })
-    dispatch(phraseCreateTrack({ meta: `autosaveIgnore` }))
-    dispatch(phraseCreateTrack({ meta: `autosaveIgnore` }))
+    dispatch(UndoActions.clearHistory())
+    localStorage.removeItem('reduxPersist:phrase')
+    localStorage.removeItem('reduxPersist:phraseMeta')
+    setTimeout(() => {
+      dispatch({ type: phrase.NEW_PHRASE_LOADED })
+    }, 256)
   }
 }
 
 // ============================================================================
 // Phrase Reducer
 // ============================================================================
-export const defaultState = {
-  barCount: 16.00,
-  tempo: 120,
-  tracks: [],
-  clips: [],
-  notes: [],
-  trackAutoIncrement: 0,
-  colorAutoIncrement: 0,
-  noteAutoIncrement:  0,
-  clipAutoIncrement:  0,
-  noteLengthLast: 0.25
-}
-
 const TRACK_COLORS = [
   '#F53',
   '#F80',
@@ -178,25 +170,25 @@ const TRACK_COLORS = [
   '#F4A'
 ]
 
+export const defaultState = reduceCreateTrack(reduceCreateTrack({
+  barCount: 16.00,
+  tempo: 120,
+  tracks: [],
+  clips: [],
+  notes: [],
+  trackAutoIncrement: 0,
+  colorAutoIncrement: 0,
+  noteAutoIncrement:  0,
+  clipAutoIncrement:  0,
+  noteLengthLast: 0.25
+}, {}), {})
+
 export default function reducePhrase(state = defaultState, action) {
   switch (action.type)
   {
     // ------------------------------------------------------------------------
     case phrase.CREATE_TRACK:
-      return u({
-        tracks: uAppend(
-          {
-            id: state.trackAutoIncrement,
-            name: action.name || 'Track '+(state.trackAutoIncrement+1),
-            color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
-            arm:  false,
-            mute: false,
-            solo: false
-          }
-        ),
-        trackAutoIncrement: state.trackAutoIncrement+1,
-        colorAutoIncrement: state.colorAutoIncrement+1
-      }, state)
+      return reduceCreateTrack(state, action)
 
     // ------------------------------------------------------------------------
     case phrase.ARM_TRACK:
@@ -331,6 +323,23 @@ export default function reducePhrase(state = defaultState, action) {
     default:
       return state
   }
+}
+
+function reduceCreateTrack(state, action) {
+  return u({
+    tracks: uAppend(
+      {
+        id: state.trackAutoIncrement,
+        name: action.name || 'Track '+(state.trackAutoIncrement+1),
+        color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
+        arm:  false,
+        mute: false,
+        solo: false
+      }
+    ),
+    trackAutoIncrement: state.trackAutoIncrement+1,
+    colorAutoIncrement: state.colorAutoIncrement+1
+  }, state)
 }
 
 function reduceCreateClip(state, action) {

@@ -26,6 +26,11 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   z-index: 2; // Over the Body (1) and below the Header (3)
   pointer-events: none;
 
+  // Vertically center loading icon
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   // Use CSS translations (CPU Optimized) for smooth minimization and maximization
   transition: transform $workstation-minimize-transition;
   transform: translateY(- $workstation-header-top - $workstation-header-height + 55px);

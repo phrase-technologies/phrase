@@ -3,25 +3,12 @@ import { connect } from 'react-redux'
 import Helmet from "react-helmet"
 
 import Header from 'components/Header'
-import Workstation from 'components/Workstation'
 import CursorProvider from 'components/CursorProvider.js'
 import HotkeyProvider from 'components/HotkeyProvider.js'
 
 import * as AllModals from 'components/modals'
 
-import { libraryLoadAll } from 'reducers/reduceLibrary'
-import { phraseLoadFromDb } from 'reducers/reducePhrase'
-
 export class App extends Component {
-  componentDidMount() {
-    let { dispatch, params } = this.props
-    dispatch(libraryLoadAll())
-
-    // Attempt to load user's phrase from url.
-    if (params.phraseId) {
-      dispatch(phraseLoadFromDb(params.phraseId))
-    }
-  }
 
   render() {
     let ActiveModal = this.props.activeModal ? AllModals[this.props.activeModal] : 'div'

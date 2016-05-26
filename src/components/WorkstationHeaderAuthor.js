@@ -65,9 +65,8 @@ function mapStateToProps(state) {
   let authors = []
 
   // Existing Phrase
-  if (state.phraseMeta.phraseId) {
+  if (state.phraseMeta.phraseId)
     authors.push({ username: state.phraseMeta.authorUsername })
-  }
 
   // New Phrase and Logged in
   else if (state.auth.user.username)

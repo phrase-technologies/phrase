@@ -28,13 +28,13 @@ import { REHYDRATE } from 'redux-persist/constants'
 function rehydratePhrase (reducer) {
   return (state, action) => {
     switch (action.type) {
-      case REHYDRATE:
-        return action.payload.phrase
-          ? { ...action.payload.phrase }
-          : reducer(state, action)
-
-      case phrase.LOAD:
-        return {
+      // case REHYDRATE:
+      //   return action.payload.phrase
+      //     ? { ...action.payload.phrase }
+      //     : reducer(state, action)
+      //
+      case phrase.LOAD_FINISH:  // Can't do this in the reducePhrase branch,
+        return {                // payload.state encapsulates undo history
           ...action.payload.state
         }
 
@@ -47,10 +47,10 @@ function rehydratePhrase (reducer) {
 function rehydratePhraseMeta (reducer) {
   return (state, action) => {
     switch (action.type) {
-      case REHYDRATE:
-        return action.payload.phraseMeta
-          ? { ...action.payload.phraseMeta }
-          : reducer(state, action)
+      // case REHYDRATE:
+      //   return action.payload.phraseMeta
+      //     ? { ...action.payload.phraseMeta }
+      //     : reducer(state, action)
 
       default:
         return reducer(state, action)

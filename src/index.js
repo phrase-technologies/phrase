@@ -17,13 +17,16 @@ import { Provider as StoreProvider } from 'react-redux'
 import EngineProvider from 'audio/AudioEngineProvider.js'
 import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
-import { Router, Route, IndexRoute, browserHistory } from 'react-router'
+import { Router, Route, IndexRoute, useRouterHistory } from 'react-router'
+import { createHistory, useBeforeUnload } from 'history'
 import { phraseCreateTrack } from 'reducers/reducePhrase.js'
 
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import finalReducer from './reducers/reduce.js'
 import { ActionCreators as UndoActions } from 'redux-undo'
 import { persistStore } from 'redux-persist'
+
+const browserHistory = useBeforeUnload(useRouterHistory(createHistory))()
 
 import autosave from 'middleware/autosave'
 

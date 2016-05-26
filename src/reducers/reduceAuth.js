@@ -1,7 +1,7 @@
 import { login as loginHelper, signup as signupHelper } from 'helpers/authHelpers'
 import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
-import { librarySave } from 'reducers/reduceLibrary'
+import { librarySaveNew } from 'reducers/reduceLibrary'
 
 // ============================================================================
 // Authentication Action Creators
@@ -20,8 +20,9 @@ export let login = ({ email, password }) => {
           },
         })
 
-        if (getState().phrase.past.length) {
-          dispatch(librarySave())
+        let phraseState = getState().phrase
+        if (phraseState.past.length || phraseState.future.length) {
+          dispatch(librarySaveNew())
         }
       }
 
@@ -47,8 +48,9 @@ export let signup = ({ email, username, password }) => {
           },
         })
 
-        if (getState().phrase.past.length) {
-          dispatch(librarySave())
+        let phraseState = getState().phrase
+        if (phraseState.past.length || phraseState.future.length) {
+          dispatch(librarySaveNew())
         }
       }
 
@@ -125,6 +127,7 @@ export default (state = intialState, action) => {
     case auth.LOGOUT:
       return {
         loggedIn: false,
+        user: {},
         errorMessage: null,
       }
 

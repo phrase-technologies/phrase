@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+
+import { libraryLoadAll } from 'reducers/reduceLibrary'
 import { phraseLoadFromMemory } from 'reducers/reducePhrase'
 import { transportPlayToggle } from '../reducers/reduceTransport.js'
 
@@ -11,6 +13,11 @@ import { searchResultsSelector } from 'selectors/selectorLibrary.js'
 import PhraseCard from 'components/PhraseCard.js'
 
 export class Library extends Component {
+
+  componentDidMount() {
+    let { dispatch } = this.props
+    dispatch(libraryLoadAll())
+  }
 
   render() {
     let { phrases, searchTerm } = this.props

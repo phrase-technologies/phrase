@@ -1,13 +1,28 @@
 import { library } from 'actions/actions'
 import { api } from 'helpers/ajaxHelpers'
 import { push } from 'react-router-redux'
+import { phrase } from '../actions/actions.js'
 
-export const librarySave = () => {
+export const librarySaveNew = () => {
   return async (dispatch, getState) => {
-    let phraseState = getState().phrase
-    let { phraseId } = await api({ endpoint: `save`, body: { phraseState }})
-    dispatch({ type: library.SAVE, payload: { phraseId } })
+    let { phraseId } = await api({
+      endpoint: `save`,
+      body: {
+        phraseState: getState().phrase,
+        phraseName: getState().phraseMeta.phraseName,
+      }
+    })
+
+    dispatch({
+      type: library.SAVE_NEW,
+      payload: {
+        phraseId,
+        authorUsername: getState().auth.user.username,
+        dateCreated: Date.now(),
+      }
+    })
     dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
+    dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
   }
 }
 

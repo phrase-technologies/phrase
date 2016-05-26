@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { withRouter } from 'react-router'
 
+import { phraseLoadFromDb, phraseNewPhrase } from 'reducers/reducePhrase'
 import { layoutConsoleSplit } from 'actions/actionsLayout'
 
 import WorkstationHeader from './WorkstationHeader'
@@ -11,7 +12,35 @@ import Pianoroll from './Pianoroll'
 
 export class Workstation extends Component {
 
+  componentDidMount() {
+    let { dispatch, params } = this.props
+
+    // Load existing phrase from URL param
+    if (params.phraseId)
+      dispatch(phraseLoadFromDb(params.phraseId))
+
+    // Load brand new phrase
+    else
+      this.props.dispatch(phraseNewPhrase())
+
+    // Set Leave Hook ("You have unsaved changes!")
+    this.props.router.setRouteLeaveHook(this.props.route, this.leaveHook)
+  }
+
   render() {
+    if (this.props.loading) {
+      return (
+        <div className="workstation workstation-maximized disable-select text-center">
+          <div className="workstation-loading text-center">
+            <span className="fa fa-music fa-2x" />
+            <p style={{ marginTop: 15 }}>
+              Loading Phrase...
+            </p>
+          </div>
+        </div>
+      )
+    }
+
     let minimizeMixer = this.props.consoleSplitRatio < 0.2 && this.props.focusedTrack !== null
     let minimizeClipEditor = this.props.consoleSplitRatio > 0.8 || this.props.focusedTrack === null
 
@@ -39,6 +68,39 @@ export class Workstation extends Component {
         </div>
       </div>
     )
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // Phrase ID Changed!
+    if (nextProps.params.phraseId !== this.props.params.phraseId) {
+
+      // Phrase changed because of autosaving new phrase - do not interrupt!
+      // let pristine = this.props.phrase.past.length + this.props.phrase.future.length === 0
+      if (nextProps.params.phraseId && !this.props.params.phraseId && nextProps.autosaving === "DO_NOT_RELOAD")
+        return
+
+      // Load existing phrase from URL param
+      if (nextProps.params.phraseId)
+        this.props.dispatch(phraseLoadFromDb(nextProps.params.phraseId))
+
+      // New phrase - clear the slate if necessary
+      else if (!nextProps.params.phraseId && nextProps.phraseId)
+        this.props.dispatch(phraseNewPhrase())
+
+    }
+  }
+
+  leaveHook = () => {
+    let pristine = this.props.phrase.past.length + this.props.phrase.future.length === 0
+    let newPhrasePage = !this.props.params.phraseId
+
+    return newPhrasePage && !pristine && this.props.autosaving !== "DO_NOT_RELOAD"
+      ? `Your Phrase is not saved and changes will be lost. ${this.props.route.path}`
+      : null
+  }
+
+  componentDidUpdate() {
+    this.props.router.setRouteLeaveHook(this.props.route, this.leaveHook)
   }
 
   setConsoleSplit = (ratio) => {
@@ -76,6 +138,8 @@ export class Workstation extends Component {
     }
 
     let propsToCheck = [
+      'loading',
+      'phrase',
       'phraseId',
       'phraseName',
       'authorUsername',
@@ -87,12 +151,11 @@ export class Workstation extends Component {
   }
 }
 
-Workstation.contextTypes = {
-  router: React.PropTypes.object.isRequired
-}
-
 function mapStateToProps(state) {
   return {
+    loading: state.phraseMeta.loading,
+    autosaving: state.phraseMeta.saving,
+    phrase: state.phrase,
     phraseId: state.phraseMeta.phraseId,
     phraseName: state.phraseMeta.phraseName,
     authorUsername: state.phraseMeta.authorUsername,
@@ -102,4 +165,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(Workstation)
+export default withRouter(connect(mapStateToProps)(Workstation))

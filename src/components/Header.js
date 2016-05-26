@@ -1,5 +1,4 @@
 import React from 'react'
-import { push } from 'react-router-redux'
 import { phraseNewPhrase } from 'reducers/reducePhrase'
 import HeaderSearch from 'components/HeaderSearch.js'
 import UserNavigation from 'components/UserNavigation.js'
@@ -10,34 +9,13 @@ let handleNewPhraseClick = ({
   params,
   phrase,
 }) => {
+  let loggedIn = localStorage.userId
+  let existingPhrase = params.phraseId
+  let unsavedChanges = phrase.past.length || phrase.future.length
+  let resetWarning = "Are you sure you want to discard your unsaved phrase, bro?"
 
-  // If not logged in:
-
-  if (!localStorage.userId) {
-
-    // If on existing phrase
-
-    if (params.phraseId) {
-      dispatch(phraseNewPhrase())
-      dispatch(push(`/phrase/new`))
-      localStorage.removeItem('reduxPersist:phrase')
-      localStorage.removeItem('reduxPersist:phraseMeta')
-    }
-
-    else {
-      if (phrase.past.length) alert(`you're gonna lose your stuff bro, login first!`)
-      else {
-        dispatch(phraseNewPhrase())
-        dispatch(push(`/phrase/new`))
-      }
-    }
-  }
-
-  // logged in:
-
-  else {
+  if (loggedIn || existingPhrase || !unsavedChanges || confirm(resetWarning)) {
     dispatch(phraseNewPhrase())
-    dispatch(push(`/phrase/new`))
   }
 }
 
