@@ -33,9 +33,14 @@ export default ({
 
       try {
 
-        let user = await r.table(`users`).get(email).run(db)
+        let userByEmailResults = await r
+          .table(`users`)
+          .getAll(email, { index: `email` })
+          .limit(1)
+          .run(db)
+        let userByEmail = await userByEmailResults.toArray()
 
-        if (user) {
+        if (userByEmail.length) {
           res.json({
             success: false,
             message: { emailError: `An account with this email already exists.` },
@@ -46,12 +51,14 @@ export default ({
             message: { usernameError: `Invalid username.` },
           })
         } else {
-          let cursor = await r.table(`users`)
-            .getAll(username, { index: `username` }).limit(1).run(db)
+          let userByUsernameResults = await r
+            .table(`users`)
+            .getAll(username, { index: `username` })
+            .limit(1)
+            .run(db)
+          let userByUsername = await userByUsernameResults.toArray()
 
-          let users = await cursor.toArray()
-          //
-          if (users.length) {
+          if (userByUsername.length) {
             res.json({
               success: false,
               message: { usernameError: `Sorry, the username "${username}" is taken.` },
