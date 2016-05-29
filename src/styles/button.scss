@@ -110,6 +110,25 @@ a,
   }
 }
 
+.btn-facebook {
+  background-image: linear-gradient(to bottom, #4B68B9, #3B55A1);
+  color: #FFF;
+
+  &.disabled,
+  &[disabled] {
+    color: #AAA !important;
+  }
+}
+.btn-twitter {
+  background-image: linear-gradient(to bottom, #1B95E0, #0B72B1);
+  color: #FFF;
+
+  &.disabled,
+  &[disabled] {
+    color: #AAA !important;
+  }
+}
+
 // When against a light background, reduce contrast
 .btn-light-bg {
   border-color: #777;

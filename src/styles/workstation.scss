@@ -118,6 +118,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 .workstation-header-title-wrapper {
   display: inline-block;
   position: relative;
+  height: 35px;
 
   // Pencil
   > span {
@@ -130,6 +131,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   }
 }
 .workstation-header-title {
+  border: 1px solid transparent;
   padding: 4px 8px;
   height: 25px;
   font-size: 16px;

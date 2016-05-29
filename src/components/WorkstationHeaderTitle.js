@@ -4,6 +4,7 @@ import AutosizeInput from 'react-input-autosize'
 import { phraseRename } from 'reducers/reducePhrase.js'
 
 export class WorkstationHeaderTitle extends Component {
+
   constructor(props) {
     super()
     this.state = {
@@ -12,6 +13,18 @@ export class WorkstationHeaderTitle extends Component {
   }
 
   render() {
+    // Read only Title
+    if (!this.props.currentUsername || this.props.currentUsername !== this.props.authorUsername) {
+      return (
+        <div className="workstation-header-title-wrapper">
+          <div className="workstation-header-title">
+            { this.props.title || (<em>Untitled Phrase</em>) }
+          </div>
+        </div>
+      )
+    }
+
+    // Editable Title
     return (
       <div className="workstation-header-title-wrapper">
         <AutosizeInput inputClassName="form-control form-control-glow workstation-header-title"
@@ -35,11 +48,14 @@ export class WorkstationHeaderTitle extends Component {
   handleBlur = (e) => {
     this.props.dispatch(phraseRename(e.target.value))
   }
+
 }
 
 function mapStateToProps(state) {
   return {
     title: state.phraseMeta.phraseName,
+    authorUsername: state.phraseMeta.authorUsername,
+    currentUsername: state.auth.user.username,
   }
 }
 

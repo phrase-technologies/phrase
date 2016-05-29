@@ -2,7 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 
-import { phraseLoadFromDb, phraseNewPhrase } from 'reducers/reducePhrase'
+import { phrase } from 'actions/actions'
+import { phraseLoadFromDb,
+         phraseNewPhrase,
+         phraseLoginReminder,
+         phraseRephraseReminder,
+       } from 'reducers/reducePhrase'
 import { layoutConsoleSplit } from 'actions/actionsLayout'
 
 import WorkstationHeader from './WorkstationHeader'
@@ -29,12 +34,20 @@ export class Workstation extends Component {
 
   render() {
     if (this.props.loading) {
+      let loadingMessage
+      switch (this.props.loading) {
+        default:
+        case phrase.LOAD_START: loadingMessage = "Loading Phrase..."; break
+        case phrase.REPHRASE:   loadingMessage = "Generating Rephrase..."; break
+        case phrase.NEW_PHRASE: loadingMessage = "Loading blank Phrase..."; break
+      }
+
       return (
         <div className="workstation workstation-maximized disable-select text-center">
           <div className="workstation-loading text-center">
             <span className="fa fa-music fa-2x" />
             <p style={{ marginTop: 15 }}>
-              Loading Phrase...
+              { loadingMessage }
             </p>
           </div>
         </div>
@@ -75,8 +88,7 @@ export class Workstation extends Component {
     if (nextProps.params.phraseId !== this.props.params.phraseId) {
 
       // Phrase changed because of autosaving new phrase - do not interrupt!
-      // let pristine = this.props.phrase.past.length + this.props.phrase.future.length === 0
-      if (nextProps.params.phraseId && !this.props.params.phraseId && nextProps.autosaving === "DO_NOT_RELOAD")
+      if (nextProps.autosaving === "DO_NOT_RELOAD")
         return
 
       // Load existing phrase from URL param
@@ -86,17 +98,31 @@ export class Workstation extends Component {
       // New phrase - clear the slate if necessary
       else if (!nextProps.params.phraseId && nextProps.phraseId)
         this.props.dispatch(phraseNewPhrase())
-
     }
   }
 
   leaveHook = () => {
-    let pristine = this.props.phrase.past.length + this.props.phrase.future.length === 0
+    let pristine = this.props.pristine
     let newPhrasePage = !this.props.params.phraseId
 
-    return newPhrasePage && !pristine && this.props.autosaving !== "DO_NOT_RELOAD"
-      ? `Your Phrase is not saved and changes will be lost. ${this.props.route.path}`
-      : null
+    let unsavedChanges = !pristine && this.props.autosaving !== "DO_NOT_RELOAD"
+    if (unsavedChanges) {
+
+      // Unlogged-in user, new phrase
+      if (newPhrasePage) {
+        this.props.dispatch(phraseLoginReminder({ show: true }))
+        return "Your Phrase is not saved and changes will be lost."
+      }
+
+      // Modifying existing phrase, not with write permission
+      else if (this.props.authorUsername !== this.props.currentUsername) {
+        this.props.dispatch(phraseRephraseReminder({ show: true }))
+        return "Your modifications to this Phrase are not saved and changes will be lost."
+      }
+    }
+
+    // Nothing to discard, just leave
+    return null
   }
 
   componentDidUpdate() {
@@ -139,6 +165,8 @@ export class Workstation extends Component {
 
     let propsToCheck = [
       'loading',
+      'autosaving',
+      'pristine',
       'phrase',
       'phraseId',
       'phraseName',
@@ -155,10 +183,12 @@ function mapStateToProps(state) {
   return {
     loading: state.phraseMeta.loading,
     autosaving: state.phraseMeta.saving,
+    pristine: state.phraseMeta.pristine,
     phrase: state.phrase,
     phraseId: state.phraseMeta.phraseId,
     phraseName: state.phraseMeta.phraseName,
     authorUsername: state.phraseMeta.authorUsername,
+    currentUsername: state.auth.user.username,
     focusedTrack: state.pianoroll.currentTrack,
     consoleEmbedded:   state.navigation.consoleEmbedded,
     consoleSplitRatio: state.navigation.consoleSplitRatio

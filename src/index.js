@@ -89,8 +89,8 @@ window.onload = () => {
             <Route path="/search" component={Library} />
             <Route path="/search/:searchTerm" component={Library} />
             <Route path="/user/:userId" component={UserProfile} />
-            <Route path="/phrase/new" component={Workstation} />
-            <Route path="/phrase/:username/:phraseId" component={Workstation} />
+            <Route path="/phrase/new" component={Workstation} maximize={true} />
+            <Route path="/phrase/:username/:phraseId" component={Workstation} maximize={true} />
             <Route path="/phrase/:username/:phraseId/:phrasename" component={Workstation} />
             <Route path="/about" component={About} />
             <Route path="/developers" component={About} />

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import { ActionCreators as UndoActions } from 'redux-undo'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import Moment from 'moment'
@@ -7,7 +6,7 @@ import Moment from 'moment'
 import { modalOpen } from 'reducers/reduceModal.js'
 import { isMacPlatform } from 'helpers/localizationHelpers.js'
 
-export class WorkstationHeaderStorage extends Component {
+export default class WorkstationHeaderStorage extends Component {
 
   render() {
     let UndoTooltip = isMacPlatform()
@@ -45,21 +44,8 @@ export class WorkstationHeaderStorage extends Component {
         </div>
         <div className="btn-group">
           { this.renderStatus() }
-          { this.renderSave() }
         </div>
       </div>
-    )
-  }
-
-  renderSave() {
-    if (this.props.existingPhrase || this.props.pristine)
-      return null
-
-    return (
-      <button className="btn btn-bright" style={{ borderRadius: 18 }} onClick={this.login}>
-        <span className="fa fa-save" />
-        <span> Save</span>
-      </button>
     )
   }
 
@@ -76,14 +62,16 @@ export class WorkstationHeaderStorage extends Component {
       }
 
       // Save completed
-      let timestamp = (Date.now() - this.props.lastSavedTimestamp < 1000) // Just saved?
-                    ? "Autosaved."
-                    : `Last change: ${Moment(this.props.lastSavedTimestamp).calendar().toString()}`
-      return (
-        <a className="btn btn-link link-dark">
-          <span className="text-warning">{timestamp}</span>
-        </a>
-      )
+      if (this.props.pristine) {
+        let timestamp = (Date.now() - this.props.lastSavedTimestamp < 1000) // Just saved?
+                      ? "Autosaved."
+                      : `Last change: ${Moment(this.props.lastSavedTimestamp).calendar().toString()}`
+        return (
+          <a className="btn btn-link link-dark">
+            <span className="text-warning">{timestamp}</span>
+          </a>
+        )
+      }
     }
 
     // Unsaved
@@ -114,16 +102,3 @@ export class WorkstationHeaderStorage extends Component {
     }))
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    undoable: state.phrase.past.length,
-    redoable: state.phrase.future.length,
-    pristine: !state.phrase.past.length && !state.phrase.future.length,
-    existingPhrase: state.phraseMeta.phraseId,
-    saving: state.phraseMeta.saving,
-    lastSavedTimestamp: state.phraseMeta.dateModified,
-  }
-}
-
-export default connect(mapStateToProps)(WorkstationHeaderStorage)

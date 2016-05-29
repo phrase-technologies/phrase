@@ -16,6 +16,8 @@ $border-radius-small: 2px;
 
 $alert-padding: 5px 10px;
 
+$popover-arrow-width: 5px;
+
 // ============================================================================
 // Bootstrap
 // ============================================================================
@@ -63,7 +65,7 @@ $alert-padding: 5px 10px;
 // Components w/ JavaScript
 @import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_modals.scss";
 @import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_tooltip.scss";
-//@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_popovers.scss";
+@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_popovers.scss";
 //@import "./../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_carousel.scss";
 
 // Utility classes

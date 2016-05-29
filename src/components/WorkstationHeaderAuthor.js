@@ -17,10 +17,12 @@ export class WorkstationHeaderAuthor extends Component {
 
   renderNoAuthor() {
     return (
-      <a className="link-dark workstation-header-author" onClick={this.login}>
+      <span>
         <span style={{ paddingRight: 5 }}> by </span>
-        <em> Unknown</em>
-      </a>
+        <a className="link-dark workstation-header-author" onClick={this.login}>
+          <em> Unknown</em>
+        </a>
+      </span>
     )
   }
 
@@ -29,12 +31,14 @@ export class WorkstationHeaderAuthor extends Component {
     let profileUri = `/user/${author.username}`
 
     return (
-      <Link className="link-dark workstation-header-author" to={profileUri}>
+      <span>
         <span style={{ paddingRight: 5 }}> by </span>
-        {/*<img className="workstation-header-profile-pic" src={author.image} />*/}
-        <span> {author.username}</span>
-        {/*<span className="caret" />*/}
-      </Link>
+        <Link className="link-dark workstation-header-author" to={profileUri}>
+          {/*<img className="workstation-header-profile-pic" src={author.image} />*/}
+          <span> {author.username}</span>
+          {/*<span className="caret" />*/}
+        </Link>
+      </span>
     )
   }
 
@@ -42,15 +46,17 @@ export class WorkstationHeaderAuthor extends Component {
     let authors = this.props.authors
 
     return (
-      <a className="link-dark workstation-header-author" href="#">
-        <span> by </span>
-        { authors.map((author, id) => {
-          return (
-            <img className="workstation-header-profile-pic" src={author.image} key={id} />
-          )
-        })}
-        {/*<span className="caret" />*/}
-      </a>
+      <span>
+        <span style={{ paddingRight: 5 }}> by </span>
+        <a className="link-dark workstation-header-author" href="#">
+          { authors.map((author, id) => {
+            return (
+              <img className="workstation-header-profile-pic" src={author.image} key={id} />
+            )
+          })}
+          {/*<span className="caret" />*/}
+        </a>
+      </span>
     )
   }
 

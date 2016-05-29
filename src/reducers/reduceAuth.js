@@ -2,6 +2,7 @@ import { login as loginHelper, signup as signupHelper } from 'helpers/authHelper
 import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
 import { librarySaveNew } from 'reducers/reduceLibrary'
+import { phraseSave } from 'reducers/reducePhrase'
 
 // ============================================================================
 // Authentication Action Creators
@@ -20,9 +21,12 @@ export let login = ({ email, password }) => {
           },
         })
 
-        let phraseState = getState().phrase
-        if (phraseState.past.length || phraseState.future.length) {
-          dispatch(librarySaveNew())
+        let { phraseId: existingPhrase, pristine } = getState().phraseMeta
+        if (!pristine) {
+          if (existingPhrase)
+            dispatch(phraseSave())
+          else
+            dispatch(librarySaveNew())
         }
       }
 

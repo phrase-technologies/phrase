@@ -1,7 +1,5 @@
-import { phrase } from 'actions/actions'
 import { librarySaveNew } from 'reducers/reduceLibrary'
-import { phraseSaveStart, phraseSaveFinish } from 'reducers/reducePhrase'
-import { api } from 'helpers/ajaxHelpers'
+import { phraseSave, phrasePristine } from 'reducers/reducePhrase'
 
 let autosave = store => next => action => {
 
@@ -9,28 +7,26 @@ let autosave = store => next => action => {
   let result = next(action)
   let newState = store.getState()
 
-  // Autosaving requires being logged in
-  if (!localStorage.userId || localStorage.userId === 'undefined')
-    return result
+  // Phrase Changes?
+  if (hasPhraseBeenModified({ oldState, newState })) {
 
-  // Only update if an existing phrase has been modified
-  if (hasPhraseBeenModified({ action, oldState, newState })) {
-    store.dispatch(phraseSaveStart())
-    api({
-      endpoint: `update`,
-      body: {
-        phraseId: newState.phraseMeta.phraseId,
-        phraseName: newState.phraseMeta.phraseName,
-        phraseState: newState.phrase,
-      },
-    }).then(() => {
-      store.dispatch(phraseSaveFinish())
-    })
-  }
+    // Mark as dirty
+    store.dispatch(phrasePristine({ pristine: false }))
 
-  // If you're logged in and make an edit to a new phrase, save it right away
-  else if (isFirstEditToNewPhrase({ oldState, newState })) {
-    store.dispatch(librarySaveNew())
+    let existingPhrase = newState.phraseMeta.phraseId
+    let loggedIn = localStorage.userId && localStorage.userId !== 'undefined'
+    let writePermission = localStorage.username === newState.phraseMeta.authorUsername
+
+    // Only update if an existing phrase has been modified
+    if (existingPhrase && loggedIn && writePermission) {
+      console.log("autosave", action)
+      store.dispatch(phraseSave())
+    }
+
+    // If you're logged in and make an edit to a new phrase, save it right away
+    else if (!existingPhrase && loggedIn) {
+      store.dispatch(librarySaveNew())
+    }
   }
 
   return result
@@ -46,32 +42,14 @@ export default autosave
 // ============================================================================
 
 // Detect if there is actually something to update.
-export function hasPhraseBeenModified({ action, oldState, newState }) {
+export function hasPhraseBeenModified({ oldState, newState }) {
   // Ignore phrase loads (that look like edits)
-  if (action.type === phrase.LOAD_FINISH)
+  if (oldState.phraseMeta.loading || newState.phraseMeta.loading)
     return false
 
-  let oldId = oldState.phraseMeta.phraseId
-  let oldName = oldState.phraseMeta.phraseName
-  let newId = newState.phraseMeta.phraseId
-  let newName = newState.phraseMeta.phraseName
-
-  let idUnchanged = newId === oldId // Ignore if we are just switching phrases
-  let nameChanged = newName !== oldName // Pick up on name changes (broken out into phraseMeta branch)
+  let idUnchanged = newState.phraseMeta.phraseId === oldState.phraseMeta.phraseId // Ignore if we are just switching phrases
+  let nameChanged = newState.phraseMeta.phraseName !== oldState.phraseMeta.phraseName // Pick up on name changes (broken out into phraseMeta branch)
   let stateChanged = newState.phrase !== oldState.phrase // Has the phrase actually changed?
 
-  return newId && idUnchanged && (stateChanged || nameChanged)
-}
-
-// Detect if a blank phrase has been modified (and ready to generate a unique phrase ID)
-export function isFirstEditToNewPhrase({ oldState, newState }) {
-  return (
-    !oldState.phraseMeta.loading &&
-    !newState.phraseMeta.loading &&
-    !newState.phraseMeta.phraseId &&
-    (
-      newState.phrase !== oldState.phrase ||
-      newState.phraseMeta.phraseName
-    )
-  )
+  return idUnchanged && (stateChanged || nameChanged)
 }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
 import { libraryLoadAll } from 'reducers/reduceLibrary'
-import { phraseLoadFromMemory } from 'reducers/reducePhrase'
+import { phraseLoadFromMemory, phraseRephrase } from 'reducers/reducePhrase'
 import { transportPlayToggle } from '../reducers/reduceTransport.js'
 
 import Helmet from "react-helmet"
@@ -147,10 +147,10 @@ export class Library extends Component {
           <div className="btn-group" style={{ marginRight: 5 }}>
             <button className="btn btn-bright" onClick={() => dispatch(push(`/phrase/${authorUsername}/${phraseId}`))}>
               <span className="fa fa-external-link" />
-              <span> Open</span>
+              <span> Open Phrase</span>
             </button>
           </div>
-          <div className="btn-group" onClick={() => alert("TODO")}>
+          <div className="btn-group" onClick={() => dispatch(phraseRephrase())}>
             <button className="btn btn-dark">
               <span className="fa fa-code-fork" />
               <span> Rephrase</span>

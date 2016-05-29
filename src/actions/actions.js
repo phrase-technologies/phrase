@@ -55,6 +55,10 @@ export const phrase = namespaceActions(
     'SAVE_FINISH',
     'NEW_PHRASE',
     'NEW_PHRASE_LOADED',
+    'REPHRASE',
+    'LOGIN_REMINDER',
+    'REPHRASE_REMINDER',
+    'PRISTINE',
   ]
 )
 

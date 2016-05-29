@@ -18,11 +18,14 @@ import { phrase, pianoroll, library } from '../actions/actions.js'
 export const defaultState = {
   loading: true,
   saving: false,
+  pristine: true,
   phraseId: null,
   phraseName: null,
   authorUsername: null,
   dateCreated: null,
   dateModified: null,
+  loginReminder: false,
+  rephraseReminder: false,
   clipSelectionIDs: [],
   clipSelectionTargetID: null,
   clipSelectionOffsetStart: null,
@@ -55,7 +58,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.LOAD_START:
       return u({
-        loading: true,
+        loading: action.type,
       }, defaultState)  // Clear everything else to default!
 
     // ------------------------------------------------------------------------
@@ -78,7 +81,9 @@ export default function reducePhraseMeta(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.SAVE_FINISH:
       return u({
+        loading: false,
         saving: false,
+        pristine: true,
         dateModified: action.payload.timestamp,
       }, state)
 
@@ -193,13 +198,43 @@ export default function reducePhraseMeta(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:
       return u({
-        loading: true,
+        loading: action.type,
       }, defaultState)
 
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE_LOADED:
       return u({
         loading: false,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.REPHRASE:
+      return u({
+        pristine: true,
+        saving: "REPHRASE",
+        loading: action.type,
+        phraseId: null,
+        authorUsername: action.payload.authorUsername,
+        loginReminder: !action.payload.authorUsername,
+        rephraseReminder: false,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.LOGIN_REMINDER:
+      return u({
+        loginReminder: action.payload.show,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.REPHRASE_REMINDER:
+      return u({
+        rephraseReminder: action.payload.show,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.PRISTINE:
+      return u({
+        pristine: action.payload.pristine,
       }, state)
 
     // ------------------------------------------------------------------------

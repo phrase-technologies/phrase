@@ -28,12 +28,14 @@ let Header = ({
   let theme = 'solid' || props.theme
   let headerClasses = "header"
       headerClasses += (theme === 'solid') ? ' header-solid' : ''
+  let containerClasses = "container"
+      containerClasses += (props.maximize) ? " container-maximize" : ''
   let buttonClasses = "btn btn-link"
       buttonClasses += (theme === 'solid') ? ' link-dark' : ''
 
   return (
     <div className={headerClasses}>
-      <div className="container">
+      <div className={containerClasses}>
         <div className="btn-toolbar pull-left">
           <HeaderSearch theme={theme} />
           <div className="btn-group">

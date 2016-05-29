@@ -11,6 +11,7 @@ import { getOffsetedTrackID,
        } from 'helpers/trackHelpers'
 import { negativeModulus } from 'helpers/intervalHelpers'
 import { push } from 'react-router-redux'
+import { librarySaveNew } from 'reducers/reduceLibrary'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
 // ============================================================================
@@ -106,16 +107,19 @@ export const phraseDropNoteSelection = () => {
   }
 }
 export const phraseLoadFromMemory = ({ id, name, username, dateCreated, dateModified, state }) => {
-  return {
-    type: phrase.LOAD_FINISH,
-    payload: {
-      id,
-      name,
-      username,
-      dateCreated,
-      dateModified,
-      state,
-    }
+  return (dispatch) => {
+    dispatch({ type: phrase.LOAD_START })
+    dispatch({
+      type: phrase.LOAD_FINISH,
+      payload: {
+        id,
+        name,
+        username,
+        dateCreated,
+        dateModified,
+        state,
+      }
+    })
   }
 }
 export const phraseLoadFromDb = phraseId => {
@@ -139,8 +143,22 @@ export const phraseLoadFromDb = phraseId => {
     }
   }
 }
-export const phraseSaveStart  = () => ({ type: phrase.SAVE_START  })
-export const phraseSaveFinish = () => ({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+export const phraseSave = () => {
+  return (dispatch, getState) => {
+    let state = getState()
+    dispatch({ type: phrase.SAVE_START  })
+    api({
+      endpoint: `update`,
+      body: {
+        phraseId: state.phraseMeta.phraseId,
+        phraseName: state.phraseMeta.phraseName,
+        phraseState: state.phrase,
+      },
+    }).then(() => {
+      dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+    })
+  }
+}
 export const phraseNewPhrase = () => {
   return dispatch => {
     dispatch(push(`/phrase/new`))
@@ -153,6 +171,37 @@ export const phraseNewPhrase = () => {
     }, 256)
   }
 }
+export const phraseRephrase = () => {
+  return (dispatch, getState) => {
+    let state = getState()
+    let username = state.auth.user.username
+    let { authorUsername, phraseId } = state.phraseMeta
+
+    // Ensure we start from the original phrase page (e.g. if coming from search page)
+    dispatch(push(`/phrase/${authorUsername}/${phraseId}`))
+    dispatch({
+      type: phrase.REPHRASE,
+      payload: {
+        authorUsername: username,
+      },
+    })
+
+    // Allow rephrased state cancel leaveHook before continuing
+    setTimeout(() => {
+      let loggedIn = username && username !== 'undefined'
+      if (loggedIn) {
+        dispatch(librarySaveNew())
+      }
+      else {
+        dispatch(push(`/phrase/new`))
+        dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+      }
+    })
+  }
+}
+export const phraseLoginReminder    = ({ show }) => ({ type: phrase.LOGIN_REMINDER,    payload: { show } })
+export const phraseRephraseReminder = ({ show }) => ({ type: phrase.REPHRASE_REMINDER, payload: { show } })
+export const phrasePristine = ({ pristine }) => ({ type: phrase.PRISTINE, payload: { pristine } })
 
 // ============================================================================
 // Phrase Reducer

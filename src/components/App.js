@@ -11,6 +11,7 @@ import * as AllModals from 'components/modals'
 export class App extends Component {
 
   render() {
+    let maximize = this.props.routes[1].maximize
     let ActiveModal = this.props.activeModal ? AllModals[this.props.activeModal] : 'div'
     let headerTheme = true ? 'solid' : 'clear'
     let faviconConfig = [{
@@ -25,7 +26,7 @@ export class App extends Component {
 
           <div>
             <Helmet link={faviconConfig} />
-            <Header theme={headerTheme} params={this.props.params}/>
+            <Header theme={headerTheme} params={this.props.params} maximize={maximize}/>
             <div className="body">
               { this.props.children }
             </div>
