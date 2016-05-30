@@ -19,7 +19,6 @@ let autosave = store => next => action => {
 
     // Only update if an existing phrase has been modified
     if (existingPhrase && loggedIn && writePermission) {
-      console.log("autosave", action)
       store.dispatch(phraseSave())
     }
 

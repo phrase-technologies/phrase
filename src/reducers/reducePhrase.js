@@ -106,12 +106,13 @@ export const phraseDropNoteSelection = () => {
     dispatch({ type: phrase.DROP_NOTE_SELECTION, noteIDs, offsetStart, offsetEnd, offsetKey })
   }
 }
-export const phraseLoadFromMemory = ({ id, name, username, dateCreated, dateModified, state }) => {
+export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated, dateModified, state }) => {
   return (dispatch) => {
     dispatch({ type: phrase.LOAD_START })
     dispatch({
       type: phrase.LOAD_FINISH,
       payload: {
+        parentId,
         id,
         name,
         username,
@@ -130,6 +131,7 @@ export const phraseLoadFromDb = phraseId => {
       dispatch({
         type: phrase.LOAD_FINISH,
         payload: {
+          parentId: loadedPhrase.parentId,
           id: phraseId,
           name: loadedPhrase.phrasename,
           username: loadedPhrase.username,
@@ -177,16 +179,21 @@ export const phraseRephrase = () => {
     let username = state.auth.user.username
     let { authorUsername, phraseId } = state.phraseMeta
 
-    // Ensure we start from the original phrase page (e.g. if coming from search page)
-    dispatch(push(`/phrase/${authorUsername}/${phraseId}`))
     dispatch({
       type: phrase.REPHRASE,
       payload: {
         authorUsername: username,
       },
     })
+    // In order to show the "Generating Rephrase" loading screen,
+    // we must start from the <Workstation> component.
+    // Ensure we start from the original phrase page (e.g. if
+    // coming from search page) to make this happen.
+    dispatch(push(`/phrase/${authorUsername}/${phraseId}`))
 
-    // Allow rephrased state cancel leaveHook before continuing
+    // If we are starting from a state with unsaved changes, we have to cancel
+    // the leaveHook. Use setTimeout to allow rephrased state to reach
+    // the <Workstation> component and cancel leaveHook before continuing.
     setTimeout(() => {
       let loggedIn = username && username !== 'undefined'
       if (loggedIn) {
@@ -194,9 +201,9 @@ export const phraseRephrase = () => {
       }
       else {
         dispatch(push(`/phrase/new`))
-        dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+        dispatch({ type: phrase.NEW_PHRASE_LOADED })
       }
-    })
+    }, 250)
   }
 }
 export const phraseLoginReminder    = ({ show }) => ({ type: phrase.LOGIN_REMINDER,    payload: { show } })

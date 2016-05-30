@@ -18,14 +18,14 @@ import Pianoroll from './Pianoroll'
 export class Workstation extends Component {
 
   componentDidMount() {
-    let { dispatch, params } = this.props
+    let { dispatch, params, loading } = this.props
 
     // Load existing phrase from URL param
-    if (params.phraseId)
+    if (params.phraseId && loading !== phrase.REPHRASE)
       dispatch(phraseLoadFromDb(params.phraseId))
 
     // Load brand new phrase
-    else
+    else if (loading !== phrase.REPHRASE)
       this.props.dispatch(phraseNewPhrase())
 
     // Set Leave Hook ("You have unsaved changes!")

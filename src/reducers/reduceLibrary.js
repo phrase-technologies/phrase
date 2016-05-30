@@ -5,11 +5,13 @@ import { phrase } from '../actions/actions.js'
 
 export const librarySaveNew = () => {
   return async (dispatch, getState) => {
+    let state = getState()
     let { phraseId } = await api({
       endpoint: `save`,
       body: {
-        phraseState: getState().phrase,
-        phraseName: getState().phraseMeta.phraseName,
+        parentId: state.phraseMeta.parentId,
+        phraseState: state.phrase,
+        phraseName: state.phraseMeta.phraseName,
       }
     })
 

@@ -136,7 +136,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 .workstation-header-title {
   border: 1px solid transparent;
   padding: 4px 8px;
-  height: 25px;
+  height: 24px;
   font-size: 16px;
 
   // For Pencil icon
@@ -160,6 +160,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   display: inline-block;
   color: #AAA;
   margin-right: 10px;
+  font-size: 16px;
 
   text-decoration: none !important;
 }

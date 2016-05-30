@@ -17,9 +17,9 @@ export class WorkstationHeaderAuthor extends Component {
 
   renderNoAuthor() {
     return (
-      <span>
+      <span className="workstation-header-author">
         <span style={{ paddingRight: 5 }}> by </span>
-        <a className="link-dark workstation-header-author" onClick={this.login}>
+        <a className="link-dark" onClick={this.login}>
           <em> Unknown</em>
         </a>
       </span>
@@ -31,9 +31,9 @@ export class WorkstationHeaderAuthor extends Component {
     let profileUri = `/user/${author.username}`
 
     return (
-      <span>
+      <span className="workstation-header-author">
         <span style={{ paddingRight: 5 }}> by </span>
-        <Link className="link-dark workstation-header-author" to={profileUri}>
+        <Link className="link-dark" to={profileUri}>
           {/*<img className="workstation-header-profile-pic" src={author.image} />*/}
           <span> {author.username}</span>
           {/*<span className="caret" />*/}
@@ -46,9 +46,9 @@ export class WorkstationHeaderAuthor extends Component {
     let authors = this.props.authors
 
     return (
-      <span>
+      <span className="workstation-header-author">
         <span style={{ paddingRight: 5 }}> by </span>
-        <a className="link-dark workstation-header-author" href="#">
+        <a className="link-dark" href="#">
           { authors.map((author, id) => {
             return (
               <img className="workstation-header-profile-pic" src={author.image} key={id} />

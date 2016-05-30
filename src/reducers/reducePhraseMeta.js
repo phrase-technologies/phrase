@@ -19,6 +19,7 @@ export const defaultState = {
   loading: true,
   saving: false,
   pristine: true,
+  parentId: null,
   phraseId: null,
   phraseName: null,
   authorUsername: null,
@@ -65,6 +66,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
     case phrase.LOAD_FINISH:
       return u({
         loading: false,
+        parentId: action.payload.parentId,
         phraseId: action.payload.id,
         phraseName: action.payload.name,
         authorUsername: action.payload.username,
@@ -210,9 +212,10 @@ export default function reducePhraseMeta(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.REPHRASE:
       return u({
-        pristine: true,
-        saving: "REPHRASE",
+        pristine: false,
+        saving: true,
         loading: action.type,
+        parentId: state.phraseId,
         phraseId: null,
         authorUsername: action.payload.authorUsername,
         loginReminder: !action.payload.authorUsername,
