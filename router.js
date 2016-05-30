@@ -42,9 +42,10 @@ export default ({ app, db }) => {
   })
 
   api.post(`/save`, async (req, res) => {
-    let { phraseState, phraseName, userId } = req.body
+    let { parentId = null, phraseState, phraseName, userId } = req.body
     try {
       let result = await r.table(`phrases`).insert({
+        parentId,
         state: phraseState,
         public: true,
         dateCreated: +new Date(),
