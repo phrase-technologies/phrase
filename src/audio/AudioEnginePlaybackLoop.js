@@ -25,7 +25,8 @@ export function startPlayback(engine, state, dispatch) {
   engine.isPlaying = true
   engine.playheadPositionBars = state.transport.playhead
 
-  engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * 120/state.phrase.present.tempo
+  // 240 = 60 seconds per minute x 4 beats per bar
+  engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * 240/state.phrase.present.tempo
 
   // Nothing to play? Ignore
   if (engine.midiCommands.length === 0) {
