@@ -206,6 +206,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE_LOADED:
       return u({
+        saving: false,
         loading: false,
       }, state)
 

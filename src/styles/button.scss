@@ -30,8 +30,8 @@ a,
 }
 
 .btn-narrow {
-  padding-left: 7px;
-  padding-right: 7px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .btn-group-dark {
@@ -147,4 +147,19 @@ a,
   overflow: hidden;
   line-height: 0;
   padding-bottom: 2px;
+}
+
+.notification-count {
+  position: relative;
+  top: -0.75em;
+  margin-left: -6px;
+
+  border-radius: 5px;
+  padding: 1px 4px 1px 3px;
+  background: #E00;
+  font-family: $font-family-base;
+  font-weight: bold;
+  font-size: 10px;
+  color: #FFF;
+  box-shadow: 0 0 0px 2px #333;
 }

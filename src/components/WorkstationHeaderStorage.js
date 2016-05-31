@@ -50,37 +50,37 @@ export default class WorkstationHeaderStorage extends Component {
   }
 
   renderStatus() {
-    // Autosave
-    if (this.props.existingPhrase) {
-      // Saving in progress
-      if (this.props.saving) {
-        return (
-          <a className="btn btn-link link-dark">
-            <span className="text-warning">Saving...</span>
-          </a>
-        )
-      }
+    // Saving in progress
+    if (this.props.saving) {
+      return (
+        <span className="btn btn-link link-dark" style={{ cursor: 'default' }}>
+          <span className="text-warning">Saving...</span>
+        </span>
+      )
+    }
 
-      // Save completed
-      if (this.props.pristine) {
-        let timestamp = (Date.now() - this.props.lastSavedTimestamp < 1000) // Just saved?
-                      ? "Autosaved."
-                      : `Last change: ${Moment(this.props.lastSavedTimestamp).calendar().toString()}`
-        return (
-          <a className="btn btn-link link-dark">
-            <span className="text-warning">{timestamp}</span>
-          </a>
-        )
-      }
+    // Autosave
+    if (this.props.existingPhrase && this.props.pristine) {
+      let timestamp = (Date.now() - this.props.lastSavedTimestamp < 1000) // Just saved?
+                    ? "Autosaved."
+                    : `Last change: ${Moment(this.props.lastSavedTimestamp).calendar().toString()}`
+      return (
+        <span className="btn btn-link link-dark" style={{ cursor: 'default' }}>
+          <span className="text-muted">{timestamp}</span>
+        </span>
+      )
     }
 
     // Unsaved
     if (!this.props.pristine) {
+      let UnsavedTooltip = <Tooltip id="tooltip-unsaved">Please login to save!</Tooltip>
       return (
-        <a className="btn btn-link link-dark" onClick={this.login}>
-          <span className="fa fa-warning text-warning" />
-          <span className="text-warning"> Unsaved</span>
-        </a>
+        <OverlayTrigger placement="top" overlay={UnsavedTooltip} delayShow={250}>
+          <a className="btn btn-link link-dark" onClick={this.login}>
+            <span className="fa fa-warning text-danger" />
+            <span className="text-danger"> Unsaved</span>
+          </a>
+        </OverlayTrigger>
       )
     }
 
@@ -98,7 +98,7 @@ export default class WorkstationHeaderStorage extends Component {
 
   login = () => {
     this.props.dispatch(modalOpen({
-      modalComponent: 'SignupModal',
+      modalComponent: 'LoginModal',
     }))
   }
 }

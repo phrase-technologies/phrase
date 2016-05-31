@@ -166,9 +166,10 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 }
 .workstation-header-share {
   display: inline-block;
-  height: 35px;
+  height: 30px;
   width: 64px;
-  line-height: 35px;
+  line-height: 30px;
+  font-size: 12px;
   text-align: right;
 }
 .workstation-header-profile-pic {

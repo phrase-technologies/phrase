@@ -20,7 +20,7 @@ export class WorkstationHeader extends Component {
     return (
       <div className="workstation-header">
         <div className="container container-maximize" style={{ position: 'relative' }}>
-          <div className="btn-toolbar" style={{ position: 'absolute', top: 0, left: 0 }}>
+          <div className="btn-toolbar" style={{ position: 'absolute', top: 3, left: 0 }}>
             <div className="btn-group">
               { this.renderMIDIExportButton() }
             </div>
@@ -38,7 +38,7 @@ export class WorkstationHeader extends Component {
               <WorkstationHeaderAuthor />
             </div>
           </div>
-          <div className="btn-toolbar" style={{ position: 'absolute', top: 0, right: 0 }}>
+          <div className="btn-toolbar" style={{ position: 'absolute', top: 3, right: 0 }}>
             <div className="btn-group">
               <span className="workstation-header-share">
                 Share:
@@ -83,7 +83,7 @@ export class WorkstationHeader extends Component {
 
     return (
       <OverlayTrigger placement="top" overlay={MIDIExportTooltip} delayShow={250}>
-        <button className="btn btn-dark" disabled={disabled} >
+        <button className="btn btn-sm btn-dark" disabled={disabled} >
           <span className="fa fa-download" />
           <span> MIDI</span>
         </button>
@@ -92,11 +92,15 @@ export class WorkstationHeader extends Component {
   }
 
   renderRephraseButton() {
+    let RephraseTooltip = <Tooltip id="tooltip-rephrase">Make a copy of this Phrase</Tooltip>
+
     return this.props.existingPhrase ? (
-      <button className="btn btn-bright" onClick={this.rephrase}>
-        <span className="fa fa-code-fork" />
-        <span> Rephrase</span>
-      </button>
+      <OverlayTrigger placement="top" overlay={RephraseTooltip} delayShow={250}>
+        <button className="btn btn-sm btn-bright" onClick={this.rephrase}>
+          <span className="fa fa-code-fork" />
+          <span> Rephrase</span>
+        </button>
+      </OverlayTrigger>
     ) : null
   }
 

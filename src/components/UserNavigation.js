@@ -5,7 +5,7 @@ import { Link } from 'react-router'
 
 import { modalOpen } from 'reducers/reduceModal'
 import { logout } from 'reducers/reduceAuth'
-import profileImageUrl from '../img/user/anson-kao.jpg'
+// import profileImageUrl from '../img/user/anson-kao.jpg'
 
 export let UserNavigation = (props) => {
   let buttonClasses = "btn btn-link"
@@ -23,6 +23,7 @@ export let UserNavigation = (props) => {
         <Link className={buttonClasses} to="/contact" activeClassName="header-nav-active">
           Contact
         </Link>
+        { notificationButton({ loggedIn: props.loggedIn }) }
       </div>
       {
         !props.loggedIn
@@ -31,6 +32,23 @@ export let UserNavigation = (props) => {
       }
     </div>
   )
+}
+
+let notificationButton = ({ loggedIn }) => {
+  let notifications = 0
+
+  if (loggedIn && notifications) {
+    return (
+      <a className="btn btn-link link-dark">
+        <span className="fa fa-bell" />
+        <span className="notification-count">
+          { notifications }
+        </span>
+      </a>
+    )
+  }
+
+  return null
 }
 
 let notLoggedIn = ({ dispatch }) => {

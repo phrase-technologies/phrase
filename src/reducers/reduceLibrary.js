@@ -5,6 +5,7 @@ import { phrase } from '../actions/actions.js'
 
 export const librarySaveNew = () => {
   return async (dispatch, getState) => {
+    dispatch({ type: phrase.SAVE_START })
     let state = getState()
     let { phraseId } = await api({
       endpoint: `save`,
@@ -14,7 +15,6 @@ export const librarySaveNew = () => {
         phraseName: state.phraseMeta.phraseName,
       }
     })
-
     dispatch({
       type: library.SAVE_NEW,
       payload: {
