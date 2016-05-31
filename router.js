@@ -41,6 +41,12 @@ export default ({ app, db }) => {
     }
   })
 
+  auth({ app, api, db })
+
+  /*
+   *  Everything below here requires a valid token.
+   */
+
   api.post(`/save`, async (req, res) => {
     let { parentId = null, phraseState, phraseName, userId } = req.body
     try {
@@ -65,12 +71,6 @@ export default ({ app, db }) => {
       res.json({ error: true, message: `something went wrong!` })
     }
   })
-
-  auth({ app, api, db })
-
-  /*
-   *  Everything below here requires a valid token.
-   */
 
   api.post(`/update`, async (req, res) => {
     let { phraseId, phraseName, phraseState, userId } = req.body
