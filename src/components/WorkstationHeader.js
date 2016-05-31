@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
 import WorkstationHeaderTitle from './WorkstationHeaderTitle.js'
 import WorkstationHeaderAuthor from './WorkstationHeaderAuthor.js'
@@ -20,6 +21,9 @@ export class WorkstationHeader extends Component {
       <div className="workstation-header">
         <div className="container container-maximize" style={{ position: 'relative' }}>
           <div className="btn-toolbar" style={{ position: 'absolute', top: 0, left: 0 }}>
+            <div className="btn-group">
+              { this.renderMIDIExportButton() }
+            </div>
             <div className="btn-group">
               { this.renderRephraseButton() }
             </div>
@@ -71,6 +75,20 @@ export class WorkstationHeader extends Component {
         </div>
       </div>
     ) : null
+  }
+
+  renderMIDIExportButton() {
+    let disabled = !this.props.existingPhrase && this.props.pristine
+    let MIDIExportTooltip = <Tooltip id="tooltip-midi-export">Export to MIDI file (.mid)</Tooltip>
+
+    return (
+      <OverlayTrigger placement="top" overlay={MIDIExportTooltip} delayShow={250}>
+        <button className="btn btn-dark" disabled={disabled} >
+          <span className="fa fa-download" />
+          <span> MIDI</span>
+        </button>
+      </OverlayTrigger>
+    )
   }
 
   renderRephraseButton() {

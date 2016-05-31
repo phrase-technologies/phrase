@@ -72,6 +72,9 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
                 inset  0px -1px 0px  0px #111;
   }
 }
+.workstation-drop-target {
+  border: 2px dashed;
+}
 .workstation-divider {
   margin: 10px auto 6px;
   width: 100%;
