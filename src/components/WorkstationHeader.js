@@ -14,6 +14,8 @@ import { phraseLoginReminder,
          phraseRephrase,
        } from 'reducers/reducePhrase'
 
+import { exportToMidi } from 'reducers/reducePhraseMeta'
+
 export class WorkstationHeader extends Component {
 
   render() {
@@ -83,7 +85,11 @@ export class WorkstationHeader extends Component {
 
     return (
       <OverlayTrigger placement="top" overlay={MIDIExportTooltip} delayShow={250}>
-        <button className="btn btn-sm btn-dark" disabled={disabled} >
+        <button
+          className="btn btn-sm btn-dark"
+          disabled={disabled}
+          onClick={ () => this.props.dispatch(exportToMidi()) }
+         >
           <span className="fa fa-download" />
           <span> MIDI</span>
         </button>

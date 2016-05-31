@@ -45,7 +45,9 @@
   "dependencies": {
     "bootstrap-sass": "^3.3.6",
     "css-element-queries": "^0.3.2",
+    "file-saver": "^1.2.2",
     "font-awesome": "^4.5.0",
+    "jsmidgen": "^0.1.5",
     "ladda": "^1.0.0",
     "lodash": "^4.6.1",
     "moment": "^2.12.0",

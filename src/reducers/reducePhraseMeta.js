@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import u from 'updeep'
-import { phrase, pianoroll, library } from '../actions/actions.js'
+import { phrase, pianoroll, library } from 'actions/actions'
+import toMidiFile from 'helpers/toMidiFile'
+import { saveAs } from 'file-saver'
 
 // ============================================================================
 // Phrase META Reducer
@@ -14,6 +16,17 @@ import { phrase, pianoroll, library } from '../actions/actions.js'
 // - If the user is performing drag and drop of the current selection, track
 //   those offsets here so we can show temporary previews of drag
 //
+
+export const exportToMidi = () => {
+  return async (dispatch, getState) => {
+    let {
+      phrase: { present: { notes, tempo }},
+      phraseMeta: { phraseName }
+    } = getState()
+
+    saveAs(toMidiFile({ notes, tempo }), `${phraseName}.mid`)
+  }
+}
 
 export const defaultState = {
   loading: true,
