@@ -14,48 +14,51 @@
     npm install
     npm start
 
+# Deployment
 
-### Deployment
-
-- shell into digital ocean server
-
+#### Shell into digital ocean server
 
     ssh root@159.203.75.254
 
-- pull latest `TODO: write script for this`
-
+#### Pull latest `TODO: write script for this`
 
     cd phrase
     cd phrase-api && git pull origin develop
     cd ../phrase-client && git pull origin develop
 
-- view running servers
-
+#### Running panes/servers
 
     tmux attach
 
-- switch active pane
+If nothing already running, launch new panes:
+
+    tmux
+    ctrl+b, %
+
+Launch client:
+
+    cd ../phrase-client
+    npm run start-prod
+
+Launch API:
+
+    cd ../phrase-api
+    npm start
+
+Launch RethinkDB (`--bind all` only if you want web console):
+
+    cd ../../rethinkdb_data
+    rethinkdb --bind all
 
 
-    ctrl-b, ;
+#### Switch active pane
 
-- detach from tmux
+    ctrl+b, o
 
+#### Detach from `tmux`
 
-    ctrl-b, d
+    ctrl+b, d
 
-- view screens
-
-
-    screen -ls
-
-
-- attach to screen (screen already running in tmux session)
-
-
-    screen -r 5471.api
-
-- exit server
-
+#### Exit active pane/server
 
     exit
