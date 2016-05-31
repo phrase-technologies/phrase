@@ -126,7 +126,8 @@ function barToPlayTime(bar, engine, state) {
   // If not provided, default to now.
   let playStartTime = engine.playStartTime || engine.ctx.currentTime
 
-  return bar * 120 / state.phrase.present.tempo + playStartTime
+  // 240 = 60 seconds per minute x 4 beats per bar
+  return bar * 240 / state.phrase.present.tempo + playStartTime
 }
 
 function playTimeToBar(time, engine, state) {
@@ -134,5 +135,6 @@ function playTimeToBar(time, engine, state) {
   // If not provided, default to now.
   let playStartTime = engine.playStartTime || engine.ctx.currentTime
 
-  return (time - playStartTime) / 120 * state.phrase.present.tempo
+  // 240 = 60 seconds per minute x 4 beats per bar
+  return (time - playStartTime) / 240 * state.phrase.present.tempo
 }
