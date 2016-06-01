@@ -41,7 +41,7 @@ export const phraseCreateClip = (trackID, bar) => {
     let state = getState()
     let clips = state.phrase.present.clips
     let newClip = clips[clips.length - 1]
-    dispatch({ type: phrase.SELECT_CLIP, clipID: newClip.id, union: false })
+    dispatch({ type: phrase.SELECT_CLIP, payload: { clipID: newClip.id, union: false } })
   }
 }
 export const phraseCreateNote = (trackID, bar, key) => {
@@ -52,7 +52,7 @@ export const phraseCreateNote = (trackID, bar, key) => {
     let state = getState()
     let notes = state.phrase.present.notes
     let newNote = notes[notes.length - 1]
-    dispatch({ type: phrase.SELECT_NOTE, noteID: newNote.id, union: false })
+    dispatch({ type: phrase.SELECT_NOTE, payload: { noteID: newNote.id, union: false } })
   }
 }
 export const phraseSelectTrack = ({ trackID, union }) => ({type: phrase.SELECT_TRACK, payload: { trackID, union } })
@@ -62,7 +62,15 @@ export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches
   return (dispatch, getState) => {
     let { selectionType, selectionIDs } = getState().phraseMeta
-    dispatch({ type: phrase.DELETE_SELECTION, payload: { selectionType, selectionIDs } })
+    let currentTrack
+    if (selectionType === "tracks")
+      currentTrack = getState().pianoroll.currentTrack
+    dispatch({ type: phrase.DELETE_SELECTION, payload: { selectionType, selectionIDs, currentTrack } })
+
+    // Track deletion will causer Mixer to require resizing and may cause Pianoroll to disappear
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
   }
 }
 export const phraseDeleteNote             = (noteID)                  => ({type: phrase.DELETE_NOTE, noteID})
