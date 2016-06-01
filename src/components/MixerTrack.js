@@ -2,15 +2,19 @@ import React, { Component } from 'react'
 
 import { phraseArmTrack,
          phraseMuteTrack,
-         phraseSoloTrack } from '../reducers/reducePhrase.js'
+         phraseSoloTrack,
+         phraseSelectTrack,
+       } from '../reducers/reducePhrase.js'
 
 import MixerTrackButton from './MixerTrackButton.js'
-import MixerTrackMeter  from './MixerTrackMeter.js'
+import MixerTrackLevel from './MixerTrackLevel.js'
 
 export default class MixerTrack extends Component {
+
   render() {
     let mixerTrackClasses  = 'mixer-track'
         mixerTrackClasses += this.props.focused ? ' mixer-track-focused' : ''
+        mixerTrackClasses += this.props.track.selected ? ' active' : ''
 
     let tagStyle = {
       backgroundColor: this.props.track.color
@@ -23,14 +27,16 @@ export default class MixerTrack extends Component {
 
     return (
       <div className={mixerTrackClasses}>
-        <div className="mixer-track-tag" style={tagStyle} />
-        <div className="mixer-track-control">
+        <div
+          className="mixer-track-control" ref={ref => this.control = ref}
+          onClick={this.handleClick}
+        >
+          <div className="mixer-track-tag" style={tagStyle} />
           <h3 className="mixer-track-name">
             {this.props.track.name}
           </h3>
           <span className="mixer-track-caret fa fa-ellipsis-h" />
-          <div className="mixer-track-gain" />
-          <MixerTrackMeter track={this.props.track} atleastOneTrackSoloed={this.props.atleastOneTrackSoloed} />
+          <MixerTrackLevel track={this.props.track} atleastOneTrackSoloed={this.props.atleastOneTrackSoloed} />
           <MixerTrackButton buttonClasses="mixer-track-arm"
             active={this.props.track.arm}
             action={phraseArmTrack} {...buttonProps}>
@@ -51,6 +57,15 @@ export default class MixerTrack extends Component {
       </div>
     )
   }
+
+  handleClick = (e) => {
+    // Don't intercept bubbled events from child buttons
+    if (e.target !== this.control)
+      return
+
+    this.props.dispatch(phraseSelectTrack({ trackID: this.props.track.id, union: e.shiftKey }))
+  }
+
 }
 
 MixerTrack.propTypes = {

@@ -12,37 +12,71 @@
   + .mixer-track {
     margin-top: -2px;
   }
+
+  &.active {
+    .mixer-track-tag {
+      border-color: rgba(255,255,255,0.125);
+    }
+    .mixer-track-control {
+      border: 1px solid #888;
+      background: #777;
+    }
+    .mixer-track-name {
+      color: #FFF;
+    }
+    .mixer-track-window {
+      border-color: #888;
+      background: rgba(128,128,128,0.25);
+    }
+  }
 }
 .mixer-track-tag {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: -1px;
+  left: -1px;
   width: $mixer-track-tag;
-  bottom: 0;
+  bottom: -1px;
 
+  border: 1px solid transparent;
+  border-right-width: 0;
   border-radius: $mixer-corner 0 0 $mixer-corner;
   background: #FFF;
 
-  pointer-events: all;
+  pointer-events: none; // So user can click .mixer-track-control
 }
 .mixer-track-control {
   position: absolute;
   top: 0;
-  width: $mixer-track-control;
-  left: $mixer-track-tag;
+  width: $mixer-track-tag + $mixer-track-control;
+  left: 0;
   bottom: 0;
 
+  border: 1px solid #555;
+  border-radius: $mixer-corner 0 0 $mixer-corner;
   background: #555555;
 
   pointer-events: all;
 }
 .mixer-track-name {
-  margin: 4px 5px;
+  position: absolute;
+  top: 4px;
+  left: $mixer-track-tag + 5px;
+  right: 20px;
+  height: 18px;
+  margin: 0;
 
   font-size: 12px;
   color: #CCC;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+
+  pointer-events: none; // So user can click .mixer-track-control
 }
 .mixer-track-caret {
+  display: none;
+
   position: absolute;
   top: 2px;
   right: 8px;
@@ -55,25 +89,19 @@
     color: #CCC;
   }
 }
-.mixer-track-gain,
-.mixer-track-meter {
+.mixer-track-level {
   position: absolute;
-  left: 5px;
-  height: 9px;
-  right: 90px;
+  top: 4px;
+  right: 5px;
+  width: 10px;
+  bottom: 4px;
 
   border: 1px solid #111;
   border-radius: 1px;
   background: #222;
-}
-.mixer-track-gain {
-  bottom: 3px + 10px + 2px;
-}
-.mixer-track-meter {
-  bottom: 4px;
   background-image: linear-gradient(to right, #080 0%, #0F0 50%, #FF0 80%, #F00 100%);
 }
-.mixer-track-meter-limit {
+.mixer-track-meter {
   position: absolute;
   top: 0;
   left: 0;
@@ -83,18 +111,18 @@
 }
 .mixer-track-btn {
   position: absolute;
-  bottom: 3px;
+  bottom: 4px;
 
   border: 1px solid #222;
   border-radius: 2px;
   background: #555;
   color: #CCC;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 11px;
   text-align: center;
   padding: 0;
-  width: 24px;
-  line-height: 20px;
+  width: 22px;
+  line-height: 17px;
   background-image: linear-gradient(to bottom, #666 0%, #555 50%, #444 100%);
 
   &:hover {
@@ -106,16 +134,8 @@
     background-image: none;
   }
 }
-.mixer-track-arm {
-  right: 61px;
-
-  &.active {
-    background-image: linear-gradient(to bottom, #F55 0%, #C00 100%);
-    color: #000;
-  }
-}
 .mixer-track-mute {
-  right: 33px;
+  left: $mixer-track-tag + 5px;
 
   &.active {
     border-color: #000;
@@ -124,10 +144,19 @@
   }
 }
 .mixer-track-solo {
-  right: 5px;
+  left: $mixer-track-tag + 31px;
 
   &.active {
     background-image: linear-gradient(to bottom, #FF3 0%, #FA0 100%);
+    color: #000;
+  }
+}
+.mixer-track-arm {
+  left: $mixer-track-tag + 57px;
+  font-size: 9px;
+
+  &.active {
+    background-image: linear-gradient(to bottom, #F55 0%, #C00 100%);
     color: #000;
   }
 }

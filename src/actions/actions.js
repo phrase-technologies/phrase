@@ -41,6 +41,7 @@ export const phrase = namespaceActions(
     'SET_TEMPO',
     'CREATE_CLIP',
     'CREATE_NOTE',
+    'SELECT_TRACK',
     'SELECT_CLIP',
     'SELECT_NOTE',
     'DELETE_SELECTION',

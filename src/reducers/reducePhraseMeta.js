@@ -104,22 +104,30 @@ export default function reducePhraseMeta(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
+    case phrase.SELECT_TRACK:
+      return u({
+        selectionType: "tracks",
+        selectionIDs: action.payload.union && state.selectionType === "tracks"
+          ? _.xor(state.selectionIDs, [action.payload.trackID])
+          : [action.payload.trackID]
+      }, state)
+
+    // ------------------------------------------------------------------------
     case phrase.SELECT_CLIP:
       return u({
         selectionType: "clips",
-        selectionIDs: [],
-        selectionIDs: action.union && state.selectionType === "clips"
-          ? _.xor(state.selectionIDs, [action.clipID])
-          : [action.clipID]
+        selectionIDs: action.payload.union && state.selectionType === "clips"
+          ? _.xor(state.selectionIDs, [action.payload.clipID])
+          : [action.payload.clipID]
       }, state)
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_NOTE:
       return u({
         selectionType: "notes",
-        selectionIDs: action.union && state.selectionType === "notes"
-          ? _.xor(state.selectionIDs, [action.noteID])
-          : [action.noteID]
+        selectionIDs: action.payload.union && state.selectionType === "notes"
+          ? _.xor(state.selectionIDs, [action.payload.noteID])
+          : [action.payload.noteID]
       }, state)
 
     // ------------------------------------------------------------------------

@@ -4,25 +4,25 @@ import engineShape   from '../audio/AudioEnginePropTypes.js'
 
 import { getDarkenedColor } from '../helpers/trackHelpers.js'
 
-export class MixerTrackMeter extends Component {
+export class MixerTrackLevel extends Component {
 
   render() {
-    var muteTrack = this.props.atleastOneTrackSoloed && !this.props.track.solo || this.props.track.mute
-    var trackColor = muteTrack ? '#888' : this.props.track.color
-    var shadedColor = getDarkenedColor( trackColor, 0.25 )
-    var meterStyle = {
+    let muteTrack = this.props.atleastOneTrackSoloed && !this.props.track.solo || this.props.track.mute
+    let trackColor = muteTrack ? '#888' : this.props.track.color
+    let shadedColor = getDarkenedColor(trackColor, 0.25)
+    let meterStyle = {
       // background: this.props.track.color
       backgroundImage: `linear-gradient(to right, ${shadedColor} 0%, ${trackColor} 80%)`//, #FFF 100%)`
     }
-    var dB = this.props.ENGINE.getTrackOutputDecibels(this.props.track.id)
-    var left = dB < -60 ? 0 : 100*(dB + 60)/60
-    var limitStyle = {
-      left: left+'%'
+    let dB = this.props.ENGINE.getTrackOutputDecibels(this.props.track.id)
+    let bottom = dB < -60 ? 0 : 100*(dB + 60)/60
+    let limitStyle = {
+      bottom: bottom+'%'
     }
 
     return (
-      <div className="mixer-track-meter" style={meterStyle}>
-        <div className="mixer-track-meter-limit" style={limitStyle} />
+      <div className="mixer-track-level" style={meterStyle}>
+        <div className="mixer-track-meter" style={limitStyle} />
       </div>
     )
   }
@@ -43,7 +43,7 @@ export class MixerTrackMeter extends Component {
   componentWillUnmount() {
     this.unmounted = true
   }
-  
+
   renderMeter() {
     if (this.unmounted)
       return
@@ -54,10 +54,10 @@ export class MixerTrackMeter extends Component {
 
 }
 
-MixerTrackMeter.propTypes = {
+MixerTrackLevel.propTypes = {
   ENGINE: engineShape.isRequired,
   track:  React.PropTypes.object.isRequired,
   atleastOneTrackSoloed: React.PropTypes.bool.isRequired
 }
 
-export default connectEngine( MixerTrackMeter )
+export default connectEngine(MixerTrackLevel)

@@ -5,17 +5,15 @@
 // It is responsible for composing all the mixer's child components together.
 
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import _ from 'lodash'
-import { shiftInterval,
-         zoomInterval } from '../helpers/intervalHelpers.js'
 import { mixerScrollX,
          mixerScrollY,
        } from '../reducers/reduceMixer.js'
 import { renderedClipsSelector,
-         atleastOneTrackSoloedSelector } from '../selectors/selectorMixer.js'
+         renderedTracksSelector,
+         atleastOneTrackSoloedSelector,
+       } from '../selectors/selectorMixer.js'
 
 import MixerTimeline from './MixerTimeline.js'
 import MixerTracks from './MixerTracks.js'
@@ -107,7 +105,7 @@ function mapStateToProps(state) {
     focusedTrack: state.pianoroll.currentTrack,
     focusBarMin: state.pianoroll.xMin,
     focusBarMax: state.pianoroll.xMax,
-    tracks: state.phrase.present.tracks,
+    tracks: renderedTracksSelector(state),
     atleastOneTrackSoloed: atleastOneTrackSoloedSelector(state),
     clips: renderedClipsSelector(state),
     barCount: state.phrase.present.barCount,

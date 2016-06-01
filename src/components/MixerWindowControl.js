@@ -135,7 +135,7 @@ export class MixerWindowControl extends Component {
       )
 
       if (!foundClip.selected) {
-        this.props.dispatch(phraseSelectClip(foundClip.id, e.shiftKey))
+        this.props.dispatch(phraseSelectClip({ clipID: foundClip.id, union: e.shiftKey }))
       }
 
       // Adjust Start Point
@@ -259,7 +259,7 @@ export class MixerWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action === SELECT_EMPTY_AREA) {
       // Prepare for possibility of second click
-      this.props.dispatch(phraseSelectClip(null, false))
+      this.props.dispatch(phraseSelectClip({ clipID: null, union: false }))
       this.lastEvent.action = CLICK_EMPTY_AREA
       return
     }

@@ -5,7 +5,7 @@ import { zoomInterval,
          maxBarWidth,
        } from '../helpers/intervalHelpers.js'
 
-import { pianoroll } from '../actions/actions.js'
+import { pianoroll, phrase } from '../actions/actions.js'
 import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
 
 // ============================================================================
@@ -215,6 +215,16 @@ export default function reducePianoroll(state = defaultState, action) {
         xMin: targetBarMin,
         xMax: targetBarMax,
       }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.DELETE_SELECTION:
+      // Watch for current track deletion!
+      let { selectionType, selectionIDs } = action.payload
+      if (selectionType === "tracks" && selectionIDs.includes(state.currentTrack)) {
+        return u({
+          currentTrack: null
+        }, state)
+      }
 
     // ------------------------------------------------------------------------
     default:

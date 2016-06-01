@@ -55,8 +55,9 @@ export const phraseCreateNote = (trackID, bar, key) => {
     dispatch({ type: phrase.SELECT_NOTE, noteID: newNote.id, union: false })
   }
 }
-export const phraseSelectClip             = (clipID, union)           => ({type: phrase.SELECT_CLIP, clipID, union})
-export const phraseSelectNote             = (noteID, union)           => ({type: phrase.SELECT_NOTE, noteID, union})
+export const phraseSelectTrack = ({ trackID, union }) => ({type: phrase.SELECT_TRACK, payload: { trackID, union } })
+export const phraseSelectClip  = ({  clipID, union }) => ({type: phrase.SELECT_CLIP,  payload: {  clipID, union } })
+export const phraseSelectNote  = ({  noteID, union }) => ({type: phrase.SELECT_NOTE,  payload: {  noteID, union } })
 export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches
   return (dispatch, getState) => {
@@ -310,12 +311,25 @@ export default function reducePhrase(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
       let { selectionType, selectionIDs } = action.payload
-      if (!["tracks", "clips", "notes"].includes(selectionType))
-        return state
-
-      return u({
-        [selectionType]: u.reject(clip => selectionIDs.includes(clip.id)),
-      }, state)
+      if (selectionType === "tracks") {
+        return u({
+          tracks: u.reject(track => selectionIDs.includes(track.id)),
+          clips: u.reject(clip => selectionIDs.includes(clip.trackID)),
+          notes: u.reject(note => selectionIDs.includes(note.trackID))
+        }, state)
+      }
+      if (selectionType === "clips") {
+        return u({
+          clips: u.reject(clip => selectionIDs.includes(clip.id)),
+          notes: u.reject(note => selectionIDs.includes(note.clipID))
+        }, state)
+      }
+      if (selectionType === "notes") {
+        return u({
+          notes: u.reject(note => selectionIDs.includes(note.id))
+        }, state)
+      }
+      return state
 
     // ------------------------------------------------------------------------
     case phrase.DROP_CLIP_SELECTION:

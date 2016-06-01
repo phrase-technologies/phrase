@@ -9,6 +9,32 @@ const clipsSelector             = (state) => (state.phrase.present.clips)
 const selectionTypeSelector     = (state) => (state.phraseMeta.selectionType)
 const selectionIDsSelector      = (state) => (state.phraseMeta.selectionIDs)
 
+export const renderedTracksSelector = createSelector(
+  selectionTypeSelector,
+  tracksSelector,
+  selectionIDsSelector,
+  (selectionType, tracks, selectionIDs) => {
+    // Escape if nothing selected
+    if (selectionType !== "tracks")
+      return tracks
+
+    // Render Offseted Selections
+    tracks = (tracks || [])
+      .map(track => {
+        let isTrackSelected = selectionIDs.some(x => x === track.id)
+        if (isTrackSelected) {
+          return {
+            ...track,
+            selected: true,
+          }
+        }
+        return track
+      })
+
+    return tracks
+  }
+)
+
 export const renderedClipsSelector = createSelector(
   selectionTypeSelector,
   tracksSelector,
