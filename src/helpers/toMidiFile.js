@@ -1,47 +1,44 @@
 import Midi from 'jsmidgen'
 
+let keyNumOffset = 32 // to offset incorrect keyNum value on client
+
+// client time is 0.25 per quarter, jsmidgen uses 128 ticks per quarter
+let tickMultiplier = 512 // 0.25 * 128
+
+function getTimeFromBar (bar, previous) {
+  return (bar - (previous ? previous.bar : 0)) * tickMultiplier
+}
+
 export default ({ notes, tempo }) => {
-
-  // flatten client notes into individual on / off events
-  // could do sorting, time correcting here as well..
-
-  notes = notes
-    .reduce((acc, note) => ([
-      ...acc,
-        {
-          time: note.start,
-          type: `addNoteOn`,
-          keyNum: note.keyNum,
-        },
-        {
-          time: note.end,
-          type: `addNoteOff`,
-          keyNum: note.keyNum,
-        },
-    ]), [])
-
-    // sort from start to finish
-    .sort((a, b) => a.time - b.time)
-
-  // note time needs to be # of ticks since last event
-  notes = notes.map((note, i) => ({
-    ...note,
-    time: note.time - (notes[i - 1] ? notes[i - 1].time : 0),
-  }))
+  // add notes to related track
+  let tracks = notes.reduce((acc, note) => ({
+    ...acc,
+    [note.trackID]: [
+      ...(acc[note.trackID] || []),
+      {
+        ...note,
+        keyNum: note.keyNum + keyNumOffset,
+        // note time needs to be # of ticks since last event
+        time: getTimeFromBar(
+          note.bar,
+          acc[note.trackID] && acc[note.trackID][acc[note.trackID].length - 1]
+        ),
+      }
+    ]
+  }), {})
 
   let file = new Midi.File()
-  let track = new Midi.Track()
 
-  track.setTempo(tempo)
-  file.addTrack(track)
+  Object.values(tracks).forEach(notes => {
+    let track = new Midi.Track()
 
-  let keyNumOffset = 32 // to offset incorrect keyNum value on client
+    track.setTempo(tempo)
 
-  // client time is 0.25 per quarter, jsmidgen uses 128 ticks per quarter
-  let tickMultiplier = 512 // 0.25 * 128
+    notes.forEach(note => {
+      track[note.type](0, note.keyNum, note.time, note.velocity)
+    })
 
-  notes.forEach(note => {
-    track[note.type](0, note.keyNum + keyNumOffset, note.time * tickMultiplier)
+    file.addTrack(track)
   })
 
   // create binary download blob

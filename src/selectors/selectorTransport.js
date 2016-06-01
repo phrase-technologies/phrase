@@ -12,13 +12,15 @@ const noteMidiSelector = createLargeCacheSelector(
       trackID: note.trackID,
       bar: note.start,
       keyNum: note.keyNum,
-      velocity: note.velocity || 127
+      velocity: note.velocity || 127,
+      type: `addNoteOn`,
     }
     var endCommand = {
       trackID: note.trackID,
       bar: note.end,
       keyNum: note.keyNum,
-      velocity: 0
+      velocity: 0,
+      type: `addNoteOff`,
     }
     return [startCommand, endCommand]
   }

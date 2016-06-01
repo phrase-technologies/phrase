@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import u from 'updeep'
 import { phrase, pianoroll, library } from 'actions/actions'
+import { phraseMidiSelector } from 'selectors/selectorTransport.js'
 import toMidiFile from 'helpers/toMidiFile'
 import { saveAs } from 'file-saver'
 
@@ -19,10 +20,9 @@ import { saveAs } from 'file-saver'
 
 export const exportToMidi = () => {
   return async (dispatch, getState) => {
-    let {
-      phrase: { present: { notes, tempo }},
-      phraseMeta: { phraseName }
-    } = getState()
+    let state = getState()
+    let { phraseMeta: { phraseName }, phrase: { present: { tempo }}} = state
+    let notes = phraseMidiSelector(state)
 
     saveAs(toMidiFile({ notes, tempo }), `${phraseName}.mid`)
   }
