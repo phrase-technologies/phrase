@@ -7,6 +7,9 @@ import { transportStop,
 import { fireNote,
          killNote } from './AudioEngineMidiTriggers.js'
 
+export const BEATS_PER_BAR = 4 // For 4/4 time signature, it's 4
+export const SECONDS_PER_MINUTE = 60
+
 // ============================================================================
 // PLAY START
 // ============================================================================
@@ -24,9 +27,7 @@ export function startPlayback(engine, state, dispatch) {
   // Keep track of when playback began
   engine.isPlaying = true
   engine.playheadPositionBars = state.transport.playhead
-
-  // 240 = 60 seconds per minute x 4 beats per bar
-  engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * 240/state.phrase.present.tempo
+  engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * BEATS_PER_BAR * SECONDS_PER_MINUTE / state.phrase.present.tempo
 
   // Nothing to play? Ignore
   if (engine.midiCommands.length === 0) {
@@ -127,8 +128,7 @@ function barToPlayTime(bar, engine, state) {
   // If not provided, default to now.
   let playStartTime = engine.playStartTime || engine.ctx.currentTime
 
-  // 240 = 60 seconds per minute x 4 beats per bar
-  return bar * 240 / state.phrase.present.tempo + playStartTime
+  return bar * BEATS_PER_BAR * SECONDS_PER_MINUTE / state.phrase.present.tempo + playStartTime
 }
 
 function playTimeToBar(time, engine, state) {
@@ -136,6 +136,5 @@ function playTimeToBar(time, engine, state) {
   // If not provided, default to now.
   let playStartTime = engine.playStartTime || engine.ctx.currentTime
 
-  // 240 = 60 seconds per minute x 4 beats per bar
-  return (time - playStartTime) / 240 * state.phrase.present.tempo
+  return (time - playStartTime) / (BEATS_PER_BAR * SECONDS_PER_MINUTE) * state.phrase.present.tempo
 }
