@@ -6,19 +6,25 @@ import { clipSelectionOffsetValidated } from './selectorPianoroll.js'
 
 const tracksSelector            = (state) => (state.phrase.present.tracks)
 const clipsSelector             = (state) => (state.phrase.present.clips)
-const clipSelectionIDs          = (state) => (state.phraseMeta.clipSelectionIDs)
+const selectionTypeSelector     = (state) => (state.phraseMeta.selectionType)
+const selectionIDsSelector      = (state) => (state.phraseMeta.selectionIDs)
 
 export const renderedClipsSelector = createSelector(
+  selectionTypeSelector,
   tracksSelector,
   clipsSelector,
-  clipSelectionIDs,
+  selectionIDsSelector,
   clipSelectionOffsetValidated,
-  (tracks, clips, clipSelectionIDs, { offsetStart, offsetEnd, offsetTrack, offsetLooped }) => {
+  (selectionType, tracks, clips, selectionIDs, { offsetStart, offsetEnd, offsetTrack, offsetLooped }) => {
+    // Escape if nothing selected
+    if (selectionType !== "clips")
+      return clips
+
     // Render Offseted Selections
     let clipSelectionOffsetPreview = []
     clips = (clips || [])
       .map(clip => {
-        let isClipSelected = clipSelectionIDs.some(x => x === clip.id)
+        let isClipSelected = selectionIDs.some(x => x === clip.id)
         if (isClipSelected) {
           // Generate a preview of any offset on clip selection (from drag and drop)
           if (offsetStart || offsetEnd || offsetTrack) {

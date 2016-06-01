@@ -60,10 +60,8 @@ export const phraseSelectNote             = (noteID, union)           => ({type:
 export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches
   return (dispatch, getState) => {
-    let state = getState()
-    let clipIDs = state.phraseMeta.clipSelectionIDs
-    let noteIDs = state.phraseMeta.noteSelectionIDs
-    dispatch({ type: phrase.DELETE_SELECTION, clipIDs, noteIDs })
+    let { selectionType, selectionIDs } = getState().phraseMeta
+    dispatch({ type: phrase.DELETE_SELECTION, payload: { selectionType, selectionIDs } })
   }
 }
 export const phraseDeleteNote             = (noteID)                  => ({type: phrase.DELETE_NOTE, noteID})
@@ -93,7 +91,7 @@ export const phraseDropClipSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetTrack, offsetLooped } = clipSelectionOffsetValidated(state)
-    let clipIDs = state.phraseMeta.clipSelectionIDs
+    let clipIDs = state.phraseMeta.selectionIDs
     dispatch({ type: phrase.DROP_CLIP_SELECTION, clipIDs, offsetStart, offsetEnd, offsetTrack, offsetLooped })
   }
 }
@@ -102,7 +100,7 @@ export const phraseDropNoteSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetKey } = noteSelectionOffsetValidated(state)
-    let noteIDs = state.phraseMeta.noteSelectionIDs
+    let noteIDs = state.phraseMeta.selectionIDs
     dispatch({ type: phrase.DROP_NOTE_SELECTION, noteIDs, offsetStart, offsetEnd, offsetKey })
   }
 }
@@ -311,9 +309,12 @@ export default function reducePhrase(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
+      let { selectionType, selectionIDs } = action.payload
+      if (!["tracks", "clips", "notes"].includes(selectionType))
+        return state
+
       return u({
-        clips: u.reject(clip => action.clipIDs.includes(clip.id)),
-        notes: u.reject(note => action.noteIDs.includes(note.id) || action.clipIDs.includes(note.clipID))
+        [selectionType]: u.reject(clip => selectionIDs.includes(clip.id)),
       }, state)
 
     // ------------------------------------------------------------------------

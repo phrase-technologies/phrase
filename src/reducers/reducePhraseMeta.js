@@ -40,19 +40,14 @@ export const defaultState = {
   dateModified: null,
   loginReminder: false,
   rephraseReminder: false,
-  clipSelectionIDs: [],
-  clipSelectionTargetID: null,
-  clipSelectionOffsetStart: null,
-  clipSelectionOffsetEnd:   null,
-  clipSelectionOffsetTrack: null,
-  clipSelectionOffsetLooped: false,
-  clipSelectionOffsetSnap: true,
-  noteSelectionIDs: [],
-  noteSelectionTargetID: null,
-  noteSelectionOffsetStart: null,
-  noteSelectionOffsetEnd: null,
-  noteSelectionOffsetKey: null,
-  noteSelectionOffsetSnap: true,
+  selectionType: null,  // Can be "tracks", "clips", or "notes"
+  selectionIDs: [],
+  selectionTargetID: null,
+  selectionOffsetStart: null,
+  selectionOffsetEnd:   null,
+  selectionOffsetTrack: null,
+  selectionOffsetLooped: false,
+  selectionOffsetSnap: true,
 }
 
 export default function reducePhraseMeta(state = defaultState, action) {
@@ -111,26 +106,27 @@ export default function reducePhraseMeta(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.SELECT_CLIP:
       return u({
-        noteSelectionIDs: [],
-        clipSelectionIDs: action.union
-          ? _.xor(state.clipSelectionIDs, [action.clipID])
+        selectionType: "clips",
+        selectionIDs: [],
+        selectionIDs: action.union && state.selectionType === "clips"
+          ? _.xor(state.selectionIDs, [action.clipID])
           : [action.clipID]
       }, state)
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_NOTE:
       return u({
-        clipSelectionIDs: [],
-        noteSelectionIDs: action.union
-          ? _.xor(state.noteSelectionIDs, [action.noteID])
+        selectionType: "notes",
+        selectionIDs: action.union && state.selectionType === "notes"
+          ? _.xor(state.selectionIDs, [action.noteID])
           : [action.noteID]
       }, state)
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
       return u({
-        clipSelectionIDs: [],
-        noteSelectionIDs: [],
+        selectionType: null,
+        selectionIDs: [],
       }, state)
 
     // ------------------------------------------------------------------------
@@ -162,52 +158,52 @@ export default function reducePhraseMeta(state = defaultState, action) {
         : selectedNoteIDs
 
       return u({
-        clipSelectionIDs: [],
-        noteSelectionIDs: updatedNoteSelectionIDs,
+        selectionType: "notes",
+        selectionIDs: updatedNoteSelectionIDs,
       }, state)
 
     // ------------------------------------------------------------------------
     case phrase.DRAG_CLIP_SELECTION: {
       return u({
-        clipSelectionTargetID: action.clipID,
-        clipSelectionOffsetStart: action.start,
-        clipSelectionOffsetEnd: action.end,
-        clipSelectionOffsetTrack: action.track,
-        clipSelectionOffsetLooped: action.looped,
-        clipSelectionOffsetSnap: action.snap,
+        selectionTargetID: action.clipID,
+        selectionOffsetStart: action.start,
+        selectionOffsetEnd: action.end,
+        selectionOffsetTrack: action.track,
+        selectionOffsetLooped: action.looped,
+        selectionOffsetSnap: action.snap,
       }, state)
     }
 
     // ------------------------------------------------------------------------
     case phrase.DRAG_NOTE_SELECTION: {
       return u({
-        noteSelectionTargetID: action.noteID,
-        noteSelectionOffsetStart: action.start,
-        noteSelectionOffsetEnd: action.end,
-        noteSelectionOffsetKey: action.key,
-        noteSelectionOffsetSnap: action.snap,
+        selectionTargetID: action.noteID,
+        selectionOffsetStart: action.start,
+        selectionOffsetEnd: action.end,
+        selectionOffsetKey: action.key,
+        selectionOffsetSnap: action.snap,
       }, state)
     }
 
     // ------------------------------------------------------------------------
     case phrase.DROP_CLIP_SELECTION:
       return u({
-        clipSelectionTargetID: null,
-        clipSelectionOffsetStart: null,
-        clipSelectionOffsetEnd: null,
-        clipSelectionOffsetTrack: null,
-        clipSelectionOffsetLooped: false,
-        clipSelectionOffsetSnap: true,
+        selectionTargetID: null,
+        selectionOffsetStart: null,
+        selectionOffsetEnd: null,
+        selectionOffsetTrack: null,
+        selectionOffsetLooped: false,
+        selectionOffsetSnap: true,
       }, state)
 
     // ------------------------------------------------------------------------
     case phrase.DROP_NOTE_SELECTION:
       return u({
-        noteSelectionTargetID: null,
-        noteSelectionOffsetStart: null,
-        noteSelectionOffsetEnd: null,
-        noteSelectionOffsetKey: null,
-        noteSelectionOffsetSnap: true,
+        selectionTargetID: null,
+        selectionOffsetStart: null,
+        selectionOffsetEnd: null,
+        selectionOffsetKey: null,
+        selectionOffsetSnap: true,
       }, state)
 
     // ------------------------------------------------------------------------
