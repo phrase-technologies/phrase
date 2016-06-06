@@ -31,13 +31,15 @@ export const phraseCreateTrack = (actionConfig) => {
     dispatch({ type: mixer.RESIZE_HEIGHT, height, mixerContentHeight })
   }
 }
-export const phraseArmTrack               = (trackID)                 => ({type: phrase.ARM_TRACK, trackID})
-export const phraseMuteTrack              = (trackID)                 => ({type: phrase.MUTE_TRACK, trackID})
-export const phraseSoloTrack              = (trackID)                 => ({type: phrase.SOLO_TRACK, trackID})
-export const phraseSetTempo               = (tempo)                   => ({type: phrase.SET_TEMPO, tempo})
-export const phraseCreateClip = (trackID, bar) => {
+
+export const phraseArmTrack = (trackID) => ({type: phrase.ARM_TRACK, trackID})
+export const phraseMuteTrack = (trackID) => ({type: phrase.MUTE_TRACK, trackID})
+export const phraseSoloTrack = (trackID) => ({type: phrase.SOLO_TRACK, trackID})
+export const phraseSetTempo = (tempo) => ({type: phrase.SET_TEMPO, tempo})
+
+export const phraseCreateClip = (trackID, bar, end, snapStart = true) => {
   return (dispatch, getState) => {
-    dispatch({ type: phrase.CREATE_CLIP, trackID, bar })
+    dispatch({ type: phrase.CREATE_CLIP, trackID, bar, end, snapStart })
 
     // Select the clip after it's created
     let state = getState()
@@ -46,9 +48,10 @@ export const phraseCreateClip = (trackID, bar) => {
     dispatch({ type: phrase.SELECT_CLIP, payload: { clipID: newClip.id, union: false } })
   }
 }
-export const phraseCreateNote = (trackID, bar, key) => {
+
+export const phraseCreateNote = (trackID, bar, key, start, end) => {
   return (dispatch, getState) => {
-    dispatch({ type: phrase.CREATE_NOTE, trackID, bar, key })
+    dispatch({ type: phrase.CREATE_NOTE, trackID, bar, key, start, end })
 
     // Select the note after it's created
     let state = getState()
@@ -68,6 +71,7 @@ export const phraseCreateNote = (trackID, bar, key) => {
     })
   }
 }
+
 export const phraseSelectTrack = ({ trackID, union }) => {
   return (dispatch, getState) => {
 
@@ -81,8 +85,10 @@ export const phraseSelectTrack = ({ trackID, union }) => {
     })
   }
 }
+
 export const phraseSelectClip  = ({  clipID, union }) => ({type: phrase.SELECT_CLIP,  payload: {  clipID, union } })
 export const phraseSelectNote  = ({  noteID, loopIteration, union }) => ({type: phrase.SELECT_NOTE,  payload: {  noteID, loopIteration, union } })
+
 export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches
   return (dispatch, getState) => {
@@ -117,8 +123,19 @@ export const phraseDeleteSelection = () => {
     }
   }
 }
+
 export const phraseDeleteNote = (noteID) => ({type: phrase.DELETE_NOTE, noteID})
-export const phraseDragClipSelection = ({ grippedClipID, offsetStart, offsetEnd, offsetLooped, offsetTrack, offsetSnap, offsetCopy }) => {
+
+export const phraseDragClipSelection = ({
+  grippedClipID,
+  offsetStart,
+  offsetEnd,
+  offsetLooped,
+  offsetTrack,
+  offsetSnap,
+  offsetCopy
+}) => {
+
   return {
     type: phrase.DRAG_CLIP_SELECTION,
     payload: {
@@ -132,7 +149,17 @@ export const phraseDragClipSelection = ({ grippedClipID, offsetStart, offsetEnd,
     }
   }
 }
-export const phraseDragNoteSelection = ({ grippedNoteID, targetBar, offsetStart, offsetEnd, offsetKey, offsetSnap, offsetCopy }) => {
+
+export const phraseDragNoteSelection = ({
+  grippedNoteID,
+  targetBar,
+  offsetStart,
+  offsetEnd,
+  offsetKey,
+  offsetSnap,
+  offsetCopy
+}) => {
+
   return {
     type: phrase.DRAG_NOTE_SELECTION,
     payload: {
@@ -146,6 +173,7 @@ export const phraseDragNoteSelection = ({ grippedNoteID, targetBar, offsetStart,
     }
   }
 }
+
 export const phraseDropClipSelection = () => {
   // We need to know the selection offsets - use a thunk to access other state branches
   return (dispatch, getState) => {
@@ -178,6 +206,7 @@ export const phraseDropClipSelection = () => {
     })
   }
 }
+
 export const phraseDropNoteSelection = () => {
   // We need to know the selection offsets - use a thunk to access other state branches
   return (dispatch, getState) => {
@@ -211,6 +240,51 @@ export const phraseDropNoteSelection = () => {
     })
   }
 }
+
+export const phraseSliceClip = ({ bar, trackID, foundClip }) => {
+  return (dispatch, getState) => {
+
+    let state = getState()
+    let { clips, notes } = state.phrase.present
+    let clipsCount = clips.length
+
+    let leftClip = {
+      ...foundClip,
+      end: bar,
+      trackID: clipsCount,
+    }
+
+    let rightClip = {
+      ...foundClip,
+      start: bar,
+    }
+
+    let leftNotes = notes.reduce((acc, note) => ([
+      ...acc,
+      ...(note.clipID === foundClip.id && note.end < bar
+        ? [ { ...note, start: note.start + leftClip.start, end: note.end + leftClip.start } ]
+        : [])
+    ]), [])
+
+    let rightNotes = notes.reduce((acc, note) => ([
+      ...acc,
+      ...(note.clipID === foundClip.id && note.end > bar
+        ? [ { ...note, start: note.start + rightClip.start, end: note.end + leftClip.start } ]
+        : [])
+    ]), [])
+
+    let snapStart = false
+
+    dispatch({ type: phrase.DELETE_CLIP, clipID: foundClip.id })
+    dispatch(phraseCreateClip(trackID, leftClip.start, leftClip.end - leftClip.start, snapStart))
+    dispatch(phraseCreateClip(trackID, rightClip.start, rightClip.end - rightClip.start, snapStart))
+
+    leftNotes.forEach(note => {
+      dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end))
+    })
+  }
+}
+
 export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated, dateModified, state }) => {
   return (dispatch) => {
     dispatch({ type: phrase.LOAD_START })
@@ -228,6 +302,7 @@ export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated
     })
   }
 }
+
 export const phraseLoadFromDb = phraseId => {
   return async (dispatch) => {
     dispatch({ type: phrase.LOAD_START })
@@ -250,6 +325,7 @@ export const phraseLoadFromDb = phraseId => {
     }
   }
 }
+
 export const phraseSave = () => {
   return (dispatch, getState) => {
     let state = getState()
@@ -266,6 +342,7 @@ export const phraseSave = () => {
     })
   }
 }
+
 export const phraseNewPhrase = () => {
   return dispatch => {
     dispatch(push(`/phrase/new`))
@@ -278,6 +355,7 @@ export const phraseNewPhrase = () => {
     }, 256)
   }
 }
+
 export const phraseRephrase = () => {
   return (dispatch, getState) => {
     let state = getState()
@@ -311,6 +389,7 @@ export const phraseRephrase = () => {
     }, 250)
   }
 }
+
 export const phraseLoginReminder    = ({ show }) => ({ type: phrase.LOGIN_REMINDER,    payload: { show } })
 export const phraseRephraseReminder = ({ show }) => ({ type: phrase.REPHRASE_REMINDER, payload: { show } })
 export const phrasePristine = ({ pristine }) => ({ type: phrase.PRISTINE, payload: { pristine } })
@@ -588,6 +667,7 @@ export default function reducePhrase(state = defaultState, action) {
         noteAutoIncrement,
       }, state)
     }
+
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:
       return defaultState
@@ -603,15 +683,15 @@ function reduceCreateTrack(state, action) {
     tracks: uAppend(
       {
         id: state.trackAutoIncrement,
-        name: action.name || 'MIDI Track '+(state.trackAutoIncrement+1),
+        name: action.name || 'MIDI Track '+(state.trackAutoIncrement + 1),
         color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
         arm:  false,
         mute: false,
         solo: false
       }
     ),
-    trackAutoIncrement: state.trackAutoIncrement+1,
-    colorAutoIncrement: state.colorAutoIncrement+1
+    trackAutoIncrement: state.trackAutoIncrement + 1,
+    colorAutoIncrement: state.colorAutoIncrement + 1
   }, state)
 }
 
@@ -621,12 +701,12 @@ function reduceCreateClip(state, action) {
     return state
 
   // Create new clip
-  let snappedClipStart = Math.floor(action.bar) + 0.00
+  let snappedClipStart = action.snapStart ? Math.floor(action.bar) + 0.00 : action.bar
   let newClip = u.freeze({
     id:         state.clipAutoIncrement,
     trackID:    action.trackID,
     start:      snappedClipStart,
-    end:        snappedClipStart + 1.00,
+    end:        snappedClipStart + (action.end || 1.00),
     offset:     0.00,
     loopLength: 1.00,
   })
@@ -657,8 +737,8 @@ function reduceCreateNote(state, action) {
     trackID:  action.trackID,
     clipID:   foundClip.id,
     keyNum:   snappedNoteKey,
-    start:    snappedNoteStart,
-    end:      snappedNoteStart + state.noteLengthLast,
+    start:    action.start ? action.start - foundClip.start : snappedNoteStart,
+    end:      action.end ? action.end - foundClip.start : snappedNoteStart + state.noteLengthLast,
   })
 
   // Update State

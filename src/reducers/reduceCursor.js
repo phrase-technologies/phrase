@@ -58,6 +58,10 @@ export default function reduceCursor(state = defaultState, action) {
     case cursor.RESIZE_RIGHT_LOOP:      return u({[action.priority]: 'right-loop'     }, state)
     case cursor.RESIZE_RIGHT_CLIPPED:   return u({[action.priority]: 'right-clipped'  }, state)
     case cursor.RESIZE_RIGHT_LOOPED:    return u({[action.priority]: 'right-looped'   }, state)
+    case cursor.SCISSORS:               return u({[action.priority]: 'scissors'       }, state)
+
+    case cursor.CHANGE:
+      return { [action.priority]: action.payload.icon }
 
     case cursor.DROP:
     case cursor.CLEAR:

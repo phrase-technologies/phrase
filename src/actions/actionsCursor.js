@@ -1,4 +1,4 @@
-import { cursor } from './actions.js'
+import { cursor } from './actions'
 
 export const cursorDefault              = (priority = 'explicit') => ({ type: cursor.DEFAULT,               priority })
 export const cursorDrag                 = (priority = 'explicit') => ({ type: cursor.DRAG,                  priority })
@@ -16,4 +16,11 @@ export const cursorResizeRightClip      = (priority = 'explicit') => ({ type: cu
 export const cursorResizeRightLoop      = (priority = 'explicit') => ({ type: cursor.RESIZE_RIGHT_LOOP,     priority })
 export const cursorResizeRightClipped   = (priority = 'explicit') => ({ type: cursor.RESIZE_RIGHT_CLIPPED,  priority })
 export const cursorResizeRightLooped    = (priority = 'explicit') => ({ type: cursor.RESIZE_RIGHT_LOOPED,   priority })
+export const cursorScissors             = (priority = 'explicit') => ({ type: cursor.SCISSORS,              priority })
 export const cursorClear                = (priority = 'explicit') => ({ type: cursor.CLEAR,                 priority })
+
+export const cursorChange = ({ icon, priority = `explicit` }) => ({
+  type: cursor.CHANGE,
+  payload: { icon },
+  priority,
+})

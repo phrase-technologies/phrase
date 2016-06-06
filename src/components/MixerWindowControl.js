@@ -6,30 +6,44 @@
 // provide horizontal scrolling but both are needed for the complete UX.
 
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import ReactDOM from 'react-dom'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 
-import { mixerScrollX,
-         mixerScrollY,
-         mixerResizeWidth,
-         mixerResizeHeight,
-         mixerMoveCursor,
-       } from '../reducers/reduceMixer.js'
-import { getTrackHeight,
-         getTracksHeight } from '../helpers/trackHelpers.js'
-import { phraseCreateClip,
-         phraseSelectClip,
-         phraseDragClipSelection,
-         phraseDropClipSelection } from '../reducers/reducePhrase.js'
-import { pianorollSetFocusWindow } from '../reducers/reducePianoroll.js'
-import { cursorResizeLeft,
-         cursorResizeRight,
-         cursorResizeRightClip,
-         cursorResizeRightLoop,
-         cursorResizeRightClipped,
-         cursorResizeRightLooped,
-         cursorClear } from '../actions/actionsCursor.js'
+import {
+  mixerScrollX,
+  mixerScrollY,
+  mixerResizeWidth,
+  mixerResizeHeight,
+  mixerMoveCursor,
+} from 'reducers/reduceMixer'
+
+import {
+  getTrackHeight,
+  getTracksHeight
+} from 'helpers/trackHelpers'
+
+import {
+  phraseCreateClip,
+  phraseSelectClip,
+  phraseDragClipSelection,
+  phraseDropClipSelection,
+  phraseSliceClip,
+} from 'reducers/reducePhrase'
+
+import { pianorollSetFocusWindow } from 'reducers/reducePianoroll'
+
+import {
+  cursorChange,
+  cursorResizeLeft,
+  cursorResizeRight,
+  cursorResizeRightClip,
+  cursorResizeRightLoop,
+  cursorResizeRightClipped,
+  cursorResizeRightLooped,
+  cursorClear
+ } from 'actions/actionsCursor'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
 const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
@@ -49,8 +63,8 @@ export class MixerWindowControl extends Component {
     )
   }
 
-  constructor(){
-    super(...arguments)
+  constructor() {
+    super()
     this.handleResize = this.handleResize.bind(this)
     this.mouseDownEvent = this.mouseDownEvent.bind(this)
     this.mouseMoveEvent = this.mouseMoveEvent.bind(this)
@@ -88,23 +102,30 @@ export class MixerWindowControl extends Component {
       default:
       case 1:
       case 2: this.leftClickEvent(e);  break
-      case 3: this.rightClickEvent(e); break
+      case 3: this.rightClickEvent(e); break // TODO: handle right click
     }
   }
 
   leftClickEvent(e) {
-    let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
+    let mouseXByRange = this.props.grid.getMouseXPercent(e) * this.props.grid.getBarRange()
+    let bar = (this.props.xMin + mouseXByRange) * this.props.barCount
     let trackID = this.getTrackFromCursor(e)
-    let foundClip = this.props.clips.find(clip => clip.trackID === trackID && clip.start <= bar && clip.end > bar)
+
+    let foundClip = this.props.clips.find(clip =>
+      clip.trackID === trackID && clip.start <= bar && clip.end > bar
+    )
 
     if (foundClip) {
-      this.clipEvent(e, bar, trackID, foundClip)
+      this.clipEvent({ e, bar, trackID, foundClip })
     } else {
       this.emptyAreaEvent(e, bar, trackID)
     }
   }
 
-  clipEvent(e, bar, trackID, foundClip) {
+  clipEvent({ e, bar, trackID, foundClip }) {
+
+    let { arrangeTool, dispatch } = this.props
+
     // Second Click - Clip
     if (this.lastEvent &&
         this.lastEvent.action === CLICK_CLIP) {
@@ -120,50 +141,67 @@ export class MixerWindowControl extends Component {
 
     // First Click - Start Selection
     if (!this.lastEvent) {
-      this.lastEvent = {
-        action: SELECT_CLIP,
-        clipID: foundClip.id,
-        bar,
-        looped: (foundClip.loopLength !== foundClip.end - foundClip.start),
-        trackPosition: this.props.tracks.findIndex(track => track.id === trackID),
-        time: Date.now()
-      }
-      let clipLength = foundClip.end - foundClip.start
-      let threshold = Math.min(
-        8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
-        0.25*clipLength
-      )
 
       if (!foundClip.selected) {
         this.props.dispatch(phraseSelectClip({ clipID: foundClip.id, union: e.shiftKey }))
       }
-
-      // Adjust Start Point
-      if (bar < foundClip.start + threshold) {
-        this.props.dispatch(cursorResizeLeft('explicit'))
-        this.lastEvent.grip = 'MIN'
-      // Adjust End Point
-      } else if (bar > foundClip.end - threshold) {
-        // Already Looped Clip
-        if (this.lastEvent.looped) {
-          this.props.dispatch(cursorResizeRight('explicit'))
-        // Possibly Looped Clip Depending on Cursor Position
-        } else {
-          // Not Looped
-          if (this.isCursorAtTrackTopHalf(e, trackID)) {
-            this.props.dispatch(cursorResizeRightClipped('explicit'))
-            this.lastEvent.looped = false
-          // Looped
-          } else {
-            this.props.dispatch(cursorResizeRightLooped('explicit'))
-            this.lastEvent.looped = true
+      switch (arrangeTool) {
+        case 'pointer':
+          this.lastEvent = {
+            action: SELECT_CLIP,
+            clipID: foundClip.id,
+            bar,
+            looped: foundClip.loopLength !== foundClip.end - foundClip.start,
+            trackPosition: this.props.tracks.findIndex(track => track.id === trackID),
+            time: Date.now()
           }
-        }
-        this.lastEvent.grip = 'MAX'
-      // Move Entire Clip
-      } else {
-        this.props.dispatch(cursorClear('explicit'))
-        this.lastEvent.grip = 'MID'
+
+          let clipLength = foundClip.end - foundClip.start
+
+          let threshold = Math.min(
+            8 * this.props.grid.pixelScale / this.props.grid.width * this.props.grid.getBarRange() * this.props.barCount,
+            0.25 * clipLength
+          )
+
+          if (!foundClip.selected) {
+            this.props.dispatch(phraseSelectClip(foundClip.id, e.shiftKey))
+          }
+
+          // Adjust Start Point
+          if (bar < foundClip.start + threshold) {
+            this.props.dispatch(cursorResizeLeft('explicit'))
+            this.lastEvent.grip = 'MIN'
+          // Adjust End Point
+          } else if (bar > foundClip.end - threshold) {
+            // Already Looped Clip
+            if (this.lastEvent.looped) {
+              this.props.dispatch(cursorResizeRight('explicit'))
+            // Possibly Looped Clip Depending on Cursor Position
+            } else {
+              // Not Looped
+              if (this.isCursorAtTrackTopHalf(e, trackID)) {
+                this.props.dispatch(cursorResizeRightClipped('explicit'))
+                this.lastEvent.looped = false
+              // Looped
+              } else {
+                this.props.dispatch(cursorResizeRightLooped('explicit'))
+                this.lastEvent.looped = true
+              }
+            }
+            this.lastEvent.grip = 'MAX'
+          // Move Entire Clip
+          } else {
+            this.props.dispatch(cursorClear('explicit'))
+            this.lastEvent.grip = 'MID'
+          }
+          break
+
+        case 'scissors':
+          dispatch(phraseSliceClip({ bar, trackID, foundClip }))
+          break
+
+        default:
+          return
       }
     }
   }
@@ -195,7 +233,9 @@ export class MixerWindowControl extends Component {
   }
 
   mouseMoveEvent(e) {
-    let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
+
+    let mouseXByRange = this.props.grid.getMouseXPercent(e) * this.props.grid.getBarRange()
+    let bar = (this.props.xMin + mouseXByRange) * this.props.barCount
     let trackID = this.getTrackFromCursor(e, true)       // Strict = true:  treat the gaps between each track as NOT considered a track
     let trackIDFluid = this.getTrackFromCursor(e, false) // Strict = false: treat the gaps between each track as actual tracks to facilitate smooth drag and drop
 
@@ -233,32 +273,38 @@ export class MixerWindowControl extends Component {
   }
 
   hoverEvent(e, bar, trackID) {
+    let { clips, grid, barCount, arrangeTool, dispatch } = this.props
+
     if (e.target !== this.container)
       return
 
-    let foundClip = this.props.clips.find(clip => clip.trackID === trackID && clip.start <= bar && clip.end > bar)
+    let foundClip = clips.find(clip =>
+      clip.trackID === trackID && clip.start <= bar && clip.end > bar
+    )
+
     if (foundClip) {
       let clipLength = foundClip.end - foundClip.start
+
       let threshold = Math.min(
-        8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
-        0.25*clipLength
+        8 * grid.pixelScale / grid.width * grid.getBarRange() * barCount,
+        0.25 * clipLength
       )
 
       if (bar < foundClip.start + threshold) {
-        this.props.dispatch(cursorResizeLeft('implicit'))
+        dispatch(cursorResizeLeft('implicit'))
       } else if (bar > foundClip.end - threshold) {
         if (foundClip.loopLength !== foundClip.end - foundClip.start)
-          this.props.dispatch(cursorResizeRight('implicit'))
+          dispatch(cursorResizeRight('implicit'))
         else
           this.isCursorAtTrackTopHalf(e, trackID)
-            ? this.props.dispatch(cursorResizeRightClip('implicit'))
-            : this.props.dispatch(cursorResizeRightLoop('implicit'))
+            ? dispatch(cursorResizeRightClip('implicit'))
+            : dispatch(cursorResizeRightLoop('implicit'))
       } else {
-        this.props.dispatch(cursorClear('implicit'))
+        dispatch(cursorChange({ icon: arrangeTool, priority: `implicit` }))
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else {
-      this.props.dispatch(cursorClear('implicit'))
+      dispatch(cursorClear('implicit'))
     }
   }
 
@@ -385,14 +431,17 @@ MixerWindowControl.propTypes = {
   yMax:         React.PropTypes.number.isRequired
 }
 
-export default provideGridSystem(
-  provideGridScroll(
-    MixerWindowControl,
-    {
-      scrollXActionCreator: mixerScrollX,
-      scrollYActionCreator: mixerScrollY,
-      cursorActionCreator: mixerMoveCursor,
-      enableZoomY: false
-    }
+export default
+connect(state => ({ arrangeTool: state.arrangeTool }))(
+  provideGridSystem(
+    provideGridScroll(
+      MixerWindowControl,
+      {
+        scrollXActionCreator: mixerScrollX,
+        scrollYActionCreator: mixerScrollY,
+        cursorActionCreator: mixerMoveCursor,
+        enableZoomY: false
+      }
+    )
   )
 )

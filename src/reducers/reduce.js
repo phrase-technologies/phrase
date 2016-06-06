@@ -17,6 +17,7 @@ import reduceMixer from './reduceMixer'
 import reducePianoroll from './reducePianoroll'
 import reduceCursor from './reduceCursor'
 import reduceAuth from './reduceAuth'
+import reduceArrangeTool from './reduceArrangeTool'
 
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
@@ -70,5 +71,6 @@ let finalReducer = combineReducers({
   pianoroll: reducePianoroll,
   cursor: reduceCursor,
   auth: reduceAuth,
+  arrangeTool: reduceArrangeTool,
 })
 export default finalReducer

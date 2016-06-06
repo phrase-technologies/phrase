@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
-import WorkstationHeaderTitle from './WorkstationHeaderTitle.js'
-import WorkstationHeaderAuthor from './WorkstationHeaderAuthor.js'
-import WorkstationHeaderStorage from './WorkstationHeaderStorage.js'
-import WorkstationHeaderShare from './WorkstationHeaderShare.js'
-import TransportTempo from './TransportTempo.js'
-import TransportControls from './TransportControls.js'
+import WorkstationHeaderTitle from './WorkstationHeaderTitle'
+import WorkstationHeaderAuthor from './WorkstationHeaderAuthor'
+import WorkstationHeaderStorage from './WorkstationHeaderStorage'
+import WorkstationHeaderShare from './WorkstationHeaderShare'
+import TransportTempo from './TransportTempo'
+import TransportControls from './TransportControls'
 
 import { phraseLoginReminder,
          phraseRephraseReminder,
@@ -128,9 +128,14 @@ export class WorkstationHeader extends Component {
   }
 
   renderEditTool() {
+    let { arrangeTool, dispatch } = this.props
+
     return (
       <div className="btn-group">
-        <button className="btn btn-dark btn-narrow">
+        <button
+          className={ `btn btn-dark btn-narrow ${arrangeTool === `pointer` ? `active` : ``}` }
+          onClick={() => dispatch(arrangeToolSelect(`pointer`))}
+        >
           <span className="fa fa-fw fa-mouse-pointer" />
         </button>
         <button className="btn btn-dark btn-narrow" disabled>
@@ -142,7 +147,10 @@ export class WorkstationHeader extends Component {
         <button className="btn btn-dark btn-narrow" disabled>
           <span className="fa fa-fw fa-eraser" />
         </button>
-        <button className="btn btn-dark btn-narrow" disabled>
+        <button
+          className={ `btn btn-dark btn-narrow ${arrangeTool === `scissors` ? `active` : ``}` }
+          onClick={() => dispatch(arrangeToolSelect(`scissors`))}
+        >
           <span className="fa fa-fw fa-scissors fa-rotate-90" />
         </button>
       </div>
@@ -173,6 +181,7 @@ function mapStateToProps(state) {
     lastSavedTimestamp: state.phraseMeta.dateModified,
     loginReminder: state.phraseMeta.loginReminder,
     rephraseReminder: state.phraseMeta.rephraseReminder,
+    arrangeTool: state.arrangeTool,
   }
 }
 

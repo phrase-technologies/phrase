@@ -96,7 +96,6 @@ export class MonophonicSynth {
   }
 
   fireNote(keyNum, velocity, time = 0, detune) {
-// console.log(detune)
     // If this voice has been stolen, ignore "dud" kill signals
     if (!velocity && this.lastNote !== keyNum)
       return

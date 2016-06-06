@@ -40,6 +40,7 @@ export const phrase = namespaceActions(
     'SOLO_TRACK',
     'SET_TEMPO',
     'CREATE_CLIP',
+    'DELETE_CLIP',
     'CREATE_NOTE',
     'SELECT_TRACK',
     'SELECT_CLIP',
@@ -127,7 +128,16 @@ export const cursor = namespaceActions(
     'RESIZE_RIGHT_LOOP',
     'RESIZE_RIGHT_CLIPPED',
     'RESIZE_RIGHT_LOOPED',
-    'CLEAR'
+    'SCISSORS',
+    'CLEAR',
+    'CHANGE',
+  ]
+)
+
+export const arrangeTool = namespaceActions(
+  'arrangeTool',
+  [
+    'SELECT',
   ]
 )
 
