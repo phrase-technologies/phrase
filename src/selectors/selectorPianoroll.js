@@ -12,25 +12,33 @@ const clipsSelector             = (state) => (state.phrase.present.clips)
 const notesSelector             = (state) => (state.phrase.present.notes)
 const pianorollSelector         = (state) => (state.pianoroll)
 const selectionType             = (state) => (state.phraseMeta.selectionType)
-const selectionIDs              = (state) => (state.phraseMeta.selectionIDs)
-const selectionTargetID         = (state) => (state.phraseMeta.selectionTargetID)
-const selectionOffsetStart      = (state) => (state.phraseMeta.selectionOffsetStart)
-const selectionOffsetEnd        = (state) => (state.phraseMeta.selectionOffsetEnd)
-const selectionOffsetKey        = (state) => (state.phraseMeta.selectionOffsetKey)
-const selectionOffsetTrack      = (state) => (state.phraseMeta.selectionOffsetTrack)
-const selectionOffsetLooped     = (state) => (state.phraseMeta.selectionOffsetLooped)
-const selectionOffsetSnap       = (state) => (state.phraseMeta.selectionOffsetSnap)
+const trackSelectionIDs         = (state) => (state.phraseMeta.trackSelectionIDs)
+const trackSelectionTargetID    = (state) => (state.phraseMeta.trackSelectionTargetID)
+const trackSelectionOffsetTrack = (state) => (state.phraseMeta.trackSelectionOffsetTrack)
+const clipSelectionIDs          = (state) => (state.phraseMeta.clipSelectionIDs)
+const clipSelectionTargetID     = (state) => (state.phraseMeta.clipSelectionTargetID)
+const clipSelectionOffsetStart  = (state) => (state.phraseMeta.clipSelectionOffsetStart)
+const clipSelectionOffsetEnd    = (state) => (state.phraseMeta.clipSelectionOffsetEnd)
+const clipSelectionOffsetTrack  = (state) => (state.phraseMeta.clipSelectionOffsetTrack)
+const clipSelectionOffsetLooped = (state) => (state.phraseMeta.clipSelectionOffsetLooped)
+const clipSelectionOffsetSnap   = (state) => (state.phraseMeta.clipSelectionOffsetSnap)
+const noteSelectionIDs          = (state) => (state.phraseMeta.noteSelectionIDs)
+const noteSelectionTargetID     = (state) => (state.phraseMeta.noteSelectionTargetID)
+const noteSelectionOffsetStart  = (state) => (state.phraseMeta.noteSelectionOffsetStart)
+const noteSelectionOffsetEnd    = (state) => (state.phraseMeta.noteSelectionOffsetEnd)
+const noteSelectionOffsetKey    = (state) => (state.phraseMeta.noteSelectionOffsetKey)
+const noteSelectionOffsetSnap   = (state) => (state.phraseMeta.noteSelectionOffsetSnap)
 
 export const clipSelectionOffsetValidated = createSelector(
   clipsSelector,
   selectionType,
-  selectionIDs,
-  selectionTargetID,
-  selectionOffsetStart,
-  selectionOffsetEnd,
-  selectionOffsetTrack,
-  selectionOffsetLooped,
-  selectionOffsetSnap,
+  clipSelectionIDs,
+  clipSelectionTargetID,
+  clipSelectionOffsetStart,
+  clipSelectionOffsetEnd,
+  clipSelectionOffsetTrack,
+  clipSelectionOffsetLooped,
+  clipSelectionOffsetSnap,
   tracksSelector,
   (clips, selectionType, clipSelectionIDs, targetClipID, offsetStart, offsetEnd, offsetTrack, offsetLooped, offsetSnap, tracks) => {
     // Escape if there is no selection or selection offset
@@ -76,12 +84,12 @@ export const clipSelectionOffsetValidated = createSelector(
 export const noteSelectionOffsetValidated = createSelector(
   notesSelector,
   selectionType,
-  selectionIDs,
-  selectionTargetID,
-  selectionOffsetStart,
-  selectionOffsetEnd,
-  selectionOffsetKey,
-  selectionOffsetSnap,
+  noteSelectionIDs,
+  noteSelectionTargetID,
+  noteSelectionOffsetStart,
+  noteSelectionOffsetEnd,
+  noteSelectionOffsetKey,
+  noteSelectionOffsetSnap,
   (notes, selectionType, noteSelectionIDs, targetNoteID, offsetStart, offsetEnd, offsetKey, offsetSnap) => {
     let targetNote = (notes || []).find(note => note.id === targetNoteID)
     let selectedNotes = (notes || []).filter(note => _.has(noteSelectionIDs, note.id))
@@ -117,7 +125,7 @@ const currentTrackSelector = (state) => {
 const currentClipsSelector = createSelector(
   clipsSelector,
   selectionType,
-  selectionIDs,
+  clipSelectionIDs,
   currentTrackSelector,
   clipSelectionOffsetValidated,
   (clips, selectionType, clipSelectionIDs, currentTrack, { offsetStart, offsetEnd, offsetTrack, offsetLooped }) => {
@@ -166,7 +174,7 @@ export const currentNotesSelector = createSelector(
   currentClipsSelector,
   notesSelector,
   selectionType,
-  selectionIDs,
+  noteSelectionIDs,
   currentTrackSelector,
   noteSelectionOffsetValidated,
   (currentClips, notes, selectionType, noteSelectionIDs, currentTrack, { offsetStart, offsetEnd, offsetKey }) => {

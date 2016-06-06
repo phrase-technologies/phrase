@@ -30,13 +30,14 @@ export default function reducerNavigation(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
       // Watch for current track deletion!
-      let { selectionType, selectionIDs } = action.payload
-      if (selectionType === "tracks" && selectionIDs.includes(action.payload.currentTrack)) {
+      let { selectionType, trackSelectionIDs } = action.payload
+      if (selectionType === "tracks" && trackSelectionIDs.includes(action.payload.currentTrack)) {
         return u({
           consoleEmbedded: false,
           consoleSplitRatio: null,
         }, state)
       }
+      return state
 
     // ------------------------------------------------------------------------
     case pianoroll.SET_FOCUS_WINDOW:

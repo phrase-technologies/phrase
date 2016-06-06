@@ -13,7 +13,9 @@ export const clipboardCopy = () => {
       },
       phraseMeta: {
         selectionType,
-        selectionIDs,
+        trackSelectionIDs,
+        clipSelectionIDs,
+        noteSelectionIDs,
       }
     } = getState()
 

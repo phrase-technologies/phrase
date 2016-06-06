@@ -56,22 +56,53 @@ export const phraseCreateNote = (trackID, bar, key) => {
     dispatch({ type: phrase.SELECT_NOTE, payload: { noteID: newNote.id, union: false } })
   }
 }
-export const phraseSelectTrack = ({ trackID, union }) => ({type: phrase.SELECT_TRACK, payload: { trackID, union } })
+export const phraseSelectTrack = ({ trackID, union }) => {
+  return (dispatch, getState) => {
+
+    dispatch({
+      type: phrase.SELECT_TRACK,
+      payload: {
+        trackID,
+        union,
+        clips: getState().phrase.present.clips,
+      }
+    })
+  }
+}
 export const phraseSelectClip  = ({  clipID, union }) => ({type: phrase.SELECT_CLIP,  payload: {  clipID, union } })
 export const phraseSelectNote  = ({  noteID, loopIteration, union }) => ({type: phrase.SELECT_NOTE,  payload: {  noteID, loopIteration, union } })
 export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches
   return (dispatch, getState) => {
-    let { selectionType, selectionIDs } = getState().phraseMeta
-    let currentTrack
-    if (selectionType === "tracks")
-      currentTrack = getState().pianoroll.currentTrack
-    dispatch({ type: phrase.DELETE_SELECTION, payload: { selectionType, selectionIDs, currentTrack } })
+    let {
+      selectionType,
+      trackSelectionIDs,
+      clipSelectionIDs,
+      noteSelectionIDs,
+    } = getState().phraseMeta
+
+    // If clip selection was just deleted, delete selectd tracks instead
+    if (selectionType === "clips" && clipSelectionIDs.length === 0) {
+      selectionType = "tracks"
+    }
+
+    dispatch({
+      type: phrase.DELETE_SELECTION,
+      payload: {
+        selectionType,
+        trackSelectionIDs,
+        clipSelectionIDs,
+        noteSelectionIDs,
+        currentTrack: (selectionType === "tracks") ? getState().pianoroll.currentTrack : null,
+      }
+    })
 
     // Track deletion will causer Mixer to require resizing and may cause Pianoroll to disappear
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
+    if (selectionType === "tracks") {
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
+    }
   }
 }
 export const phraseDeleteNote             = (noteID)                  => ({type: phrase.DELETE_NOTE, noteID})
@@ -101,7 +132,7 @@ export const phraseDropClipSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetTrack, offsetLooped } = clipSelectionOffsetValidated(state)
-    let clipIDs = state.phraseMeta.selectionIDs
+    let clipIDs = state.phraseMeta.clipSelectionIDs
     dispatch({ type: phrase.DROP_CLIP_SELECTION, clipIDs, offsetStart, offsetEnd, offsetTrack, offsetLooped })
   }
 }
@@ -110,7 +141,7 @@ export const phraseDropNoteSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetKey } = noteSelectionOffsetValidated(state)
-    let noteIDs = state.phraseMeta.selectionIDs
+    let noteIDs = state.phraseMeta.noteSelectionIDs
     dispatch({ type: phrase.DROP_NOTE_SELECTION, noteIDs, offsetStart, offsetEnd, offsetKey })
   }
 }
@@ -319,23 +350,28 @@ export default function reducePhrase(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
-      let { selectionType, selectionIDs } = action.payload
+      let {
+        selectionType,
+        trackSelectionIDs,
+        clipSelectionIDs,
+        noteSelectionIDs,
+      } = action.payload
       if (selectionType === "tracks") {
         return u({
-          tracks: u.reject(track => selectionIDs.includes(track.id)),
-          clips: u.reject(clip => selectionIDs.includes(clip.trackID)),
-          notes: u.reject(note => selectionIDs.includes(note.trackID))
+          tracks: u.reject(track => trackSelectionIDs.includes(track.id)),
+          clips: u.reject(clip => trackSelectionIDs.includes(clip.trackID)),
+          notes: u.reject(note => trackSelectionIDs.includes(note.trackID))
         }, state)
       }
       if (selectionType === "clips") {
         return u({
-          clips: u.reject(clip => selectionIDs.includes(clip.id)),
-          notes: u.reject(note => selectionIDs.includes(note.clipID))
+          clips: u.reject(clip => clipSelectionIDs.includes(clip.id)),
+          notes: u.reject(note => clipSelectionIDs.includes(note.clipID))
         }, state)
       }
       if (selectionType === "notes") {
         return u({
-          notes: u.reject(note => selectionIDs[note.id])
+          notes: u.reject(note => _.has(noteSelectionIDs, note.id))
         }, state)
       }
       return state
@@ -345,7 +381,7 @@ export default function reducePhrase(state = defaultState, action) {
       return u({
         clips: clips => {
           return clips.map(clip => {
-            // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
+            // Even if looping wasn't indicated in the cursor, other selected clips may be already looped and must remain so
             let validatedOffsetLooped = action.offsetLooped || (clip.end - clip.start !== clip.loopLength)
 
             if (action.clipIDs.some(x => x === clip.id)) {

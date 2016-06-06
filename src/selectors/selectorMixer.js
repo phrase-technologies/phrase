@@ -7,21 +7,18 @@ import { clipSelectionOffsetValidated } from './selectorPianoroll.js'
 const tracksSelector            = (state) => (state.phrase.present.tracks)
 const clipsSelector             = (state) => (state.phrase.present.clips)
 const selectionTypeSelector     = (state) => (state.phraseMeta.selectionType)
-const selectionIDsSelector      = (state) => (state.phraseMeta.selectionIDs)
+const trackSelectionIDsSelector = (state) => (state.phraseMeta.trackSelectionIDs)
+const clipSelectionIDsSelector  = (state) => (state.phraseMeta.clipSelectionIDs)
 
 export const renderedTracksSelector = createSelector(
   selectionTypeSelector,
   tracksSelector,
-  selectionIDsSelector,
-  (selectionType, tracks, selectionIDs) => {
-    // Escape if nothing selected
-    if (selectionType !== "tracks")
-      return tracks
-
+  trackSelectionIDsSelector,
+  (selectionType, tracks, trackSelectionIDs) => {
     // Render Offseted Selections
     tracks = (tracks || [])
       .map(track => {
-        let isTrackSelected = selectionIDs.some(x => x === track.id)
+        let isTrackSelected = trackSelectionIDs.some(x => x === track.id)
         if (isTrackSelected) {
           return {
             ...track,
@@ -39,9 +36,9 @@ export const renderedClipsSelector = createSelector(
   selectionTypeSelector,
   tracksSelector,
   clipsSelector,
-  selectionIDsSelector,
+  clipSelectionIDsSelector,
   clipSelectionOffsetValidated,
-  (selectionType, tracks, clips, selectionIDs, { offsetStart, offsetEnd, offsetTrack, offsetLooped }) => {
+  (selectionType, tracks, clips, clipSelectionIDs, { offsetStart, offsetEnd, offsetTrack, offsetLooped }) => {
     // Escape if nothing selected
     if (selectionType !== "clips")
       return clips
@@ -50,7 +47,7 @@ export const renderedClipsSelector = createSelector(
     let clipSelectionOffsetPreview = []
     clips = (clips || [])
       .map(clip => {
-        let isClipSelected = selectionIDs.some(x => x === clip.id)
+        let isClipSelected = clipSelectionIDs.some(x => x === clip.id)
         if (isClipSelected) {
           // Generate a preview of any offset on clip selection (from drag and drop)
           if (offsetStart || offsetEnd || offsetTrack) {

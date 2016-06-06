@@ -42,13 +42,22 @@ export const defaultState = {
   loginReminder: false,
   rephraseReminder: false,
   selectionType: null,  // Can be "tracks", "clips", or "notes"
-  selectionIDs: [],
-  selectionTargetID: null,
-  selectionOffsetStart: null,
-  selectionOffsetEnd:   null,
-  selectionOffsetTrack: null,
-  selectionOffsetLooped: false,
-  selectionOffsetSnap: true,
+  trackSelectionIDs: [],
+  trackSelectionTargetID: null,
+  trackSelectionOffsetTrack: null,
+  clipSelectionIDs: [],
+  clipSelectionTargetID: null,
+  clipSelectionOffsetStart: null,
+  clipSelectionOffsetEnd: null,
+  clipSelectionOffsetTrack: null,
+  clipSelectionOffsetLooped: false,
+  clipSelectionOffsetSnap: true,
+  noteSelectionIDs: [],
+  noteSelectionTargetID: null,
+  noteSelectionOffsetStart: null,
+  noteSelectionOffsetEnd: null,
+  noteSelectionOffsetKey: null,
+  noteSelectionOffsetSnap: true,
 }
 
 export default function reducePhraseMeta(state = defaultState, action) {
@@ -106,19 +115,24 @@ export default function reducePhraseMeta(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_TRACK:
+      let trackClipIDs = action.payload.clips
+        .filter(clip => clip.trackID === action.payload.trackID)
+        .map(clip => clip.id)
+
       return u({
-        selectionType: "tracks",
-        selectionIDs: action.payload.union && state.selectionType === "tracks"
-          ? _.xor(state.selectionIDs, [action.payload.trackID])
-          : [action.payload.trackID]
+        selectionType: trackClipIDs.length ? "clips" : "tracks",
+        trackSelectionIDs: action.payload.union
+          ? _.xor(state.trackSelectionIDs, [action.payload.trackID])
+          : [action.payload.trackID],
+        clipSelectionIDs: trackClipIDs.length ? trackClipIDs : state.clipSelectionIDs,
       }, state)
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_CLIP:
       return u({
         selectionType: "clips",
-        selectionIDs: action.payload.union && state.selectionType === "clips"
-          ? _.xor(state.selectionIDs, [action.payload.clipID])
+        clipSelectionIDs: action.payload.union
+          ? _.xor(state.clipSelectionIDs, [action.payload.clipID])
           : [action.payload.clipID]
       }, state)
 
@@ -127,17 +141,20 @@ export default function reducePhraseMeta(state = defaultState, action) {
       return {
         ...state,
         selectionType: "notes",
-        selectionIDs: action.payload.union && state.selectionType === "notes"
-          ? objectMergeKeyArrays(state.selectionIDs, { [action.payload.noteID]: [action.payload.loopIteration] })
+        noteSelectionIDs: action.payload.union
+          ? objectMergeKeyArrays(state.noteSelectionIDs, { [action.payload.noteID]: [action.payload.loopIteration] })
           : { [action.payload.noteID]: [action.payload.loopIteration] }
       }
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
-      return u({
-        selectionType: null,
-        selectionIDs: [],
-      }, state)
+      if (state.selectionType === "tracks")
+        return u({ trackSelectionIDs: [] }, state)
+      if (state.selectionType === "clips")
+        return u({ clipSelectionIDs: [] }, state)
+      if (state.selectionType === "notes")
+        return u({ noteSelectionIDs: [] }, state)
+      return state
 
     // ------------------------------------------------------------------------
     // Select a Phrase's Notes via the Pianoroll
@@ -170,57 +187,57 @@ export default function reducePhraseMeta(state = defaultState, action) {
 
       // Replace or Union/Difference to existing selection?
       let updatedNoteSelectionIDs = action.union
-        ? objectMergeKeyArrays(state.selectionIDs, selectedNoteIDs)
+        ? objectMergeKeyArrays(state.noteSelectionIDs, selectedNoteIDs)
         : selectedNoteIDs
 
       return {
         ...state,
         selectionType: "notes",
-        selectionIDs: updatedNoteSelectionIDs,
+        noteSelectionIDs: updatedNoteSelectionIDs,
       }
 
     // ------------------------------------------------------------------------
     case phrase.DRAG_CLIP_SELECTION: {
       return u({
-        selectionTargetID: action.clipID,
-        selectionOffsetStart: action.start,
-        selectionOffsetEnd: action.end,
-        selectionOffsetTrack: action.track,
-        selectionOffsetLooped: action.looped,
-        selectionOffsetSnap: action.snap,
+        clipSelectionTargetID: action.clipID,
+        clipSelectionOffsetStart: action.start,
+        clipSelectionOffsetEnd: action.end,
+        clipSelectionOffsetTrack: action.track,
+        clipSelectionOffsetLooped: action.looped,
+        clipSelectionOffsetSnap: action.snap,
       }, state)
     }
 
     // ------------------------------------------------------------------------
     case phrase.DRAG_NOTE_SELECTION: {
       return u({
-        selectionTargetID: action.noteID,
-        selectionOffsetStart: action.start,
-        selectionOffsetEnd: action.end,
-        selectionOffsetKey: action.key,
-        selectionOffsetSnap: action.snap,
+        noteSelectionTargetID: action.noteID,
+        noteSelectionOffsetStart: action.start,
+        noteSelectionOffsetEnd: action.end,
+        noteSelectionOffsetKey: action.key,
+        noteSelectionOffsetSnap: action.snap,
       }, state)
     }
 
     // ------------------------------------------------------------------------
     case phrase.DROP_CLIP_SELECTION:
       return u({
-        selectionTargetID: null,
-        selectionOffsetStart: null,
-        selectionOffsetEnd: null,
-        selectionOffsetTrack: null,
-        selectionOffsetLooped: false,
-        selectionOffsetSnap: true,
+        clipSelectionTargetID: null,
+        clipSelectionOffsetStart: null,
+        clipSelectionOffsetEnd: null,
+        clipSelectionOffsetTrack: null,
+        clipSelectionOffsetLooped: false,
+        clipSelectionOffsetSnap: true,
       }, state)
 
     // ------------------------------------------------------------------------
     case phrase.DROP_NOTE_SELECTION:
       return u({
-        selectionTargetID: null,
-        selectionOffsetStart: null,
-        selectionOffsetEnd: null,
-        selectionOffsetKey: null,
-        selectionOffsetSnap: true,
+        noteSelectionTargetID: null,
+        noteSelectionOffsetStart: null,
+        noteSelectionOffsetEnd: null,
+        noteSelectionOffsetKey: null,
+        noteSelectionOffsetSnap: true,
       }, state)
 
     // ------------------------------------------------------------------------
