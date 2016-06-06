@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import u from 'updeep'
+import { objectMergeKeyArrays } from 'helpers/arrayHelpers'
 import { phrase, pianoroll, library } from 'actions/actions'
 import { phraseMidiSelector } from 'selectors/selectorTransport.js'
 import toMidiFile from 'helpers/toMidiFile'
@@ -123,12 +124,13 @@ export default function reducePhraseMeta(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_NOTE:
-      return u({
+      return {
+        ...state,
         selectionType: "notes",
         selectionIDs: action.payload.union && state.selectionType === "notes"
-          ? _.xor(state.selectionIDs, [action.payload.noteID])
-          : [action.payload.noteID]
-      }, state)
+          ? objectMergeKeyArrays(state.selectionIDs, { [action.payload.noteID]: [action.payload.loopIteration] })
+          : { [action.payload.noteID]: [action.payload.loopIteration] }
+      }
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
@@ -147,7 +149,8 @@ export default function reducePhraseMeta(state = defaultState, action) {
       let bottom = Math.min(action.selectionStartY, action.selectionEndY)
 
       // Find selected notes, even in loop iterations
-      let selectedNoteIDs = action.renderedNotes
+      let selectedNoteIDs = {}
+      action.renderedNotes
         .filter(note => {
           return (
             note.trackID === action.currentTrackID &&
@@ -157,18 +160,24 @@ export default function reducePhraseMeta(state = defaultState, action) {
             note.keyNum >= bottom
           )
         })
-        .map(note => note.id)
-      selectedNoteIDs = _.uniq(selectedNoteIDs)
+        .forEach(note => {
+          let existingEntry = selectedNoteIDs[note.id]
+          if (existingEntry)
+            existingEntry.push(note.loopIteration)
+          else
+            selectedNoteIDs[note.id] = [note.loopIteration]
+        })
 
       // Replace or Union/Difference to existing selection?
       let updatedNoteSelectionIDs = action.union
-        ? _.xor(state.noteSelectionIDs, selectedNoteIDs)
+        ? objectMergeKeyArrays(state.selectionIDs, selectedNoteIDs)
         : selectedNoteIDs
 
-      return u({
+      return {
+        ...state,
         selectionType: "notes",
         selectionIDs: updatedNoteSelectionIDs,
-      }, state)
+      }
 
     // ------------------------------------------------------------------------
     case phrase.DRAG_CLIP_SELECTION: {

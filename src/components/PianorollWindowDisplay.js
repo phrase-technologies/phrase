@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider.js'
 import provideTween from './TweenProvider.js'
 
-import _ from 'lodash'
 import { closestHalfPixel,
          drawLine,
          drawRoundedRectangle } from '../helpers/canvasHelpers.js'
@@ -20,7 +19,7 @@ export class PianorollWindowDisplay extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    var propsToCheck = [
+    let propsToCheck = [
       'barCount',
       'keyCount',
       'xMin',
@@ -29,8 +28,8 @@ export class PianorollWindowDisplay extends Component {
       'yMax',
       'notes'
     ]
-    var changeDetected = propsToCheck.some(prop => {
-      return nextProps[prop] != this.props[prop]
+    let changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] !== this.props[prop]
     })
     return changeDetected
   }
@@ -45,7 +44,7 @@ export class PianorollWindowDisplay extends Component {
 
   renderFrame() {
     return function(canvasContext) {
-      canvasContext.clearRect( 0, 0, this.props.grid.width, this.props.grid.height )
+      canvasContext.clearRect(0, 0, this.props.grid.width, this.props.grid.height)
       this.props.grid.calculateZoomThreshold()
       this.renderKeyLines(canvasContext, this.props.yMin, this.props.yMax)
       this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax)
@@ -66,41 +65,41 @@ export class PianorollWindowDisplay extends Component {
 
   renderBarLines(canvasContext, xMin, xMax) {
     // TODO: Missing dependencies, temporarily stubbed
-    var key = { alt: false }
+    let key = { alt: false }
 
     // Styles
     canvasContext.lineWidth = 1.0
-    canvasContext.setLineDash( key.alt ? [2,4] : [] )
+    canvasContext.setLineDash(key.alt ? [2,4] : [])
     canvasContext.font = 11*this.props.grid.pixelScale + 'pleft Helvetica Neue, Helvetica, Arial, sans-serif'
     canvasContext.fillStyle = '#AAAAAA'
     canvasContext.textAlign = 'start'
 
     // Draw lines for each beat
-    var minBar = this.props.grid.percentToBar( xMin ) - 1
-    var maxBar = this.props.grid.percentToBar( xMax )
-    var minorIncrement = this.props.grid.lineThresholdsWithKeys.minorLine || this.props.grid.lineThresholdsWithKeys.middleLine
+    let minBar = this.props.grid.percentToBar(xMin) - 1
+    let maxBar = this.props.grid.percentToBar(xMax)
+    let minorIncrement = this.props.grid.lineThresholdsWithKeys.minorLine || this.props.grid.lineThresholdsWithKeys.middleLine
 
     // Ensure we increment off a common denominator
     minBar = minBar - (minBar % minorIncrement)
 
-    for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
+    for (let bar = minBar; bar <= maxBar; bar += minorIncrement)
     {
       // Draw each line as a separate path (different colors)
-      var xPosition = closestHalfPixel( this.props.grid.barToXCoord( bar ) )
+      let xPosition = closestHalfPixel(this.props.grid.barToXCoord(bar))
 
       // Major Bar lines
-      if( bar % this.props.grid.lineThresholdsWithKeys.majorLine === 0 )
+      if (bar % this.props.grid.lineThresholdsWithKeys.majorLine === 0)
         canvasContext.strokeStyle = '#222222'
       // Intermediary Bar lines
-      else if( bar % this.props.grid.lineThresholdsWithKeys.middleLine === 0 )
+      else if (bar % this.props.grid.lineThresholdsWithKeys.middleLine === 0)
         canvasContext.strokeStyle = '#333333'
       // Minor Bar lines
-      else if( this.props.grid.lineThresholdsWithKeys.minorLine )
+      else if (this.props.grid.lineThresholdsWithKeys.minorLine)
         canvasContext.strokeStyle = '#383838'
 
       // Draw each line (different colors)
       canvasContext.beginPath()
-      drawLine( canvasContext, xPosition, 0, xPosition, this.props.grid.height )
+      drawLine(canvasContext, xPosition, 0, xPosition, this.props.grid.height)
       canvasContext.stroke()
     }
   }
@@ -113,29 +112,26 @@ export class PianorollWindowDisplay extends Component {
     canvasContext.fillStyle   = '#3D3D3D'
 
     // Each edge + black key fills
-    var minKey = this.props.grid.percentToKey( yMin )
-    var maxKey = this.props.grid.percentToKey( yMax )
-    for( var key = minKey; key - 1 <= maxKey; key++ )
+    let minKey = this.props.grid.percentToKey(yMin)
+    let maxKey = this.props.grid.percentToKey(yMax)
+    for (let key = minKey; key - 1 <= maxKey; key++)
     {
-      var prevEdge = closestHalfPixel( this.props.grid.keyToYCoord( key - 1 ) ) + 1   // Extra pixel to account for stroke width
-      var nextEdge = closestHalfPixel( this.props.grid.keyToYCoord( key     ) ) + 1   // Extra pixel to account for stroke width
+      let prevEdge = closestHalfPixel(this.props.grid.keyToYCoord(key - 1)) + 1   // Extra pixel to account for stroke width
+      let nextEdge = closestHalfPixel(this.props.grid.keyToYCoord(key))     + 1   // Extra pixel to account for stroke width
 
       // Stroke the edge between rows
-      drawLine( canvasContext, 0, prevEdge, this.props.grid.width, prevEdge, false )
+      drawLine(canvasContext, 0, prevEdge, this.props.grid.width, prevEdge, false)
 
       // Fill the row for the black keys
-      if( key % 12 in {3:true, 5:true, 7: true, 10: true, 0: true} )
-        canvasContext.fillRect( 0, nextEdge, this.props.grid.width, prevEdge - nextEdge )
+      if (key % 12 in { 3:true, 5:true, 7: true, 10: true, 0: true })
+        canvasContext.fillRect(0, nextEdge, this.props.grid.width, prevEdge - nextEdge)
 
       // Stroke it each octave to get different colours
-      if( key % 12 === 1 )
-      {
+      if (key % 12 === 1) {
         canvasContext.stroke()
         canvasContext.beginPath()
         canvasContext.strokeStyle = '#222222'
-      }
-      else if( key % 12 === 2 )
-      {
+      } else if (key % 12 === 2) {
         canvasContext.stroke()
         canvasContext.beginPath()
         canvasContext.strokeStyle = '#393939'
@@ -148,8 +144,8 @@ export class PianorollWindowDisplay extends Component {
 
   renderClips(canvasContext, xMin, xMax, clips) {
     clips.forEach(clip => {
-      var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
-      var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
+      let left   = closestHalfPixel(this.props.grid.barToXCoord(clip.start), this.props.grid.pixelScale)
+      let right  = closestHalfPixel(this.props.grid.barToXCoord(clip.end),   this.props.grid.pixelScale)
       // Don't waste CPU cycles drawing stuff that's not visible
       if (right < 0 || left > this.props.grid.width)
         return
@@ -159,20 +155,20 @@ export class PianorollWindowDisplay extends Component {
       canvasContext.strokeStyle = '#000'
       canvasContext.fillStyle   = getDarkenedColor(this.props.currentTrack.color, 0.0, 0.125)
       canvasContext.beginPath()
-      drawLine( canvasContext, left,  0, left,         this.props.grid.height )
-      drawLine( canvasContext, right, 0, right,        this.props.grid.height )
-      canvasContext.fillRect(   left, 0, right - left, this.props.grid.height )
+      drawLine(canvasContext, left,  0, left,  this.props.grid.height)
+      drawLine(canvasContext, right, 0, right, this.props.grid.height)
+      canvasContext.fillRect(left, 0, right - left, this.props.grid.height)
       canvasContext.closePath()
       canvasContext.stroke()
 
       // Loop Lines
-      var currentLoopStart = clip.start + clip.offset + clip.loopLength
-      var currentLoopStartCutoff = clip.start - currentLoopStart                      // Used to check if a note is cut off at the beginning of the current loop iteration
-      var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
-      while( currentLoopStart < clip.end ) {
+      let currentLoopStart = clip.start + clip.offset + clip.loopLength
+      let currentLoopStartCutoff = clip.start - currentLoopStart // Used to check if a note is cut off at the beginning of the current loop iteration
+      let currentLoopEndCutoff = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
+      while (currentLoopStart < clip.end) {
         // Draw current line
-        var currentLoopLine = closestHalfPixel( this.props.grid.barToXCoord( currentLoopStart ), this.props.grid.pixelScale )
-        drawLine( canvasContext, currentLoopLine, 0, currentLoopLine, this.props.grid.height, [2, 2], '#000')
+        let currentLoopLine = closestHalfPixel(this.props.grid.barToXCoord(currentLoopStart), this.props.grid.pixelScale)
+        drawLine(canvasContext, currentLoopLine, 0, currentLoopLine, this.props.grid.height, [2, 2], '#000')
 
         // Next iteration
         currentLoopStart += clip.loopLength
@@ -183,27 +179,27 @@ export class PianorollWindowDisplay extends Component {
   }
 
   renderNotes(canvasContext, xMin, xMax, yMin, yMax, notes) {
-    var keyboardHeight = this.props.grid.getActiveHeight() / this.props.grid.getKeyRange()
-    var keyHeight = keyboardHeight / this.props.keyCount
-    var fontSize = keyHeight - 8.5*this.props.grid.pixelScale + 2*this.props.grid.pixelScale
+    let keyboardHeight = this.props.grid.getActiveHeight() / this.props.grid.getKeyRange()
+    let keyHeight = keyboardHeight / this.props.keyCount
+    let fontSize = keyHeight - 8.5*this.props.grid.pixelScale + 2*this.props.grid.pixelScale
     canvasContext.font = fontSize + 'px Helvetica Neue, Helvetica, Arial, sans-serif'
     canvasContext.lineWidth = this.props.grid.pixelScale
 
     notes &&
     notes.forEach(note => {
-      var top    = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum     ), this.props.grid.pixelScale ) + 1   // Extra pixel to account for stroke width
-      var bottom = closestHalfPixel( this.props.grid.keyToYCoord( this.props.keyCount - note.keyNum + 1 ), this.props.grid.pixelScale ) + 1   // Extra pixel to account for stroke width
+      let top    = closestHalfPixel(this.props.grid.keyToYCoord(this.props.keyCount - note.keyNum),     this.props.grid.pixelScale) + 1   // Extra pixel to account for stroke width
+      let bottom = closestHalfPixel(this.props.grid.keyToYCoord(this.props.keyCount - note.keyNum + 1), this.props.grid.pixelScale) + 1   // Extra pixel to account for stroke width
       // Don't waste CPU cycles drawing stuff that's not visible
       if (bottom < 0 || top > this.props.grid.height)
         return
 
-      var left   = closestHalfPixel( this.props.grid.barToXCoord( note.start      ), this.props.grid.pixelScale )
-      var right  = closestHalfPixel( this.props.grid.barToXCoord( note.end        ), this.props.grid.pixelScale )
+      let left   = closestHalfPixel(this.props.grid.barToXCoord(note.start), this.props.grid.pixelScale)
+      let right  = closestHalfPixel(this.props.grid.barToXCoord(note.end),   this.props.grid.pixelScale)
       // Don't waste CPU cycles drawing stuff that's not visible
       if (right < 0 || left > this.props.grid.width)
         return
 
-      var label
+      let label
       if (keyboardHeight > 1275*this.props.grid.pixelScale) {
         let keyLetter = {1:'A',2:'A#',3:'B',4:'C',5:'C#',6:'D',7:'D#',8:'E',9:'F',10:'F#',11:'G',0:'G#'}[note.keyNum % 12]
         label = keyLetter + Math.floor((note.keyNum+8)/12)
@@ -216,7 +212,7 @@ export class PianorollWindowDisplay extends Component {
   renderNote(canvasContext, left, right, top, bottom, selected, label, color, leftCutoff = false, rightCutoff = false, gradient = true) {
     // Gradient Fill
     if (gradient) {
-      var gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
+      let gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
           gradient.addColorStop(0, color)
           gradient.addColorStop(1, getDarkenedColor(color, 0.266))
       canvasContext.fillStyle = gradient
@@ -228,9 +224,9 @@ export class PianorollWindowDisplay extends Component {
     canvasContext.strokeStyle = '#000'
 
     // Dimensions
-    var width = right - left
-    var height = bottom - top
-    var radius = height * 0.175
+    let width = right - left
+    let height = bottom - top
+    let radius = height * 0.175
 
     // Shape
     drawRoundedRectangle(canvasContext, left, right, top, bottom, radius, leftCutoff, rightCutoff)
@@ -238,7 +234,7 @@ export class PianorollWindowDisplay extends Component {
     // Selected
     if (selected) {
       if (gradient) {
-        var gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
+        let gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
             gradient.addColorStop(0, getDarkenedColor(color, 0.533))
             gradient.addColorStop(1, getDarkenedColor(color, 0.733))
         canvasContext.fillStyle = gradient

@@ -132,7 +132,11 @@ export class PianorollWindowControl extends Component {
       )
 
       if (!foundNote.selected) {
-        this.props.dispatch(phraseSelectNote({ noteID: foundNote.id, union: e.shiftKey }))
+        this.props.dispatch(phraseSelectNote({
+          noteID: foundNote.id,
+          loopIteration: foundNote.loopIteration,
+          union: e.shiftKey
+        }))
       }
 
       if (bar < foundNote.start + threshold) {

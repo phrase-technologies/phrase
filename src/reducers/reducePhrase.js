@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import u from 'updeep'
 import { api } from 'helpers/ajaxHelpers'
 import { uIncrement, uAppend } from 'helpers/arrayHelpers'
@@ -57,7 +58,7 @@ export const phraseCreateNote = (trackID, bar, key) => {
 }
 export const phraseSelectTrack = ({ trackID, union }) => ({type: phrase.SELECT_TRACK, payload: { trackID, union } })
 export const phraseSelectClip  = ({  clipID, union }) => ({type: phrase.SELECT_CLIP,  payload: {  clipID, union } })
-export const phraseSelectNote  = ({  noteID, union }) => ({type: phrase.SELECT_NOTE,  payload: {  noteID, union } })
+export const phraseSelectNote  = ({  noteID, loopIteration, union }) => ({type: phrase.SELECT_NOTE,  payload: {  noteID, loopIteration, union } })
 export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches
   return (dispatch, getState) => {
@@ -334,7 +335,7 @@ export default function reducePhrase(state = defaultState, action) {
       }
       if (selectionType === "notes") {
         return u({
-          notes: u.reject(note => selectionIDs.includes(note.id))
+          notes: u.reject(note => selectionIDs[note.id])
         }, state)
       }
       return state
@@ -383,7 +384,7 @@ export default function reducePhrase(state = defaultState, action) {
       return u({
         notes: notes => {
           return notes.map(note => {
-            if (action.noteIDs.some(x => x === note.id)) {
+            if (_.has(action.noteIDs, note.id)) {
               return u({
                 start:  note.start  + action.offsetStart,
                 end:    note.end    + action.offsetEnd,

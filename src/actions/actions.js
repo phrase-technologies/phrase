@@ -130,3 +130,12 @@ export const cursor = namespaceActions(
     'CLEAR'
   ]
 )
+
+export const clipboard = namespaceActions(
+  'clipboard',
+  [
+    'COPY',
+    'CUT',
+    'PASTE',
+  ]
+)

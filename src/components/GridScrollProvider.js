@@ -10,8 +10,7 @@
 
 import React, { Component } from 'react'
 
-import { shiftInterval,
-         zoomInterval } from '../helpers/intervalHelpers.js'
+import { shiftInterval } from '../helpers/intervalHelpers.js'
 
 let provideGridScroll = function(
   ChildComponent,

@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { createSelector } from 'reselect'
 import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
 import { negativeModulus } from '../helpers/intervalHelpers.js'
@@ -32,38 +33,42 @@ export const clipSelectionOffsetValidated = createSelector(
   selectionOffsetSnap,
   tracksSelector,
   (clips, selectionType, clipSelectionIDs, targetClipID, offsetStart, offsetEnd, offsetTrack, offsetLooped, offsetSnap, tracks) => {
-    let targetClip = (clips || []).find(clip => clip.id === targetClipID)
-    let selectedClips = (clips || []).filter(clip => clipSelectionIDs.some(x => x === clip.id))
     // Escape if there is no selection or selection offset
-    if (selectionType !== 'clips' || !targetClip || !selectedClips) {
-      return {
-        offsetStart: 0,
-        offsetEnd: 0,
-        offsetTrack: 0,
-        offsetLooped: null
+    if (selectionType === 'clips') {
+      let targetClip = (clips || []).find(clip => clip.id === targetClipID)
+      let selectedClips = (clips || []).filter(clip => clipSelectionIDs.some(x => x === clip.id))
+      // Escape if there is no selection or selection offset
+      if (targetClip && selectedClips) {
+
+        // Snap drag offset to closest grid lines
+        let gridUnit = 0.125
+        let [snappedOffsetStart, snappedOffsetEnd]
+          = offsetSnap
+          ? snapNoteOffset(offsetStart, offsetEnd, targetClip, gridUnit)
+          : [offsetStart, offsetEnd]
+
+        // Avoid negative clip lengths and positions!
+        let finalOffsetStart, finalOffsetEnd
+        [finalOffsetStart, finalOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
+        [finalOffsetStart, finalOffsetEnd] = validateOffsetPosition(snappedOffsetStart, snappedOffsetEnd, selectedClips)
+
+        // Validate Track Offset
+        let finalOffsetTrack = validateTrackOffset(offsetTrack, tracks, selectedClips)
+
+        return {
+          offsetStart: finalOffsetStart,
+          offsetEnd: finalOffsetEnd,
+          offsetTrack: finalOffsetTrack,
+          offsetLooped,
+        }
       }
     }
 
-    // Snap drag offset to closest grid lines
-    let gridUnit = 0.125
-    let [snappedOffsetStart, snappedOffsetEnd]
-      = offsetSnap
-      ? snapNoteOffset(offsetStart, offsetEnd, targetClip, gridUnit)
-      : [offsetStart, offsetEnd]
-
-    // Avoid negative clip lengths and positions!
-    let finalOffsetStart, finalOffsetEnd
-    [finalOffsetStart, finalOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
-    [finalOffsetStart, finalOffsetEnd] = validateOffsetPosition(snappedOffsetStart, snappedOffsetEnd, selectedClips)
-
-    // Validate Track Offset
-    let finalOffsetTrack = validateTrackOffset(offsetTrack, tracks, selectedClips)
-
     return {
-      offsetStart: finalOffsetStart,
-      offsetEnd: finalOffsetEnd,
-      offsetTrack: finalOffsetTrack,
-      offsetLooped,
+      offsetStart: 0,
+      offsetEnd: 0,
+      offsetTrack: 0,
+      offsetLooped: null
     }
   }
 )
@@ -79,7 +84,7 @@ export const noteSelectionOffsetValidated = createSelector(
   selectionOffsetSnap,
   (notes, selectionType, noteSelectionIDs, targetNoteID, offsetStart, offsetEnd, offsetKey, offsetSnap) => {
     let targetNote = (notes || []).find(note => note.id === targetNoteID)
-    let selectedNotes = (notes || []).filter(note => noteSelectionIDs.some(x => x === note.id))
+    let selectedNotes = (notes || []).filter(note => _.has(noteSelectionIDs, note.id))
     // Escape if there is no selection or selection offset
     if (selectionType !== 'notes' || !targetNote || !selectedNotes) {
       return {
@@ -175,7 +180,7 @@ export const currentNotesSelector = createSelector(
     let noteSelectionOffsetPreview = []
     if (selectionType === 'notes') {
       currentNotes = currentNotes.map(note => {
-        let isNoteSelected = noteSelectionIDs.some(x => x === note.id)
+        let isNoteSelected = _.has(noteSelectionIDs, note.id)
         if (isNoteSelected) {
           // Generate a preview of any offset on note selection (from drag and drop)
           if (offsetStart || offsetEnd || offsetKey) {
@@ -239,6 +244,7 @@ export const loopedNoteSelector = createLargeCacheSelector(
     }
 
     // Loop Iterations
+    let currentLoopIteration = 0
     let currentLoopStart = clip.start + clip.offset
     let currentLoopStartCutoff = -clip.offset                                           // Used to check if a note is cut off at the beginning of the current loop iteration
     let currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
@@ -246,10 +252,12 @@ export const loopedNoteSelector = createLargeCacheSelector(
       // Notes that are entirely out of view - skip them
       if (note.end >= currentLoopStartCutoff && note.start <= currentLoopEndCutoff) {
         // Extrapolate the note to the current loop iteration
-        let renderedNote = Object.assign({}, note, {
+        let renderedNote = {
+          ...note,
+          loopIteration: currentLoopIteration,
           start: currentLoopStart + note.start,
           end:   currentLoopStart + note.end
-        })
+        }
 
         // Notes that are cut off at the beginning
         if (note.start < currentLoopStartCutoff) {
@@ -267,6 +275,7 @@ export const loopedNoteSelector = createLargeCacheSelector(
       }
 
       // Next iteration
+      currentLoopIteration++
       currentLoopStart += clip.loopLength
       currentLoopStartCutoff = 0
       currentLoopEndCutoff = Math.min(clip.loopLength, clip.end - currentLoopStart)

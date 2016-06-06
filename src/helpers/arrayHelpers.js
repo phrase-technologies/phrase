@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 // ----------------------------------------------------------------------------
 // Immutable Array Manipulation Helpers
 // ----------------------------------------------------------------------------
@@ -14,7 +16,7 @@ export function uIncrement(increment) {
 
 export function uAppend(element, sortComparison = undefined) {
   return (array) => {
-    var result = [...array, element]
+    let result = [...array, element]
 
     if (typeof sortComparison === 'function')
       result.sort(sortComparison)
@@ -27,8 +29,8 @@ export function uAppend(element, sortComparison = undefined) {
 
 export function uReplace(original, replacement) {
   return (array) => {
-    var originalPosition = array.indexOf(original)
-    var result = [...array]
+    let originalPosition = array.indexOf(original)
+    let result = [...array]
         result.splice(originalPosition, 1, replacement)
     return result
   }
@@ -36,12 +38,73 @@ export function uReplace(original, replacement) {
 
 export function uRemove(element) {
   return (array) => {
-    var position = array.indexOf(element)
-    var result = [...array]
+    let position = array.indexOf(element)
+    let result = [...array]
         result.splice(position, 1)
     return result
   }
 }
+
+
+// ----------------------------------------------------------------------------
+// Merging Object Key => Arrays (e.g. for Selected Looped Note IDs)
+// ----------------------------------------------------------------------------
+// When a note is looped, selecting one of the loop iteration selects all of
+// the iterations for possible deletion or adjustment, but only the specifically
+// targeted iteration for copying to the clipboard. This is necessary because
+// copy-pasting from a looped note is most intuitive as a "bouncing"
+// functionality rather than one where the looping is maintained.
+//
+// Example (from arrayHelpers.test.js):
+//
+// let a = {
+//   0: [0],
+//   1: [3, 4],
+//   2: [0],
+//   3: [0, 1],
+// }
+//
+// let b = {
+//   0: [0],
+//   1: [4, 5],
+//   4: [10],
+// }
+//
+// let result = {
+//   1: [3, 5],
+//   2: [0],
+//   3: [0, 1],
+//   4: [10],
+// }
+//
+// Since we're in redux, we need to do this immutably, so a completely new
+// object is returned.
+
+export const objectMergeKeyArrays = (a, b) => {
+  let result = {
+    ...a,
+  }
+
+  for (let key in b) {
+    // Handle case where same key is present in both
+    let existingEntry = result[key]
+    if (existingEntry) {
+      // XOR merge
+      result[key] = _.xor(existingEntry, b[key])
+      // Remove if result is empty
+      if (result[key].length === 0) {
+        delete result[key]
+      }
+    }
+    // Merge new keys
+    else {
+      result[key] = b[key]
+    }
+  }
+
+  return result
+}
+
 
 // ----------------------------------------------------------------------------
 // Select/Memoize many, many Key-Value pairs
@@ -49,7 +112,7 @@ export function uRemove(element) {
 // By default, createSelector from 'reselect' only caches the most recent
 // call. Here we create a new version called "createLargeCacheSelector" which
 // will cache every single permutation of arguments it gets!
-// 
+//
 // This may get unwieldy when Phrases get large... TODO!
 import { createSelectorCreator } from 'reselect'
 import { memoize } from 'lodash'
@@ -60,4 +123,3 @@ const hashFn = (...args) => {
   }, '')
 }
 export const createLargeCacheSelector = createSelectorCreator(memoize, hashFn)
-
