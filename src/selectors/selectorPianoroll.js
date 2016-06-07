@@ -142,8 +142,11 @@ const currentClipsSelector = createSelector(
       .map(clip => {
         let isClipSelected = clipSelectionIDs.some(x => x === clip.id)
         if (isClipSelected) {
-          // Generate a preview of any offset on clip selection (from drag and drop)
-          if (offsetStart || offsetEnd || offsetTrack) {
+          // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
+          let validatedOffsetLooped = offsetLooped || (clip.end - clip.start !== clip.loopLength)
+
+          // Offset clip - generate a duplicate preview with any offset (from drag and drop)
+          if ((offsetStart && offsetEnd) || offsetTrack) {
             clipSelectionOffsetPreview.push({
               ...clip,
               start:  clip.start  + offsetStart,
@@ -152,13 +155,21 @@ const currentClipsSelector = createSelector(
               loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
               trackID: clip.trackID,// + Math.round(offsetTrack), // Don't show any feedback for yet-to-be-finalized track changes
             })
+
+            // Render the original clip as selected
+            return {
+              ...clip,
+              selected: true,
+            }
           }
 
-          // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
-          let validatedOffsetLooped = offsetLooped || (clip.end - clip.start !== clip.loopLength)
-          // Render the selected clip as selected
+          // Resized clip - render as selected
           return {
             ...clip,
+            start:  clip.start  + offsetStart,
+            end:    clip.end    + offsetEnd,
+            offset: validatedOffsetLooped && offsetStart !== offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
+            loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
             selected: true,
           }
         }
@@ -190,18 +201,27 @@ export const currentNotesSelector = createSelector(
       currentNotes = currentNotes.map(note => {
         let isNoteSelected = _.has(noteSelectionIDs, note.id)
         if (isNoteSelected) {
-          // Generate a preview of any offset on note selection (from drag and drop)
-          if (offsetStart || offsetEnd || offsetKey) {
+          // Offset note - generate a duplicate preview with any offset (from drag and drop)
+          if ((offsetStart && offsetEnd) || offsetKey) {
             noteSelectionOffsetPreview.push({
               ...note,
               start:  note.start  + offsetStart,
               end:    note.end    + offsetEnd,
               keyNum: Math.round(note.keyNum + offsetKey),
             })
+
+            // Render the selected note as selected
+            return {
+              ...note,
+              selected: true,
+            }
           }
-          // Render the selected note as selected
+
+          // Resized note - render as selected
           return {
             ...note,
+            start:  note.start  + offsetStart,
+            end:    note.end    + offsetEnd,
             selected: true,
           }
         }

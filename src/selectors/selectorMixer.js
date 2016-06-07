@@ -49,8 +49,11 @@ export const renderedClipsSelector = createSelector(
       .map(clip => {
         let isClipSelected = clipSelectionIDs.some(x => x === clip.id)
         if (isClipSelected) {
-          // Generate a preview of any offset on clip selection (from drag and drop)
-          if (offsetStart || offsetEnd || offsetTrack) {
+          // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
+          let validatedOffsetLooped = offsetLooped || (clip.end - clip.start !== clip.loopLength)
+
+          // Offset clip - generate duplicate preview with any offset (from drag and drop)
+          if ((offsetStart && offsetEnd) || offsetTrack) {
             clipSelectionOffsetPreview.push({
               ...clip,
               start:  clip.start  + offsetStart,
@@ -59,13 +62,21 @@ export const renderedClipsSelector = createSelector(
               loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
               trackID: getOffsetedTrackID(clip.trackID, offsetTrack, tracks),
             })
+
+            // Render the original clip as selected
+            return {
+              ...clip,
+              selected: true,
+            }
           }
 
-          // Even if looping was indicated in the cursor, other selected clips may be already looped and must remain so
-          let validatedOffsetLooped = offsetLooped || (clip.end - clip.start !== clip.loopLength)
-          // Render the selected clip as selected
+          // Resized clip - render as selected
           return {
             ...clip,
+            start:  clip.start  + offsetStart,
+            end:    clip.end    + offsetEnd,
+            offset: validatedOffsetLooped && offsetStart !== offsetEnd ? negativeModulus(clip.offset - offsetStart, clip.loopLength) : clip.offset,
+            loopLength: validatedOffsetLooped ? clip.loopLength : (clip.end + offsetEnd - clip.start - offsetStart),
             selected: true,
           }
         }

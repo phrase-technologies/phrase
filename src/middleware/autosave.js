@@ -10,20 +10,19 @@ let autosave = store => next => action => {
   // Phrase Changes?
   if (hasPhraseBeenModified({ oldState, newState })) {
 
-    // Mark as dirty
-    store.dispatch(phrasePristine({ pristine: false }))
-
     let existingPhrase = newState.phraseMeta.phraseId
     let loggedIn = localStorage.userId && localStorage.userId !== 'undefined'
     let writePermission = localStorage.username === newState.phraseMeta.authorUsername
 
     // Only update if an existing phrase has been modified
     if (existingPhrase && loggedIn && writePermission) {
+      store.dispatch(phrasePristine({ pristine: false }))
       store.dispatch(phraseSave())
     }
 
     // If you're logged in and make an edit to a new phrase, save it right away
     else if (!existingPhrase && loggedIn) {
+      store.dispatch(phrasePristine({ pristine: false }))
       store.dispatch(librarySaveNew())
     }
   }
