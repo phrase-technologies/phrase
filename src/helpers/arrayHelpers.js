@@ -80,7 +80,7 @@ export function uRemove(element) {
 // Since we're in redux, we need to do this immutably, so a completely new
 // object is returned.
 
-export const objectMergeKeyArrays = (a, b) => {
+export const objectMergeKeyArrays = (a, b, { xor = true } = { xor: true }) => {
   let result = {
     ...a,
   }
@@ -89,8 +89,11 @@ export const objectMergeKeyArrays = (a, b) => {
     // Handle case where same key is present in both
     let existingEntry = result[key]
     if (existingEntry) {
-      // XOR merge
-      result[key] = _.xor(existingEntry, b[key])
+      // XOR/union merge
+      result[key] = xor
+        ? _.xor(existingEntry, b[key])
+        : _.union(existingEntry, b[key])
+
       // Remove if result is empty
       if (result[key].length === 0) {
         delete result[key]

@@ -111,7 +111,6 @@ export class PianorollWindowControl extends Component {
         this.props.dispatch(phraseDeleteNote(foundNote.id))
         this.lastEvent = null
         return
-      // Too slow, treat as new first click
       }
       this.lastEvent = null
     }
@@ -131,11 +130,17 @@ export class PianorollWindowControl extends Component {
         0.25*noteLength
       )
 
-      if (!foundNote.selected) {
+      if (!foundNote.selected || e.shiftKey) {
         this.props.dispatch(phraseSelectNote({
           noteID: foundNote.id,
           loopIteration: foundNote.loopIteration,
-          union: e.shiftKey
+          union: e.shiftKey,
+        }))
+      } else if (foundNote.selected === "faded") {
+        this.props.dispatch(phraseSelectNote({
+          noteID: foundNote.id,
+          loopIteration: foundNote.loopIteration,
+          union: false,
         }))
       }
 
@@ -162,7 +167,6 @@ export class PianorollWindowControl extends Component {
         this.previewNoteSound([key])
         this.lastEvent = null
         return
-      // Too slow, treat as new first click
       }
       this.lastEvent = null
     }

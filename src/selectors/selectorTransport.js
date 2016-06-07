@@ -2,20 +2,19 @@ import { createSelector } from 'reselect'
 import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
 import { loopedNoteSelector } from './selectorPianoroll.js'
 
-const tracksSelector = (state) => ( state.phrase.present.tracks )
-const clipsSelector  = (state) => ( state.phrase.present.clips )
-const notesSelector  = (state) => ( state.phrase.present.notes )
+const clipsSelector  = (state) => (state.phrase.present.clips)
+const notesSelector  = (state) => (state.phrase.present.notes)
 const noteMidiSelector = createLargeCacheSelector(
   note => note,
   (note) => {
-    var startCommand = {
+    let startCommand = {
       trackID: note.trackID,
       bar: note.start,
       keyNum: note.keyNum,
       velocity: note.velocity || 127,
       type: `addNoteOn`,
     }
-    var endCommand = {
+    let endCommand = {
       trackID: note.trackID,
       bar: note.end,
       keyNum: note.keyNum,
@@ -32,7 +31,7 @@ export const phraseMidiSelector = createSelector(
     // Render a copy of each note for each loop iteration of it's respective clip
     let allLoopedNotes = (notes || [])
       .reduce((allLoopedNotes, note) => {
-        let loopedNote = loopedNoteSelector(note, clips)
+        let loopedNote = loopedNoteSelector({ note, clips })
         return [...allLoopedNotes, ...loopedNote]
       }, [])
 

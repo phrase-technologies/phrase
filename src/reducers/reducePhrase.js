@@ -4,7 +4,8 @@ import { api } from 'helpers/ajaxHelpers'
 import { uIncrement, uAppend } from 'helpers/arrayHelpers'
 
 import { phrase, mixer } from 'actions/actions'
-import { clipSelectionOffsetValidated,
+import { currentNotesSelector,
+         clipSelectionOffsetValidated,
          noteSelectionOffsetValidated,
        } from 'selectors/selectorPianoroll'
 import { getOffsetedTrackID,
@@ -52,8 +53,19 @@ export const phraseCreateNote = (trackID, bar, key) => {
     // Select the note after it's created
     let state = getState()
     let notes = state.phrase.present.notes
-    let newNote = notes[notes.length - 1]
-    dispatch({ type: phrase.SELECT_NOTE, payload: { noteID: newNote.id, union: false } })
+    let newNoteID = notes[notes.length - 1].id
+    let renderedNotes = currentNotesSelector(state)
+    let newNoteLoopIterations = renderedNotes.filter(note => note.id === newNoteID)
+    let targetRenderedNote = newNoteLoopIterations.find(note => note.start <= bar && note.end > bar)
+
+    dispatch({
+      type: phrase.SELECT_NOTE,
+      payload: {
+        noteID: newNoteID,
+        loopIteration: targetRenderedNote.loopIteration,
+        union: false,
+      },
+    })
   }
 }
 export const phraseSelectTrack = ({ trackID, union }) => {

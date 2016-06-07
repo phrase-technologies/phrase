@@ -154,7 +154,7 @@ export class PianorollTimelineDisplay extends Component {
           gradient.addColorStop(1, getDarkenedColor(color, 0.733))
       canvasContext.fillStyle = gradient
     } else {
-      canvasContext.fillStyle = getDarkenedColor(color, 0.733)
+      canvasContext.fillStyle = getDarkenedColor(color, 0.666)
     }
 
     canvasContext.beginPath()

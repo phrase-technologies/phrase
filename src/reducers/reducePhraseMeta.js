@@ -138,13 +138,15 @@ export default function reducePhraseMeta(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_NOTE:
-      return {
+      let result = {
         ...state,
         selectionType: "notes",
         noteSelectionIDs: action.payload.union
           ? objectMergeKeyArrays(state.noteSelectionIDs, { [action.payload.noteID]: [action.payload.loopIteration] })
           : { [action.payload.noteID]: [action.payload.loopIteration] }
       }
+console.log( state.noteSelectionIDs, result.noteSelectionIDs )
+      return result
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:

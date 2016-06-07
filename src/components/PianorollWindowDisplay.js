@@ -235,11 +235,18 @@ export class PianorollWindowDisplay extends Component {
     if (selected) {
       if (gradient) {
         let gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
-            gradient.addColorStop(0, getDarkenedColor(color, 0.533))
-            gradient.addColorStop(1, getDarkenedColor(color, 0.733))
+        if (selected === "faded") {
+          gradient.addColorStop(0, getDarkenedColor(color, 0.266))
+          gradient.addColorStop(1, getDarkenedColor(color, 0.466))
+        } else {
+          gradient.addColorStop(0, getDarkenedColor(color, 0.533))
+          gradient.addColorStop(1, getDarkenedColor(color, 0.733))
+        }
         canvasContext.fillStyle = gradient
       } else {
-        canvasContext.fillStyle = getDarkenedColor(color, 0.733)
+        canvasContext.fillStyle = (selected === "faded")
+          ? getDarkenedColor(color, 0.266)
+          : getDarkenedColor(color, 0.666)
       }
       canvasContext.strokeStyle = 'transparent'
       drawRoundedRectangle(canvasContext,

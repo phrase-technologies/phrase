@@ -210,7 +210,7 @@ export const currentNotesSelector = createSelector(
               keyNum: Math.round(note.keyNum + offsetKey),
             })
 
-            // Render the selected note as selected
+            // Render the original note as selected
             return {
               ...note,
               selected: true,
@@ -233,7 +233,7 @@ export const currentNotesSelector = createSelector(
     return currentNotes
       .concat(noteSelectionOffsetPreview)
       .reduce((allLoopedNotes, note) => {
-        let loopedNote = loopedNoteSelector(note, currentClips)
+        let loopedNote = loopedNoteSelector({ note, noteSelectionIDs, clips: currentClips })
         return allLoopedNotes.concat(loopedNote)
       }, [])
   }
@@ -261,9 +261,10 @@ export const mapPianorollToProps = createSelector(
 // A clip might be looped for multiple iterations, some full, some partial.
 // Render the clip's notes into the correct positions for each iteration.
 export const loopedNoteSelector = createLargeCacheSelector(
-  (note, clips) => note,
-  (note, clips) => clips,
-  (note, clips) => {
+  ({ note             }) => note,
+  ({ noteSelectionIDs }) => noteSelectionIDs,
+  ({ clips            }) => clips,
+  (note, noteSelectionIDs, clips) => {
     let renderedClipNotes = []
     let clip = clips.find(clip => clip.id === note.clipID)
     if (!clip) {
@@ -272,6 +273,7 @@ export const loopedNoteSelector = createLargeCacheSelector(
     }
 
     // Loop Iterations
+    let loopIterationSelections = noteSelectionIDs ? noteSelectionIDs[note.id] : null
     let currentLoopIteration = 0
     let currentLoopStart = clip.start + clip.offset
     let currentLoopStartCutoff = -clip.offset                                           // Used to check if a note is cut off at the beginning of the current loop iteration
@@ -297,6 +299,13 @@ export const loopedNoteSelector = createLargeCacheSelector(
         if (note.end > currentLoopEndCutoff) {
           renderedNote.end = currentLoopStart + currentLoopEndCutoff
           renderedNote.outOfViewRight = true
+        }
+
+        if (renderedNote.selected) {
+          renderedNote.selected
+            = loopIterationSelections.some(i => i === currentLoopIteration)
+            ? true
+            : "faded"
         }
 
         renderedClipNotes.push(renderedNote)
