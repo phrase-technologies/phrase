@@ -196,7 +196,15 @@ export class PianorollTimelineControl extends Component {
         case 'MID': offsetStart = offsetBar; offsetEnd = offsetBar; break
         case 'MAX': offsetStart =         0; offsetEnd = offsetBar; break
       }
-      this.props.dispatch(phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, this.lastEvent.looped, 0, !e.altKey))
+      this.props.dispatch(phraseDragClipSelection({
+        grippedClipID: this.lastEvent.clipID,
+        offsetStart,
+        offsetEnd,
+        offsetLooped: this.lastEvent.looped,
+        offsetTrack: 0,
+        offsetSnap: !e.metaKey,
+        offsetCopy: e.altKey,
+      }))
       this.lastEvent.action = DRAG_CLIP
       return
     }

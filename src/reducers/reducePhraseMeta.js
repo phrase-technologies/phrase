@@ -43,21 +43,24 @@ export const defaultState = {
   rephraseReminder: false,
   selectionType: null,  // Can be "tracks", "clips", or "notes"
   trackSelectionIDs: [],
-  trackSelectionTargetID: null,
+  trackSelectionGrippedID: null,
   trackSelectionOffsetTrack: null,
   clipSelectionIDs: [],
-  clipSelectionTargetID: null,
+  clipSelectionGrippedID: null,
   clipSelectionOffsetStart: null,
   clipSelectionOffsetEnd: null,
   clipSelectionOffsetTrack: null,
   clipSelectionOffsetLooped: false,
   clipSelectionOffsetSnap: true,
+  clipSelectionOffsetCopy: null,
   noteSelectionIDs: [],
-  noteSelectionTargetID: null,
+  noteSelectionGrippedID: null,
+  noteSelectionTargetBar: null,
   noteSelectionOffsetStart: null,
   noteSelectionOffsetEnd: null,
   noteSelectionOffsetKey: null,
   noteSelectionOffsetSnap: true,
+  noteSelectionOffsetCopy: null,
 }
 
 export default function reducePhraseMeta(state = defaultState, action) {
@@ -138,14 +141,16 @@ export default function reducePhraseMeta(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_NOTE:
+      let newNoteSelectionIDs = {
+        [action.payload.noteID]: [action.payload.loopIteration]
+      }
       let result = {
         ...state,
         selectionType: "notes",
         noteSelectionIDs: action.payload.union
-          ? objectMergeKeyArrays(state.noteSelectionIDs, { [action.payload.noteID]: [action.payload.loopIteration] })
-          : { [action.payload.noteID]: [action.payload.loopIteration] }
+          ? objectMergeKeyArrays(state.noteSelectionIDs, newNoteSelectionIDs)
+          : newNoteSelectionIDs
       }
-console.log( state.noteSelectionIDs, result.noteSelectionIDs )
       return result
 
     // ------------------------------------------------------------------------
@@ -201,47 +206,98 @@ console.log( state.noteSelectionIDs, result.noteSelectionIDs )
     // ------------------------------------------------------------------------
     case phrase.DRAG_CLIP_SELECTION: {
       return u({
-        clipSelectionTargetID: action.clipID,
-        clipSelectionOffsetStart: action.start,
-        clipSelectionOffsetEnd: action.end,
-        clipSelectionOffsetTrack: action.track,
-        clipSelectionOffsetLooped: action.looped,
-        clipSelectionOffsetSnap: action.snap,
+        clipSelectionGrippedID: action.payload.grippedClipID,
+        clipSelectionOffsetStart: action.payload.offsetStart,
+        clipSelectionOffsetEnd: action.payload.offsetEnd,
+        clipSelectionOffsetTrack: action.payload.offsetTrack,
+        clipSelectionOffsetLooped: action.payload.offsetLooped,
+        clipSelectionOffsetSnap: action.payload.offsetSnap,
+        clipSelectionOffsetCopy: action.payload.offsetCopy,
       }, state)
     }
 
     // ------------------------------------------------------------------------
     case phrase.DRAG_NOTE_SELECTION: {
       return u({
-        noteSelectionTargetID: action.noteID,
-        noteSelectionOffsetStart: action.start,
-        noteSelectionOffsetEnd: action.end,
-        noteSelectionOffsetKey: action.key,
-        noteSelectionOffsetSnap: action.snap,
+        noteSelectionGrippedID: action.payload.grippedNoteID,
+        noteSelectionTargetBar: action.payload.targetBar,
+        noteSelectionOffsetStart: action.payload.offsetStart,
+        noteSelectionOffsetEnd: action.payload.offsetEnd,
+        noteSelectionOffsetKey: action.payload.offsetKey,
+        noteSelectionOffsetSnap: action.payload.offsetSnap,
+        noteSelectionOffsetCopy: action.payload.offsetCopy,
       }, state)
     }
 
     // ------------------------------------------------------------------------
-    case phrase.DROP_CLIP_SELECTION:
+    case phrase.DROP_CLIP_SELECTION: {
+      let clipSelectionIDsUpdate
+      let noteSelectionIDsUpdate
+
+      // Copy - select new clips/notes
+      if (action.payload.copy && action.payload.offsetStart === action.payload.offsetEnd) {
+        let copiedClipIDs = _.range(
+          action.payload.lastExistingClipID,
+          action.payload.lastExistingClipID + action.payload.clipIDs.length
+        )
+        let copiedNoteIDs = _.range(
+          action.payload.lastExistingNoteID,
+          action.payload.lastExistingNoteID + _.keys(action.payload.noteIDs).length
+        )
+        let copiedNoteSelectionIDs = {}
+        copiedNoteIDs.forEach(newNoteID => copiedNoteSelectionIDs[newNoteID] = [0])
+        clipSelectionIDsUpdate = u.constant(copiedClipIDs)
+        noteSelectionIDsUpdate = u.constant(copiedNoteSelectionIDs)
+      }
+      // Modify existing clips - selection remains unchanged
+      else {
+        clipSelectionIDsUpdate = state.clipSelectionIDs
+        noteSelectionIDsUpdate = {}
+      }
+
       return u({
-        clipSelectionTargetID: null,
+        clipSelectionIDs: clipSelectionIDsUpdate,
+        noteSelectionIDs: noteSelectionIDsUpdate,
+        clipSelectionGrippedID: null,
         clipSelectionOffsetStart: null,
         clipSelectionOffsetEnd: null,
         clipSelectionOffsetTrack: null,
         clipSelectionOffsetLooped: false,
         clipSelectionOffsetSnap: true,
+        clipSelectionOffsetCopy: null,
       }, state)
-
+    }
     // ------------------------------------------------------------------------
-    case phrase.DROP_NOTE_SELECTION:
+    case phrase.DROP_NOTE_SELECTION: {
+      let noteSelectionIDsUpdate
+
+      // Copy - select new notes
+      if (action.payload.copy && action.payload.offsetStart === action.payload.offsetEnd) {
+        let copiedNoteIDs = _.range(
+          action.payload.lastExistingNoteID,
+          action.payload.lastExistingNoteID + _.keys(action.payload.noteIDs).length
+        )
+        let copiedNoteSelectionIDs = {}
+        copiedNoteIDs.forEach(newNoteID => {
+          copiedNoteSelectionIDs[newNoteID] = [0]
+        })
+        noteSelectionIDsUpdate = u.constant(copiedNoteSelectionIDs)
+      }
+      // Modify existing notes - selection remains unchanged
+      else {
+        noteSelectionIDsUpdate = {}
+      }
+
       return u({
-        noteSelectionTargetID: null,
+        noteSelectionIDs: noteSelectionIDsUpdate,
+        noteSelectionGrippedID: null,
         noteSelectionOffsetStart: null,
         noteSelectionOffsetEnd: null,
         noteSelectionOffsetKey: null,
         noteSelectionOffsetSnap: true,
+        noteSelectionOffsetCopy: null,
       }, state)
-
+    }
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:
       return u({

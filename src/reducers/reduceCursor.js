@@ -22,6 +22,12 @@ export default function reduceCursor(state = defaultState, action) {
   // Non-cursor actions that affect cursors, here:
   switch (action.type)
   {
+    case phrase.DRAG_NOTE_SELECTION:
+    case phrase.DRAG_CLIP_SELECTION:
+      let copy = action.payload.offsetCopy && action.payload.offsetStart === action.payload.offsetEnd
+      return u({
+        explicit: copy ? 'copy' : state.explicit,
+      }, state)
     case phrase.DROP_NOTE_SELECTION:
     case phrase.DROP_CLIP_SELECTION:
       return u({

@@ -12,18 +12,16 @@ const clipsSelector             = (state) => (state.phrase.present.clips)
 const notesSelector             = (state) => (state.phrase.present.notes)
 const pianorollSelector         = (state) => (state.pianoroll)
 const selectionType             = (state) => (state.phraseMeta.selectionType)
-const trackSelectionIDs         = (state) => (state.phraseMeta.trackSelectionIDs)
-const trackSelectionTargetID    = (state) => (state.phraseMeta.trackSelectionTargetID)
-const trackSelectionOffsetTrack = (state) => (state.phraseMeta.trackSelectionOffsetTrack)
 const clipSelectionIDs          = (state) => (state.phraseMeta.clipSelectionIDs)
-const clipSelectionTargetID     = (state) => (state.phraseMeta.clipSelectionTargetID)
+const clipSelectionGrippedID    = (state) => (state.phraseMeta.clipSelectionGrippedID)
 const clipSelectionOffsetStart  = (state) => (state.phraseMeta.clipSelectionOffsetStart)
 const clipSelectionOffsetEnd    = (state) => (state.phraseMeta.clipSelectionOffsetEnd)
 const clipSelectionOffsetTrack  = (state) => (state.phraseMeta.clipSelectionOffsetTrack)
 const clipSelectionOffsetLooped = (state) => (state.phraseMeta.clipSelectionOffsetLooped)
 const clipSelectionOffsetSnap   = (state) => (state.phraseMeta.clipSelectionOffsetSnap)
 const noteSelectionIDs          = (state) => (state.phraseMeta.noteSelectionIDs)
-const noteSelectionTargetID     = (state) => (state.phraseMeta.noteSelectionTargetID)
+const noteSelectionGrippedID    = (state) => (state.phraseMeta.noteSelectionGrippedID)
+const noteSelectionTargetBar    = (state) => (state.phraseMeta.noteSelectionTargetBar)
 const noteSelectionOffsetStart  = (state) => (state.phraseMeta.noteSelectionOffsetStart)
 const noteSelectionOffsetEnd    = (state) => (state.phraseMeta.noteSelectionOffsetEnd)
 const noteSelectionOffsetKey    = (state) => (state.phraseMeta.noteSelectionOffsetKey)
@@ -33,7 +31,7 @@ export const clipSelectionOffsetValidated = createSelector(
   clipsSelector,
   selectionType,
   clipSelectionIDs,
-  clipSelectionTargetID,
+  clipSelectionGrippedID,
   clipSelectionOffsetStart,
   clipSelectionOffsetEnd,
   clipSelectionOffsetTrack,
@@ -85,16 +83,16 @@ export const noteSelectionOffsetValidated = createSelector(
   notesSelector,
   selectionType,
   noteSelectionIDs,
-  noteSelectionTargetID,
+  noteSelectionGrippedID,
   noteSelectionOffsetStart,
   noteSelectionOffsetEnd,
   noteSelectionOffsetKey,
   noteSelectionOffsetSnap,
-  (notes, selectionType, noteSelectionIDs, targetNoteID, offsetStart, offsetEnd, offsetKey, offsetSnap) => {
-    let targetNote = (notes || []).find(note => note.id === targetNoteID)
+  (notes, selectionType, noteSelectionIDs, grippedNoteID, offsetStart, offsetEnd, offsetKey, offsetSnap) => {
+    let grippedNote = (notes || []).find(note => note.id === grippedNoteID)
     let selectedNotes = (notes || []).filter(note => _.has(noteSelectionIDs, note.id))
     // Escape if there is no selection or selection offset
-    if (selectionType !== 'notes' || !targetNote || !selectedNotes) {
+    if (selectionType !== 'notes' || !grippedNote || !selectedNotes) {
       return {
         offsetStart: 0,
         offsetEnd: 0,
@@ -106,7 +104,7 @@ export const noteSelectionOffsetValidated = createSelector(
     let gridUnit = 0.125
     let [snappedOffsetStart, snappedOffsetEnd]
       = offsetSnap
-      ? snapNoteOffset(offsetStart, offsetEnd, targetNote, gridUnit)
+      ? snapNoteOffset(offsetStart, offsetEnd, grippedNote, gridUnit)
       : [offsetStart, offsetEnd]
 
     // Avoid negative note lengths!
@@ -187,13 +185,17 @@ export const currentNotesSelector = createSelector(
   selectionType,
   noteSelectionIDs,
   currentTrackSelector,
+  noteSelectionGrippedID,
+  noteSelectionTargetBar,
   noteSelectionOffsetValidated,
-  (currentClips, notes, selectionType, noteSelectionIDs, currentTrack, { offsetStart, offsetEnd, offsetKey }) => {
+  (currentClips, notes, selectionType, noteSelectionIDs, currentTrack, grippedNoteID, targetBar, { offsetStart, offsetEnd, offsetKey }) => {
     // Escape if pianoroll not open
     if (!currentTrack) return
 
-    let currentNotes = notes
-      .filter(note => note.trackID === currentTrack.id)
+    let currentNotes = notes.filter(note => note.trackID === currentTrack.id)
+    let grippedNote = grippedNoteID ? currentNotes.find(note => note.id === grippedNoteID) : null
+    let grippedClip = grippedNoteID ? currentClips.find(clip => clip.id === grippedNote.clipID) : null
+    let targetClip = grippedNoteID ? currentClips.find(clip => clip.start <= targetBar && clip.end > targetBar) || grippedClip : null
 
     // Render selected notes
     let noteSelectionOffsetPreview = []
@@ -203,11 +205,30 @@ export const currentNotesSelector = createSelector(
         if (isNoteSelected) {
           // Offset note - generate a duplicate preview with any offset (from drag and drop)
           if ((offsetStart && offsetEnd) || offsetKey) {
+            let currentClip = currentClips.find(clip => clip.id === note.clipID)
+            let isGrippedClip = currentClip.id === grippedClip.id
+            let destinationClip = isGrippedClip ? targetClip : currentClip
+
+            // Wrap notes around loop limits
+            let clipChangeOffsetAdjustment = (currentClip.start + currentClip.offset - targetClip.start - targetClip.offset) % targetClip.loopLength
+            let newStart = note.start + offsetStart + (isGrippedClip ? clipChangeOffsetAdjustment : 0)
+            let loopOverflowAdjustment = isGrippedClip ? clipChangeOffsetAdjustment : 0
+            while (newStart < destinationClip.offset) {
+              loopOverflowAdjustment += destinationClip.loopLength
+              newStart += destinationClip.loopLength
+            }
+            while (newStart >= destinationClip.offset + destinationClip.loopLength) {
+              loopOverflowAdjustment -= destinationClip.loopLength
+              newStart -= destinationClip.loopLength
+            }
+
+            // Generate the offseted preview
             noteSelectionOffsetPreview.push({
               ...note,
-              start:  note.start  + offsetStart,
-              end:    note.end    + offsetEnd,
+              start:  note.start  + offsetStart + loopOverflowAdjustment,
+              end:    note.end    + offsetEnd   + loopOverflowAdjustment,
               keyNum: Math.round(note.keyNum + offsetKey),
+              clipID: isGrippedClip ? destinationClip.id : note.clipID,
             })
 
             // Render the original note as selected
@@ -261,9 +282,9 @@ export const mapPianorollToProps = createSelector(
 // A clip might be looped for multiple iterations, some full, some partial.
 // Render the clip's notes into the correct positions for each iteration.
 export const loopedNoteSelector = createLargeCacheSelector(
-  ({ note             }) => note,
-  ({ noteSelectionIDs }) => noteSelectionIDs,
-  ({ clips            }) => clips,
+  (params) => params.note,
+  (params) => params.noteSelectionIDs,
+  (params) => params.clips,
   (note, noteSelectionIDs, clips) => {
     let renderedClipNotes = []
     let clip = clips.find(clip => clip.id === note.clipID)

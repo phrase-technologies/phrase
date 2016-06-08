@@ -200,7 +200,15 @@ export class PianorollWindowControl extends Component {
         case 'MID': offsetStart = offsetBar; offsetEnd = offsetBar; offsetKey = key - this.lastEvent.key; break
         case 'MAX': offsetStart =         0; offsetEnd = offsetBar; offsetKey = 0; break
       }
-      this.props.dispatch(phraseDragNoteSelection(this.lastEvent.noteID, offsetStart, offsetEnd, offsetKey, !e.altKey))
+      this.props.dispatch(phraseDragNoteSelection({
+        grippedNoteID: this.lastEvent.noteID,
+        targetBar: bar,
+        offsetStart,
+        offsetEnd,
+        offsetKey,
+        offsetSnap: !e.metaKey,
+        offsetCopy: e.altKey,
+      }))
       this.previewDragSound(offsetKey)
       this.lastEvent.action = DRAG_NOTE
       return

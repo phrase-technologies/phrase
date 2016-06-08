@@ -212,7 +212,15 @@ export class MixerWindowControl extends Component {
         case 'MID': offsetStart = offsetBar; offsetEnd = offsetBar; offsetTrack = trackPosition - this.lastEvent.trackPosition; break
         case 'MAX': offsetStart =         0; offsetEnd = offsetBar; offsetTrack = null; break
       }
-      this.props.dispatch(phraseDragClipSelection(this.lastEvent.clipID, offsetStart, offsetEnd, this.lastEvent.looped, offsetTrack, !e.altKey))
+      this.props.dispatch(phraseDragClipSelection({
+        grippedClipID: this.lastEvent.clipID,
+        offsetStart,
+        offsetEnd,
+        offsetLooped: this.lastEvent.looped,
+        offsetTrack,
+        offsetSnap: !e.metaKey,
+        offsetCopy: e.altKey,
+      }))
       this.lastEvent.action = DRAG_CLIP
       return
     }

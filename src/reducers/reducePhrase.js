@@ -117,26 +117,33 @@ export const phraseDeleteSelection = () => {
     }
   }
 }
-export const phraseDeleteNote             = (noteID)                  => ({type: phrase.DELETE_NOTE, noteID})
-export const phraseDragClipSelection = (clipID, start, end, looped, track, snap) => {
+export const phraseDeleteNote = (noteID) => ({type: phrase.DELETE_NOTE, noteID})
+export const phraseDragClipSelection = ({ grippedClipID, offsetStart, offsetEnd, offsetLooped, offsetTrack, offsetSnap, offsetCopy }) => {
   return {
     type: phrase.DRAG_CLIP_SELECTION,
-    clipID,
-    start,
-    end,
-    looped,
-    track,
-    snap
+    payload: {
+      grippedClipID,
+      offsetStart,
+      offsetEnd,
+      offsetLooped,
+      offsetTrack,
+      offsetSnap,
+      offsetCopy,
+    }
   }
 }
-export const phraseDragNoteSelection = (noteID, start, end, key, snap) => {
+export const phraseDragNoteSelection = ({ grippedNoteID, targetBar, offsetStart, offsetEnd, offsetKey, offsetSnap, offsetCopy }) => {
   return {
     type: phrase.DRAG_NOTE_SELECTION,
-    noteID,
-    start,
-    end,
-    key,
-    snap
+    payload: {
+      grippedNoteID,
+      targetBar,
+      offsetStart,
+      offsetEnd,
+      offsetKey,
+      offsetSnap,
+      offsetCopy,
+    }
   }
 }
 export const phraseDropClipSelection = () => {
@@ -144,8 +151,31 @@ export const phraseDropClipSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetTrack, offsetLooped } = clipSelectionOffsetValidated(state)
-    let clipIDs = state.phraseMeta.clipSelectionIDs
-    dispatch({ type: phrase.DROP_CLIP_SELECTION, clipIDs, offsetStart, offsetEnd, offsetTrack, offsetLooped })
+    let {
+      phraseMeta: {
+        clipSelectionIDs: clipIDs,
+        clipSelectionOffsetCopy: copy,
+      },
+      phrase: {
+        present: {
+          clipAutoIncrement: lastExistingClipID,
+          noteAutoIncrement: lastExistingNoteID,
+        }
+      }
+    } = state
+    dispatch({
+      type: phrase.DROP_CLIP_SELECTION,
+      payload: {
+        clipIDs,
+        offsetStart,
+        offsetEnd,
+        offsetTrack,
+        offsetLooped,
+        copy,
+        lastExistingClipID,
+        lastExistingNoteID,
+      }
+    })
   }
 }
 export const phraseDropNoteSelection = () => {
@@ -153,8 +183,32 @@ export const phraseDropNoteSelection = () => {
   return (dispatch, getState) => {
     let state = getState()
     let { offsetStart, offsetEnd, offsetKey } = noteSelectionOffsetValidated(state)
-    let noteIDs = state.phraseMeta.noteSelectionIDs
-    dispatch({ type: phrase.DROP_NOTE_SELECTION, noteIDs, offsetStart, offsetEnd, offsetKey })
+    let {
+      phraseMeta: {
+        noteSelectionIDs: noteIDs,
+        noteSelectionGrippedID: grippedNoteID,
+        noteSelectionTargetBar: targetBar,
+        noteSelectionOffsetCopy: copy,
+      },
+      phrase: {
+        present: {
+          noteAutoIncrement: lastExistingNoteID,
+        }
+      }
+    } = state
+    dispatch({
+      type: phrase.DROP_NOTE_SELECTION,
+      payload: {
+        noteIDs,
+        grippedNoteID,
+        targetBar,
+        offsetStart,
+        offsetEnd,
+        offsetKey,
+        copy,
+        lastExistingNoteID,
+      }
+    })
   }
 }
 export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated, dateModified, state }) => {
@@ -389,63 +443,156 @@ export default function reducePhrase(state = defaultState, action) {
       return state
 
     // ------------------------------------------------------------------------
-    case phrase.DROP_CLIP_SELECTION:
-      return u({
-        clips: clips => {
-          return clips.map(clip => {
-            // Even if looping wasn't indicated in the cursor, other selected clips may be already looped and must remain so
-            let validatedOffsetLooped = action.offsetLooped || (clip.end - clip.start !== clip.loopLength)
+    case phrase.DROP_CLIP_SELECTION: {
+      // Apply clip changes, and recursively to child notes
+      let clipAutoIncrement = state.clipAutoIncrement
+      let noteAutoIncrement = state.noteAutoIncrement
+      let finalClips
+      let finalNotes
+      let copyClips = action.payload.copy && action.payload.offsetStart === action.payload.offsetEnd
+      let copiedClips = []
+      let copiedNotes = []
+      let mappedNotes = state.notes
+      let mappedClips = u.map(clip => {
+        // Even if looping wasn't indicated in the cursor, other selected clips may be already looped and must remain so
+        let validatedOffsetLooped = action.payload.offsetLooped || (clip.end - clip.start !== clip.loopLength)
 
-            if (action.clipIDs.some(x => x === clip.id)) {
-              return u({
-                start:  clip.start  + action.offsetStart,
-                end:    clip.end    + action.offsetEnd,
-                offset: validatedOffsetLooped && action.offsetStart !== action.offsetEnd ? negativeModulus(clip.offset - action.offsetStart, clip.loopLength) : clip.offset,
-                loopLength: validatedOffsetLooped ? clip.loopLength : clip.end + action.offsetEnd - clip.start - action.offsetStart,
-                trackID: getOffsetedTrackID(clip.trackID, action.offsetTrack, state.tracks)
-              }, clip)
-            }
+        // Selected clip
+        if (action.payload.clipIDs.some(x => x === clip.id)) {
+          let newTrackID = getOffsetedTrackID(clip.trackID, action.payload.offsetTrack, state.tracks)
+          let modifiedClip = u({
+            start:  clip.start  + action.payload.offsetStart,
+            end:    clip.end    + action.payload.offsetEnd,
+            offset: validatedOffsetLooped && action.payload.offsetStart !== action.payload.offsetEnd ? negativeModulus(clip.offset - action.payload.offsetStart, clip.loopLength) : clip.offset,
+            loopLength: validatedOffsetLooped ? clip.loopLength : clip.end + action.payload.offsetEnd - clip.start - action.payload.offsetStart,
+            trackID: newTrackID,
+          }, clip)
+
+          // Copy - retain original AND yield new modified clip
+          if (copyClips) {
+            modifiedClip = u({
+              id: clipAutoIncrement,
+            }, modifiedClip)
+            copiedClips.push(modifiedClip)
+            clipAutoIncrement++
+
+            // Also copy the child notes
+            let currentNotes = state.notes.filter(note => note.clipID === clip.id)
+            currentNotes.forEach(note => {
+              copiedNotes.push(u({
+                id: noteAutoIncrement,
+                clipID: modifiedClip.id,
+                trackID: newTrackID,
+              }, note))
+              noteAutoIncrement++
+            })
+
             return clip
-          })
-        },
-        notes: notes => {
-          // Do nothing if no change of track occurred
-          if (!action.offsetTrack)
-            return notes
+          }
 
-          // Change of track occured - make sure appropriate notes are moved also!
-          let selectedClips = state.clips.filter(clip => action.clipIDs.some(x => x === clip.id))
-          return notes.map(note => {
-            let clipMoved = selectedClips.find(clip => clip.id === note.clipID)
-            if (clipMoved) {
-              return u({
-                trackID: getOffsetedTrackID(note.trackID, action.offsetTrack, state.tracks)
-              }, note)
-            }
-            return note
-          })
-        },
-      }, state)
+          // No copy - simply modify the original
+          return modifiedClip
+        }
 
-    // ------------------------------------------------------------------------
-    case phrase.DROP_NOTE_SELECTION:
+        // Not selected - no change
+        return clip
+      }, state.clips)
+
+      if (copiedClips.length) {
+        finalClips = mappedClips.concat(copiedClips)
+        finalNotes = mappedNotes.concat(copiedNotes)
+      }
+      else {
+        finalClips = mappedClips
+        finalNotes = mappedNotes
+      }
+
       return u({
-        notes: notes => {
-          return notes.map(note => {
-            if (_.has(action.noteIDs, note.id)) {
-              return u({
-                start:  note.start  + action.offsetStart,
-                end:    note.end    + action.offsetEnd,
-                keyNum: note.keyNum + action.offsetKey
-              }, note)
-            }
-            return note
-          })
-        },
+        clips: finalClips,
+        notes: finalNotes,
+        clipAutoIncrement,
+        noteAutoIncrement,
       }, state)
-
+    }
     // ------------------------------------------------------------------------
+    case phrase.DROP_NOTE_SELECTION: {
+      let grippedNote = state.notes.find(note => note.id === action.payload.grippedNoteID)
+      let grippedClip = state.clips.find(clip => clip.id === grippedNote.clipID)
+      let targetClip = state.clips.find(clip => clip.trackID === grippedNote.trackID && clip.start <= action.payload.targetBar && clip.end > action.payload.targetBar) || grippedClip
+      let newNoteLength = grippedNote.end + action.payload.offsetEnd - grippedNote.start - action.payload.offsetStart
+      let noteAutoIncrement = state.noteAutoIncrement
 
+      // Apply modifications to notes
+      let finalizedNotes
+      let copyNotes = action.payload.copy && action.payload.offsetStart === action.payload.offsetEnd
+      let copiedNotes = []
+      let mappedNotes = u.map(note => {
+        // Selected note
+        if (_.has(action.payload.noteIDs, note.id)) {
+          // Offset note - generate a duplicate with any offset
+          if ((action.payload.offsetStart === action.payload.offsetEnd) || action.payload.offsetKey) {
+            let currentClip = state.clips.find(clip => clip.id === note.clipID)
+            let isGrippedClip = currentClip.id === grippedClip.id
+            let destinationClip = isGrippedClip ? targetClip : currentClip
+
+            // Wrap notes around loop limits
+            let clipChangeOffsetAdjustment = (currentClip.start + currentClip.offset - targetClip.start - targetClip.offset) % targetClip.loopLength
+            let newStart = note.start + action.payload.offsetStart + (isGrippedClip ? clipChangeOffsetAdjustment : 0)
+            let loopOverflowAdjustment = isGrippedClip ? clipChangeOffsetAdjustment : 0
+            while (newStart < destinationClip.offset) {
+              loopOverflowAdjustment += destinationClip.loopLength
+              newStart += destinationClip.loopLength
+            }
+            while (newStart >= destinationClip.offset + destinationClip.loopLength) {
+              loopOverflowAdjustment -= destinationClip.loopLength
+              newStart -= destinationClip.loopLength
+            }
+
+            // Apply changes
+            let modifiedNote = u({
+              start:  note.start  + action.payload.offsetStart + loopOverflowAdjustment,
+              end:    note.end    + action.payload.offsetEnd   + loopOverflowAdjustment,
+              keyNum: note.keyNum + action.payload.offsetKey,
+              clipID: destinationClip.id,
+            }, note)
+
+            // Copy - retain original AND yield new modified note
+            if (copyNotes) {
+              modifiedNote = u({
+                id: noteAutoIncrement,
+              }, modifiedNote)
+              noteAutoIncrement++
+              copiedNotes.push(modifiedNote)
+              return note
+            }
+
+            // No copy - simply modify the original
+            return modifiedNote
+          }
+
+          // Resized note - render as selected
+          return u({
+            start:  note.start  + action.payload.offsetStart,
+            end:    note.end    + action.payload.offsetEnd,
+          }, note)
+        }
+        return note
+      }, state.notes)
+
+      // Copies created - append and return
+      if (copiedNotes.length)
+        finalizedNotes = mappedNotes.concat(copiedNotes)
+      // No copies - simply return
+      else
+        finalizedNotes = mappedNotes
+
+      return u({
+        notes: finalizedNotes,
+        noteLengthLast: newNoteLength,
+        noteAutoIncrement,
+      }, state)
+    }
+    // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:
       return defaultState
 
@@ -507,19 +654,21 @@ function reduceCreateNote(state, action) {
   // Insert note, snap to same length as most previously created note
   let snappedNoteKey   = Math.ceil(action.key)
   let snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast
+      snappedNoteStart = (snappedNoteStart - foundClip.start - foundClip.offset) % foundClip.loopLength
+
   let newNote = u.freeze({
     id:       state.noteAutoIncrement,
     trackID:  action.trackID,
     clipID:   foundClip.id,
     keyNum:   snappedNoteKey,
-    start:    snappedNoteStart - foundClip.start,
-    end:      snappedNoteStart - foundClip.start + state.noteLengthLast,
+    start:    snappedNoteStart,
+    end:      snappedNoteStart + state.noteLengthLast,
   })
 
   // Update State
   return u({
     notes: uAppend(newNote),
-    noteAutoIncrement: uIncrement(1)
+    noteAutoIncrement: uIncrement(1),
   }, state)
 }
 
