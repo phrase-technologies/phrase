@@ -70,7 +70,7 @@ export class WorkstationHeader extends Component {
         className="popover bottom" onClick={this.dismissLoginReminder}
         style={{ display: 'block', left: 'auto', right: 0, top: -13, color: '#333' }}
       >
-        <div className="arrow" />
+        <div className="arrow" style={{ right: 25, left: 'auto' }} />
         <div className="popover-content" style={{ padding: '5px 10px' }}>
           To <strong>save</strong> and <strong>share</strong> your phrase,
           login!
@@ -103,7 +103,7 @@ export class WorkstationHeader extends Component {
     return this.props.existingPhrase ? (
       <OverlayTrigger placement="top" overlay={RephraseTooltip} delayShow={250}>
         <button className="btn btn-sm btn-bright" onClick={this.rephrase}>
-          <span className="fa fa-code-fork" />
+          <span className="fa fa-pencil-square-o" />
           <span> Rephrase</span>
         </button>
       </OverlayTrigger>

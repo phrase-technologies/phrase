@@ -30,21 +30,20 @@ let Header = ({
       headerClasses += (theme === 'solid') ? ' header-solid' : ''
   let containerClasses = "container"
       containerClasses += (props.maximize) ? " container-maximize" : ''
-  let buttonClasses = "btn btn-link"
-      buttonClasses += (theme === 'solid') ? ' link-dark' : ''
+  let buttonClasses = "btn btn-bright btn-round"
+      buttonClasses += (theme === 'solid') ? ' link-bright' : ''
 
   return (
     <div className={headerClasses}>
       <div className={containerClasses}>
         <div className="btn-toolbar pull-left">
           <HeaderSearch theme={theme} />
-          <div className="btn-group">
+          <div className="btn-group" style={{ marginLeft: 10 }}>
             <a
               className={buttonClasses}
               onClick={() => handleNewPhraseClick({ dispatch, params, phrase })}
             >
-              <span>+ </span>
-              <span className="fa fa-file" />
+              <span className="fa fa-plus-circle" />
               <span> New Phrase</span>
             </a>
           </div>

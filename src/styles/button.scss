@@ -29,6 +29,10 @@ a,
   }
 }
 
+.btn-round {
+  border-radius: 18px;
+}
+
 .btn-narrow {
   padding-left: 6px;
   padding-right: 6px;
@@ -54,6 +58,7 @@ a,
 .btn.unsaved {
   border-top: 2px solid rgb(33, 207, 40);
 }
+.btn-primary,
 .btn-bright {
   border-color: #222;
   box-shadow: inset 0 1px 6px -1px #FFF;
@@ -81,6 +86,19 @@ a,
     color: #777 !important;
     box-shadow: inset 0 1px 6px -1px #FFF !important;
     text-shadow: none !important;
+  }
+}
+.btn-primary {
+  $btn-primary-color: #FA4;
+  background: $btn-primary-color;
+  background-image: linear-gradient(to bottom, $btn-primary-color, darken($btn-primary-color, 15%));
+  color: #333 !important;
+  text-shadow: 0 0 10px lighten($btn-primary-color, 20%);
+
+  &.active,
+  &:active {
+    background: darken($btn-primary-color, 20%);
+    background-image: linear-gradient(to bottom, darken($btn-primary-color, 15%), $btn-primary-color);
   }
 }
 .btn-glow {

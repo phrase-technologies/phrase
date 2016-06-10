@@ -52,24 +52,16 @@ let notificationButton = ({ loggedIn }) => {
 }
 
 let notLoggedIn = ({ dispatch }) => {
-  return [
-    <div className="btn-group" style={{ marginRight: 8 }} key={1}>
+  return (
+    <div className="btn-group" key={2}>
       <button
         className="btn btn-dark"
-        onClick={() => dispatch(modalOpen({ modalComponent: 'LoginModal' }))}
+        onClick={() => dispatch(modalOpen({ modalComponent: 'SignupModal' }))}
       >
         Log in
       </button>
-    </div>,
-    <div className="btn-group" key={2}>
-      <button
-        className="btn btn-bright"
-        onClick={() => dispatch(modalOpen({ modalComponent: 'SignupModal' }))}
-      >
-        Sign up
-      </button>
     </div>
-  ]
+  )
 }
 
 let loggedIn = ({ user, dispatch }) => {

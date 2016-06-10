@@ -74,6 +74,11 @@ $library-header-height: 60px;
 .library-preview-transport {
   margin: 0 0 20px;
 }
+.library-preview-actions {
+  .btn {
+    width: 175px;
+  }
+}
 .library-preview-timestamp {
   font-size: 11px;
   color: #888;

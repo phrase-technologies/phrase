@@ -145,14 +145,14 @@ export class Library extends Component {
         </div>
         <div className="library-preview-actions">
           <div className="btn-group" style={{ marginRight: 5 }}>
-            <button className="btn btn-bright" onClick={() => dispatch(push(`/phrase/${authorUsername}/${phraseId}`))}>
-              <span className="fa fa-external-link" />
-              <span> Open Phrase</span>
+            <button className="btn btn-bright btn-lg" onClick={() => dispatch(push(`/phrase/${authorUsername}/${phraseId}`))}>
+              <span className="fa fa-eye" />
+              <span> View Phrase</span>
             </button>
           </div>
           <div className="btn-group" onClick={() => dispatch(phraseRephrase())}>
-            <button className="btn btn-dark">
-              <span className="fa fa-code-fork" />
+            <button className="btn btn-primary btn-lg">
+              <span className="fa fa-pencil-square-o" />
               <span> Rephrase</span>
             </button>
           </div>
