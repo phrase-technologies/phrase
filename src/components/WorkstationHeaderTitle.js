@@ -13,26 +13,30 @@ export class WorkstationHeaderTitle extends Component {
   }
 
   render() {
-    // Read only Title
-    if (!this.props.currentUsername || this.props.currentUsername !== this.props.authorUsername) {
+    // Editable Title
+    let loggedIn = this.props.currentUsername
+    let ownerOfPhrase = this.props.currentUsername === this.props.authorUsername
+    let newPhrase = !this.props.authorUsername
+    if (loggedIn && ownerOfPhrase || newPhrase) {
       return (
         <div className="workstation-header-title-wrapper">
-          <div className="workstation-header-title">
-            { this.props.title || (<em>Untitled Phrase</em>) }
-          </div>
+          <AutosizeInput inputClassName="form-control form-control-glow workstation-header-title"
+            name="project-name" value={this.state.title}
+            placeholder="Untitled Phrase" inputStyle={{ textOverflow: 'ellipsis' }}
+            onChange={this.handleChange} onBlur={this.handleBlur}
+            onKeyDown={this.handleKeyDown}
+          />
+          <span className="fa fa-pencil" />
         </div>
       )
     }
 
-    // Editable Title
+    // Read-only Title
     return (
       <div className="workstation-header-title-wrapper">
-        <AutosizeInput inputClassName="form-control form-control-glow workstation-header-title"
-          name="project-name" value={this.state.title}
-          placeholder="Untitled Phrase" inputStyle={{ textOverflow: 'ellipsis' }}
-          onChange={this.handleChange} onBlur={this.handleBlur}
-        />
-        <span className="fa fa-pencil" />
+        <div className="workstation-header-title">
+          { this.props.title || (<em>Untitled Phrase</em>) }
+        </div>
       </div>
     )
   }
@@ -47,6 +51,12 @@ export class WorkstationHeaderTitle extends Component {
 
   handleBlur = (e) => {
     this.props.dispatch(phraseRename(e.target.value))
+  }
+
+  handleKeyDown = (e) => {
+    if (e.keyCode === 13) { // Enter - Submit changed name
+      e.target.blur()
+    }
   }
 
 }
