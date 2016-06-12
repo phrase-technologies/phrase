@@ -14,7 +14,7 @@ import {
 } from './AudioEnginePlaybackLoop.js'
 import linkMIDIControllers from './AudioEngineMidiControl.js'
 
-let AudioContext = AudioContext || webkitAudioContext
+let AudioContext = window.AudioContext || window.webkitAudioContext || false
 
 // ============================================================================
 // ENGINE CREATION

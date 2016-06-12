@@ -61,15 +61,6 @@ function createTrackModule(engine, track) {
   // Used for track PAN
   let outputPan = engine.ctx.createPanner()
       outputPan.connect(outputGain)
-      outputPan.panningModel = 'HRTF'
-      outputPan.distanceModel = 'inverse'
-      outputPan.refDistance = 1
-      outputPan.maxDistance = 10000
-      outputPan.rolloffFactor = 1
-      outputPan.coneInnerAngle = 360
-      outputPan.coneOuterAngle = 0
-      outputPan.coneOuterGain = 0
-      outputPan.setOrientation(1,0,0)
 
   // Used for track METER
   let outputMeter = engine.ctx.createAnalyser()
@@ -156,5 +147,6 @@ export function getTrackOutputDecibels(engine, trackID) {
     result = result < -60 ? -Infinity : result
     return result
   }
+
   return null
 }

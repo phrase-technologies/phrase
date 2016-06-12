@@ -3,6 +3,7 @@ import { phraseNewPhrase } from 'reducers/reducePhrase'
 import HeaderSearch from 'components/HeaderSearch.js'
 import UserNavigation from 'components/UserNavigation.js'
 import { connect } from 'react-redux'
+import isSafari from 'helpers/isSafari'
 
 let handleNewPhraseClick = ({
   dispatch,
@@ -30,6 +31,7 @@ let Header = ({
       headerClasses += (theme === 'solid') ? ' header-solid' : ''
   let containerClasses = "container"
       containerClasses += (props.maximize) ? " container-maximize" : ''
+      containerClasses += isSafari() ? ' container-safari-fix' : ''
   let buttonClasses = "btn btn-bright btn-round"
       buttonClasses += (theme === 'solid') ? ' link-bright' : ''
 

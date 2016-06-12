@@ -30,8 +30,8 @@ export class PolyphonicSynth {
 
   fireNote(keyNum, velocity, time = 0, detune) {
     // Handle kill signals first
-    if (velocity == 0) {
-      var voiceToKill = _.remove(this.activeVoices, voice => voice.lastNote === keyNum).shift()
+    if (velocity === 0) {
+      let voiceToKill = _.remove(this.activeVoices, voice => voice.lastNote === keyNum).shift()
       if (voiceToKill) {
         voiceToKill.fireNote(keyNum, 0, time, detune)
         this.unusedVoices.push(voiceToKill)
@@ -40,7 +40,7 @@ export class PolyphonicSynth {
     }
 
     // Is voice already in play? Reuse voice
-    var activeVoice = _.remove(this.activeVoices, voice => voice.lastNote === keyNum).shift()
+    let activeVoice = _.remove(this.activeVoices, voice => voice.lastNote === keyNum).shift()
     if (activeVoice) {
       activeVoice.fireNote(keyNum, velocity, time, detune)
       this.activeVoices.push(activeVoice)
@@ -48,7 +48,7 @@ export class PolyphonicSynth {
     }
 
     // Try using an inactive voice
-    var unusedVoice = this.unusedVoices.shift()
+    let unusedVoice = this.unusedVoices.shift()
     if (unusedVoice) {
       unusedVoice.fireNote(keyNum, velocity, time, detune)
       this.activeVoices.push(unusedVoice)
@@ -56,7 +56,7 @@ export class PolyphonicSynth {
     }
 
     // Nothing available, must steal!
-    var stolenVoice = this.activeVoices.shift()
+    let stolenVoice = this.activeVoices.shift()
     if (stolenVoice) {
       stolenVoice.fireNote(keyNum, velocity, time, detune)
       this.activeVoices.push(stolenVoice)
@@ -106,7 +106,7 @@ export class MonophonicSynth {
     this.oscillator.frequency.setValueAtTime(frequency, time) // TODO: Legato
 
     // Schedule the Amplitude change
-    this.amplitudeEnvelope.gain.cancelScheduledValues( time )
+    this.amplitudeEnvelope.gain.cancelScheduledValues(time)
     this.amplitudeEnvelope.gain.setTargetAtTime(0, Math.max(0, time - 0.001), DEFAULT_EASING) // End any previous note (TODO: Easing... exponentialRamp to 0 is NaN)
     this.amplitudeEnvelope.gain.setTargetAtTime(velocity/127, time, DEFAULT_EASING)           // Begin the next note
 

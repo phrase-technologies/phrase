@@ -1,5 +1,7 @@
 /* global JSON, localStorage */
 
+import 'whatwg-fetch' // `fetch` polyfill for Safari
+
 export let api = async ({ endpoint, body }) => {
   let response = await fetch(`${API_URL}/api/${endpoint}`, {
     method: `POST`,

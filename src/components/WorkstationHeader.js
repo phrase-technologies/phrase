@@ -13,17 +13,19 @@ import {
   phraseRephraseReminder,
   phraseRephrase,
 } from 'reducers/reducePhrase'
-
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
-
 import { exportToMidi } from 'actions/actionsMidi'
+import isSafari from 'helpers/isSafari'
 
 export class WorkstationHeader extends Component {
 
   render() {
+    let containerClasses = "container container-maximize"
+        containerClasses += isSafari() ? ' container-safari-fix' : ''
+
     return (
       <div className="workstation-header">
-        <div className="container container-maximize" style={{ position: 'relative' }}>
+        <div className={containerClasses} style={{ position: 'relative' }}>
           <div className="btn-toolbar" style={{ position: 'absolute', top: 3, left: 0 }}>
             <div className="btn-group">
               { this.renderRephraseButton() }

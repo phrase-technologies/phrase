@@ -1,3 +1,5 @@
+import 'whatwg-fetch' // `fetch` polyfill for Safari
+
 export let signup = async (body, callback) => {
   let response = await fetch(`${API_URL}/signup`, {
     method: `POST`,
