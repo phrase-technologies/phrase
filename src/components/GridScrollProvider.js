@@ -31,26 +31,21 @@ let provideGridScroll = function(
       )
     }
 
-    constructor(){
-      super(...arguments)
-
-      this.handleScrollWheel = this.handleScrollWheel.bind(this)
-      this.handleMouseMove = this.handleMouseMove.bind(this)
-    }
-
     componentDidMount() {
       this.props.grid.didMount()
       this.props.grid.container.addEventListener('wheel', this.handleScrollWheel)
       this.props.grid.container.addEventListener('mousemove', this.handleMouseMove)
+      this.props.grid.container.addEventListener('mouseout', this.handleMouseOut)
     }
 
     componentWillUnmount() {
       this.props.grid.container.removeEventListener('wheel', this.handleScrollWheel)
       this.props.grid.container.removeEventListener('mousemove', this.handleMouseMove)
+      this.props.grid.container.removeEventListener('mouseout', this.handleMouseOut)
     }
 
     // Scrolling and zooming within the timeline
-    handleScrollWheel(e) {
+    handleScrollWheel = (e) => {
       e.preventDefault()
       // e.stopPropagation(); propogation is needed for vertical scrolling on the mixer
 
@@ -90,10 +85,15 @@ let provideGridScroll = function(
         this.props.dispatch(scrollYActionCreator({ min: newKeyMin, max: newKeyMax }))
       }
     }
-    handleMouseMove(e) {
+    handleMouseMove = (e) => {
       if (cursorActionCreator) {
         let percent = this.props.grid.getMouseXPercent(e)
         this.props.dispatch(cursorActionCreator(percent))
+      }
+    }
+    handleMouseOut = () => {
+      if (cursorActionCreator) {
+        this.props.dispatch(cursorActionCreator(null))
       }
     }
 
