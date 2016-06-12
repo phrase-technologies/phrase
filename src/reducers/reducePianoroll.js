@@ -41,7 +41,7 @@ export const pianorollSelectionBoxApply = (union) => {
     })
   }
 }
-export const pianorollMoveCursor          = (percent)         => ({type: pianoroll.MOVE_CURSOR, percent})
+export const pianorollMoveCursor = (percent) => ({type: pianoroll.MOVE_CURSOR, percent})
 export const pianorollSetFocusWindow  = (clipID, tight) => {
   // We need to know the selection offsets - use a thunk to access other state branches
   return (dispatch, getState) => {
