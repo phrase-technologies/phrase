@@ -81,31 +81,29 @@ export function uRemove(element) {
 // object is returned.
 
 export const objectMergeKeyArrays = (a, b, { xor = true } = { xor: true }) => {
-  let result = {
-    ...a,
-  }
+  let initial = Object.keys(a).reduce((acc, key) => ({ // discard dupe keys
+    ...acc,
+    ...(b[key] ? {} : { [key]: a[key] })
+  }), {})
 
-  for (let key in b) {
+  return Object.keys(b).reduce((result, key) => {
+    let merged, existingEntry = a[key]
     // Handle case where same key is present in both
-    let existingEntry = result[key]
     if (existingEntry) {
       // XOR/union merge
-      result[key] = xor
+      merged = xor
         ? _.xor(existingEntry, b[key])
         : _.union(existingEntry, b[key])
 
       // Remove if result is empty
-      if (result[key].length === 0) {
-        delete result[key]
-      }
+      merged = merged.length ? { [key]: merged } : {}
     }
-    // Merge new keys
-    else {
-      result[key] = b[key]
-    }
-  }
 
-  return result
+    return {
+      ...result,
+      ...(existingEntry ? merged : { [key] : b[key] })
+    }
+  }, initial)
 }
 
 

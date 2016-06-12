@@ -118,9 +118,10 @@ export default function reducePhraseMeta(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.SELECT_TRACK:
-      let trackClipIDs = action.payload.clips
-        .filter(clip => clip.trackID === action.payload.trackID)
-        .map(clip => clip.id)
+      let trackClipIDs =  action.payload.clips.reduce((acc, clip) => ([
+        ...acc,
+        ...(clip.trackID === action.payload.trackID ? [clip.id] : [])
+      ]), [])
 
       return u({
         selectionType: trackClipIDs.length ? "clips" : "tracks",

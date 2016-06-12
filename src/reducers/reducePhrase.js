@@ -93,7 +93,7 @@ export const phraseDeleteSelection = () => {
       noteSelectionIDs,
     } = getState().phraseMeta
 
-    // If clip selection was just deleted, delete selectd tracks instead
+    // If clip selection was just deleted, delete selected tracks instead
     if (selectionType === "clips" && clipSelectionIDs.length === 0) {
       selectionType = "tracks"
     }
@@ -460,10 +460,12 @@ export default function reducePhrase(state = defaultState, action) {
         // Selected clip
         if (action.payload.clipIDs.some(x => x === clip.id)) {
           let newTrackID = getOffsetedTrackID(clip.trackID, action.payload.offsetTrack, state.tracks)
+          let truncateOffset = validatedOffsetLooped && action.payload.offsetStart !== action.payload.offsetEnd
+          let truncatedOffset = negativeModulus(clip.offset - action.payload.offsetStart, clip.loopLength)
           let modifiedClip = u({
             start:  clip.start  + action.payload.offsetStart,
             end:    clip.end    + action.payload.offsetEnd,
-            offset: validatedOffsetLooped && action.payload.offsetStart !== action.payload.offsetEnd ? negativeModulus(clip.offset - action.payload.offsetStart, clip.loopLength) : clip.offset,
+            offset: truncateOffset ? truncatedOffset : clip.offset,
             loopLength: validatedOffsetLooped ? clip.loopLength : clip.end + action.payload.offsetEnd - clip.start - action.payload.offsetStart,
             trackID: newTrackID,
           }, clip)
@@ -498,14 +500,8 @@ export default function reducePhrase(state = defaultState, action) {
         return clip
       }, state.clips)
 
-      if (copiedClips.length) {
-        finalClips = mappedClips.concat(copiedClips)
-        finalNotes = mappedNotes.concat(copiedNotes)
-      }
-      else {
-        finalClips = mappedClips
-        finalNotes = mappedNotes
-      }
+      finalClips = mappedClips.concat(copiedClips)
+      finalNotes = mappedNotes.concat(copiedNotes)
 
       return u({
         clips: finalClips,
