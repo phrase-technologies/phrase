@@ -122,6 +122,9 @@ export class Workstation extends Component {
 
     let unsavedChanges = !pristine && this.props.autosaving !== "DO_NOT_RELOAD"
     if (unsavedChanges) {
+      // Blur Search Box to inputs (https://phrasetechnologies.atlassian.net/browse/WEB-52)
+      let searchBox = document.getElementById("header-search-input")
+          searchBox ? searchBox.blur() : null
 
       // Unlogged-in user, new phrase
       if (newPhrasePage) {

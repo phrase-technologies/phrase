@@ -14,7 +14,8 @@ import { cursor,
          phrase } from 'actions/actions'
 
 let defaultState = {
-  icon: null
+  explicit: null,
+  implicit: null,
 }
 
 export default function reduceCursor(state = defaultState, action) {

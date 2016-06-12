@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { libraryLoadAll, librarySearch } from 'reducers/reduceLibrary'
 
 export class HeaderSearch extends Component {
 
@@ -14,7 +14,7 @@ export class HeaderSearch extends Component {
       <div className="btn-group">
         <div className="header-search-wrapper">
           <input
-            className={searchClasses}
+            className={searchClasses} id="header-search-input"
             type="text"
             placeholder="Search Phrases"
             ref={(ref) => this.inputField = ref}
@@ -39,7 +39,7 @@ export class HeaderSearch extends Component {
 
   searchFocus = () => {
     this.props.dispatch(push('/search'))
-    this.props.dispatch(libraryLoadAll())
+    // this.inputField.blur()
   }
 
   handleKeyDown = (e) => {
@@ -51,15 +51,11 @@ export class HeaderSearch extends Component {
           e.preventDefault()
         }
         break
-      // ESCAPE - Return to Phrase Editor
-      case 27:
     }
   }
 
 }
 
-HeaderSearch.contextTypes = {
-  router: React.PropTypes.object.isRequired
-}
-
-export default connect()(HeaderSearch)
+export default withRouter(
+  connect()(HeaderSearch)
+)
