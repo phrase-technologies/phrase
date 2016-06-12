@@ -79,6 +79,9 @@ import Error404 from 'components/Error404.js'
 // This is only necessary because we are using Google Font API in font.scss.
 // Possibly stick to websafe fonts, or roll the font into WebPack? TODO
 window.onload = () => {
+  let root = document.createElement(`div`)
+  document.body.appendChild(root)
+
   ReactDOM.render(
     <StoreProvider store={STORE}>
       <EngineProvider engine={ENGINE}>
@@ -100,6 +103,6 @@ window.onload = () => {
 
       </EngineProvider>
     </StoreProvider>,
-    document.getElementById('root')
+    root
   )
 }
