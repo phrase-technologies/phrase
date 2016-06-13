@@ -9,6 +9,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
+    publicPath: '/'
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -16,8 +17,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       API_URL: process.env.API_URL,
-      'process.env': { NODE_ENV: JSON.stringify('production') }
-      // 'process.env': { NODE_ENV: 'production' }
+      'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) }
     })
   ],
   module: {
