@@ -1,9 +1,7 @@
 /* global JSON, localStorage */
 
-import { serverUrl } from 'config'
-
 export let api = async ({ endpoint, body }) => {
-  let response = await fetch(`${serverUrl}/api/${endpoint}`, {
+  let response = await fetch(`${API_URL}/api/${endpoint}`, {
     method: `POST`,
     headers: { 'Content-Type': `application/json` },
     body: JSON.stringify({

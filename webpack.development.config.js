@@ -15,7 +15,11 @@ module.exports = {
     publicPath: '/static/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      API_URL: process.env.API_URL,
+      'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) }
+    })
   ],
   module: {
     loaders: [
@@ -46,8 +50,7 @@ module.exports = {
        helpers: 'src/helpers',
        selectors: 'src/selectors',
        middleware: 'src/middleware',
-       config: path.join(__dirname, 'config', process.env.NODE_ENV),
      },
      extensions: ['', '.js', '.scss'],
-  },
+  }
 };

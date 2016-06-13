@@ -14,6 +14,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Phrase.fm'
     }),
+    new webpack.DefinePlugin({
+      API_URL: process.env.API_URL,
+      'process.env': { NODE_ENV: JSON.stringify('production') }
+      // 'process.env': { NODE_ENV: 'production' }
+    })
   ],
   module: {
     loaders: [
@@ -44,7 +49,6 @@ module.exports = {
        helpers: 'src/helpers',
        selectors: 'src/selectors',
        middleware: 'src/middleware',
-       config: path.join(__dirname, 'config', process.env.NODE_ENV),
      },
      extensions: ['', '.js', '.scss'],
   },

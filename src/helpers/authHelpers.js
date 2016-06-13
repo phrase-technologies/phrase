@@ -1,7 +1,5 @@
-import { serverUrl } from 'config'
-
 export let signup = async (body, callback) => {
-  let response = await fetch(`${serverUrl}/signup`, {
+  let response = await fetch(`${API_URL}/signup`, {
     method: `POST`,
     headers: { 'Content-Type': `application/json` },
     body: JSON.stringify(body),
