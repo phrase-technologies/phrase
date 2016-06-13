@@ -50,12 +50,27 @@ export class WorkstationHeaderTitle extends Component {
   }
 
   handleBlur = (e) => {
-    this.props.dispatch(phraseRename(e.target.value))
+    if (e.target.value !== this.props.title) {
+      this.props.dispatch(phraseRename(e.target.value))
+    }
   }
 
   handleKeyDown = (e) => {
-    if (e.keyCode === 13) { // Enter - Submit changed name
-      e.target.blur()
+    switch (e.keyCode) {
+      // Enter - Submit changed name
+      case 13:
+        e.target.blur()
+        break
+      // Escape - Revert to previously saved name
+      case 27:
+        this.setState({ title: this.props.title })
+
+        // Autosizing input length needs new state to render first before blurring, use a timeout!
+        let formControl = e.target // Synthetic events, do not hold direct references
+        setTimeout(() => {
+          formControl.blur()
+        })
+        break
     }
   }
 
