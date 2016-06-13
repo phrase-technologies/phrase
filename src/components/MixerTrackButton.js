@@ -1,32 +1,19 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
-export default class MixerTrackButton extends Component {
+export default ({ dispatch, active, buttonClasses, action, trackID, tooltip, children, ...props }) => {
 
-  constructor() {
-    super(...arguments)
-    this.handleClick = this.handleClick.bind(this)
-  }
+  buttonClasses = 'mixer-track-btn ' + buttonClasses
+  buttonClasses += active ? ' active' : ''
 
-  handleClick(e) {
-    this.props.dispatch( this.props.action(this.props.trackID) )
-  }
+  let buttonTooltip = <Tooltip id={`tooltip-arm-${trackID}`} >{tooltip}</Tooltip>
 
-  render() {
-    var buttonClasses = 'mixer-track-btn ' + this.props.buttonClasses
-        buttonClasses += this.props.active ? ' active' : ''
-
-    return (
-      <button className={buttonClasses} onClick={this.handleClick}>
-        {this.props.children}
+  return (
+    <OverlayTrigger placement="top" overlay={buttonTooltip} delayShow={640}>
+      <button className={buttonClasses} onClick={() => dispatch(action(trackID))} {...props}>
+        {children}
       </button>
-    )
-  }
-}
+    </OverlayTrigger>
+  )
 
-MixerTrackButton.propTypes = {
-  dispatch:       React.PropTypes.func.isRequired,
-  action:         React.PropTypes.func.isRequired,
-  buttonClasses:  React.PropTypes.string.isRequired,
-  trackID:        React.PropTypes.number.isRequired,
-  active:         React.PropTypes.bool
 }

@@ -125,6 +125,8 @@
   line-height: 17px;
   background-image: linear-gradient(to bottom, #666 0%, #555 50%, #444 100%);
 
+  pointer-events: all;
+
   &:hover {
     border-color: #000;
     background-image: linear-gradient(to bottom, #777 0%, #555 50%, #333 100%);
@@ -213,7 +215,7 @@
   border: 1px dashed transparent;
   border-radius: $mixer-corner;
   height: $mixer-track-height;
-  width: 160px;
+  width: 200px;
   margin: auto;
 
   cursor: pointer;

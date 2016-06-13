@@ -7,7 +7,7 @@ export default class MixerTrackNew extends Component {
         <div className="mixer-track-new" onClick={this.props.handleClickNew}>
           <div className="mixer-track-new-body">
             <span className="fa fa-plus-circle" />
-            <span> Add Track</span>
+            <span> Add MIDI Track</span>
           </div>
         </div>
       </div>

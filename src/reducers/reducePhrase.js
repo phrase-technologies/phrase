@@ -603,7 +603,7 @@ function reduceCreateTrack(state, action) {
     tracks: uAppend(
       {
         id: state.trackAutoIncrement,
-        name: action.name || 'Track '+(state.trackAutoIncrement+1),
+        name: action.name || 'MIDI Track '+(state.trackAutoIncrement+1),
         color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
         arm:  false,
         mute: false,

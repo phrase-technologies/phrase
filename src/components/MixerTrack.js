@@ -38,17 +38,17 @@ export default class MixerTrack extends Component {
           <span className="mixer-track-caret fa fa-ellipsis-h" />
           <MixerTrackLevel track={this.props.track} atleastOneTrackSoloed={this.props.atleastOneTrackSoloed} />
           <MixerTrackButton buttonClasses="mixer-track-arm"
-            active={this.props.track.arm}
+            active={this.props.track.arm} tooltip="Arm this track"
             action={phraseArmTrack} {...buttonProps}>
             <span className="fa fa-circle" />
           </MixerTrackButton>
           <MixerTrackButton buttonClasses="mixer-track-mute"
-            active={this.props.track.mute}
+            active={this.props.track.mute} tooltip="Mute this track"
             action={phraseMuteTrack} {...buttonProps}>
             <span>M</span>
           </MixerTrackButton>
           <MixerTrackButton buttonClasses="mixer-track-solo"
-            active={this.props.track.solo}
+            active={this.props.track.solo} tooltip="Solo this track"
             action={phraseSoloTrack} {...buttonProps}>
             <span>S</span>
           </MixerTrackButton>
