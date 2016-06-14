@@ -270,17 +270,9 @@ export const phraseSliceClip = ({ bar, trackID, foundClip, snap = 4 }) => {
       start: bar,
     }
 
-    let leftNotes = notes.reduce((acc, note) => ([
+    notes = notes.reduce((acc, note) => ([
       ...acc,
-      ...(note.clipID === foundClip.id && note.start + leftClip.start < bar
-        ? [ { ...note, start: note.start + leftClip.start, end: note.end + leftClip.start } ]
-        : [])
-    ]), [])
-
-
-    let rightNotes = notes.reduce((acc, note) => ([
-      ...acc,
-      ...(note.clipID === foundClip.id && note.start + leftClip.start >= bar
+      ...(note.clipID === foundClip.id
         ? [ { ...note, start: note.start + leftClip.start, end: note.end + leftClip.start } ]
         : [])
     ]), [])
@@ -290,13 +282,14 @@ export const phraseSliceClip = ({ bar, trackID, foundClip, snap = 4 }) => {
 
     dispatch({ type: phrase.DELETE_CLIP, clipID: foundClip.id, ignore: true })
     dispatch(phraseCreateClip(trackID, leftClip.start, leftClip.end - leftClip.start, snapStart, ignore))
+
+    // if no notes in sliced clip, do not ignore last clip creation
+    ignore = notes.length > 0
+
     dispatch(phraseCreateClip(trackID, rightClip.start, rightClip.end - rightClip.start, snapStart, ignore))
 
-    leftNotes.forEach(note => {
-      dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end, ignore))
-    })
-
-    rightNotes.forEach(note => {
+    notes.forEach((note, i) => {
+      let ignore = i < notes.length - 1
       dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end, ignore))
     })
   }
