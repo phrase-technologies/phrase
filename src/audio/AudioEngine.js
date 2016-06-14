@@ -104,7 +104,7 @@ export default function createAudioEngine(STORE) {
       updateMidiCommands(engine, state)
 
     // Keep track of last state to avoid duplicated updates
-    engine.lastState.phrase = state.phrase
+    engine.lastState = state
   })
 
   // --------------------------------------------------------------------------

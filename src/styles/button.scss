@@ -103,16 +103,18 @@ a,
 }
 .btn-glow {
   color: #888;
+
+  transition: color 0.125s, text-shadow 0.125s;
 }
 .btn-dark,
 .btn-glow {
+  &:hover,
   &:focus {
     color: #FFF;
   }
 
   &.active,
-  &:active,
-  &:hover {
+  &:active {
     color: #FFF;
     text-shadow: 0 0 10px #FFF;
   }

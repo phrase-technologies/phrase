@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
 import {
+  transportRecord,
   transportPlayToggle,
+  transportStop,
+  transportRewindPlayhead,
+  transportAdvancePlayhead,
 } from 'reducers/reduceTransport'
 
 import { phraseDeleteSelection } from 'reducers/reducePhrase'
@@ -73,9 +77,22 @@ class HotkeyProvider extends Component {
           e.preventDefault()
         }
         break
+      case 82:  // R - Record
+        dispatch(transportRecord())
+        break;
       case 32:  // Space - Toggle Playback
         dispatch(transportPlayToggle())
         e.preventDefault()
+        break
+      case 13:  // Enter - Stop Playback or Return to beginning
+        dispatch(transportStop())
+        e.preventDefault()
+        break
+      case 188: // < - Rewind Playhead
+        dispatch(transportRewindPlayhead())
+        break
+      case 190: // > - Advance Playhead
+        dispatch(transportAdvancePlayhead())
         break
       case 8:   // Backspace - Delete Selection
       case 46:  // Delete

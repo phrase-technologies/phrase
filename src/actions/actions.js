@@ -22,9 +22,10 @@ export const transport = namespaceActions(
   'transport',
   [
     'PLAY_TOGGLE',
+    'REWIND_PLAYHEAD',
     'MOVE_PLAYHEAD',
+    'ADVANCE_PLAYHEAD',
     'STOP',
-    'REWIND',
     'RECORD',
     'SET_TEMPO'
   ]

@@ -1,17 +1,25 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
-export default class TransportButton extends Component {
-  render() {
-    var colorClass = ` ${this.props.color ? `active-${this.props.color}` : ''}`
-    var activeClass = ` ${this.props.toggle ? 'active' : ''}`
-    var buttonClasses = 'btn btn-link btn-glow ' + activeClass + colorClass
-    var iconClasses = `fa fa-${this.props.type}`
+import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 
-    return (
-      <button type="button" className={buttonClasses}
-              onClick={this.props.onButtonClick}>
+export default (props) => {
+  let colorClass = ` ${props.color ? `active-${props.color}` : ''}`
+  let activeClass = ` ${props.toggle ? 'active' : ''}`
+  let buttonClasses = 'btn btn-link btn-glow transport-btn' + activeClass + colorClass
+  let iconClasses = `fa fa-fw fa-${props.type}`
+  let buttonTooltip = <Tooltip id="tooltip-all-versions">{props.tooltip}</Tooltip>
+
+  return (
+    <OverlayTrigger placement="top" overlay={buttonTooltip} delay={640}>
+      <button
+        type="button" className={buttonClasses}
+        onMouseDown={makeButtonUnfocusable}
+        onClick={props.onButtonClick}
+        tabIndex="-1"
+      >
         <i className={iconClasses} />
       </button>
-    )
-  }
+    </OverlayTrigger>
+  )
 }

@@ -1,8 +1,6 @@
 import _ from 'lodash'
 
-import { transportStop,
-         transportMovePlayhead
-       } from '../reducers/reduceTransport.js'
+import { transportMovePlayhead } from '../reducers/reduceTransport.js'
 
 import { fireNote,
          killNote } from './AudioEngineMidiTriggers.js'
@@ -28,16 +26,6 @@ export function startPlayback(engine, state, dispatch) {
   engine.isPlaying = true
   engine.playheadPositionBars = state.transport.playhead
   engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * BEATS_PER_BAR * SECONDS_PER_MINUTE / state.phrase.present.tempo
-
-  // Nothing to play? Ignore
-  if (engine.midiCommands.length === 0) {
-    // Leave a delay so the PLAYING state will be visible momentarily to the user.
-    setTimeout(() => {
-      dispatch(transportMovePlayhead(0)) // TODO: redundant, activate on transportStop()
-      dispatch(transportStop())
-    }, 250)
-    return
-  }
 
   // Setup first iteration
   engine.iCommand = 0
@@ -74,21 +62,6 @@ export function startPlayback(engine, state, dispatch) {
     engine.playheadPositionBars = playTimeToBar(engine.ctx.currentTime, engine, state)
     dispatch(transportMovePlayhead(engine.playheadPositionBars))
 
-    // Reached the end of loop
-    if (engine.iCommand >= engine.midiCommands.length) {
-
-      // Queue up the stop command
-      if (!engine.stopQueued) {
-        engine.stopQueued = true
-
-        setTimeout(() => {
-          dispatch(transportMovePlayhead(0)) // TODO: redundant, activate on transportStop()
-          dispatch(transportStop())
-        }, 1000*(currentCommandTime - engine.ctx.currentTime))
-      }
-
-    }
-
   }, 5)
 
 }
@@ -99,7 +72,7 @@ export function startPlayback(engine, state, dispatch) {
 // This function kills all active sounds and cancels the playback setInterval
 // loop. It also clears flags that are used to queue up other behaviours where
 // necessary
-export function stopPlayback(engine, state) {
+export function stopPlayback(engine) {
 
   console.log('stopPlayback()', engine.ctx.currentTime)
 
