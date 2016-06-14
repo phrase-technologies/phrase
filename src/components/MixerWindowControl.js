@@ -200,6 +200,7 @@ export class MixerWindowControl extends Component {
 
         case 'eraser':
           dispatch({ type: phrase.DELETE_CLIP, clipID: foundClip.id })
+          break
 
         default:
           return
@@ -229,6 +230,11 @@ export class MixerWindowControl extends Component {
         trackPosition: this.props.tracks.findIndex(track => track.id === trackID),
         time: Date.now()
       }
+
+      if (this.props.arrangeTool === `pencil`) {
+        this.props.dispatch(phraseCreateClip(trackID, bar))
+      }
+
       return
     }
   }
@@ -305,7 +311,10 @@ export class MixerWindowControl extends Component {
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else {
-      dispatch(cursorClear('implicit'))
+      if (arrangeTool === `pencil`) {
+        dispatch(cursorChange({ icon: arrangeTool, priority: `implicit` }))
+      }
+      else dispatch(cursorClear('implicit'))
     }
   }
 

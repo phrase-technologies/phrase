@@ -88,6 +88,9 @@ class HotkeyProvider extends Component {
       case 69:  // 'e' - eraser tool
         dispatch(arrangeToolSelect(`eraser`))
         break
+      case 87:  // 'w' - write / pencil tool
+        dispatch(arrangeToolSelect(`pencil`))
+        break
       case 68:  // 'd' - default tool
         dispatch(arrangeToolSelect(`pointer`))
         break
