@@ -124,7 +124,8 @@ export class Workstation extends Component {
     if (unsavedChanges) {
       // Blur Search Box to inputs (https://phrasetechnologies.atlassian.net/browse/WEB-52)
       let searchBox = document.getElementById("header-search-input")
-          searchBox ? searchBox.blur() : null
+      if (searchBox)
+        searchBox.blur()
 
       // Unlogged-in user, new phrase
       if (newPhrasePage) {
