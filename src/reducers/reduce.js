@@ -24,11 +24,25 @@ import { combineReducers } from 'redux'
 import undoable, { excludeAction, combineFilters } from 'redux-undo'
 import { phrase } from 'actions/actions'
 
+function rehydratePhrase (reducer) {
+  return (state, action) => {
+    switch (action.type) {
+      case phrase.LOAD_FINISH:  // Can't do this in the reducePhrase branch,
+        return {                // payload.state encapsulates undo history
+          ...action.payload.state
+        }
+
+      default:
+        return reducer(state, action)
+    }
+  }
+}
+
 let excludeIgnored = action => !action.ignore
 let undoOptions = { filter: combineFilters(excludeAction(phrase.LOAD), excludeIgnored) }
 
 let baseReducers = {
-  phrase: undoable(reducePhrase, undoOptions),
+  phrase: rehydratePhrase(undoable(reducePhrase, undoOptions)),
   phraseMeta: reducePhraseMeta,
   pianoroll: reducePianoroll,
 }
