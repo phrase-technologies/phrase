@@ -248,8 +248,10 @@ export const phraseDropNoteSelection = () => {
   }
 }
 
-export const phraseSliceClip = ({ bar, trackID, foundClip }) => {
+export const phraseSliceClip = ({ bar, trackID, foundClip, snap = 4 }) => {
   return (dispatch, getState) => {
+
+    bar = Math.round(bar * snap) / snap
 
     let state = getState()
     let { clips, notes } = state.phrase.present

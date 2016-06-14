@@ -52,7 +52,7 @@ describe('Phrase', () => {
       notes.forEach(x => store.dispatch(phraseCreateNote(trackID, x)))
 
       let foundClip = store.getState().phrase.present.clips[0]
-      store.dispatch(phraseSliceClip({ trackID: 0, bar: 5.5, foundClip }))
+      store.dispatch(phraseSliceClip({ trackID, bar: 5.5, foundClip }))
 
       expect(store.getState().phrase.present.notes).to.have.lengthOf(4)
       expect(store.getState().phrase.present.notes.filter(x => x.clipID === 1)).to.have.lengthOf(2)
@@ -68,7 +68,7 @@ describe('Phrase', () => {
       notes.forEach(x => store.dispatch(phraseCreateNote(trackID, x)))
 
       let foundClip = store.getState().phrase.present.clips[0]
-      store.dispatch(phraseSliceClip({ trackID: 0, bar: 0.5, foundClip }))
+      store.dispatch(phraseSliceClip({ trackID, bar: 0.5, foundClip }))
 
       expect(store.getState().phrase.present.notes).to.have.lengthOf(4)
       expect(store.getState().phrase.present.notes.filter(x => x.clipID === 1)).to.have.lengthOf(2)
@@ -86,9 +86,20 @@ describe('Phrase', () => {
       expect(store.getState().phrase.past).to.have.lengthOf(5)
 
       let foundClip = store.getState().phrase.present.clips[0]
-      store.dispatch(phraseSliceClip({ trackID: 0, bar: 0.5, foundClip }))
+      store.dispatch(phraseSliceClip({ trackID, bar: 0.5, foundClip }))
 
       expect(store.getState().phrase.past).to.have.lengthOf(6)
+    })
+
+    it(`should round to nearest quarter by default`, () => {
+      let trackID = 0
+
+      store.dispatch(phraseCreateClip(trackID, 0))
+
+      let foundClip = store.getState().phrase.present.clips[0]
+      store.dispatch(phraseSliceClip({ trackID, bar: 0.45, foundClip }))
+
+      expect(store.getState().phrase.present.clips[1].start).to.eq(0.5)
     })
   })
 
