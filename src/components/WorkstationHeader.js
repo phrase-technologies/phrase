@@ -9,10 +9,13 @@ import WorkstationHeaderShare from './WorkstationHeaderShare'
 import TransportTempo from './TransportTempo'
 import TransportControls from './TransportControls'
 
-import { phraseLoginReminder,
-         phraseRephraseReminder,
-         phraseRephrase,
-       } from 'reducers/reducePhrase'
+import {
+  phraseLoginReminder,
+  phraseRephraseReminder,
+  phraseRephrase,
+} from 'reducers/reducePhrase'
+
+import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 
 import { exportToMidi } from 'actions/actionsMidi'
 

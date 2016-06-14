@@ -1,11 +1,12 @@
 import { createStore, compose, applyMiddleware, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
 import undoable, { excludeAction } from 'redux-undo'
+import { expect } from 'chai'
 
 import reducePhrase, {
-  defaultState,
   phraseCreateClip,
-  phraseCreateNote
+  phraseCreateNote,
+  phraseSliceClip,
 } from '../reducePhrase'
 
 import reducePhraseMeta from '../reducePhraseMeta'
@@ -19,109 +20,74 @@ let finalReducer = combineReducers({
   pianoroll: reducePianoroll,
 })
 
-const finalCreateStore = compose(
-  applyMiddleware(thunk)
-)(createStore)
-
-const STORE = finalCreateStore(finalReducer)
-
-import { expect } from 'chai'
-import u from 'updeep'
-import { uAppend } from '../../helpers/arrayHelpers.js'
-
-import _ from 'lodash'
+let finalCreateStore = compose(applyMiddleware(thunk))(createStore)
 
 describe('Phrase', () => {
 
-  let clip1 = { id: 0, trackID: 0, start: 0.00, end: 1.00, offset: 0.00, loopLength: 1.00, notes: [] }
-  let clip2half = { id: 1, trackID: 0, start: 1.00, end: 2.50, offset: 0.00, loopLength: 2.50, notes: [] }
-  let clip3half = { id: 2, trackID: 0, start: 2.75, end: 3.50, offset: 0.50, loopLength: 1.00, notes: [] }
+  let store
 
-  let stateEmpty          = defaultState
-  let stateSingleClip     = u({clips: uAppend(clip1)}, defaultState)
-  let stateMultipleClips  = u({clips: _.flow(uAppend(clip1), uAppend(clip3half))}, defaultState)
+  beforeEach(() => store = finalCreateStore(finalReducer))
 
-  let createClip1        = phraseCreateClip(0, 0.00)
-  let createClip2        = phraseCreateClip(0, 1.50)
-  let createClip3        = phraseCreateClip(0, 2.97)
-  let createNote1        = phraseCreateNote(0, 36.000, 0.00)
-  let createNote1Again   = phraseCreateNote(0, 36.518, 0.00)
-  let createNote1Higher  = phraseCreateNote(0, 48.000, 0.00)
-  let createNote2        = phraseCreateNote(0, 36.000, 1.00)
-  let createNote3End     = phraseCreateNote(0, 36.000, 2.75)
-
-  describe(`Create New Clip`, () => {
-
+  describe(`Create Note`, () => {
     it(`should create a new clip if no existing clips`, () => {
-      expect(STORE.getState().phrase.present.clips).to.have.lengthOf(0)
-      STORE.dispatch(phraseCreateNote(0, 36.000, 0.00))
-      expect(STORE.getState().phrase.present.clips).to.have.lengthOf(1)
+      expect(store.getState().phrase.present.clips).to.have.lengthOf(0)
+      store.dispatch(phraseCreateNote(0, 36.000, 0.00))
+      expect(store.getState().phrase.present.clips).to.have.lengthOf(1)
+    })
+  })
+
+  describe(`Create Clip`, () => {
+    it(`should create a clip`, () => {
+      expect(store.getState().phrase.present.clips).to.have.lengthOf(0)
+      store.dispatch(phraseCreateClip())
+      expect(store.getState().phrase.present.clips).to.have.lengthOf(1)
+    })
+  })
+
+  describe(`Slice Clip`, () => {
+    it(`should remove the target clip and create two new ones`, () => {
+      store.dispatch(phraseCreateClip(0, 0))
+      let foundClip = store.getState().phrase.present.clips[0]
+      store.dispatch(phraseSliceClip({ trackID: 0, bar: 0.5, foundClip }))
+      expect(store.getState().phrase.present.clips.find(x => x.id === 0)).to.be.undefined
+      expect(store.getState().phrase.present.clips).to.have.lengthOf(2)
     })
 
-    // it(`should create a new clip if existing clip doesn't fit`, () => {
-    //   // 1 existing clip to start with, which doesn't fit the new note
-    //   [createNote2, createNote3End].forEach((action) => {
-    //     let newState = reducePhrase(stateSingleClip, action)
-    //     expect(newState.clips.length).toEqual(2)
-    //   })
-    // })
-  //
-  //   it('should never create two clips in the same place', () => {
-  //     // Many different permutations
-  //     let state = stateEmpty
-  //     let priorClipCount = 0
-  //     let currentClipCount = 0
-  //     let actions = [createClip1, createClip2, createClip3]
-  //     actions.forEach((action) => {
-  //       // Create a new note first
-  //       state = reducePhrase(state, action)
-  //       currentClipCount = state.clips.length
-  //       expect(currentClipCount).toEqual(priorClipCount + 1)
-  //       priorClipCount = currentClipCount
-  //
-  //       // Try creating the same note
-  //       state = reducePhrase(state, action)
-  //       currentClipCount = state.clips.length
-  //       expect(currentClipCount).toEqual(priorClipCount)
-  //       priorClipCount = currentClipCount
-  //     })
-  //   })
-  //
-  // })
-  //
-  // describe('Create New Note', () => {
-  //
-  //   it('should always create the note', () => {
-  //     // Many different permutations into existing empty clips with no notes
-  //     [createNote1, createNote1Again, createNote1Higher, createNote2, createNote3End].forEach((action) => {
-  //       [stateEmpty, stateSingleClip, stateMultipleClips].forEach((state) => {
-  //         let newState = reducePhrase(state, action)
-  //         expect(newState.notes.length).toBeGreaterThan(0)
-  //       })
-  //     })
-  //   })
-  //
-  //   it('should never create the same note twice', () => {
-  //     // Many different permutations into empty tracks with no clips or notes
-  //     let state = stateEmpty
-  //     let priorNoteCount = 0
-  //     let currentNoteCount = 0
-  //     let actions = [createNote1, createNote1Higher, createNote2, createNote3End]
-  //     actions.forEach((action) => {
-  //       // Create a new note first
-  //       state = reducePhrase(state, action)
-  //       currentNoteCount = state.notes.length
-  //       expect(currentNoteCount).toEqual(priorNoteCount + 1)
-  //       priorNoteCount = currentNoteCount
-  //
-  //       // Try creating the same note
-  //       state = reducePhrase(state, action)
-  //       currentNoteCount = state.notes.length
-  //       expect(currentNoteCount).toEqual(priorNoteCount)
-  //       priorNoteCount = currentNoteCount
-  //     })
-  //   })
-  //
+    it(`should copy notes from original clip to the new ones`, () => {
+      let trackID = 0
+
+      store.dispatch(phraseCreateClip(trackID, 5))
+
+      store.dispatch(phraseCreateNote(trackID, 5))
+      store.dispatch(phraseCreateNote(trackID, 5.25))
+      store.dispatch(phraseCreateNote(trackID, 5.5))
+      store.dispatch(phraseCreateNote(trackID, 5.75))
+
+      let foundClip = store.getState().phrase.present.clips[0]
+      store.dispatch(phraseSliceClip({ trackID: 0, bar: 5.5, foundClip }))
+
+      expect(store.getState().phrase.present.notes).to.have.lengthOf(4)
+      expect(store.getState().phrase.present.notes.filter(x => x.clipID === 1)).to.have.lengthOf(2)
+      expect(store.getState().phrase.present.notes.filter(x => x.clipID === 2)).to.have.lengthOf(2)
+    })
+
+    it(`should work correctly at bar 0`, () => {
+      let trackID = 0
+
+      store.dispatch(phraseCreateClip(trackID, 0))
+
+      store.dispatch(phraseCreateNote(trackID, 0))
+      store.dispatch(phraseCreateNote(trackID, 0.25))
+      store.dispatch(phraseCreateNote(trackID, 0.5))
+      store.dispatch(phraseCreateNote(trackID, 0.75))
+
+      let foundClip = store.getState().phrase.present.clips[0]
+      store.dispatch(phraseSliceClip({ trackID: 0, bar: 0.5, foundClip }))
+
+      expect(store.getState().phrase.present.notes).to.have.lengthOf(4)
+      expect(store.getState().phrase.present.notes.filter(x => x.clipID === 1)).to.have.lengthOf(2)
+      expect(store.getState().phrase.present.notes.filter(x => x.clipID === 2)).to.have.lengthOf(2)
+    })
   })
 
 })

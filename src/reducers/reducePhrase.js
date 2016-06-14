@@ -268,15 +268,16 @@ export const phraseSliceClip = ({ bar, trackID, foundClip }) => {
 
     let leftNotes = notes.reduce((acc, note) => ([
       ...acc,
-      ...(note.clipID === foundClip.id && note.end < bar
+      ...(note.clipID === foundClip.id && note.start + leftClip.start < bar
         ? [ { ...note, start: note.start + leftClip.start, end: note.end + leftClip.start } ]
         : [])
     ]), [])
 
+
     let rightNotes = notes.reduce((acc, note) => ([
       ...acc,
-      ...(note.clipID === foundClip.id && note.end > bar
-        ? [ { ...note, start: note.start + rightClip.start, end: note.end + leftClip.start } ]
+      ...(note.clipID === foundClip.id && note.start + leftClip.start >= bar
+        ? [ { ...note, start: note.start + leftClip.start, end: note.end + leftClip.start } ]
         : [])
     ]), [])
 
@@ -287,6 +288,10 @@ export const phraseSliceClip = ({ bar, trackID, foundClip }) => {
     dispatch(phraseCreateClip(trackID, rightClip.start, rightClip.end - rightClip.start, snapStart))
 
     leftNotes.forEach(note => {
+      dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end))
+    })
+
+    rightNotes.forEach(note => {
       dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end))
     })
   }
