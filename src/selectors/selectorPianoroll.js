@@ -190,7 +190,7 @@ export const currentNotesSelector = createSelector(
   noteSelectionOffsetValidated,
   (currentClips, notes, selectionType, noteSelectionIDs, currentTrack, grippedNoteID, targetBar, { offsetStart, offsetEnd, offsetKey }) => {
     // Escape if pianoroll not open
-    if (!currentTrack) return
+    if (!currentTrack) return []
 
     let currentNotes = notes.filter(note => note.trackID === currentTrack.id)
     let grippedNote = grippedNoteID ? currentNotes.find(note => note.id === grippedNoteID) : null

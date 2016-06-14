@@ -4,7 +4,7 @@ import { objectMergeKeyArrays } from 'helpers/arrayHelpers'
 import { phrase, pianoroll, library } from 'actions/actions'
 import { phraseMidiSelector } from 'selectors/selectorTransport.js'
 import toMidiFile from 'helpers/toMidiFile'
-import { saveAs } from 'file-saver'
+// import { saveAs } from 'file-saver'
 
 // ============================================================================
 // Phrase META Reducer
@@ -19,15 +19,15 @@ import { saveAs } from 'file-saver'
 //   those offsets here so we can show temporary previews of drag
 //
 
-export const exportToMidi = () => {
-  return async (dispatch, getState) => {
-    let state = getState()
-    let { phraseMeta: { phraseName }, phrase: { present: { tempo }}} = state
-    let notes = phraseMidiSelector(state)
-
-    saveAs(toMidiFile({ notes, tempo }), `${phraseName}.mid`)
-  }
-}
+// export const exportToMidi = () => {
+//   return async (dispatch, getState) => {
+//     let state = getState()
+//     let { phraseMeta: { phraseName }, phrase: { present: { tempo }}} = state
+//     let notes = phraseMidiSelector(state)
+//
+//     saveAs(toMidiFile({ notes, tempo }), `${phraseName}.mid`)
+//   }
+// }
 
 export const defaultState = {
   loading: true,

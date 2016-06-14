@@ -62,7 +62,7 @@ export const phraseCreateNote = (trackID, bar, key) => {
       type: phrase.SELECT_NOTE,
       payload: {
         noteID: newNoteID,
-        loopIteration: targetRenderedNote.loopIteration,
+        loopIteration: (targetRenderedNote || {}).loopIteration,
         union: false,
       },
     })
