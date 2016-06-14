@@ -4,13 +4,20 @@ import { api } from 'helpers/ajaxHelpers'
 import { uIncrement, uAppend } from 'helpers/arrayHelpers'
 
 import { phrase, mixer } from 'actions/actions'
-import { currentNotesSelector,
-         clipSelectionOffsetValidated,
-         noteSelectionOffsetValidated,
-       } from 'selectors/selectorPianoroll'
-import { getOffsetedTrackID,
-         getTracksHeight,
-       } from 'helpers/trackHelpers'
+
+import {
+  currentNotesSelector,
+  clipSelectionOffsetValidated,
+  noteSelectionOffsetValidated,
+} from 'selectors/selectorPianoroll'
+
+import { phraseMidiSelector } from 'selectors/selectorTransport'
+
+import {
+  getOffsetedTrackID,
+  getTracksHeight,
+} from 'helpers/trackHelpers'
+
 import { negativeModulus } from 'helpers/intervalHelpers'
 import { push } from 'react-router-redux'
 import { librarySaveNew } from 'reducers/reduceLibrary'
@@ -256,7 +263,11 @@ export const phraseSliceClip = ({ bar, trackID, foundClip, snap = 4 }) => {
     if (bar >= foundClip.end) return
 
     let state = getState()
-    let { clips, notes } = state.phrase.present
+    let notes = phraseMidiSelector(state).filter(x =>
+      x.type === `addNoteOn` && x.clipID === foundClip.id
+    )
+
+    let { clips } = state.phrase.present
     let clipsCount = clips.length
 
     let leftClip = {
@@ -269,13 +280,6 @@ export const phraseSliceClip = ({ bar, trackID, foundClip, snap = 4 }) => {
       ...foundClip,
       start: bar,
     }
-
-    notes = notes.reduce((acc, note) => ([
-      ...acc,
-      ...(note.clipID === foundClip.id
-        ? [ { ...note, start: note.start + leftClip.start, end: note.end + leftClip.start } ]
-        : [])
-    ]), [])
 
     let snapStart = false
     let ignore = true
