@@ -101,6 +101,17 @@ describe('Phrase', () => {
 
       expect(store.getState().phrase.present.clips[1].start).to.eq(0.5)
     })
+
+    it(`should not create clips beyond the original clip boundaries`, () => {
+      let trackID = 0
+
+      store.dispatch(phraseCreateClip(trackID, 0))
+
+      let foundClip = store.getState().phrase.present.clips[0]
+      store.dispatch(phraseSliceClip({ trackID, bar: 0.9, foundClip }))
+
+      expect(store.getState().phrase.present.clips.some(x => x.end > foundClip.end)).to.be.false
+    })
   })
 
 })

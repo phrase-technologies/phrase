@@ -253,6 +253,8 @@ export const phraseSliceClip = ({ bar, trackID, foundClip, snap = 4 }) => {
 
     bar = Math.round(bar * snap) / snap
 
+    if (bar >= foundClip.end) return
+
     let state = getState()
     let { clips, notes } = state.phrase.present
     let clipsCount = clips.length
