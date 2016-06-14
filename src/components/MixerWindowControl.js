@@ -32,6 +32,8 @@ import {
   phraseSliceClip,
 } from 'reducers/reducePhrase'
 
+import { phrase } from 'actions/actions'
+
 import { pianorollSetFocusWindow } from 'reducers/reducePianoroll'
 
 import {
@@ -130,7 +132,7 @@ export class MixerWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action === CLICK_CLIP) {
       // Double click - zoom the focus around this clip!
-      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
+      if (arrangeTool === `pointer` && Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
         this.props.dispatch(pianorollSetFocusWindow(this.lastEvent.clipID, true))
         this.lastEvent = null
         return
@@ -196,6 +198,9 @@ export class MixerWindowControl extends Component {
           dispatch(phraseSliceClip({ bar, trackID, foundClip }))
           break
 
+        case 'eraser':
+          dispatch({ type: phrase.DELETE_CLIP, clipID: foundClip.id })
+
         default:
           return
       }
@@ -207,7 +212,7 @@ export class MixerWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action === CLICK_EMPTY_AREA) {
       // Double click - Create Clip
-      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY && trackID !== null) {
+      if (this.props.arrangeTool === `pointer` && Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY && trackID !== null) {
         this.props.dispatch(phraseCreateClip(trackID, bar))
         this.lastEvent = null
         return

@@ -147,7 +147,10 @@ export class WorkstationHeader extends Component {
         <button className="btn btn-dark btn-narrow" disabled>
           <span className="fa fa-fw fa-pencil" />
         </button>
-        <button className="btn btn-dark btn-narrow" disabled>
+        <button
+          className={ `btn btn-dark btn-narrow ${arrangeTool === `eraser` ? `active` : ``}` }
+          onClick={() => dispatch(arrangeToolSelect(`eraser`))}
+        >
           <span className="fa fa-fw fa-eraser" />
         </button>
         <button
