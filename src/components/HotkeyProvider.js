@@ -2,9 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
-import { transportPlayToggle,
-       } from '../reducers/reduceTransport'
-import { phraseDeleteSelection } from '../reducers/reducePhrase'
+import {
+  transportPlayToggle,
+} from 'reducers/reduceTransport'
+
+import { phraseDeleteSelection } from 'reducers/reducePhrase'
+
+import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
+
 
 // ============================================================================
 // Hotkey Provider
@@ -45,6 +50,7 @@ class HotkeyProvider extends Component {
       // -----------------------------------------------------------------------
     // Overrides
     let { dispatch } = this.props
+
     switch(e.keyCode) {
       case 70:  // CTRL/CMD+F - Search
         if (e.metaKey || e.ctrlKey) {
@@ -75,6 +81,12 @@ class HotkeyProvider extends Component {
       case 46:  // Delete
         dispatch(phraseDeleteSelection())
         e.preventDefault()
+        break
+      case 83:  // 's' - slice tool
+        dispatch(arrangeToolSelect(`scissors`))
+        break
+      case 68:  // 'd' - default tool
+        dispatch(arrangeToolSelect(`pointer`))
         break
     }
   }
