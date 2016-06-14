@@ -37,21 +37,21 @@ export const phraseMuteTrack = (trackID) => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack = (trackID) => ({type: phrase.SOLO_TRACK, trackID})
 export const phraseSetTempo = (tempo) => ({type: phrase.SET_TEMPO, tempo})
 
-export const phraseCreateClip = (trackID, bar, end, snapStart = true) => {
+export const phraseCreateClip = (trackID, bar, end, snapStart = true, ignore) => {
   return (dispatch, getState) => {
-    dispatch({ type: phrase.CREATE_CLIP, trackID, bar, end, snapStart })
+    dispatch({ type: phrase.CREATE_CLIP, trackID, bar, end, snapStart, ignore })
 
     // Select the clip after it's created
     let state = getState()
     let clips = state.phrase.present.clips
     let newClip = clips[clips.length - 1]
-    dispatch({ type: phrase.SELECT_CLIP, payload: { clipID: newClip.id, union: false } })
+    dispatch({ type: phrase.SELECT_CLIP, payload: { clipID: newClip.id, union: false }, ignore })
   }
 }
 
-export const phraseCreateNote = (trackID, bar, key, start, end) => {
+export const phraseCreateNote = (trackID, bar, key, start, end, ignore) => {
   return (dispatch, getState) => {
-    dispatch({ type: phrase.CREATE_NOTE, trackID, bar, key, start, end })
+    dispatch({ type: phrase.CREATE_NOTE, trackID, bar, key, start, end, ignore })
 
     // Select the note after it's created
     let state = getState()
@@ -282,17 +282,18 @@ export const phraseSliceClip = ({ bar, trackID, foundClip }) => {
     ]), [])
 
     let snapStart = false
+    let ignore = true
 
-    dispatch({ type: phrase.DELETE_CLIP, clipID: foundClip.id })
-    dispatch(phraseCreateClip(trackID, leftClip.start, leftClip.end - leftClip.start, snapStart))
-    dispatch(phraseCreateClip(trackID, rightClip.start, rightClip.end - rightClip.start, snapStart))
+    dispatch({ type: phrase.DELETE_CLIP, clipID: foundClip.id, ignore: true })
+    dispatch(phraseCreateClip(trackID, leftClip.start, leftClip.end - leftClip.start, snapStart, ignore))
+    dispatch(phraseCreateClip(trackID, rightClip.start, rightClip.end - rightClip.start, snapStart, ignore))
 
     leftNotes.forEach(note => {
-      dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end))
+      dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end, ignore))
     })
 
     rightNotes.forEach(note => {
-      dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end))
+      dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end, ignore))
     })
   }
 }

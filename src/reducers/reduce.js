@@ -21,56 +21,32 @@ import reduceArrangeTool from './reduceArrangeTool'
 
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
-import undoable, { excludeAction } from 'redux-undo'
+import undoable, { excludeAction, combineFilters } from 'redux-undo'
 import { phrase } from 'actions/actions'
 
-import { REHYDRATE } from 'redux-persist/constants'
+let excludeIgnored = action => !action.ignore
+let undoOptions = { filter: combineFilters(excludeAction(phrase.LOAD), excludeIgnored) }
 
-function rehydratePhrase (reducer) {
-  return (state, action) => {
-    switch (action.type) {
-      // case REHYDRATE:
-      //   return action.payload.phrase
-      //     ? { ...action.payload.phrase }
-      //     : reducer(state, action)
-      //
-      case phrase.LOAD_FINISH:  // Can't do this in the reducePhrase branch,
-        return {                // payload.state encapsulates undo history
-          ...action.payload.state
-        }
-
-      default:
-        return reducer(state, action)
-    }
-  }
+let baseReducers = {
+  phrase: undoable(reducePhrase, undoOptions),
+  phraseMeta: reducePhraseMeta,
+  pianoroll: reducePianoroll,
 }
 
-function rehydratePhraseMeta (reducer) {
-  return (state, action) => {
-    switch (action.type) {
-      // case REHYDRATE:
-      //   return action.payload.phraseMeta
-      //     ? { ...action.payload.phraseMeta }
-      //     : reducer(state, action)
-
-      default:
-        return reducer(state, action)
-    }
-  }
-}
-
-let finalReducer = combineReducers({
+let reducerSpec = {
+  ...baseReducers,
   routing: routerReducer,
   modal: reduceModal,
   navigation: reduceNavigation,
   transport: reduceTransport,
-  phrase: rehydratePhrase(undoable(reducePhrase, { filter: excludeAction(phrase.LOAD) })),
-  phraseMeta: rehydratePhraseMeta(reducePhraseMeta),
   library: reduceLibrary,
   mixer: reduceMixer,
-  pianoroll: reducePianoroll,
   cursor: reduceCursor,
   auth: reduceAuth,
   arrangeTool: reduceArrangeTool,
-})
+}
+
+export let testReducer = combineReducers(baseReducers)
+let finalReducer = combineReducers(reducerSpec)
+
 export default finalReducer
