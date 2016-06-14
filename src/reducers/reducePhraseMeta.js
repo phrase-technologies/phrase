@@ -2,9 +2,6 @@ import _ from 'lodash'
 import u from 'updeep'
 import { objectMergeKeyArrays } from 'helpers/arrayHelpers'
 import { phrase, pianoroll, library } from 'actions/actions'
-import { phraseMidiSelector } from 'selectors/selectorTransport.js'
-import toMidiFile from 'helpers/toMidiFile'
-// import { saveAs } from 'file-saver'
 
 // ============================================================================
 // Phrase META Reducer
@@ -17,17 +14,7 @@ import toMidiFile from 'helpers/toMidiFile'
 // - Which clips and notes are currently selected by the user?
 // - If the user is performing drag and drop of the current selection, track
 //   those offsets here so we can show temporary previews of drag
-//
 
-// export const exportToMidi = () => {
-//   return async (dispatch, getState) => {
-//     let state = getState()
-//     let { phraseMeta: { phraseName }, phrase: { present: { tempo }}} = state
-//     let notes = phraseMidiSelector(state)
-//
-//     saveAs(toMidiFile({ notes, tempo }), `${phraseName}.mid`)
-//   }
-// }
 
 export const defaultState = {
   loading: true,

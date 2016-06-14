@@ -14,7 +14,7 @@ import { phraseLoginReminder,
          phraseRephrase,
        } from 'reducers/reducePhrase'
 
-import { exportToMidi } from 'reducers/reducePhraseMeta'
+import { exportToMidi } from 'actions/actionsMidi'
 
 export class WorkstationHeader extends Component {
 
