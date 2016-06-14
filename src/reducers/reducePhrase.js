@@ -86,8 +86,15 @@ export const phraseSelectTrack = ({ trackID, union }) => {
   }
 }
 
-export const phraseSelectClip  = ({  clipID, union }) => ({type: phrase.SELECT_CLIP,  payload: {  clipID, union } })
-export const phraseSelectNote  = ({  noteID, loopIteration, union }) => ({type: phrase.SELECT_NOTE,  payload: {  noteID, loopIteration, union } })
+export const phraseSelectClip = ({ clipID, union }) => ({
+  type: phrase.SELECT_CLIP,
+  payload: { clipID, union }
+})
+
+export const phraseSelectNote = ({ noteID, loopIteration, union }) => ({
+  type: phrase.SELECT_NOTE,
+  payload: { noteID, loopIteration, union }
+})
 
 export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches

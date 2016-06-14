@@ -141,10 +141,6 @@ export class MixerWindowControl extends Component {
 
     // First Click - Start Selection
     if (!this.lastEvent) {
-
-      if (!foundClip.selected) {
-        this.props.dispatch(phraseSelectClip({ clipID: foundClip.id, union: e.shiftKey }))
-      }
       switch (arrangeTool) {
         case 'pointer':
           this.lastEvent = {
@@ -164,7 +160,7 @@ export class MixerWindowControl extends Component {
           )
 
           if (!foundClip.selected) {
-            this.props.dispatch(phraseSelectClip(foundClip.id, e.shiftKey))
+            this.props.dispatch(phraseSelectClip({ clipID: foundClip.id, union: e.shiftKey }))
           }
 
           // Adjust Start Point
