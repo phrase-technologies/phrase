@@ -56,9 +56,9 @@ export const phraseCreateClip = (trackID, bar, end, snapStart = true, ignore) =>
   }
 }
 
-export const phraseCreateNote = (trackID, bar, key, start, end, ignore) => {
+export const phraseCreateNote = (trackID, bar, key, start, end, ignore, snapStart = true) => {
   return (dispatch, getState) => {
-    dispatch({ type: phrase.CREATE_NOTE, trackID, bar, key, start, end, ignore })
+    dispatch({ type: phrase.CREATE_NOTE, trackID, bar, key, start, end, ignore, snapStart })
 
     // Select the note after it's created
     let state = getState()
