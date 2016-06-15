@@ -6,6 +6,7 @@ import {
   phraseCreateClip,
   phraseCreateNote,
   phraseSliceClip,
+  phraseSliceNote,
 } from 'reducers/reducePhrase'
 
 import { testReducer } from 'reducers/reduce'
@@ -195,6 +196,18 @@ describe('Phrase', () => {
       store.dispatch(phraseSliceClip({ trackID, bar: 0.60, foundClip }))
 
       expect(store.getState().phrase.present.clips.some(x => x.end > foundClip.end)).to.be.false
+    })
+  })
+
+  describe(`Slice Note`, () => {
+    it(`should remove the target note and create two new ones`, () => {
+      let trackID = 0
+      store.dispatch(phraseCreateClip(trackID, 0))
+      store.dispatch(phraseCreateNote(trackID, 0, 36.000))
+      store.dispatch(phraseSliceNote({ trackID, bar: 0.125, noteID: 0 }))
+
+      expect(store.getState().phrase.present.notes.find(x => x.id === 0)).to.be.undefined
+      expect(store.getState().phrase.present.notes).to.have.lengthOf(2)
     })
   })
 

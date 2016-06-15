@@ -1,27 +1,41 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { connect } from 'react-redux'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
-import connectEngine from '../audio/AudioEngineConnect.js'
-import engineShape   from '../audio/AudioEnginePropTypes.js'
+import connectEngine from '../audio/AudioEngineConnect'
+import engineShape   from '../audio/AudioEnginePropTypes'
 
 import _ from 'lodash'
-import { pianorollScrollX,
-         pianorollScrollY,
-         pianorollResizeWidth,
-         pianorollResizeHeight,
-         pianorollMoveCursor,
-         pianorollSelectionBoxStart,
-         pianorollSelectionBoxResize,
-         pianorollSelectionBoxApply } from '../reducers/reducePianoroll.js'
-import { phraseCreateNote,
-         phraseSelectNote,
-         phraseDeleteNote,
-         phraseDragNoteSelection,
-         phraseDropNoteSelection } from '../reducers/reducePhrase.js'
-import { cursorResizeLeft,
-         cursorResizeRight,
-         cursorClear } from '../actions/actionsCursor.js'
+
+import {
+  pianorollScrollX,
+  pianorollScrollY,
+  pianorollResizeWidth,
+  pianorollResizeHeight,
+  pianorollMoveCursor,
+  pianorollSelectionBoxStart,
+  pianorollSelectionBoxResize,
+  pianorollSelectionBoxApply
+} from 'reducers/reducePianoroll'
+
+import {
+  phraseCreateNote,
+  phraseSelectNote,
+  phraseDeleteNote,
+  phraseSliceNote,
+  phraseDragNoteSelection,
+  phraseDropNoteSelection
+} from 'reducers/reducePhrase'
+
+import {
+  cursorChange,
+  cursorResizeLeft,
+  cursorResizeRight,
+  cursorClear
+} from 'actions/actionsCursor'
+
+import { phrase } from 'actions/actions'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
 const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
@@ -83,7 +97,7 @@ export class PianorollWindowControl extends Component {
       default:
       case 1:
       case 2: this.leftClickEvent(e);  break
-      case 3: this.rightClickEvent(e); break
+      case 3: this.rightClickEvent(e); break // TODO: handle right click
     }
   }
 
@@ -117,42 +131,62 @@ export class PianorollWindowControl extends Component {
 
     // First Click - Start Selection
     if (!this.lastEvent) {
-      this.lastEvent = {
-        action: SELECT_NOTE,
-        noteID: foundNote.id,
-        bar,
-        key,
-        time: Date.now()
-      }
-      let noteLength = foundNote.end - foundNote.start
-      let threshold = Math.min(
-        8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
-        0.25*noteLength
-      )
+      switch (this.props.arrangeTool) {
+        case 'pointer':
+          this.lastEvent = {
+            action: SELECT_NOTE,
+            noteID: foundNote.id,
+            bar,
+            key,
+            time: Date.now()
+          }
+          let noteLength = foundNote.end - foundNote.start
+          let threshold = Math.min(
+            8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
+            0.25*noteLength
+          )
 
-      if (!foundNote.selected || e.shiftKey) {
-        this.props.dispatch(phraseSelectNote({
-          noteID: foundNote.id,
-          loopIteration: foundNote.loopIteration,
-          union: e.shiftKey,
-        }))
-      } else if (foundNote.selected === "faded") {
-        this.props.dispatch(phraseSelectNote({
-          noteID: foundNote.id,
-          loopIteration: foundNote.loopIteration,
-          union: false,
-        }))
-      }
+          if (!foundNote.selected || e.shiftKey) {
+            this.props.dispatch(phraseSelectNote({
+              noteID: foundNote.id,
+              loopIteration: foundNote.loopIteration,
+              union: e.shiftKey,
+            }))
+          } else if (foundNote.selected === "faded") {
+            this.props.dispatch(phraseSelectNote({
+              noteID: foundNote.id,
+              loopIteration: foundNote.loopIteration,
+              union: false,
+            }))
+          }
 
-      if (bar < foundNote.start + threshold) {
-        this.props.dispatch(cursorResizeLeft('explicit'))
-        this.lastEvent.grip = 'MIN'
-      } else if (bar > foundNote.end - threshold) {
-        this.props.dispatch(cursorResizeRight('explicit'))
-        this.lastEvent.grip = 'MAX'
-      } else {
-        this.props.dispatch(cursorClear('explicit'))
-        this.lastEvent.grip = 'MID'
+          if (bar < foundNote.start + threshold) {
+            this.props.dispatch(cursorResizeLeft('explicit'))
+            this.lastEvent.grip = 'MIN'
+          } else if (bar > foundNote.end - threshold) {
+            this.props.dispatch(cursorResizeRight('explicit'))
+            this.lastEvent.grip = 'MAX'
+          } else {
+            this.props.dispatch(cursorClear('explicit'))
+            this.lastEvent.grip = 'MID'
+          }
+          break
+
+        case 'scissors':
+          this.props.dispatch(phraseSliceNote({
+            bar,
+            trackID: this.props.currentTrack.id,
+            noteID: foundNote.id
+          }))
+
+          break
+
+        case 'eraser':
+          this.props.dispatch({ type: phrase.DELETE_NOTE, noteID: foundNote.id })
+          break
+
+        default:
+          return
       }
     }
   }
@@ -162,7 +196,9 @@ export class PianorollWindowControl extends Component {
     if (this.lastEvent &&
         this.lastEvent.action === CLICK_EMPTY_AREA) {
       // Double click - Create Note
-      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
+      if (this.props.arrangeTool === `pointer` &&
+        Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY
+      ) {
         this.props.dispatch(phraseCreateNote(this.props.currentTrack.id, bar, key))
         this.previewNoteSound([key])
         this.lastEvent = null
@@ -180,6 +216,11 @@ export class PianorollWindowControl extends Component {
         key,
         time: Date.now()
       }
+
+      if (this.props.arrangeTool === `pencil`) {
+        this.props.dispatch(phraseCreateNote(this.props.currentTrack.id, bar, key))
+      }
+
       return
     }
   }
@@ -248,11 +289,20 @@ export class PianorollWindowControl extends Component {
       } else if (bar > foundNote.end - threshold) {
         this.props.dispatch(cursorResizeRight('implicit'))
       } else {
-        this.props.dispatch(cursorClear('implicit'))
+        this.props.dispatch(cursorChange({
+          icon: this.props.arrangeTool,
+          priority: `implicit`
+        }))
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else if (e.target === this.container) {
-      this.props.dispatch(cursorClear('implicit'))
+      if (this.props.arrangeTool === `pencil`) {
+        this.props.dispatch(cursorChange({
+          icon: this.props.arrangeTool,
+          priority: `implicit`
+        }))
+      }
+      else this.props.dispatch(cursorClear('implicit'))
     }
   }
 
@@ -377,15 +427,18 @@ PianorollWindowControl.propTypes = {
   notes:        React.PropTypes.array.isRequired
 }
 
-export default connectEngine(
-  provideGridSystem(
-    provideGridScroll(
-      PianorollWindowControl,
-      {
-        scrollXActionCreator: pianorollScrollX,
-        scrollYActionCreator: pianorollScrollY,
-        cursorActionCreator: pianorollMoveCursor
-      }
+export default
+connect(state => ({ arrangeTool: state.arrangeTool }))(
+  connectEngine(
+    provideGridSystem(
+      provideGridScroll(
+        PianorollWindowControl,
+        {
+          scrollXActionCreator: pianorollScrollX,
+          scrollYActionCreator: pianorollScrollY,
+          cursorActionCreator: pianorollMoveCursor
+        }
+      )
     )
   )
 )

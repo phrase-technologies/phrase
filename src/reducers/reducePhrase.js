@@ -299,6 +299,23 @@ export const phraseSliceClip = ({ bar, trackID, foundClip, snap = 4 }) => {
   }
 }
 
+export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
+  return (dispatch, getState) => {
+    let state = getState()
+    let foundNote = phraseMidiSelector(state).find(x =>
+      x.type === `addNoteOn` && x.id === noteID
+    )
+
+    bar = Math.round(bar * snap) / snap
+
+    if (bar >= foundNote.end || bar <= foundNote.start) return
+    
+    dispatch({ type: phrase.DELETE_NOTE, noteID, ignore: true })
+    dispatch(phraseCreateNote(trackID, foundNote.start, foundNote.keyNum, foundNote.start, bar, true))
+    dispatch(phraseCreateNote(trackID, bar, foundNote.keyNum, bar, foundNote.end, false))
+  }
+}
+
 export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated, dateModified, state }) => {
   return (dispatch) => {
     dispatch({ type: phrase.LOAD_START })
