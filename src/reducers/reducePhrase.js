@@ -44,9 +44,9 @@ export const phraseMuteTrack = (trackID) => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack = (trackID) => ({type: phrase.SOLO_TRACK, trackID})
 export const phraseSetTempo = (tempo) => ({type: phrase.SET_TEMPO, tempo})
 
-export const phraseCreateClip = (trackID, bar, end, snapStart = true, ignore) => {
+export const phraseCreateClip = (trackID, bar, length, snapStart = true, ignore) => {
   return (dispatch, getState) => {
-    dispatch({ type: phrase.CREATE_CLIP, trackID, bar, end, snapStart, ignore })
+    dispatch({ type: phrase.CREATE_CLIP, trackID, bar, length, snapStart, ignore })
 
     // Select the clip after it's created
     let state = getState()
@@ -720,7 +720,7 @@ function reduceCreateClip(state, action) {
     id:         state.clipAutoIncrement,
     trackID:    action.trackID,
     start:      snappedClipStart,
-    end:        snappedClipStart + (action.end || 1.00),
+    end:        snappedClipStart + (action.length || 1.00),
     offset:     0.00,
     loopLength: 1.00,
   })
