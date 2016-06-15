@@ -116,7 +116,8 @@ describe('Phrase', () => {
       expect(store.getState().phrase.present.notes.filter(x => x.clipID === 2)).to.have.lengthOf(2)
     })
 
-    it(`should work correctly at bar 0`, () => {
+    it(`should copy notes from original clip to the new clips no matter where
+      the original clip is in the timeline, such as the very beginning`, () => {
       let trackID = 0
       let notes = [ 0, .25, .5, .75 ]
 
