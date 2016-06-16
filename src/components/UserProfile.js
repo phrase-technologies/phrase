@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import Helmet from "react-helmet"
+
 import _ from 'lodash'
 import Numeral from 'numeral'
 
@@ -17,6 +19,7 @@ export class UserProfile extends Component {
 
     return (
       <div className="user-profile">
+        <Helmet title={`${user.username} - Phrase.fm`} />
         <div className="user-profile-header page-header">
           <div className="container">
             <div className="user-profile-pic">
@@ -33,7 +36,17 @@ export class UserProfile extends Component {
         <div className="container">
 
           <ul className="stories">
+
             {
+              <PhraseCard
+                phrase={phrase}
+                active={active}
+                plays={125}
+                likes={2}
+                comments={1}
+                key={phrase.id}
+              />
+              /*
               stories.map((story, i) => {
                 return (
                   <PhraseCard
@@ -51,6 +64,7 @@ export class UserProfile extends Component {
                   />
                 )
               })
+              */
             }
           </ul>
 

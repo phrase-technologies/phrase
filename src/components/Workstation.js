@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
+import Helmet from "react-helmet"
 
 import { phrase } from 'actions/actions'
 import { phraseLoadFromDb,
@@ -59,6 +60,7 @@ export class Workstation extends Component {
 
       return (
         <div className="workstation workstation-maximized disable-select text-center">
+          <Helmet title={`${loadingMessage} - Phrase.fm`} />
           <div className="workstation-loading text-center">
             <span className="fa fa-music fa-2x" />
             <p style={{ marginTop: 15 }}>
@@ -74,6 +76,7 @@ export class Workstation extends Component {
 
     return (
       <div className="workstation workstation-maximized disable-select">
+        <Helmet title={`${this.props.phraseName || "Untitled Phrase"} by ${this.props.authorUsername} - Phrase.fm`} />
         <WorkstationHeader />
         <div className="workstation-body">
           <div className="workstation-main" style={this.getMainSplit()}>

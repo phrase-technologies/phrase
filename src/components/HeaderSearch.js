@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import { librarySearch } from 'reducers/reduceLibrary'
 
 export class HeaderSearch extends Component {
 

@@ -4,7 +4,7 @@ import Helmet from "react-helmet"
 export default () => {
   return (
     <div className="error-404">
-      <Helmet title="Page not found, yo!" />
+      <Helmet title="Page not found, yo! - Phrase.fm" />
       <div className="error-404-header page-header">
         <div className="container">
           <h1>Page not found, yo!</h1>

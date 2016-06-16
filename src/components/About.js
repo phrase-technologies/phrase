@@ -1,8 +1,10 @@
 import React from 'react'
+import Helmet from "react-helmet"
 
 export default () => {
   return (
     <div className="about">
+      <Helmet title={`About - Phrase.fm`} />
       <div className="about-header page-header">
         <div className="container">
           <h1>About</h1>

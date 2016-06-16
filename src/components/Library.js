@@ -25,6 +25,7 @@ export class Library extends Component {
 
     return (
       <div className="library">
+        <Helmet title={`${this.props.searchTerm || "Browser Phrases"} - Phrase.fm`} />
         <div className="library-header page-header">
           <div className="container">
             <h1>
