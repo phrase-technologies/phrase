@@ -81,7 +81,7 @@ export class PianorollTimelineControl extends Component {
     let top = e.clientY - this.container.getBoundingClientRect().top
     if (top >= 25) {
       bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
-      foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar)
+      foundClip = _.findLast(this.props.clips, clip => clip.start <= bar && clip.end > bar)
     }
 
     if (foundClip) {

@@ -193,9 +193,9 @@ export const currentNotesSelector = createSelector(
     if (!currentTrack) return []
 
     let currentNotes = notes.filter(note => note.trackID === currentTrack.id)
-    let grippedNote = grippedNoteID ? currentNotes.find(note => note.id === grippedNoteID) : null
-    let grippedClip = grippedNoteID ? currentClips.find(clip => clip.id === grippedNote.clipID) : null
-    let targetClip = grippedNoteID ? currentClips.find(clip => clip.start <= targetBar && clip.end > targetBar) || grippedClip : null
+    let grippedNote = Number.isInteger(grippedNoteID) ? currentNotes.find(note => note.id === grippedNoteID) : null
+    let grippedClip = Number.isInteger(grippedNoteID) ? currentClips.find(clip => clip.id === grippedNote.clipID) : null
+    let targetClip  = Number.isInteger(grippedNoteID) ? _.findLast(currentClips, clip => clip.start <= targetBar && clip.end > targetBar) || grippedClip : null
 
     // Render selected notes
     let noteSelectionOffsetPreview = []

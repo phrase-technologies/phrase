@@ -607,7 +607,7 @@ export default function reducePhrase(state = defaultState, action) {
     case phrase.DROP_NOTE_SELECTION: {
       let grippedNote = state.notes.find(note => note.id === action.payload.grippedNoteID)
       let grippedClip = state.clips.find(clip => clip.id === grippedNote.clipID)
-      let targetClip = state.clips.find(clip => clip.trackID === grippedNote.trackID && clip.start <= action.payload.targetBar && clip.end > action.payload.targetBar) || grippedClip
+      let targetClip = _.findLast(state.clips, clip => clip.trackID === grippedNote.trackID && clip.start <= action.payload.targetBar && clip.end > action.payload.targetBar) || grippedClip
       let newNoteLength = grippedNote.end + action.payload.offsetEnd - grippedNote.start - action.payload.offsetStart
       let noteAutoIncrement = state.noteAutoIncrement
 

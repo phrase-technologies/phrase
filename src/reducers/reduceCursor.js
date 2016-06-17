@@ -25,10 +25,13 @@ export default function reduceCursor(state = defaultState, action) {
   {
     case phrase.DRAG_NOTE_SELECTION:
     case phrase.DRAG_CLIP_SELECTION:
-      let copy = action.payload.offsetCopy && action.payload.offsetStart === action.payload.offsetEnd
-      return u({
-        explicit: copy ? 'copy' : state.explicit,
-      }, state)
+      if (action.payload.offsetStart === action.payload.offsetEnd) {
+        let copy = action.payload.offsetCopy
+        return u({
+          explicit: copy ? 'copy' : 'default',
+        }, state)
+      }
+      return state
     case phrase.DROP_NOTE_SELECTION:
     case phrase.DROP_CLIP_SELECTION:
       return u({

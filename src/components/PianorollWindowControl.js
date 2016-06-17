@@ -347,7 +347,7 @@ export class PianorollWindowControl extends Component {
   }
 
   getNoteAtBarKey(bar, key) {
-    return this.props.notes.find(note => (
+    return _.findLast(this.props.notes, note => (
       Math.ceil(key) === note.keyNum &&
       bar >= note.start &&
       bar <= note.end
