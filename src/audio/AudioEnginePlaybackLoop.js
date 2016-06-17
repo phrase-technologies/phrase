@@ -5,8 +5,12 @@ import { transportMovePlayhead } from '../reducers/reduceTransport.js'
 import { fireNote,
          killNote } from './AudioEngineMidiTriggers.js'
 
-export const BEATS_PER_BAR = 4 // For 4/4 time signature, it's 4
-export const SECONDS_PER_MINUTE = 60
+import {
+  BEATS_PER_BAR,
+  SECONDS_PER_MINUTE,
+  barToPlayTime,
+  playTimeToBar,
+} from 'helpers/audioHelpers'
 
 // ============================================================================
 // PLAY START
@@ -25,7 +29,7 @@ export function startPlayback(engine, state, dispatch) {
   // Keep track of when playback began
   engine.isPlaying = true
   engine.playheadPositionBars = state.transport.playhead
-  engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * BEATS_PER_BAR * SECONDS_PER_MINUTE / state.phrase.present.tempo
+  engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * BEATS_PER_BAR * SECONDS_PER_MINUTE / engine.lastState.phrase.present.tempo
 
   // Setup first iteration
   engine.iCommand = 0
@@ -55,11 +59,11 @@ export function startPlayback(engine, state, dispatch) {
       if (engine.iCommand >= engine.midiCommands.length)
         break
       currentCommand = engine.midiCommands[engine.iCommand]
-      currentCommandTime = barToPlayTime(currentCommand.bar, engine, state)
+      currentCommandTime = barToPlayTime(currentCommand.bar, engine)
     }
 
     // Update playhead
-    engine.playheadPositionBars = playTimeToBar(engine.ctx.currentTime, engine, state)
+    engine.playheadPositionBars = playTimeToBar(engine.ctx.currentTime, engine)
     dispatch(transportMovePlayhead(engine.playheadPositionBars))
 
   }, 5)
@@ -91,23 +95,4 @@ export function stopPlayback(engine) {
   // Reset flags
   engine.stopQueued = false
   engine.isPlaying = false
-}
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
-function barToPlayTime(bar, engine, state) {
-  // Playstart is the moment when the "PLAY" button was pressed.
-  // If not provided, default to now.
-  let playStartTime = engine.playStartTime || engine.ctx.currentTime
-
-  return bar * BEATS_PER_BAR * SECONDS_PER_MINUTE / state.phrase.present.tempo + playStartTime
-}
-
-function playTimeToBar(time, engine, state) {
-  // Playstart is the moment when the "PLAY" button was pressed.
-  // If not provided, default to now.
-  let playStartTime = engine.playStartTime || engine.ctx.currentTime
-
-  return (time - playStartTime) / (BEATS_PER_BAR * SECONDS_PER_MINUTE) * state.phrase.present.tempo
 }

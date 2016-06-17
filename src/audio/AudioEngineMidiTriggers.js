@@ -1,5 +1,11 @@
 import { phraseMidiSelector } from '../selectors/selectorTransport.js'
 
+import {
+  BEATS_PER_BAR,
+  SECONDS_PER_MINUTE,
+  playTimeToBar,
+} from 'helpers/audioHelpers'
+
 // ============================================================================
 // CONVERT NOTES TO MIDI COMAMNDS
 // ============================================================================
@@ -14,6 +20,12 @@ export function updateMidiCommands(engine, state) {
     engine.iCommand = engine.midiCommands.findIndex(command => {
       command.bar >= engine.playheadPositionBars
     })
+  }
+
+  // Update tempo in realtime
+  if (state.phrase.present.tempo !== engine.lastState.phrase.present.tempo) {
+    engine.playheadPositionBars = playTimeToBar(engine.ctx.currentTime, engine)
+    engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * BEATS_PER_BAR * SECONDS_PER_MINUTE / state.phrase.present.tempo
   }
 
 }

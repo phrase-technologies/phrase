@@ -59,7 +59,7 @@ class TransportTempo extends Component {
       let deltaX = e.movementX || e.mozMovementX || 0
       let deltaY = e.movementY || e.mozMovementY || 0
       e.target.value = this.validateTempo(parseInt(e.target.value) + deltaX - deltaY)
-      this.props.dispatch(phraseSetTempo(e.target.value))
+      this.setState({ tempo: parseInt(e.target.value) })
     }
   }
 
@@ -67,6 +67,7 @@ class TransportTempo extends Component {
     this.dragging = false
     document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock
     document.exitPointerLock()
+    this.props.dispatch(phraseSetTempo(e.target.value))
     e.target.select()
   }
 

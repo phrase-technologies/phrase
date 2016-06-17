@@ -41,7 +41,7 @@ export default function createAudioEngine(STORE) {
     unsubscribeStoreChanges: null,
     lastState: {
       tracks: null,
-      phrase: null,
+      phrase: STORE.getState().phrase,
     }
   }
   engine.masterGain = engine.ctx.createGain()
@@ -99,7 +99,7 @@ export default function createAudioEngine(STORE) {
     if (state.phrase.present.tracks !== engine.lastState.tracks)
       updateNodes(engine, state)
 
-    // Notes
+    // Notes + Tempo
     if (state.phrase !== engine.lastState.phrase)
       updateMidiCommands(engine, state)
 
