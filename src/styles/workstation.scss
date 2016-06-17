@@ -101,9 +101,10 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   }
 }
 .transport-tempo {
-  width: 75px;
+  width: 80px;
   padding: 0 35px 0 0;
   text-align: right;
+  cursor: ns-resize;
 }
 .transport-time-a,
 .transport-time-b,
