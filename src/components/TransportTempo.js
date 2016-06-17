@@ -56,8 +56,9 @@ class TransportTempo extends Component {
 
   handleMouseMove = (e) => {
     if (this.dragging) {
-      let delta = e.movementY || e.mozMovementY || 0
-      e.target.value = this.validateTempo(parseInt(e.target.value) - delta)
+      let deltaX = e.movementX || e.mozMovementX || 0
+      let deltaY = e.movementY || e.mozMovementY || 0
+      e.target.value = this.validateTempo(parseInt(e.target.value) + deltaX - deltaY)
       this.props.dispatch(phraseSetTempo(e.target.value))
     }
   }
