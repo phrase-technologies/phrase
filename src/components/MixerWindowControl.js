@@ -214,7 +214,7 @@ export class MixerWindowControl extends Component {
         this.lastEvent.action === CLICK_EMPTY_AREA) {
       // Double click - Create Clip
       if (this.props.arrangeTool === `pointer` && Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY && trackID !== null) {
-        this.props.dispatch(phraseCreateClip(trackID, bar))
+        this.props.dispatch(phraseCreateClip({ trackID, start: bar }))
         this.lastEvent = null
         return
       // Too slow, treat as new first click
@@ -232,7 +232,7 @@ export class MixerWindowControl extends Component {
       }
 
       if (this.props.arrangeTool === `pencil`) {
-        this.props.dispatch(phraseCreateClip(trackID, bar))
+        this.props.dispatch(phraseCreateClip({ trackID, start: bar }))
       }
 
       return

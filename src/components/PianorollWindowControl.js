@@ -199,7 +199,11 @@ export class PianorollWindowControl extends Component {
       if (this.props.arrangeTool === `pointer` &&
         Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY
       ) {
-        this.props.dispatch(phraseCreateNote(this.props.currentTrack.id, bar, key))
+        this.props.dispatch(phraseCreateNote({
+          trackID: this.props.currentTrack.id,
+          start: bar,
+          key,
+        }))
         this.previewNoteSound([key])
         this.lastEvent = null
         return

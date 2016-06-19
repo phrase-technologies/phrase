@@ -64,7 +64,8 @@ export default function reduceTransport(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case transport.PLAY_TOGGLE:
       return u({
-        playing: !state.playing
+        playing: !state.playing,
+        recording: false,
       }, state)
 
     // ------------------------------------------------------------------------
@@ -90,7 +91,8 @@ export default function reduceTransport(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case transport.RECORD:
       return u({
-        recording: !state.recording
+        recording: !state.recording,
+        playing: state.playing || !state.recording,
       }, state)
 
     // ------------------------------------------------------------------------
@@ -103,12 +105,13 @@ export default function reduceTransport(state = defaultState, action) {
     case transport.STOP:
       if (!state.playing) {
         return u({
-          playhead: 0.000
+          playhead: 0.000,
         }, state)
       }
 
       return u({
-        playing: false
+        playing: false,
+        recording: false,
       }, state)
 
     // ------------------------------------------------------------------------

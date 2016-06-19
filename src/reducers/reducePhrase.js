@@ -43,9 +43,18 @@ export const phraseMuteTrack = (trackID) => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack = (trackID) => ({type: phrase.SOLO_TRACK, trackID})
 export const phraseSetTempo = (tempo) => ({type: phrase.SET_TEMPO, tempo})
 
-export const phraseCreateClip = (trackID, bar, length, snapStart = true, ignore) => {
+export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ignore }) => {
   return (dispatch, getState) => {
-    dispatch({ type: phrase.CREATE_CLIP, trackID, bar, length, snapStart, ignore })
+    dispatch({
+      type: phrase.CREATE_CLIP,
+      payload: {
+        trackID,
+        start,
+        length,
+        snapStart,
+      },
+      ignore,
+    })
 
     // Select the clip after it's created
     let state = getState()
@@ -55,9 +64,19 @@ export const phraseCreateClip = (trackID, bar, length, snapStart = true, ignore)
   }
 }
 
-export const phraseCreateNote = (trackID, bar, key, start, end, ignore, snapStart = true) => {
+export const phraseCreateNote = ({ trackID, key, start, end, ignore, snapStart = true }) => {
   return (dispatch, getState) => {
-    dispatch({ type: phrase.CREATE_NOTE, trackID, bar, key, start, end, ignore, snapStart })
+    dispatch({
+      type: phrase.CREATE_NOTE,
+      payload: {
+        trackID,
+        key,
+        start,
+        end,
+        snapStart
+      },
+      ignore,
+    })
 
     // Select the note after it's created
     let state = getState()
@@ -65,7 +84,7 @@ export const phraseCreateNote = (trackID, bar, key, start, end, ignore, snapStar
     let newNoteID = notes[notes.length - 1].id
     let renderedNotes = currentNotesSelector(state)
     let newNoteLoopIterations = renderedNotes.filter(note => note.id === newNoteID)
-    let targetRenderedNote = newNoteLoopIterations.find(note => note.start <= bar && note.end > bar)
+    let targetRenderedNote = newNoteLoopIterations.find(note => note.start <= start && note.end > start)
 
     dispatch({
       type: phrase.SELECT_NOTE,
@@ -294,16 +313,23 @@ export const phraseSliceClip = ({ bar, trackID, foundClip, snap = 4 }) => {
     let ignore = true
 
     dispatch({ type: phrase.DELETE_CLIP, clipID: foundClip.id, ignore: true })
-    dispatch(phraseCreateClip(trackID, leftClip.start, leftClip.end - leftClip.start, snapStart, ignore))
+    dispatch(phraseCreateClip({ trackID, start: leftClip.start, length: leftClip.end - leftClip.start, snapStart, ignore }))
 
-    // if no notes in sliced clip, do not ignore last clip creation
+    // If no notes in sliced clip, do not ignore last clip creation
     ignore = notes.length > 0
 
-    dispatch(phraseCreateClip(trackID, rightClip.start, rightClip.end - rightClip.start, snapStart, ignore))
+    dispatch(phraseCreateClip({ trackID, start: rightClip.start, length: rightClip.end - rightClip.start, snapStart, ignore }))
 
     notes.forEach((note, i) => {
       let ignore = i < notes.length - 1
-      dispatch(phraseCreateNote(trackID, note.start, note.keyNum, note.start, note.end, ignore))
+      dispatch(phraseCreateNote({
+        trackID,
+        key: note.keyNum,
+        start: note.start,
+        end: note.end,
+        ignore,
+        snapStart: false,
+      }))
     })
   }
 }
@@ -727,16 +753,16 @@ function reduceCreateTrack(state, action) {
 
 function reduceCreateClip(state, action) {
   // Skip if clip already exists
-  if (getClipAtBar(state, action.bar, action.trackID))
+  if (getClipAtBar(state, action.payload.start, action.payload.trackID))
     return state
 
   // Create new clip
-  let snappedClipStart = action.snapStart ? Math.floor(action.bar) + 0.00 : action.bar
+  let snappedClipStart = action.payload.snapStart ? Math.floor(action.payload.start) + 0.00 : action.payload.start
   let newClip = u.freeze({
     id:         state.clipAutoIncrement,
-    trackID:    action.trackID,
+    trackID:    action.payload.trackID,
     start:      snappedClipStart,
-    end:        snappedClipStart + (action.length || 1.00),
+    end:        snappedClipStart + (action.payload.length || 1.00),
     offset:     0.00,
     loopLength: 1.00,
   })
@@ -750,25 +776,26 @@ function reduceCreateClip(state, action) {
 
 function reduceCreateNote(state, action) {
   // Skip if note already exists
-  if (getNoteAtKeyBar(state, action.key, action.bar, action.trackID))
+  if (getNoteAtKeyBar(state, action.payload.key, action.payload.start, action.payload.trackID))
     return state
 
   // Create clip if necessary
   state = reduceCreateClip(state, action)
-  let foundClip = getClipAtBar(state, action.bar, action.trackID)
+  let foundClip = getClipAtBar(state, action.payload.start, action.payload.trackID)
 
   // Insert note, snap to same length as most previously created note
-  let snappedNoteKey   = Math.ceil(action.key)
-  let snappedNoteStart = Math.floor(action.bar/state.noteLengthLast) * state.noteLengthLast
+  let snapGrid = 0.125 // TODO: Make this adjust based on zoom
+  let snappedNoteKey   = Math.ceil(action.payload.key)
+  let snappedNoteStart = Math.floor(action.payload.start/snapGrid) * snapGrid
       snappedNoteStart = (snappedNoteStart - foundClip.start - foundClip.offset) % foundClip.loopLength
 
   let newNote = u.freeze({
     id:       state.noteAutoIncrement,
-    trackID:  action.trackID,
+    trackID:  action.payload.trackID,
     clipID:   foundClip.id,
     keyNum:   snappedNoteKey,
-    start:    action.start ? action.start - foundClip.start : snappedNoteStart,
-    end:      action.end ? action.end - foundClip.start : snappedNoteStart + state.noteLengthLast,
+    start:    action.payload.snapStart ? snappedNoteStart : action.payload.start - foundClip.start,
+    end:      action.payload.end ? action.payload.end - foundClip.start : snappedNoteStart + state.noteLengthLast,
   })
 
   // Update State

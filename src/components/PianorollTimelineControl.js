@@ -161,7 +161,7 @@ export class PianorollTimelineControl extends Component {
         this.lastEvent.action === CLICK_EMPTY_AREA) {
       // Double click - Create Clip
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
-        this.props.dispatch(phraseCreateClip(this.props.currentTrack.id, bar))
+        this.props.dispatch(phraseCreateClip({ trackID: this.props.currentTrack.id, start: bar }))
         this.lastEvent = null
         return
       // Too slow, treat as new first click
