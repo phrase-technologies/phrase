@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import u from 'updeep'
 import { api } from 'helpers/ajaxHelpers'
-import { uIncrement, uAppend } from 'helpers/arrayHelpers'
+import { uIncrement, uAppend, uRemove } from 'helpers/arrayHelpers'
 
 import { phrase, mixer } from 'actions/actions'
 
@@ -39,7 +39,6 @@ export const phraseCreateTrack = (actionConfig) => {
   }
 }
 
-export const phraseArmTrack = (trackID) => ({type: phrase.ARM_TRACK, trackID})
 export const phraseMuteTrack = (trackID) => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack = (trackID) => ({type: phrase.SOLO_TRACK, trackID})
 export const phraseSetTempo = (tempo) => ({type: phrase.SET_TEMPO, tempo})
@@ -81,13 +80,15 @@ export const phraseCreateNote = (trackID, bar, key, start, end, ignore, snapStar
 
 export const phraseSelectTrack = ({ trackID, union }) => {
   return (dispatch, getState) => {
+    let phraseState = getState().phrase.present
 
     dispatch({
       type: phrase.SELECT_TRACK,
       payload: {
         trackID,
         union,
-        clips: getState().phrase.present.clips,
+        tracks: phraseState.tracks,
+        clips: phraseState.clips,
       }
     })
   }
@@ -107,11 +108,18 @@ export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches
   return (dispatch, getState) => {
     let {
-      selectionType,
-      trackSelectionIDs,
-      clipSelectionIDs,
-      noteSelectionIDs,
-    } = getState().phraseMeta
+      phrase: {
+        present: {
+          tracks,
+        },
+      },
+      phraseMeta: {
+        selectionType,
+        trackSelectionID,
+        clipSelectionIDs,
+        noteSelectionIDs,
+      },
+    } = getState()
 
     // If clip selection was just deleted, delete selected tracks instead
     if (selectionType === "clips" && clipSelectionIDs.length === 0) {
@@ -122,10 +130,11 @@ export const phraseDeleteSelection = () => {
       type: phrase.DELETE_SELECTION,
       payload: {
         selectionType,
-        trackSelectionIDs,
+        trackSelectionID,
         clipSelectionIDs,
         noteSelectionIDs,
         currentTrack: (selectionType === "tracks") ? getState().pianoroll.currentTrack : null,
+        trackIDs: tracks.map(track => track.id),
       }
     })
 
@@ -464,16 +473,6 @@ export default function reducePhrase(state = defaultState, action) {
       return reduceCreateTrack(state, action)
 
     // ------------------------------------------------------------------------
-    case phrase.ARM_TRACK:
-      return u({
-        tracks: u.updateIn(['*'], u.ifElse(
-          (track) => track.id === action.trackID,
-          (track) => u({arm: !track.arm}, track),
-          (track) => u({arm: false}, track)
-        ))
-      }, state)
-
-    // ------------------------------------------------------------------------
     case phrase.MUTE_TRACK:
       return u({
         tracks: u.updateIn(['*'], u.if(
@@ -528,15 +527,16 @@ export default function reducePhrase(state = defaultState, action) {
     case phrase.DELETE_SELECTION:
       let {
         selectionType,
-        trackSelectionIDs,
+        trackSelectionID,
         clipSelectionIDs,
         noteSelectionIDs,
       } = action.payload
       if (selectionType === "tracks") {
+        let trackToRemove = state.tracks.find(track => track.id === action.payload.trackSelectionID)
         return u({
-          tracks: u.reject(track => trackSelectionIDs.includes(track.id)),
-          clips: u.reject(clip => trackSelectionIDs.includes(clip.trackID)),
-          notes: u.reject(note => trackSelectionIDs.includes(note.trackID))
+          tracks: trackToRemove ? uRemove(trackToRemove) : state.tracks,
+          clips: u.reject(clip => trackSelectionID === clip.trackID),
+          notes: u.reject(note => trackSelectionID === note.trackID)
         }, state)
       }
       if (selectionType === "clips") {
@@ -716,7 +716,6 @@ function reduceCreateTrack(state, action) {
         id: state.trackAutoIncrement,
         name: action.name || 'MIDI Track '+(state.trackAutoIncrement + 1),
         color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
-        arm:  false,
         mute: false,
         solo: false
       }

@@ -13,7 +13,7 @@ export const clipboardCopy = () => {
       },
       phraseMeta: {
         selectionType,
-        trackSelectionIDs,
+        trackSelectionID,
         clipSelectionIDs,
         noteSelectionIDs,
       }

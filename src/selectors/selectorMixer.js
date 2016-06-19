@@ -7,18 +7,18 @@ import { clipSelectionOffsetValidated } from './selectorPianoroll.js'
 const tracksSelector            = (state) => (state.phrase.present.tracks)
 const clipsSelector             = (state) => (state.phrase.present.clips)
 const selectionTypeSelector     = (state) => (state.phraseMeta.selectionType)
-const trackSelectionIDsSelector = (state) => (state.phraseMeta.trackSelectionIDs)
+const trackSelectionIDSelector = (state) => (state.phraseMeta.trackSelectionID)
 const clipSelectionIDsSelector  = (state) => (state.phraseMeta.clipSelectionIDs)
 
 export const renderedTracksSelector = createSelector(
   selectionTypeSelector,
   tracksSelector,
-  trackSelectionIDsSelector,
-  (selectionType, tracks, trackSelectionIDs) => {
+  trackSelectionIDSelector,
+  (selectionType, tracks, trackSelectionID) => {
     // Render Offseted Selections
     tracks = (tracks || [])
       .map(track => {
-        let isTrackSelected = trackSelectionIDs.some(x => x === track.id)
+        let isTrackSelected = trackSelectionID === track.id
         if (isTrackSelected) {
           return {
             ...track,

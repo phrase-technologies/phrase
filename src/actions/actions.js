@@ -36,7 +36,6 @@ export const phrase = namespaceActions(
   [
     'RENAME',
     'CREATE_TRACK',
-    'ARM_TRACK',
     'MUTE_TRACK',
     'SOLO_TRACK',
     'SET_TEMPO',

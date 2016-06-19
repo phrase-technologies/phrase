@@ -29,7 +29,7 @@ export const defaultState = {
   loginReminder: false,
   rephraseReminder: false,
   selectionType: null,  // Can be "tracks", "clips", or "notes"
-  trackSelectionIDs: [],
+  trackSelectionID: 0,
   trackSelectionGrippedID: null,
   trackSelectionOffsetTrack: null,
   clipSelectionIDs: [],
@@ -80,6 +80,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
         authorUsername: action.payload.username,
         dateCreated: action.payload.dateCreated,
         dateModified: action.payload.dateModified,
+        trackSelectionID: action.payload.state.present.tracks[0].id,
       }, defaultState)  // Clear everything else to default!
 
     // ------------------------------------------------------------------------
@@ -112,9 +113,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
 
       return u({
         selectionType: trackClipIDs.length ? "clips" : "tracks",
-        trackSelectionIDs: action.payload.union
-          ? _.xor(state.trackSelectionIDs, [action.payload.trackID])
-          : [action.payload.trackID],
+        trackSelectionID: action.payload.trackID,
         clipSelectionIDs: trackClipIDs.length ? trackClipIDs : state.clipSelectionIDs,
       }, state)
 
@@ -143,11 +142,20 @@ export default function reducePhraseMeta(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
-      if (state.selectionType === "tracks")
-        return u({ trackSelectionIDs: [] }, state)
-      if (state.selectionType === "clips")
+      if (action.payload.selectionType === "tracks") {
+        // When a track is delete, automatically select an adjacent track
+        let trackSelectionPosition = action.payload.trackIDs.findIndex(trackID => trackID === state.trackSelectionID)
+        let lastTrackBeingDeleted = trackSelectionPosition === action.payload.trackIDs.length - 1
+        if (lastTrackBeingDeleted)
+          trackSelectionPosition--
+        else
+          trackSelectionPosition++
+        let newTrackSelectionID = action.payload.trackIDs[trackSelectionPosition]
+        return u({ trackSelectionID: newTrackSelectionID }, state)
+      }
+      if (action.payload.selectionType === "clips")
         return u({ clipSelectionIDs: [] }, state)
-      if (state.selectionType === "notes")
+      if (action.payload.selectionType === "notes")
         return u({ noteSelectionIDs: [] }, state)
       return state
 

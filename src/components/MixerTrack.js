@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 
-import { phraseArmTrack,
-         phraseMuteTrack,
+import { phraseMuteTrack,
          phraseSoloTrack,
          phraseSelectTrack,
        } from '../reducers/reducePhrase.js'
@@ -13,7 +12,6 @@ export default class MixerTrack extends Component {
 
   render() {
     let mixerTrackClasses  = 'mixer-track'
-        mixerTrackClasses += this.props.focused ? ' mixer-track-focused' : ''
         mixerTrackClasses += this.props.track.selected ? ' active' : ''
 
     let tagStyle = {
@@ -38,18 +36,18 @@ export default class MixerTrack extends Component {
           <span className="mixer-track-caret fa fa-ellipsis-h" />
           <MixerTrackLevel track={this.props.track} atleastOneTrackSoloed={this.props.atleastOneTrackSoloed} />
           <MixerTrackButton buttonClasses="mixer-track-arm"
-            active={this.props.track.arm} tooltip="Arm this track"
-            action={phraseArmTrack} {...buttonProps}>
+            active={this.props.track.selected} tooltip="Arm this track"
+            action={this.armTrack} {...buttonProps}>
             <span className="fa fa-circle" />
           </MixerTrackButton>
           <MixerTrackButton buttonClasses="mixer-track-mute"
             active={this.props.track.mute} tooltip="Mute this track"
-            action={phraseMuteTrack} {...buttonProps}>
+            action={this.muteTrack} {...buttonProps}>
             <span>M</span>
           </MixerTrackButton>
           <MixerTrackButton buttonClasses="mixer-track-solo"
             active={this.props.track.solo} tooltip="Solo this track"
-            action={phraseSoloTrack} {...buttonProps}>
+            action={this.soloTrack} {...buttonProps}>
             <span>S</span>
           </MixerTrackButton>
         </div>
@@ -63,7 +61,19 @@ export default class MixerTrack extends Component {
     if (e.target !== this.control)
       return
 
+    this.armTrack(e)
+  }
+
+  armTrack = (e) => {
     this.props.dispatch(phraseSelectTrack({ trackID: this.props.track.id, union: e.shiftKey }))
+  }
+
+  muteTrack = () => {
+    this.props.dispatch(phraseMuteTrack(this.props.track.id))
+  }
+
+  soloTrack = () => {
+    this.props.dispatch(phraseSoloTrack(this.props.track.id))
   }
 
 }

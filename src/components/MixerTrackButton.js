@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
-export default ({ dispatch, active, buttonClasses, action, trackID, tooltip, children, ...props }) => {
+export default ({ active, buttonClasses, action, trackID, tooltip, children, ...props }) => {
 
   buttonClasses = 'mixer-track-btn ' + buttonClasses
   buttonClasses += active ? ' active' : ''
@@ -10,7 +10,7 @@ export default ({ dispatch, active, buttonClasses, action, trackID, tooltip, chi
 
   return (
     <OverlayTrigger placement="top" overlay={buttonTooltip} delayShow={640}>
-      <button className={buttonClasses} onClick={() => dispatch(action(trackID))} {...props}>
+      <button className={buttonClasses} onClick={action} {...props}>
         {children}
       </button>
     </OverlayTrigger>
