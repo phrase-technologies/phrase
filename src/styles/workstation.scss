@@ -6,6 +6,8 @@ $workstation-header-height: 110px;
 $workstation-header-z-index: 300;         // Above Page & Mixer
 $workstation-clip-width: 240px;
 $workstation-clip-z-index: 400;           // Above Page & Mixer
+$workstation-footer-height: 55px;
+$workstation-footer-z-index: 500;         // Above Clip
 $workstation-effects-chain-width: 300px;
 $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after removing box-shadows....?
 
@@ -209,7 +211,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   top: 0;
   left: 0;
   right: $workstation-effects-chain-width;
-  bottom: 0;
+  bottom: $workstation-footer-height;
 }
 .workstation-heading {
   position: absolute;
@@ -282,7 +284,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   z-index: $workstation-clip-z-index;
 
   box-shadow: inset  0px  1px 1px -1px #FFF,
-              inset -1px  0px 0px  0px #111;
+              inset -1px -1px 0px  0px #111;
   background: #444;
   background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
   // background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
@@ -327,6 +329,26 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 }
 
 // ============================================================================
+// Footer
+// ============================================================================
+.workstation-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: $workstation-footer-height;
+  bottom: 0;
+
+  box-shadow: inset  0px  1px 1px -1px #FFF,
+              inset  0px -1px 0px  0px #111;
+  background: #444;
+  background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
+
+  padding: 10px;
+
+  z-index: $workstation-footer-z-index;
+}
+
+// ============================================================================
 // Effects Chain sidebar
 // ============================================================================
 .workstation-effects-chain {
@@ -334,7 +356,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   top: 0;
   width: $workstation-effects-chain-width;
   right: 0;
-  bottom: 0;
+  bottom: $workstation-footer-height;
   z-index: $workstation-effects-chain-z-index;
 
   box-shadow: inset  1px  1px 1px -1px #FFF,

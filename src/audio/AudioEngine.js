@@ -5,6 +5,7 @@ import { fireNote,
          updateMidiCommands } from './AudioEngineMidiTriggers.js'
 import { startPlayback,
          stopPlayback } from './AudioEnginePlaybackLoop.js'
+import linkMIDIControllers from './AudioEngineMidiControl.js'
 
 let AudioContext = AudioContext || webkitAudioContext
 
@@ -48,39 +49,6 @@ export default function createAudioEngine(STORE) {
   engine.masterGain.connect(engine.ctx.destination)
   engine.masterGain.gain.value = 0.25
 
-  // MIDI Connection
-  function onMIDIMessage (event) {
-    let state = STORE.getState()
-    let [ type, key, velocity ] = event.data
-
-    /*
-     *  TODO:
-     *    - add note to track if recording
-     *    - pitch bends / knobs / sliders etc
-     *    - make mapping for event types, eg - 144: note on/off, 224: pitch bend
-     */
-
-    let armedTrack = state.phrase.present.tracks.find(x => x.arm)
-    if (armedTrack && type === 144) {
-      if (velocity) fireNote(engine, armedTrack.id, key, velocity)
-      else killNote(engine, armedTrack.id, key, velocity)
-    }
-  }
-
-  try {
-    navigator.requestMIDIAccess().then(
-      midiAccess => {
-        engine.midiAccess = midiAccess
-        engine.midiAccess.inputs.forEach(entry => {
-          entry.onmidimessage = onMIDIMessage
-        })
-      },
-      error => console.log(`Failed to get MIDI access - ${error}`)
-    )
-  } catch (error) {
-    console.error(`Failed to get MIDI access - ${error}`)
-  }
-
   // --------------------------------------------------------------------------
   // State-driven behaviours
   // --------------------------------------------------------------------------
@@ -108,6 +76,12 @@ export default function createAudioEngine(STORE) {
   })
 
   // --------------------------------------------------------------------------
+  // MIDI Controller driven behaviour
+  // --------------------------------------------------------------------------
+  let midiControl = linkMIDIControllers(engine, STORE)
+      midiControl.getControllers()
+
+  // --------------------------------------------------------------------------
   // Expose the API
   // --------------------------------------------------------------------------
   return {
@@ -119,6 +93,9 @@ export default function createAudioEngine(STORE) {
     },
     getTrackOutputDecibels: (trackID) => {
       return getTrackOutputDecibels(engine, trackID)
+    },
+    getMIDIControllers: () => {
+      return midiControl.getControllers()
     },
     destroy: () => {
       engine.unsubscribeStoreChanges()

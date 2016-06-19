@@ -1,24 +1,73 @@
 // ============================================================================
 // Dropdowns - customizations over bootstraps defaults
 // ============================================================================
-.dropdown-menu {
-  margin-top: 5px;
 
-  &::before {
-    content: '';
-    border: 7px solid transparent;
-    border-bottom-color: #000;
-    opacity: 0.15;
-    position: absolute;
-    right: 6px;
-    top: -14px;
+// Dark themed dropdowns
+.dropdown-dark {
+  .dropdown-menu {
+    border-color: #000;
+    background: #555;
+    box-shadow: 0 -1px 8px 1px rgba(0,0,0, 0.5);
+
+    .divider {
+      background-color: #000;
+    }
+
+    a {
+      color: #CCC;
+    }
   }
-  &::after {
-    content: '';
-    border: 6px solid transparent;
-    border-bottom-color: #FFF;
-    position: absolute;
-    right: 7px;
-    top: -12px;
+}
+
+// Callout arrow trailing towards where the dropdown eminated from
+.dropdown-arrow {
+  .dropdown-menu {
+    margin-top: 5px;
+
+    &::before {
+      content: '';
+      border: 7px solid transparent;
+      border-bottom-color: #000;
+      opacity: 0.15;
+      position: absolute;
+      left: 6px;
+      top: -14px;
+    }
+    &::after {
+      content: '';
+      border: 6px solid transparent;
+      border-bottom-color: #FFF;
+      position: absolute;
+      left: 7px;
+      top: -12px;
+    }
+  }
+
+  .dropdown-menu-right {
+    &::before {
+      left: auto;
+      right: 6px;
+    }
+    &::after {
+      left: auto;
+      right: 7px;
+    }
+  }
+
+  .dropup {
+    .dropdown-menu {
+      &::before {
+        border-top-color: #000;
+        border-bottom-color: transparent;
+        top: auto;
+        bottom: -14px;
+      }
+      &::after {
+        border-top-color: #FFF;
+        border-bottom-color: transparent;
+        top: auto;
+        bottom: -12px;
+      }
+    }
   }
 }

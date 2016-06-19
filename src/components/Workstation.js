@@ -13,6 +13,7 @@ import { layoutConsoleSplit } from 'actions/actionsLayout'
 
 import WorkstationHeader from './WorkstationHeader'
 import WorkstationSplit from './WorkstationSplit'
+import WorkstationFooter from './WorkstationFooter'
 import Mixer from './Mixer'
 import Pianoroll from './Pianoroll'
 
@@ -88,6 +89,7 @@ export class Workstation extends Component {
               <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
             </div>
           </div>
+          <WorkstationFooter />
           <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
             <h2 className="workstation-heading">
               <span className="workstation-heading-vertical">
