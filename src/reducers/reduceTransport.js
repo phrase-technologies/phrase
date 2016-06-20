@@ -1,5 +1,5 @@
 import u from 'updeep'
-import { transport } from '../actions/actions.js'
+import { phrase, transport } from '../actions/actions.js'
 
 // ============================================================================
 // Transport Action Creators
@@ -55,7 +55,6 @@ let defaultState = {
   playing: false,
   playhead: 0.000,
   recording: false,
-  tempo: 120,
 }
 
 export default function reduceTransport(state = defaultState, action) {
@@ -96,12 +95,6 @@ export default function reduceTransport(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
-    case transport.SET_TEMPO:
-      return u({
-        tempo: action.tempo
-      }, state)
-
-    // ------------------------------------------------------------------------
     case transport.STOP:
       if (!state.playing) {
         return u({
@@ -113,6 +106,11 @@ export default function reduceTransport(state = defaultState, action) {
         playing: false,
         recording: false,
       }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.NEW_PHRASE:
+    case phrase.LOAD_START:
+      return defaultState
 
     // ------------------------------------------------------------------------
     default:

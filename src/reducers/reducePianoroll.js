@@ -233,6 +233,11 @@ export default function reducePianoroll(state = defaultState, action) {
       }
 
     // ------------------------------------------------------------------------
+    case phrase.NEW_PHRASE:
+    case phrase.LOAD_START:
+      return defaultState
+
+    // ------------------------------------------------------------------------
     default:
       return state
   }
