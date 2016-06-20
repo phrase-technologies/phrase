@@ -1,6 +1,8 @@
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave, phrasePristine } from 'reducers/reducePhrase'
 
+let changesDuringPlayback = false
+
 let autosave = store => next => action => {
 
   let oldState = store.getState()
@@ -17,15 +19,26 @@ let autosave = store => next => action => {
     let loggedIn = localStorage.userId && localStorage.userId !== 'undefined'
     let writePermission = localStorage.username === newState.phraseMeta.authorUsername
 
-    // Only update if an existing phrase has been modified
+    // Only save if this is an existing phrase that has been modified
     if (existingPhrase && loggedIn && writePermission) {
-      store.dispatch(phraseSave())
+      // Don't save during playback - interruptions are ugly. Queue it up!
+      if (newState.transport.playing) {
+        changesDuringPlayback = true
+      } else {
+        store.dispatch(phraseSave())
+      }
     }
 
     // If you're logged in and make an edit to a new phrase, save it right away
     else if (!existingPhrase && loggedIn) {
       store.dispatch(librarySaveNew())
     }
+  }
+
+  // Save changes that were queued up during playback
+  else if(!newState.transport.playing && changesDuringPlayback) {
+    changesDuringPlayback = false
+    store.dispatch(phraseSave())
   }
 
   return result
