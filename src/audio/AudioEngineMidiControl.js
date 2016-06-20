@@ -68,10 +68,13 @@ export default (engine, STORE) => {
     if (port.connection === "closed" || !synchronizationRegistry[port.id]) {
       port.onmidimessage = onMIDIMessage
     }
-    // synchronizationRegistry[port.id]
+    synchronize()
+  }
+
+  function synchronize() {
     if (synchronizationCallback) {
       let controllers = []
-      midiAccess.inputs.forEach(entry => controllers.push(entry[1]))
+      midiAccess.inputs.forEach(entry => controllers.push(entry))
       synchronizationCallback(controllers)
     }
   }
@@ -79,6 +82,7 @@ export default (engine, STORE) => {
   return {
     registerSynchronizationCallback: (callback) => {
       synchronizationCallback = callback
+      synchronize()
     },
     destroySynchronizationCallback: () => {
       synchronizationCallback = undefined

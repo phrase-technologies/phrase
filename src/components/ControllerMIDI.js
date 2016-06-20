@@ -68,7 +68,7 @@ export class ControllerMIDI extends Component {
   }
 
   componentWillUnmount() {
-    this.props.ENGINE.destroySynchronizationCallback()
+    this.props.ENGINE.midiControl.destroySynchronizationCallback()
   }
 
 }
