@@ -796,6 +796,7 @@ function reduceCreateNote(state, action) {
     keyNum:   snappedNoteKey,
     start:    action.payload.snapStart ? snappedNoteStart : action.payload.start - foundClip.start,
     end:      action.payload.end ? action.payload.end - foundClip.start : snappedNoteStart + state.noteLengthLast,
+    velocity: 127,
   })
 
   // Update State

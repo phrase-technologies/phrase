@@ -1,8 +1,6 @@
-import {
-  fireNote,
-  killNote,
-} from './AudioEngineMidiTriggers.js'
+import { fireNote } from './AudioEngineMidiTriggers.js'
 import { delay } from 'helpers/asyncHelpers.js'
+import { phraseCreateNote } from 'reducers/reducePhrase.js'
 
 // ============================================================================
 // MIDI CONTROLLERS
@@ -14,6 +12,7 @@ import { delay } from 'helpers/asyncHelpers.js'
 export default (engine, STORE) => {
 
   let midiAccess
+  let recordingStack = []
 
   let onMIDIMessage = (event) => {
     let state = STORE.getState()
@@ -26,10 +25,37 @@ export default (engine, STORE) => {
      *    - make mapping for event types, eg - 144: note on/off, 224: pitch bend
      */
 
-    let armedTrack = state.phrase.present.tracks.find(x => x.arm)
+    let armedTrack = state.phrase.present.tracks.find(x => x.id === state.phraseMeta.trackSelectionID)
     if (armedTrack && [144, 128].some(x => x === type)) {
-      if (velocity) fireNote(engine, armedTrack.id, key, velocity)
-      else killNote(engine, armedTrack.id, key, velocity)
+      fireNote(engine, armedTrack.id, key, velocity)
+
+      // Recording
+      if (state.transport.recording) {
+        // Start a new note
+        if (velocity) {
+          recordingStack[key] = {
+            velocity,
+            start: engine.playheadPositionBars,
+          }
+        // End
+        } else {
+          if (recordingStack[key]) {
+            let {
+              start,
+              velocity,
+            } = recordingStack[key]
+            STORE.dispatch(phraseCreateNote({
+              trackID: state.phraseMeta.trackSelectionID,
+              key,
+              start,
+              end: engine.playheadPositionBars,
+              velocity,
+              ignore: true,
+              snapStart: false,
+            }))
+          }
+        }
+      }
     }
   }
 

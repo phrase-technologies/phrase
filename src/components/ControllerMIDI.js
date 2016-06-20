@@ -23,7 +23,7 @@ export class ControllerMIDI extends Component {
         <a className="btn btn-dark dropdown-toggle" bsRole="toggle">
           <span className={signalClasses} />
           <span className="fa fa-plug" />
-          <span> MIDI Controller </span>
+          <span> MIDI Controller ({ this.state.controllers.length || "N/A" }) </span>
           <span className="caret" />
         </a>
         <Dropdown.Menu>
