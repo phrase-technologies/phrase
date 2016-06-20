@@ -64,7 +64,7 @@ export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ign
   }
 }
 
-export const phraseCreateNote = ({ trackID, key, start, end, ignore, snapStart = true }) => {
+export const phraseCreateNote = ({ trackID, key, start, end, velocity, ignore, snapStart = true }) => {
   return (dispatch, getState) => {
     dispatch({
       type: phrase.CREATE_NOTE,
@@ -73,6 +73,7 @@ export const phraseCreateNote = ({ trackID, key, start, end, ignore, snapStart =
         key,
         start,
         end,
+        velocity,
         snapStart
       },
       ignore,
@@ -796,7 +797,7 @@ function reduceCreateNote(state, action) {
     keyNum:   snappedNoteKey,
     start:    action.payload.snapStart ? snappedNoteStart : action.payload.start - foundClip.start,
     end:      action.payload.end ? action.payload.end - foundClip.start : snappedNoteStart + state.noteLengthLast,
-    velocity: 127,
+    velocity: action.payload.velocity || 127,
   })
 
   // Update State

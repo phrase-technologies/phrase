@@ -1,5 +1,4 @@
 import { fireNote } from './AudioEngineMidiTriggers.js'
-import { delay } from 'helpers/asyncHelpers.js'
 import { phraseCreateNote } from 'reducers/reducePhrase.js'
 
 // ============================================================================
@@ -12,7 +11,17 @@ import { phraseCreateNote } from 'reducers/reducePhrase.js'
 export default (engine, STORE) => {
 
   let midiAccess
+  let synchronizationRegistry = {}
+  let synchronizationCallback
   let recordingStack = []
+
+  navigator.requestMIDIAccess().then(response => {
+    midiAccess = response
+    midiAccess.onstatechange = onstatechange
+    for (let entry of midiAccess.inputs) {
+      entry[1].onmidimessage = onMIDIMessage
+    }
+  })
 
   let onMIDIMessage = (event) => {
     let state = STORE.getState()
@@ -40,16 +49,12 @@ export default (engine, STORE) => {
         // End
         } else {
           if (recordingStack[key]) {
-            let {
-              start,
-              velocity,
-            } = recordingStack[key]
             STORE.dispatch(phraseCreateNote({
               trackID: state.phraseMeta.trackSelectionID,
               key,
-              start,
+              start: recordingStack[key].start,
               end: engine.playheadPositionBars,
-              velocity,
+              velocity: recordingStack[key].velocity,
               ignore: true,
               snapStart: false,
             }))
@@ -59,22 +64,25 @@ export default (engine, STORE) => {
     }
   }
 
-  return {
-    getControllers: async () => {
-      let [response] = await Promise.all([
-        navigator.requestMIDIAccess(),
-        delay(250)
-      ])
-
-      let controllers = []
-      midiAccess = response
-      for (let entry of midiAccess.inputs) {
-        entry[1].onmidimessage = onMIDIMessage
-        controllers.push(entry[1])
-      }
-
-      return controllers
+  function onstatechange({ port }) {
+    if (port.connection === "closed" || !synchronizationRegistry[port.id]) {
+      port.onmidimessage = onMIDIMessage
     }
+    // synchronizationRegistry[port.id]
+    if (synchronizationCallback) {
+      let controllers = []
+      midiAccess.inputs.forEach(entry => controllers.push(entry[1]))
+      synchronizationCallback(controllers)
+    }
+  }
+
+  return {
+    registerSynchronizationCallback: (callback) => {
+      synchronizationCallback = callback
+    },
+    destroySynchronizationCallback: () => {
+      synchronizationCallback = undefined
+    },
   }
 
 }

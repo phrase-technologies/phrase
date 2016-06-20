@@ -7,7 +7,6 @@ export class ControllerMIDI extends Component {
   constructor() {
     super()
     this.state = {
-      refreshingConnections: false,
       controllers: [],
     }
   }
@@ -56,18 +55,12 @@ export class ControllerMIDI extends Component {
     )
   }
 
-  refreshConnections = async () => {
-    this.setState({ refreshingConnections: true })
-    let controllers = await this.props.ENGINE.getMIDIControllers()
-    this.setState({
-      controllers,
-      refreshingConnections: false,
-    })
+  refreshConnections = (controllers) => {
+    this.setState({ controllers })
   }
 
   componentWillMount() {
-    this.refreshConnections()
-    this.refreshInterval = setInterval(this.refreshConnections, 1250)
+    this.props.ENGINE.midiControl.registerSynchronizationCallback(this.refreshConnections)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -75,7 +68,7 @@ export class ControllerMIDI extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.refreshInterval)
+    this.props.ENGINE.destroySynchronizationCallback()
   }
 
 }

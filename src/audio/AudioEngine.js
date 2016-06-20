@@ -79,7 +79,6 @@ export default function createAudioEngine(STORE) {
   // MIDI Controller driven behaviour
   // --------------------------------------------------------------------------
   let midiControl = linkMIDIControllers(engine, STORE)
-      midiControl.getControllers()
 
   // --------------------------------------------------------------------------
   // Expose the API
@@ -94,9 +93,7 @@ export default function createAudioEngine(STORE) {
     getTrackOutputDecibels: (trackID) => {
       return getTrackOutputDecibels(engine, trackID)
     },
-    getMIDIControllers: () => {
-      return midiControl.getControllers()
-    },
+    midiControl,
     destroy: () => {
       engine.unsubscribeStoreChanges()
       engine.ctx.close()
