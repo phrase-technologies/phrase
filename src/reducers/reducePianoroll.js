@@ -231,6 +231,7 @@ export default function reducePianoroll(state = defaultState, action) {
           currentTrack: null
         }, state)
       }
+      return state
 
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:

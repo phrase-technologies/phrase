@@ -1,5 +1,6 @@
 import u from 'updeep'
 import { phrase, transport } from '../actions/actions.js'
+import { phraseCreateClip } from 'reducers/reducePhrase'
 
 // ============================================================================
 // Transport Action Creators
@@ -44,7 +45,28 @@ export const transportAdvancePlayhead = (bar) => {
   }
 }
 export const transportStop = () => ({type: transport.STOP})
-export const transportRecord = () => ({type: transport.RECORD})
+export const transportRecord = () => {
+  return (dispatch, getState) => {
+    // Did we just start recording? Create new recording clip!
+    let state = getState()
+    if (!state.transport.recording) {
+      dispatch(phraseCreateClip({
+        trackID: state.phraseMeta.trackSelectionID,
+        start: state.transport.playhead,
+        snapStart: true,
+        ignore: true,
+        forceNewClip: true,
+      }))
+
+      dispatch({ type: transport.RECORD, targetClipID: state.phrase.present.clipAutoIncrement })
+    }
+
+    // Turning off record
+    else {
+      dispatch({ type: transport.RECORD })
+    }
+  }
+}
 export const transportSetTempo = () => ({type: transport.SET_TEMPO})
 
 
@@ -55,6 +77,7 @@ let defaultState = {
   playing: false,
   playhead: 0.000,
   recording: false,
+  targetClipID: null,
 }
 
 export default function reduceTransport(state = defaultState, action) {
@@ -65,6 +88,7 @@ export default function reduceTransport(state = defaultState, action) {
       return u({
         playing: !state.playing,
         recording: false,
+        targetClipID: null,
       }, state)
 
     // ------------------------------------------------------------------------
@@ -92,6 +116,7 @@ export default function reduceTransport(state = defaultState, action) {
       return u({
         recording: !state.recording,
         playing: state.playing || !state.recording,
+        targetClipID: action.targetClipID,
       }, state)
 
     // ------------------------------------------------------------------------
@@ -105,6 +130,7 @@ export default function reduceTransport(state = defaultState, action) {
       return u({
         playing: false,
         recording: false,
+        targetClipID: null,
       }, state)
 
     // ------------------------------------------------------------------------

@@ -1,7 +1,12 @@
 import _ from 'lodash'
 import u from 'updeep'
 import { api } from 'helpers/ajaxHelpers'
-import { uIncrement, uAppend, uRemove } from 'helpers/arrayHelpers'
+import {
+  uIncrement,
+  uAppend,
+  uRemove,
+  uReplace,
+} from 'helpers/arrayHelpers'
 
 import { phrase, mixer } from 'actions/actions'
 
@@ -43,7 +48,7 @@ export const phraseMuteTrack = (trackID) => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack = (trackID) => ({type: phrase.SOLO_TRACK, trackID})
 export const phraseSetTempo = (tempo) => ({type: phrase.SET_TEMPO, tempo})
 
-export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ignore }) => {
+export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ignore, forceNewClip }) => {
   return (dispatch, getState) => {
     dispatch({
       type: phrase.CREATE_CLIP,
@@ -52,6 +57,7 @@ export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ign
         start,
         length,
         snapStart,
+        forceNewClip,
       },
       ignore,
     })
@@ -64,11 +70,12 @@ export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ign
   }
 }
 
-export const phraseCreateNote = ({ trackID, key, start, end, velocity, ignore, snapStart = true }) => {
+export const phraseCreateNote = ({ targetClipID, trackID, key, start, end, velocity, ignore, snapStart = true }) => {
   return (dispatch, getState) => {
     dispatch({
       type: phrase.CREATE_NOTE,
       payload: {
+        targetClipID,
         trackID,
         key,
         start,
@@ -754,7 +761,7 @@ function reduceCreateTrack(state, action) {
 
 function reduceCreateClip(state, action) {
   // Skip if clip already exists
-  if (getClipAtBar(state, action.payload.start, action.payload.trackID))
+  if (!action.payload.forceNewClip && getClipAtBar(state, action.payload.start, action.payload.trackID))
     return state
 
   // Create new clip
@@ -776,13 +783,24 @@ function reduceCreateClip(state, action) {
 }
 
 function reduceCreateNote(state, action) {
-  // Skip if note already exists
-  if (getNoteAtKeyBar(state, action.payload.key, action.payload.start, action.payload.trackID))
-    return state
-
+  // Which clip should we create the note in?
+  let foundClip
+  if (action.payload.targetClipID) {
+    foundClip = state.clips.find(clip => clip.id === action.payload.targetClipID)
+    // Extend the clip if necessary
+    if (action.payload.end > foundClip.end) {
+      let extendedClip = u({
+        end: Math.ceil(action.payload.end),
+        loopLength: Math.ceil(action.payload.end) - foundClip.start,
+      }, foundClip)
+      state = u({ clips: uReplace(foundClip, extendedClip) }, state)
+    }
+  }
   // Create clip if necessary
-  state = reduceCreateClip(state, action)
-  let foundClip = getClipAtBar(state, action.payload.start, action.payload.trackID)
+  else {
+    state = reduceCreateClip(state, action)
+    foundClip = getClipAtBar(state, action.payload.start, action.payload.trackID)
+  }
 
   // Insert note, snap to same length as most previously created note
   let snapGrid = 0.125 // TODO: Make this adjust based on zoom
@@ -792,7 +810,7 @@ function reduceCreateNote(state, action) {
 
   let newNote = u.freeze({
     id:       state.noteAutoIncrement,
-    trackID:  action.payload.trackID,
+    trackID:  foundClip.trackID,
     clipID:   foundClip.id,
     keyNum:   snappedNoteKey,
     start:    action.payload.snapStart ? snappedNoteStart : action.payload.start - foundClip.start,

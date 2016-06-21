@@ -47,6 +47,7 @@ export function killNote(engine, trackID, keyNum) {
 }
 export function fireNote(engine, trackID, keyNum, velocity, time) {
   let trackModule = engine.trackModules[trackID]
+console.log( trackModule, trackID )
   let instrument = trackModule.effectsChain[0]
   instrument.fireNote(keyNum, velocity, time)
 }

@@ -50,7 +50,7 @@ export default (engine, STORE) => {
         } else {
           if (recordingStack[key]) {
             STORE.dispatch(phraseCreateNote({
-              trackID: state.phraseMeta.trackSelectionID,
+              targetClipID: state.transport.targetClipID,
               key,
               start: recordingStack[key].start,
               end: engine.playheadPositionBars,
