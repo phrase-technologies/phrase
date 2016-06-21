@@ -34,7 +34,7 @@ export function startPlayback(engine, state, dispatch) {
   // Setup first iteration
   engine.iCommand = 0
   let currentCommand = engine.midiCommands[engine.iCommand]
-  let currentCommandTime = barToPlayTime(currentCommand.bar, engine, state)
+  let currentCommandTime = currentCommand ? barToPlayTime(currentCommand.bar, engine, state) : null
 
   // BEGIN!!!
   engine.scheduleLooper = setInterval(() => {
@@ -42,17 +42,19 @@ export function startPlayback(engine, state, dispatch) {
     // Schedule up to the next few milliseconds worth of notes
     while (currentCommandTime <= engine.ctx.currentTime + 0.10) {
 
-      // Empty section at end of song - escape
+      // Empty section at end of song (no more commands) - escape
       if (engine.iCommand >= engine.midiCommands.length)
         break
 
-      fireNote(
-        engine,
-        currentCommand.trackID,
-        currentCommand.keyNum,
-        currentCommand.velocity,
-        currentCommandTime
-      )
+      if (currentCommand) {
+        fireNote(
+          engine,
+          currentCommand.trackID,
+          currentCommand.keyNum,
+          currentCommand.velocity,
+          currentCommandTime
+        )
+      }
 
       // Iterate to next command
       engine.iCommand++

@@ -785,7 +785,7 @@ function reduceCreateClip(state, action) {
 function reduceCreateNote(state, action) {
   // Which clip should we create the note in?
   let foundClip
-  if (action.payload.targetClipID) {
+  if (Number.isInteger(action.payload.targetClipID)) {
     foundClip = state.clips.find(clip => clip.id === action.payload.targetClipID)
     // Extend the clip if necessary
     if (action.payload.end > foundClip.end) {
