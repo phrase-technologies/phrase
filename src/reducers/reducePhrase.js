@@ -48,7 +48,7 @@ export const phraseMuteTrack = (trackID) => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack = (trackID) => ({type: phrase.SOLO_TRACK, trackID})
 export const phraseSetTempo = (tempo) => ({type: phrase.SET_TEMPO, tempo})
 
-export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ignore, forceNewClip }) => {
+export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ignore, newRecording }) => {
   return (dispatch, getState) => {
     dispatch({
       type: phrase.CREATE_CLIP,
@@ -57,7 +57,7 @@ export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ign
         start,
         length,
         snapStart,
-        forceNewClip,
+        newRecording,
       },
       ignore,
     })
@@ -86,22 +86,24 @@ export const phraseCreateNote = ({ targetClipID, trackID, key, start, end, veloc
       ignore,
     })
 
-    // Select the note after it's created
-    let state = getState()
-    let notes = state.phrase.present.notes
-    let newNoteID = notes[notes.length - 1].id
-    let renderedNotes = currentNotesSelector(state)
-    let newNoteLoopIterations = renderedNotes.filter(note => note.id === newNoteID)
-    let targetRenderedNote = newNoteLoopIterations.find(note => note.start <= start && note.end > start)
+    // Select the note after it's created, but NOT if it's an ignored middle step of a large operation (e.g. slice or record)
+    if (!ignore) {
+      let state = getState()
+      let notes = state.phrase.present.notes
+      let newNoteID = notes[notes.length - 1].id
+      let renderedNotes = currentNotesSelector(state)
+      let newNoteLoopIterations = renderedNotes.filter(note => note.id === newNoteID)
+      let targetRenderedNote = newNoteLoopIterations.find(note => note.start <= start && note.end > start)
 
-    dispatch({
-      type: phrase.SELECT_NOTE,
-      payload: {
-        noteID: newNoteID,
-        loopIteration: (targetRenderedNote || {}).loopIteration,
-        union: false,
-      },
-    })
+      dispatch({
+        type: phrase.SELECT_NOTE,
+        payload: {
+          noteID: newNoteID,
+          loopIteration: (targetRenderedNote || {}).loopIteration,
+          union: false,
+        },
+      })
+    }
   }
 }
 
@@ -558,6 +560,18 @@ export default function reducePhrase(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
+    case phrase.CONSOLIDATE_CLIP:
+      let foundClip = state.clips.find(clip => clip.id === action.clipID)
+      if (!foundClip)
+        return state
+
+      // Consolidate if notes are found
+      let consolidatedClip = u({ recording: undefined }, foundClip)
+      return u({
+        clips: uReplace(foundClip, consolidatedClip),
+      }, state)
+
+    // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
       let {
         selectionType,
@@ -761,7 +775,7 @@ function reduceCreateTrack(state, action) {
 
 function reduceCreateClip(state, action) {
   // Skip if clip already exists
-  if (!action.payload.forceNewClip && getClipAtBar(state, action.payload.start, action.payload.trackID))
+  if (!action.payload.newRecording && getClipAtBar(state, action.payload.start, action.payload.trackID))
     return state
 
   // Create new clip
@@ -773,6 +787,7 @@ function reduceCreateClip(state, action) {
     end:        snappedClipStart + (action.payload.length || 1.00),
     offset:     0.00,
     loopLength: 1.00,
+    recording:  action.payload.newRecording,
   })
 
   // Insert
