@@ -26,9 +26,6 @@ export class WorkstationHeader extends Component {
         <div className="container container-maximize" style={{ position: 'relative' }}>
           <div className="btn-toolbar" style={{ position: 'absolute', top: 3, left: 0 }}>
             <div className="btn-group">
-              { this.renderMIDIExportButton() }
-            </div>
-            <div className="btn-group">
               { this.renderRephraseButton() }
             </div>
             <div className="btn-group">
@@ -49,6 +46,9 @@ export class WorkstationHeader extends Component {
               </span>
             </div>
             <WorkstationHeaderShare />
+            <div className="btn-group">
+              { this.renderMIDIExportButton() }
+            </div>
           </div>
         </div>
         <div className="workstation-divider" />
@@ -128,36 +128,45 @@ export class WorkstationHeader extends Component {
 
   renderEditTool() {
     let { arrangeTool, dispatch } = this.props
+    let DefaultTooltip = <Tooltip id="tooltip-default-tool">Selection Tool (1)</Tooltip>
+    let PencilTooltip = <Tooltip id="tooltip-pencil-tool">Pencil Tool (2)</Tooltip>
+    let EraserTooltip = <Tooltip id="tooltip-eraser-tool">Eraser Tool (3)</Tooltip>
+    let SliceTooltip = <Tooltip id="tooltip-slice-tool">Slice Tool (4)</Tooltip>
 
     return (
       <div className="btn-group">
-        <button
-          className={ `btn btn-dark btn-narrow ${arrangeTool === `pointer` ? `active` : ``}` }
-          onClick={() => dispatch(arrangeToolSelect(`pointer`))}
-        >
-          <span className="fa fa-fw fa-mouse-pointer" />
-        </button>
-        <button className="btn btn-dark btn-narrow" disabled>
-          <span className="fa fa-fw fa-i-cursor" />
-        </button>
-        <button
-          className={ `btn btn-dark btn-narrow ${arrangeTool === `pencil` ? `active` : ``}` }
-          onClick={() => dispatch(arrangeToolSelect(`pencil`))}
-        >
-          <span className="fa fa-fw fa-pencil" />
-        </button>
-        <button
-          className={ `btn btn-dark btn-narrow ${arrangeTool === `eraser` ? `active` : ``}` }
-          onClick={() => dispatch(arrangeToolSelect(`eraser`))}
-        >
-          <span className="fa fa-fw fa-eraser" />
-        </button>
-        <button
-          className={ `btn btn-dark btn-narrow ${arrangeTool === `scissors` ? `active` : ``}` }
-          onClick={() => dispatch(arrangeToolSelect(`scissors`))}
-        >
-          <span className="fa fa-fw fa-scissors fa-rotate-90" />
-        </button>
+        <OverlayTrigger placement="top" overlay={DefaultTooltip} delayShow={250}>
+          <button
+            className={ `btn btn-dark btn-narrow ${arrangeTool === `pointer` ? `active` : ``}` }
+            onClick={() => dispatch(arrangeToolSelect(`pointer`))}
+          >
+            <span className="fa fa-fw fa-mouse-pointer" />
+          </button>
+        </OverlayTrigger>
+        <OverlayTrigger placement="top" overlay={PencilTooltip} delayShow={250}>
+          <button
+            className={ `btn btn-dark btn-narrow ${arrangeTool === `pencil` ? `active` : ``}` }
+            onClick={() => dispatch(arrangeToolSelect(`pencil`))}
+          >
+            <span className="fa fa-fw fa-pencil" />
+          </button>
+        </OverlayTrigger>
+        <OverlayTrigger placement="top" overlay={EraserTooltip} delayShow={250}>
+          <button
+            className={ `btn btn-dark btn-narrow ${arrangeTool === `eraser` ? `active` : ``}` }
+            onClick={() => dispatch(arrangeToolSelect(`eraser`))}
+          >
+            <span className="fa fa-fw fa-eraser" />
+          </button>
+        </OverlayTrigger>
+        <OverlayTrigger placement="top" overlay={SliceTooltip} delayShow={250}>
+          <button
+            className={ `btn btn-dark btn-narrow ${arrangeTool === `scissors` ? `active` : ``}` }
+            onClick={() => dispatch(arrangeToolSelect(`scissors`))}
+          >
+            <span className="fa fa-fw fa-scissors fa-rotate-90" />
+          </button>
+        </OverlayTrigger>
       </div>
     )
   }

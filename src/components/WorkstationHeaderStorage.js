@@ -15,7 +15,7 @@ export default class WorkstationHeaderStorage extends Component {
     let RedoTooltip = isMacPlatform()
       ? <Tooltip id="tooltip-redo">Redo (⌘Y)</Tooltip>
       : <Tooltip id="tooltip-redo">Redo (Ctrl+Y)</Tooltip>
-    let HistoryTooltip = <Tooltip id="tooltip-all-versions">Version History</Tooltip>
+    // let HistoryTooltip = <Tooltip id="tooltip-all-versions">Version History</Tooltip>
 
     return (
       <div className="btn-toolbar" style={this.props.style}>
@@ -36,11 +36,13 @@ export default class WorkstationHeaderStorage extends Component {
               <span className="fa fa-fw fa-repeat" />
             </button>
           </OverlayTrigger>
+          {/*
           <OverlayTrigger placement="top" overlay={HistoryTooltip} delayShow={250}>
             <button className="btn btn-dark btn-narrow" disabled>
               <span className="caret" />
             </button>
           </OverlayTrigger>
+          */}
         </div>
         <div className="btn-group">
           { this.renderStatus() }

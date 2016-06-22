@@ -10,6 +10,7 @@
 
 import React, { Component } from 'react'
 
+import { cursor } from 'actions/actions'
 import { shiftInterval } from '../helpers/intervalHelpers.js'
 
 let provideGridScroll = function(
@@ -94,6 +95,7 @@ let provideGridScroll = function(
     handleMouseOut = () => {
       if (cursorActionCreator) {
         this.props.dispatch(cursorActionCreator(null))
+        this.props.dispatch({ type: cursor.DEFAULT, priority: 'explicit' })
       }
     }
 

@@ -81,7 +81,7 @@ class HotkeyProvider extends Component {
         break
       case 82:  // R - Record
         dispatch(transportRecord())
-        break;
+        break
       case 32:  // Space - Toggle Playback
         dispatch(transportPlayToggle())
         e.preventDefault()
@@ -101,17 +101,17 @@ class HotkeyProvider extends Component {
         dispatch(phraseDeleteSelection())
         e.preventDefault()
         break
-      case 83:  // 's' - slice tool
-        dispatch(arrangeToolSelect(`scissors`))
+      case 49:  // 1 - Default tool
+        dispatch(arrangeToolSelect(`pointer`))
         break
-      case 69:  // 'e' - eraser tool
-        dispatch(arrangeToolSelect(`eraser`))
-        break
-      case 87:  // 'w' - write / pencil tool
+      case 50:  // 2 - Pencil tool
         dispatch(arrangeToolSelect(`pencil`))
         break
-      case 68:  // 'd' - default tool
-        dispatch(arrangeToolSelect(`pointer`))
+      case 51:  // 3 - Eraser tool
+        dispatch(arrangeToolSelect(`eraser`))
+        break
+      case 52:  // 4 - Slice tool
+        dispatch(arrangeToolSelect(`scissors`))
         break
       case 186: // ';' - Recording Count In
         dispatch(transportCountIn())
