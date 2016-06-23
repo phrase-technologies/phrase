@@ -48,7 +48,7 @@ export const phraseMuteTrack = (trackID) => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack = (trackID) => ({type: phrase.SOLO_TRACK, trackID})
 export const phraseSetTempo = (tempo) => ({type: phrase.SET_TEMPO, tempo})
 
-export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ignore, newRecording }) => {
+export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ignore, newRecording, recordingTargetClipID }) => {
   return (dispatch, getState) => {
     dispatch({
       type: phrase.CREATE_CLIP,
@@ -58,6 +58,7 @@ export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ign
         length,
         snapStart,
         newRecording,
+        recordingTargetClipID,
       },
       ignore,
     })
@@ -354,7 +355,7 @@ export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
     bar = Math.round(bar * snap) / snap
 
     if (bar >= foundNote.end || bar <= foundNote.start) return
-    
+
     dispatch({ type: phrase.DELETE_NOTE, noteID, ignore: true })
     dispatch(phraseCreateNote(trackID, foundNote.start, foundNote.keyNum, foundNote.start, bar, true))
     dispatch(phraseCreateNote(trackID, bar, foundNote.keyNum, bar, foundNote.end, false))

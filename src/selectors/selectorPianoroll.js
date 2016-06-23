@@ -7,6 +7,7 @@ export const MINIMUM_UNIT_LENGTH = 0.0078125
 
 const barCountSelector          = (state) => (state.phrase.present.barCount)
 const playheadSelector          = (state) => (state.transport.playhead)
+const recordingSelector         = (state) => (state.transport.recording)
 const tracksSelector            = (state) => (state.phrase.present.tracks)
 const clipsSelector             = (state) => (state.phrase.present.clips)
 const notesSelector             = (state) => (state.phrase.present.notes)
@@ -267,14 +268,16 @@ export const mapPianorollToProps = createSelector(
   currentNotesSelector,
   barCountSelector,
   playheadSelector,
-  (pianoroll, currentTrack, currentClips, currentNotes, barCount, playhead) => {
+  recordingSelector,
+  (pianoroll, currentTrack, currentClips, currentNotes, barCount, playhead, recording) => {
     return {
       ...pianoroll,
       currentTrack,
       clips: currentClips,
       notes: currentNotes,
       barCount,
-      playhead
+      playhead,
+      recording,
     }
   }
 )

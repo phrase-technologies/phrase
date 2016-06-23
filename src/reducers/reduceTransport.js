@@ -17,8 +17,9 @@ export const transportRewindPlayhead = (bar) => {
   return (dispatch, getState) => {
     let state = getState()
     let barCount = state.phrase.present.barCount
-    let playing = state.transport.playing
-    if (playing) {
+    if (state.transport.playing) {
+      if (state.transport.recording)
+        dispatch(transportRecord())
       dispatch({ type: transport.STOP })
       dispatch({ type: transport.REWIND_PLAYHEAD, bar, barCount })
       dispatch({ type: transport.PLAY_TOGGLE })
@@ -40,8 +41,9 @@ export const transportAdvancePlayhead = (bar) => {
   return (dispatch, getState) => {
     let state = getState()
     let barCount = state.phrase.present.barCount
-    let playing = state.transport.playing
-    if (playing) {
+    if (state.transport.playing) {
+      if (state.transport.recording)
+        dispatch(transportRecord())
       dispatch({ type: transport.STOP })
       dispatch({ type: transport.ADVANCE_PLAYHEAD, bar, barCount })
       dispatch({ type: transport.PLAY_TOGGLE })
@@ -58,24 +60,12 @@ export const transportStop = () => {
 }
 export const transportRecord = () => {
   return (dispatch, getState) => {
-    // Did we just start recording? Create new recording clip!
-    let state = getState()
-    if (!state.transport.recording) {
-      dispatch({ type: transport.RECORD, targetClipID: state.phrase.present.clipAutoIncrement })
-      dispatch(phraseCreateClip({
-        trackID: state.phraseMeta.trackSelectionID,
-        start: state.transport.playhead,
-        snapStart: true,
-        ignore: true,
-        newRecording: true,
-      }))
-    }
-
-    // Turning off record
-    else {
+    // If we are ending a recording, consolidate the recorded clip before toggling!
+    if (getState().transport.recording)
       dispatch(transportConsolidateRecording())
-      dispatch({ type: transport.RECORD })
-    }
+
+    // Toggle recording!
+    dispatch({ type: transport.RECORD })
   }
 }
 export const transportConsolidateRecording = () => {
@@ -86,7 +76,7 @@ export const transportConsolidateRecording = () => {
       let notesInClip = state.phrase.present.notes.filter(note => note.clipID === clipID).length
       if (notesInClip) {
         dispatch({ type: phrase.CONSOLIDATE_CLIP, clipID })
-      } else {
+      } else if (Number.isInteger(clipID)) {
         dispatch(UndoActions.undo())
       }
     }
@@ -141,8 +131,18 @@ export default function reduceTransport(state = defaultState, action) {
       return u({
         recording: !state.recording,
         playing: state.playing || !state.recording,
-        targetClipID: action.targetClipID,
+        targetClipID: false,
       }, state)
+
+    // ------------------------------------------------------------------------
+    // When recording, we create a new target clip for all recorded notes
+    case phrase.CREATE_CLIP:
+      if (action.payload.newRecording) {
+        return u({
+          targetClipID: action.payload.recordingTargetClipID,
+        }, state)
+      }
+      return state
 
     // ------------------------------------------------------------------------
     case transport.STOP:

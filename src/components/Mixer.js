@@ -86,7 +86,7 @@ export class Mixer extends Component {
         </MixerWindowControl>
         <MixerWindowFocus {...trackFocusProps} />
         <TimelineCursor     cursor={this.props.cursor} />
-        <TimelinePlayhead playhead={this.props.playhead} {...timelineProps} />
+        <TimelinePlayhead playhead={this.props.playhead} {...timelineProps} recording={this.props.recording} />
       </div>
     )
   }
@@ -114,6 +114,7 @@ function mapStateToProps(state) {
     yMin: state.mixer.yMin,
     yMax: state.mixer.yMax,
     playhead: state.transport.playhead,
+    recording: state.transport.recording,
     cursor: state.mixer.cursor
   }
 }

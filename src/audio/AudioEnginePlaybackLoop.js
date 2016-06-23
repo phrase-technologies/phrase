@@ -43,7 +43,7 @@ export function startPlayback(engine, state, dispatch) {
     while (currentCommandTime <= engine.ctx.currentTime + 0.10) {
 
       // Empty section at end of song (no more commands) - escape
-      if (engine.iCommand >= engine.midiCommands.length)
+      if (engine.iCommand < 0 || engine.iCommand >= engine.midiCommands.length)
         break
 
       if (currentCommand) {

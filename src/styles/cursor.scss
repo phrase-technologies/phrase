@@ -99,6 +99,14 @@
     border-top-color: rgba(255,255,255,0.75);
   }
   &:after { left: -5px; }
+
+  &.recording {
+    background: #F00;
+    &:before,
+    &:after {
+      border-top-color: #F00;
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------

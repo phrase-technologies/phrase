@@ -1,5 +1,8 @@
 import { fireNote } from './AudioEngineMidiTriggers.js'
-import { phraseCreateNote } from 'reducers/reducePhrase.js'
+import {
+  phraseCreateNote,
+  phraseCreateClip,
+} from 'reducers/reducePhrase.js'
 
 // ============================================================================
 // MIDI CONTROLLERS
@@ -46,8 +49,21 @@ export default (engine, STORE) => {
             velocity,
             start: engine.playheadPositionBars,
           }
-        // End
-        } else {
+          // Create the target clip if this is first note being recorded
+          if (!Number.isInteger(state.transport.targetClipID)) {
+            STORE.dispatch(phraseCreateClip({
+              trackID: state.phraseMeta.trackSelectionID,
+              start: state.transport.playhead,
+              snapStart: true,
+              ignore: true,
+              newRecording: true,
+              recordingTargetClipID: state.phrase.present.clipAutoIncrement,
+            }))
+          }
+        }
+
+        // End the note
+        else {
           if (recordingStack[key]) {
             STORE.dispatch(phraseCreateNote({
               targetClipID: state.transport.targetClipID,

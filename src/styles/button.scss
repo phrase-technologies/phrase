@@ -123,6 +123,12 @@ a,
     color: #FFF;
     text-shadow: 0 0 10px #FFF;
   }
+  &.active-red {
+    color: #844;
+  }
+  &.active-green {
+    color: #484;
+  }
   &.active {
     &.active-red {
       color: #F00;
