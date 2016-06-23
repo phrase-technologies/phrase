@@ -35,6 +35,8 @@ import {
   cursorClear
 } from 'actions/actionsCursor'
 
+import { transportMovePlayhead } from 'reducers/reduceTransport'
+
 import { phrase } from 'actions/actions'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
@@ -223,6 +225,8 @@ export class PianorollWindowControl extends Component {
 
       if (this.props.arrangeTool === `pencil`) {
         this.props.dispatch(phraseCreateNote(this.props.currentTrack.id, bar, key))
+      } else {
+        this.props.dispatch(transportMovePlayhead(bar, !e.metaKey))
       }
 
       return
@@ -288,16 +292,19 @@ export class PianorollWindowControl extends Component {
         0.25*noteLength
       )
 
-      if (bar < foundNote.start + threshold) {
-        this.props.dispatch(cursorResizeLeft('implicit'))
-      } else if (bar > foundNote.end - threshold) {
-        this.props.dispatch(cursorResizeRight('implicit'))
-      } else {
+      if (this.props.arrangeTool !== "pointer") {
         this.props.dispatch(cursorChange({
           icon: this.props.arrangeTool,
           priority: `implicit`
         }))
+      } else if (bar < foundNote.start + threshold) {
+        this.props.dispatch(cursorResizeLeft('implicit'))
+      } else if (bar > foundNote.end - threshold) {
+        this.props.dispatch(cursorResizeRight('implicit'))
+      } else {
+        this.props.dispatch(cursorClear('implicit'))
       }
+
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else if (e.target === this.container) {
       if (this.props.arrangeTool === `pencil`) {

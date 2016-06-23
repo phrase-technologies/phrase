@@ -95,7 +95,7 @@ let provideGridScroll = function(
     handleMouseOut = () => {
       if (cursorActionCreator) {
         this.props.dispatch(cursorActionCreator(null))
-        this.props.dispatch({ type: cursor.DEFAULT, priority: 'explicit' })
+        this.props.dispatch({ type: cursor.DEFAULT, priority: 'implicit' })
       }
     }
 

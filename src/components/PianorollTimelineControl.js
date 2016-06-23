@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { connect } from 'react-redux'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 
@@ -8,15 +9,21 @@ import { pianorollScrollX,
          pianorollSetFocusWindow } from '../reducers/reducePianoroll.js'
 import { phraseCreateClip,
          phraseSelectClip,
+         phraseSliceClip,
          phraseDragClipSelection,
          phraseDropClipSelection } from '../reducers/reducePhrase.js'
-import { cursorResizeLeft,
-         cursorResizeRight,
-         cursorResizeRightClip,
-         cursorResizeRightLoop,
-         cursorResizeRightClipped,
-         cursorResizeRightLooped,
-         cursorClear } from '../actions/actionsCursor.js'
+import {
+  cursorChange,
+  cursorResizeLeft,
+  cursorResizeRight,
+  cursorResizeRightClip,
+  cursorResizeRightLoop,
+  cursorResizeRightClipped,
+  cursorResizeRightLooped,
+  cursorClear,
+} from '../actions/actionsCursor.js'
+import { phrase } from 'actions/actions'
+import { transportMovePlayhead } from 'reducers/reduceTransport'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
 const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
@@ -107,50 +114,65 @@ export class PianorollTimelineControl extends Component {
 
     // First Click - Start Selection
     if (!this.lastEvent) {
-      this.lastEvent = {
-        action: SELECT_CLIP,
-        clipID: foundClip.id,
-        bar,
-        looped: (foundClip.loopLength !== foundClip.end - foundClip.start),
-        time: Date.now()
-      }
-      let clipLength = foundClip.end - foundClip.start
-      let threshold = Math.min(
-        8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
-        0.25*clipLength
-      )
-
-      if (!foundClip.selected) {
-        this.props.dispatch(phraseSelectClip({ clipID: foundClip.id, union: e.shiftKey }))
-      }
-
-      // Adjust Start Point
-      if (bar < foundClip.start + threshold) {
-        this.props.dispatch(cursorResizeLeft('explicit'))
-        this.lastEvent.grip = 'MIN'
-      // Adjust End Point
-      } else if (bar > foundClip.end - threshold) {
-        // Already Looped Clip
-        if (this.lastEvent.looped) {
-          this.props.dispatch(cursorResizeRight('explicit'))
-        // Possibly Looped Clip Depending on Cursor Position
-        } else {
-          let top = e.clientY - this.container.getBoundingClientRect().top
-          // Not Looped
-          if (top <= 37.5) {
-            this.props.dispatch(cursorResizeRightClipped('explicit'))
-            this.lastEvent.looped = false
-          // Looped
-          } else {
-            this.props.dispatch(cursorResizeRightLooped('explicit'))
-            this.lastEvent.looped = true
+      switch (this.props.arrangeTool) {
+        case 'pointer':
+          this.lastEvent = {
+            action: SELECT_CLIP,
+            clipID: foundClip.id,
+            bar,
+            looped: (foundClip.loopLength !== foundClip.end - foundClip.start),
+            time: Date.now()
           }
-        }
-        this.lastEvent.grip = 'MAX'
-      // Move Entire Clip
-      } else {
-        this.props.dispatch(cursorClear('explicit'))
-        this.lastEvent.grip = 'MID'
+          let clipLength = foundClip.end - foundClip.start
+          let threshold = Math.min(
+            8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
+            0.25*clipLength
+          )
+
+          if (!foundClip.selected) {
+            this.props.dispatch(phraseSelectClip({ clipID: foundClip.id, union: e.shiftKey }))
+          }
+
+          // Adjust Start Point
+          if (bar < foundClip.start + threshold) {
+            this.props.dispatch(cursorResizeLeft('explicit'))
+            this.lastEvent.grip = 'MIN'
+          // Adjust End Point
+          } else if (bar > foundClip.end - threshold) {
+            // Already Looped Clip
+            if (this.lastEvent.looped) {
+              this.props.dispatch(cursorResizeRight('explicit'))
+            // Possibly Looped Clip Depending on Cursor Position
+            } else {
+              let top = e.clientY - this.container.getBoundingClientRect().top
+              // Not Looped
+              if (top <= 37.5) {
+                this.props.dispatch(cursorResizeRightClipped('explicit'))
+                this.lastEvent.looped = false
+              // Looped
+              } else {
+                this.props.dispatch(cursorResizeRightLooped('explicit'))
+                this.lastEvent.looped = true
+              }
+            }
+            this.lastEvent.grip = 'MAX'
+          // Move Entire Clip
+          } else {
+            this.props.dispatch(cursorClear('explicit'))
+            this.lastEvent.grip = 'MID'
+          }
+          break
+
+        case 'scissors':
+          this.props.dispatch(phraseSliceClip({ bar, trackID: foundClip.trackID, foundClip }))
+          break
+
+        case 'eraser':
+          this.props.dispatch({ type: phrase.DELETE_CLIP, clipID: foundClip.id })
+          break
+
+        default:
+          return
       }
     }
   }
@@ -177,6 +199,13 @@ export class PianorollTimelineControl extends Component {
         bar,
         time: Date.now()
       }
+
+      if (this.props.arrangeTool === `pencil`) {
+        this.props.dispatch(phraseCreateClip(this.props.currentTrack.id, bar))
+      } else {
+        this.props.dispatch(transportMovePlayhead(bar, !e.metaKey))
+      }
+
       return
     }
   }
@@ -228,7 +257,9 @@ export class PianorollTimelineControl extends Component {
         0.25*clipLength
       )
 
-      if (bar < foundClip.start + threshold) {
+      if (this.props.arrangeTool !== "pencil") {
+        this.props.dispatch(cursorChange({ icon: this.props.arrangeTool, priority: `implicit` }))
+      } else if (bar < foundClip.start + threshold) {
         this.props.dispatch(cursorResizeLeft('implicit'))
       } else if (bar > foundClip.end - threshold) {
         if (foundClip.loopLength !== foundClip.end - foundClip.start)
@@ -244,7 +275,10 @@ export class PianorollTimelineControl extends Component {
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else {
-      this.props.dispatch(cursorClear('implicit'))
+      if (this.props.arrangeTool === `pencil`) {
+        this.props.dispatch(cursorChange({ icon: this.props.arrangeTool, priority: `implicit` }))
+      }
+      else this.props.dispatch(cursorClear('implicit'))
     }
   }
 
@@ -293,12 +327,15 @@ PianorollTimelineControl.propTypes = {
   clips:        React.PropTypes.array.isRequired
 }
 
-export default provideGridSystem(
-  provideGridScroll(
-    PianorollTimelineControl,
-    {
-      scrollXActionCreator: pianorollScrollX,
-      cursorActionCreator: pianorollMoveCursor
-    }
+export default
+connect(state => ({ arrangeTool: state.arrangeTool }))(
+  provideGridSystem(
+    provideGridScroll(
+      PianorollTimelineControl,
+      {
+        scrollXActionCreator: pianorollScrollX,
+        cursorActionCreator: pianorollMoveCursor
+      }
+    )
   )
 )

@@ -33,7 +33,7 @@ import {
 } from 'reducers/reducePhrase'
 
 import { phrase } from 'actions/actions'
-
+import { transportMovePlayhead } from 'reducers/reduceTransport'
 import { pianorollSetFocusWindow } from 'reducers/reducePianoroll'
 
 import {
@@ -233,6 +233,8 @@ export class MixerWindowControl extends Component {
 
       if (this.props.arrangeTool === `pencil`) {
         this.props.dispatch(phraseCreateClip({ trackID, start: bar }))
+      } else {
+        this.props.dispatch(transportMovePlayhead(bar, !e.metaKey))
       }
 
       return
@@ -297,7 +299,9 @@ export class MixerWindowControl extends Component {
         0.25 * clipLength
       )
 
-      if (bar < foundClip.start + threshold) {
+      if (arrangeTool !== "pointer") {
+        dispatch(cursorChange({ icon: arrangeTool, priority: `implicit` }))
+      } else if (bar < foundClip.start + threshold) {
         dispatch(cursorResizeLeft('implicit'))
       } else if (bar > foundClip.end - threshold) {
         if (foundClip.loopLength !== foundClip.end - foundClip.start)
@@ -307,7 +311,7 @@ export class MixerWindowControl extends Component {
             ? dispatch(cursorResizeRightClip('implicit'))
             : dispatch(cursorResizeRightLoop('implicit'))
       } else {
-        dispatch(cursorChange({ icon: arrangeTool, priority: `implicit` }))
+        dispatch(cursorClear('implicit'))
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else {

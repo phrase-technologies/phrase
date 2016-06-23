@@ -27,10 +27,11 @@ export const transportRewindPlayhead = (bar) => {
     }
   }
 }
-export const transportMovePlayhead = (bar) => {
+export const transportMovePlayhead = (bar, snap = false) => {
   // We need to know the length of the phrase - use a thunk to access other state branches
   return (dispatch, getState) => {
     let state = getState()
+    bar = snap ? Math.round(bar * 4) * 0.25 : bar
     let barCount = state.phrase.present.barCount
     dispatch({ type: transport.MOVE_PLAYHEAD, bar, barCount })
   }
