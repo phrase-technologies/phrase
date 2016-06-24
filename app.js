@@ -71,6 +71,7 @@ async function bootstrap () {
     app.set(`superSecret`, secret)
 
     app.use(cors())
+    app.use(express.static(`sounds`))
 
     app.use(bodyParser.json({ limit: `50mb` }))
     app.use(bodyParser.urlencoded({ limit: `50mb`, extended: true }))
