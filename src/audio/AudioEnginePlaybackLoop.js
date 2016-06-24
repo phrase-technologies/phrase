@@ -36,6 +36,7 @@ export function startPlayback(engine, dispatch) {
   engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * BEATS_PER_BAR * SECONDS_PER_MINUTE / engine.lastState.phrase.present.tempo
 
   // Setup first iteration
+  engine.metronomeTickCount = engine.lastState.transport.recording && engine.lastState.transport.countIn ? -4 : 0
   engine.metronomeNextTick = Math.ceil(engine.lastState.transport.playhead * 4) * 0.25
   engine.iCommand = 0
   let currentCommand = engine.midiCommands[engine.iCommand]
@@ -72,14 +73,16 @@ export function startPlayback(engine, dispatch) {
 
     // Metronome
     let metronomeTime = barToPlayTime(engine.metronomeNextTick, engine)
-    let useMetronome = engine.isRecording || engine.lastState.transport.metronome
+    let useCountIn = engine.isRecording && engine.lastState.transport.countIn && engine.metronomeTickCount < 0
+    let useMetronome = engine.lastState.transport.metronome
     while (metronomeTime <= engine.ctx.currentTime + 0.10) {
-      if (useMetronome) {
+      if (useCountIn || useMetronome) {
         engine.metronomeNextTick % 1.0 === 0
          ? engine.metronome.tick(metronomeTime)
          : engine.metronome.tock(metronomeTime)
       }
       engine.metronomeNextTick += 0.25
+      engine.metronomeTickCount++
       metronomeTime = barToPlayTime(engine.metronomeNextTick, engine)
     }
 

@@ -93,6 +93,7 @@ export default function createAudioEngine(STORE) {
     else if (!state.transport.recording && engine.isRecording) {
       engine.isRecording = false
       engine.metronomeNextTick = null
+      engine.metronomeTickCount = 0
     }
   })
 
