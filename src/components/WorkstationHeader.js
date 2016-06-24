@@ -6,7 +6,6 @@ import WorkstationHeaderTitle from './WorkstationHeaderTitle'
 import WorkstationHeaderAuthor from './WorkstationHeaderAuthor'
 import WorkstationHeaderStorage from './WorkstationHeaderStorage'
 import WorkstationHeaderShare from './WorkstationHeaderShare'
-import TransportTempo from './TransportTempo'
 import TransportControls from './TransportControls'
 
 import {
@@ -55,10 +54,7 @@ export class WorkstationHeader extends Component {
         <div className="workstation-divider" />
         <WorkstationHeaderStorage {...this.props} style={{ position: 'absolute', top: 65, left: 10 }} />
         <div className="text-center">
-          <div className="btn-toolbar" style={{ display: 'inline-block' }}>
-            <TransportTempo />
-            <TransportControls />
-          </div>
+          <TransportControls style={{ display: 'inline-block' }} />
         </div>
         <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 10 }}>
           { this.renderEditTool() }

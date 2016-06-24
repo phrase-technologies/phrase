@@ -6,8 +6,8 @@ import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 export default (props) => {
   let colorClass = ` ${props.color ? `active-${props.color}` : ''}`
   let activeClass = ` ${props.toggle ? 'active' : ''}`
-  let buttonClasses = 'btn btn-link btn-glow transport-btn' + activeClass + colorClass
-  let iconClasses = `fa fa-fw fa-${props.type}`
+  let narrowClass = ` ${props.narrow ? 'btn-narrow' : 'transport-btn'}`
+  let buttonClasses = 'btn btn-link btn-glow' + activeClass + colorClass + narrowClass
   let buttonTooltip = <Tooltip id="tooltip-all-versions">{props.tooltip}</Tooltip>
 
   return (
@@ -18,7 +18,7 @@ export default (props) => {
         onClick={props.onButtonClick}
         tabIndex="-1"
       >
-        <i className={iconClasses} />
+        { props.children }
       </button>
     </OverlayTrigger>
   )

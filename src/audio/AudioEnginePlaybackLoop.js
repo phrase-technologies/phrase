@@ -1,6 +1,9 @@
 import _ from 'lodash'
 
-import { transportMovePlayhead } from '../reducers/reduceTransport.js'
+import {
+  transportMovePlayhead,
+  transportStop
+} from '../reducers/reduceTransport.js'
 
 import { fireNote,
          killNote } from './AudioEngineMidiTriggers.js'
@@ -22,19 +25,21 @@ import {
 // TODO: Use WebWorkers to trigger each tick of the loop, to avoid playback
 //       stutter when tab moves to the background. Example:
 //       https://github.com/cwilso/metronome/blob/master/js/metronome.js
-export function startPlayback(engine, state, dispatch) {
+export function startPlayback(engine, dispatch) {
 
   console.log('startPlayback()', engine.ctx.currentTime)
 
   // Keep track of when playback began
   engine.isPlaying = true
-  engine.playheadPositionBars = state.transport.playhead
+  engine.isRecording = engine.lastState.transport.recording
+  engine.playheadPositionBars = engine.lastState.transport.playhead
   engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * BEATS_PER_BAR * SECONDS_PER_MINUTE / engine.lastState.phrase.present.tempo
 
   // Setup first iteration
+  engine.metronomeNextTick = Math.ceil(engine.lastState.transport.playhead * 4) * 0.25
   engine.iCommand = 0
   let currentCommand = engine.midiCommands[engine.iCommand]
-  let currentCommandTime = currentCommand ? barToPlayTime(currentCommand.bar, engine, state) : null
+  let currentCommandTime = currentCommand ? barToPlayTime(currentCommand.bar, engine) : null
 
   // BEGIN!!!
   engine.scheduleLooper = setInterval(() => {
@@ -47,6 +52,7 @@ export function startPlayback(engine, state, dispatch) {
         break
 
       if (currentCommand) {
+        console.log("fireNote", currentCommandTime, engine.ctx.currentTime)
         fireNote(
           engine,
           currentCommand.trackID,
@@ -64,9 +70,26 @@ export function startPlayback(engine, state, dispatch) {
       currentCommandTime = barToPlayTime(currentCommand.bar, engine)
     }
 
+    // Metronome
+    let metronomeTime = barToPlayTime(engine.metronomeNextTick, engine)
+    let useMetronome = engine.isRecording || engine.lastState.transport.metronome
+    while (metronomeTime <= engine.ctx.currentTime + 0.10) {
+      if (useMetronome) {
+        engine.metronomeNextTick % 1.0 === 0
+         ? engine.metronome.tick(metronomeTime)
+         : engine.metronome.tock(metronomeTime)
+      }
+      engine.metronomeNextTick += 0.25
+      metronomeTime = barToPlayTime(engine.metronomeNextTick, engine)
+    }
+
     // Update playhead
     engine.playheadPositionBars = playTimeToBar(engine.ctx.currentTime, engine)
     dispatch(transportMovePlayhead(engine.playheadPositionBars))
+
+    // End of the timeline - STOP
+    if (engine.playheadPositionBars >= engine.lastState.phrase.present.barCount)
+      dispatch(transportStop())
 
   }, 5)
 
@@ -95,6 +118,8 @@ export function stopPlayback(engine) {
   }
 
   // Reset flags
+  engine.metronomeNextTick = null
+  engine.metronome.cancel()
   engine.stopQueued = false
   engine.isPlaying = false
 }

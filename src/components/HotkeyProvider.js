@@ -8,6 +8,8 @@ import {
   transportStop,
   transportRewindPlayhead,
   transportAdvancePlayhead,
+  transportCountIn,
+  transportMetronome,
 } from 'reducers/reduceTransport'
 
 import { phraseDeleteSelection } from 'reducers/reducePhrase'
@@ -110,6 +112,12 @@ class HotkeyProvider extends Component {
         break
       case 68:  // 'd' - default tool
         dispatch(arrangeToolSelect(`pointer`))
+        break
+      case 186: // ';' - Recording Count In
+        dispatch(transportCountIn())
+        break
+      case 222: // '"' - Metronome
+        dispatch(transportMetronome())
         break
     }
   }

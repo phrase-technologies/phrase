@@ -27,7 +27,8 @@ export const transport = namespaceActions(
     'ADVANCE_PLAYHEAD',
     'STOP',
     'RECORD',
-    'SET_TEMPO'
+    'COUNT_IN',
+    'METRONOME',
   ]
 )
 

@@ -1,6 +1,5 @@
 import u from 'updeep'
 import { phrase, transport } from '../actions/actions.js'
-import { phraseCreateClip } from 'reducers/reducePhrase'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
 // ============================================================================
@@ -60,9 +59,10 @@ export const transportStop = () => {
 }
 export const transportRecord = () => {
   return (dispatch, getState) => {
-    // If we are ending a recording, consolidate the recorded clip before toggling!
-    if (getState().transport.recording)
+    // Ending a recording - consolidate the recorded clip before toggling!
+    if (getState().transport.recording) {
       dispatch(transportConsolidateRecording())
+    }
 
     // Toggle recording!
     dispatch({ type: transport.RECORD })
@@ -82,7 +82,8 @@ export const transportConsolidateRecording = () => {
     }
   }
 }
-export const transportSetTempo = () => ({type: transport.SET_TEMPO})
+export const transportCountIn = () => ({type: transport.COUNT_IN})
+export const transportMetronome = () => ({type: transport.METRONOME})
 
 
 // ============================================================================
@@ -92,6 +93,8 @@ let defaultState = {
   playing: false,
   playhead: 0.000,
   recording: false,
+  countIn: true,
+  metronome: false,
   targetClipID: null,
 }
 
@@ -114,10 +117,10 @@ export default function reduceTransport(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case transport.MOVE_PLAYHEAD:
-      let playhead = Math.max(action.bar, 0)
-          playhead = Math.min(playhead, action.barCount)
       return u({
-        playhead
+        playhead: state.recording || state.playing
+          ? Math.min(action.bar, action.barCount)
+          : Math.max(Math.min(action.bar, action.barCount), 0)
       }, state)
 
     // ------------------------------------------------------------------------
@@ -128,10 +131,18 @@ export default function reduceTransport(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case transport.RECORD:
+      let newPlayhead = state.playhead
+      // Start recording
+      if (!state.recording) {
+        // Metronome count in
+        if (!state.playing && state.countIn)
+          newPlayhead = Math.floor(state.playhead) - 1.0
+      }
       return u({
         recording: !state.recording,
         playing: state.playing || !state.recording,
         targetClipID: false,
+        playhead: newPlayhead,
       }, state)
 
     // ------------------------------------------------------------------------
@@ -156,6 +167,18 @@ export default function reduceTransport(state = defaultState, action) {
         playing: false,
         recording: false,
         targetClipID: null,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case transport.COUNT_IN:
+      return u({
+        countIn: !state.countIn,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case transport.METRONOME:
+      return u({
+        metronome: !state.metronome,
       }, state)
 
     // ------------------------------------------------------------------------

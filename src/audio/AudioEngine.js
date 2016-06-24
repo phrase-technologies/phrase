@@ -1,10 +1,17 @@
-import { updateNodes,
-         getTrackOutputDecibels } from './AudioEngineNodes.js'
-import { fireNote,
-         killNote,
-         updateMidiCommands } from './AudioEngineMidiTriggers.js'
-import { startPlayback,
-         stopPlayback } from './AudioEnginePlaybackLoop.js'
+import {
+  updateNodes,
+  createMetronome,
+  getTrackOutputDecibels
+} from './AudioEngineNodes.js'
+import {
+  fireNote,
+  killNote,
+  updateMidiCommands
+} from './AudioEngineMidiTriggers.js'
+import {
+  startPlayback,
+  stopPlayback,
+} from './AudioEnginePlaybackLoop.js'
 import linkMIDIControllers from './AudioEngineMidiControl.js'
 
 let AudioContext = AudioContext || webkitAudioContext
@@ -55,14 +62,7 @@ export default function createAudioEngine(STORE) {
   engine.unsubscribeStoreChanges = STORE.subscribe(() => {
     let state = STORE.getState()
 
-    // PLAY Playback state
-    if (state.transport.playing && !engine.isPlaying)
-      startPlayback(engine, state, STORE.dispatch)
-
-    // STOP Playback state
-    if (!state.transport.playing && engine.isPlaying)
-      stopPlayback(engine, state)
-
+    // ---------- Graph Updates ----------
     // Tracks and Effects Chains
     if (state.phrase.present.tracks !== engine.lastState.tracks)
       updateNodes(engine, state)
@@ -73,12 +73,38 @@ export default function createAudioEngine(STORE) {
 
     // Keep track of last state to avoid duplicated updates
     engine.lastState = state
+
+    // ---------- Realtime Behaviours ----------
+    // PLAY Playback state
+    if (state.transport.playing && !engine.isPlaying) {
+      startPlayback(engine, STORE.dispatch)
+    }
+    // STOP Playback state
+    else if (!state.transport.playing && engine.isPlaying) {
+      stopPlayback(engine)
+    }
+
+    // RECORD start during existing playback
+    if (state.transport.recording && !engine.isRecording) {
+      engine.isRecording = true
+      engine.metronomeNextTick = Math.ceil(state.transport.playhead * 4) * 0.25
+    }
+    // RECORD end while playback continues
+    else if (!state.transport.recording && engine.isRecording) {
+      engine.isRecording = false
+      engine.metronomeNextTick = null
+    }
   })
 
   // --------------------------------------------------------------------------
   // MIDI Controller driven behaviour
   // --------------------------------------------------------------------------
   let midiControl = linkMIDIControllers(engine, STORE)
+
+  // --------------------------------------------------------------------------
+  // Metronome
+  // --------------------------------------------------------------------------
+  createMetronome(engine)
 
   // --------------------------------------------------------------------------
   // Expose the API
