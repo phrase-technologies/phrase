@@ -1,8 +1,10 @@
 import u from 'updeep'
-import { zoomInterval,
-         restrictTimelineZoom,
-         maxBarWidth,
-       } from '../helpers/intervalHelpers.js'
+import {
+  zoomInterval,
+  shiftInterval,
+  restrictTimelineZoom,
+  maxBarWidth,
+} from '../helpers/intervalHelpers.js'
 import { getTracksHeight } from '../helpers/trackHelpers.js'
 import { mixer } from '../actions/actions.js'
 
@@ -115,17 +117,38 @@ export default function reduceMixer(state = defaultState, action) {
         return restrictTimelineZoom(state, action.barCount)
       }
 
-      state = u({
-        xMin: action.min === undefined ? state.xMin : Math.max(0.0, action.min),
-        xMax: action.max === undefined ? state.xMax : Math.min(1.0, action.max)
-      }, state)
+      // Regular Scroll X
+      if (action.delta !== undefined) {
+        let barWindow = state.xMax - state.xMin
+        let barStepSize = action.delta / state.width * barWindow
+        let [newBarMin, newBarMax] = shiftInterval([state.xMin, state.xMax], barStepSize)
+        state = u({
+          xMin: Math.max(0.0, newBarMin),
+          xMax: Math.min(1.0, newBarMax),
+        }, state)
+      } else {
+        state = u({
+          xMin: action.min === undefined ? state.xMin : Math.max(0.0, action.min),
+          xMax: action.max === undefined ? state.xMax : Math.min(1.0, action.max)
+        }, state)
+      }
       return restrictTimelineZoom(state, action.barCount)
 
     // ------------------------------------------------------------------------
     case mixer.SCROLL_Y:
+      if (action.delta !== undefined) {
+        let keyWindow = state.yMax - state.yMin
+        let keyStepSize = action.delta / state.height * keyWindow
+        let [newKeyMin, newKeyMax] = shiftInterval([state.yMin, state.yMax], keyStepSize)
+        return u({
+          yMin: Math.max(0.0, newKeyMin),
+          yMax: Math.min(1.0, newKeyMax),
+        }, state)
+      }
+
       return u({
-        yMin: action.min === undefined ? state.yMin : Math.max(0.0, action.min),
-        yMax: action.max === undefined ? state.yMax : Math.min(1.0, action.max)
+        yMin: action.min === null ? state.yMin : Math.max(0.0, action.min),
+        yMax: action.max === null ? state.yMax : Math.min(1.0, action.max)
       }, state)
 
     // ------------------------------------------------------------------------

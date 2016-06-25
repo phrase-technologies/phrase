@@ -72,18 +72,12 @@ let provideGridScroll = function(
     }
     handleScrollX(e) {
       if (scrollXActionCreator) {
-        let barWindow = this.props.xMax - this.props.xMin
-        let barStepSize = e.deltaX / this.props.grid.container.clientWidth * barWindow
-        let [newBarMin, newBarMax] = shiftInterval([this.props.xMin, this.props.xMax], barStepSize)
-        this.props.dispatch(scrollXActionCreator({ min: newBarMin, max: newBarMax }))
+        this.props.dispatch(scrollXActionCreator({ delta: e.deltaX }))
       }
     }
     handleScrollY(e) {
       if (scrollYActionCreator) {
-        let keyWindow = this.props.yMax - this.props.yMin
-        let keyStepSize = e.deltaY / this.props.grid.container.clientHeight * keyWindow
-        let [newKeyMin, newKeyMax] = shiftInterval([this.props.yMin, this.props.yMax], keyStepSize)
-        this.props.dispatch(scrollYActionCreator({ min: newKeyMin, max: newKeyMax }))
+        this.props.dispatch(scrollYActionCreator({ delta: e.deltaY }))
       }
     }
     handleMouseMove = (e) => {

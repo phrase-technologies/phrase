@@ -1,9 +1,10 @@
 import u from 'updeep'
-import { zoomInterval,
-         shiftInterval,
-         restrictTimelineZoom,
-         maxBarWidth,
-       } from '../helpers/intervalHelpers.js'
+import {
+  zoomInterval,
+  shiftInterval,
+  restrictTimelineZoom,
+  maxBarWidth,
+} from '../helpers/intervalHelpers.js'
 
 import { pianoroll, phrase } from '../actions/actions.js'
 import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
@@ -112,10 +113,20 @@ export default function reducePianoroll(state = defaultState, action) {
       }
 
       // Regular Scroll X
-      state = u({
-        xMin: action.min === undefined ? state.xMin : Math.max(0.0, action.min),
-        xMax: action.max === undefined ? state.xMax : Math.min(1.0, action.max)
-      }, state)
+      if (action.delta !== undefined) {
+        let barWindow = state.xMax - state.xMin
+        let barStepSize = action.delta / state.width * barWindow
+        let [newBarMin, newBarMax] = shiftInterval([state.xMin, state.xMax], barStepSize)
+        state = u({
+          xMin: Math.max(0.0, newBarMin),
+          xMax: Math.min(1.0, newBarMax),
+        }, state)
+      } else {
+        state = u({
+          xMin: action.min === undefined ? state.xMin : Math.max(0.0, action.min),
+          xMax: action.max === undefined ? state.xMax : Math.min(1.0, action.max)
+        }, state)
+      }
       return restrictTimelineZoom(state, action.barCount)
 
     // ------------------------------------------------------------------------
@@ -139,12 +150,21 @@ export default function reducePianoroll(state = defaultState, action) {
       }
 
       // Regular Scroll Y
-      return restrictKeyboardZoom(
-        u({
+      if (action.delta !== undefined) {
+        let keyWindow = state.yMax - state.yMin
+        let keyStepSize = action.delta / state.height * keyWindow
+        let [newKeyMin, newKeyMax] = shiftInterval([state.yMin, state.yMax], keyStepSize)
+        state = u({
+          yMin: Math.max(0.0, newKeyMin),
+          yMax: Math.min(1.0, newKeyMax),
+        }, state)
+      } else {
+        state = u({
           yMin: action.min === null ? state.yMin : Math.max(0.0, action.min),
           yMax: action.max === null ? state.yMax : Math.min(1.0, action.max)
         }, state)
-      )
+      }
+      return restrictKeyboardZoom(state)
 
     // ------------------------------------------------------------------------
     case pianoroll.SELECTION_BOX_START:

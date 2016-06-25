@@ -75,18 +75,31 @@
   right:  0;
   bottom: 0;
 }
-.timeline-playhead {
+.timeline-playhead-grip {
   display: none;
 
+  margin-left: -2px;
   position: absolute;
   top: 0;
   bottom: 0;
   left: 300px;
-  width: 1px;
+  width: 5px;
   z-index: 4;  // Above all other track layers
+
+  pointer-events: all;
+  cursor: ew-resize;
+}
+.timeline-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2px;
+  width: 1px;
 
   background: rgba(255,255,255,0.75);
   box-shadow: 0 0 3px 1px #000;
+
+  pointer-events: none;
 
   &:before,
   &:after {

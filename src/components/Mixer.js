@@ -71,6 +71,14 @@ export class Mixer extends Component {
       clips: this.props.clips
     }
 
+    let playheadProps = {
+      ...timelineProps,
+      recording: this.props.recording,
+      playhead: this.props.playhead,
+      scrollXActionCreator: mixerScrollX,
+      scrollYActionCreator: mixerScrollY,
+    }
+
     return (
       <div className={mixerClasses}>
         <MixerTimeline {...timelineProps} />
@@ -86,7 +94,7 @@ export class Mixer extends Component {
         </MixerWindowControl>
         <MixerWindowFocus {...trackFocusProps} />
         <TimelineCursor     cursor={this.props.cursor} />
-        <TimelinePlayhead playhead={this.props.playhead} {...timelineProps} recording={this.props.recording} />
+        <TimelinePlayhead {...playheadProps} />
       </div>
     )
   }

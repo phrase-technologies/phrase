@@ -56,6 +56,15 @@ export default class Pianoroll extends Component {
       selectionEndY: this.props.selectionEndY
     }
 
+    let playheadProps = {
+      ...timelineProps,
+      recording: this.props.recording,
+      playhead: this.props.playhead,
+      dispatch: this.props.dispatch,
+      scrollXActionCreator: pianorollScrollX,
+      scrollYActionCreator: pianorollScrollY,
+    }
+
     return (
       <div className="pianoroll">
         <PianorollKeyboard {...dispatchProp} {...keyboardProps} currentTrack={this.props.currentTrack} />
@@ -78,7 +87,7 @@ export default class Pianoroll extends Component {
         </PianorollWindowControl>
         <TimelineSelectionBox {...selectionBoxProps} />
         <TimelineCursor cursor={this.props.cursor} />
-        <TimelinePlayhead {...timelineProps} playhead={this.props.playhead} recording={this.props.recording} />
+        <TimelinePlayhead {...playheadProps} />
       </div>
     )
   }
