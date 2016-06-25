@@ -18,7 +18,7 @@ export function updateMidiCommands(engine, state) {
   if (latestMidiCommands !== engine.midiCommands) {
     engine.midiCommands = latestMidiCommands
     engine.iCommand = engine.midiCommands.findIndex(command => {
-      command.bar >= engine.playheadPositionBars
+      return command.start >= engine.playheadPositionBars
     })
   }
 
