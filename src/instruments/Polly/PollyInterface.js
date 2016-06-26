@@ -2,9 +2,9 @@ import React from 'react'
 
 let style = {
   container: {
-    height: `150px`,
     padding: `10px`,
     backgroundColor: `rgb(34, 101, 150)`,
+    display: `flex`
   },
   title: {
     fontSize: `3rem`,
@@ -28,7 +28,7 @@ let PollyInterface = ({ track, update }) => {
   return (
     <div style={style.container}>
       <div style={style.title}>POLLY</div>
-      <div style={{ display: `flex` }}>
+      <div style={{ display: `flex`, marginLeft: `auto` }}>
         { [ `sine`, `triangle`, `sawtooth`, `square`, ].map(oscillatorType =>
           <div
             key={oscillatorType}
