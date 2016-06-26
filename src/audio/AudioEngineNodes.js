@@ -71,7 +71,7 @@ function createTrackModule(engine, track) {
   let outputBuffer = new Uint8Array(OUTPUT_METER_SIZE)
 
   // The actual sound generation!
-  var synth = new Instruments[track.instrument.name](engine.ctx, 20)
+  var synth = new Instruments[track.instrument.name].source(engine.ctx, 20)
       synth.connect(outputPan)
 
   let effectsChain = [
