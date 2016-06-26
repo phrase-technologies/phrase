@@ -18,13 +18,17 @@ export default (engine, STORE) => {
   let synchronizationCallback
   let recordingStack = []
 
-  navigator.requestMIDIAccess().then(response => {
-    midiAccess = response
-    midiAccess.onstatechange = onstatechange
-    for (let entry of midiAccess.inputs) {
-      entry[1].onmidimessage = onMIDIMessage
-    }
-  })
+  try {
+    navigator.requestMIDIAccess().then(response => {
+      midiAccess = response
+      midiAccess.onstatechange = onstatechange
+      for (let entry of midiAccess.inputs) {
+        entry[1].onmidimessage = onMIDIMessage
+      }
+    })
+  } catch (e) {
+    console.error(e)
+  }
 
   let onMIDIMessage = (event) => {
     let state = STORE.getState()
@@ -88,7 +92,7 @@ export default (engine, STORE) => {
   }
 
   function synchronize() {
-    if (synchronizationCallback) {
+    if (synchronizationCallback && midiAccess) {
       let controllers = []
       midiAccess.inputs.forEach(entry => controllers.push(entry))
       synchronizationCallback(controllers)

@@ -127,6 +127,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 }
 .workstation-header-title-wrapper {
   display: inline-block;
+  vertical-align: middle;
   position: relative;
   height: 35px;
 
@@ -165,6 +166,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 }
 .workstation-header-author {
   display: inline-block;
+  vertical-align: middle;
   color: #AAA;
   margin-right: 10px;
   font-size: 16px;

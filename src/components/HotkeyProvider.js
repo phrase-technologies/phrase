@@ -113,13 +113,18 @@ class HotkeyProvider extends Component {
       case 52:  // 4 - Slice tool
         dispatch(arrangeToolSelect(`scissors`))
         break
-      case 186: // ';' - Recording Count In
+      case 59:  // ';' - Recording Count In
+      case 186:
         dispatch(transportCountIn())
+        e.preventDefault()
         break
       case 222: // '"' - Metronome
         dispatch(transportMetronome())
+        e.preventDefault()
         break
     }
+
+    console.log( e.keyCode )
   }
 }
 

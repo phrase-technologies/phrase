@@ -109,7 +109,6 @@ export function createMetronome(engine) {
   let synth = engine.ctx.createOscillator()
       synth.frequency.value = 880
       synth.connect(envelope)
-      synth.type = "SINE"
       synth.start(0)
 
   engine.metronome = {
