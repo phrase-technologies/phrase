@@ -14,7 +14,8 @@ export const layout = namespaceActions(
   'layout',
   [
     'CONSOLE_EMBED',
-    'CONSOLE_SPLIT'
+    'CONSOLE_SPLIT',
+    'TOGGLE_RACK'
   ]
 )
 
@@ -39,6 +40,7 @@ export const phrase = namespaceActions(
     'CREATE_TRACK',
     'MUTE_TRACK',
     'SOLO_TRACK',
+    'UPDATE_TRACK_CONFIG',
     'SET_TEMPO',
     'CREATE_CLIP',
     'DELETE_CLIP',

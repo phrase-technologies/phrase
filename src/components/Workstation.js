@@ -16,6 +16,7 @@ import WorkstationSplit from './WorkstationSplit'
 import WorkstationFooter from './WorkstationFooter'
 import Mixer from './Mixer'
 import Pianoroll from './Pianoroll'
+import Rack from './Rack'
 
 export class Workstation extends Component {
 
@@ -104,6 +105,26 @@ export class Workstation extends Component {
               </div>
             </div>
           </div>
+          <WorkstationFooter />
+          <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
+            <h2
+              className="workstation-heading"
+              { ...(this.props.rackOpen ? { style: { right: `505px` }} : {}) }
+            >
+              <span className="workstation-heading-vertical">
+                <span>Effects Chain &nbsp;&nbsp;</span>
+                <span className="fa fa-plus-square" />
+              </span>
+            </h2>
+            { this.props.rackOpen && this.props.selectedTrack &&
+              <Rack track={this.props.selectedTrack} />
+            }
+            { this.props.rackOpen && !this.props.selectedTrack &&
+              <div className="rack-select-track">
+                Select a track to view its Rack
+              </div>
+            }
+          </div>
         </div>
       </div>
     )
@@ -179,11 +200,19 @@ export class Workstation extends Component {
   }
 
   getMainSplit() {
+<<<<<<< HEAD
     return this.props.sidebar ? { right: 300 } : { right: 0 }
   }
 
   getSidebarSplit() {
     return this.props.sidebar ? { width: 300 } : { display: 'none' }
+=======
+    return this.props.rackOpen ? { right: 550 } : { right: 45 }
+  }
+
+  getSidebarSplit() {
+    return this.props.rackOpen ? { width: 550 } : { width: 45 }
+>>>>>>> 232de14... Basic Rack idea
   }
 
   shouldComponentUpdate(nextProps) {
@@ -204,12 +233,17 @@ export class Workstation extends Component {
       'focusedTrack',
       'consoleEmbedded',
       'consoleSplitRatio',
+      'rackOpen',
+      'selectedTrack'
     ]
+
     return propsToCheck.some(prop => nextProps[prop] !== this.props[prop])
   }
 }
 
 function mapStateToProps(state) {
+  let selectedTrack = state.phrase.present.tracks.find(x => x.id === state.phraseMeta.trackSelectionID)
+
   return {
     loading: state.phraseMeta.loading,
     autosaving: state.phraseMeta.saving,
@@ -221,7 +255,9 @@ function mapStateToProps(state) {
     currentUsername: state.auth.user.username,
     focusedTrack: state.pianoroll.currentTrack,
     consoleEmbedded:   state.navigation.consoleEmbedded,
-    consoleSplitRatio: state.navigation.consoleSplitRatio
+    consoleSplitRatio: state.navigation.consoleSplitRatio,
+    rackOpen: state.navigation.rackOpen,
+    selectedTrack,
   }
 }
 

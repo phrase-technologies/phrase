@@ -19,10 +19,10 @@ export function updateNodes(engine, state) {
     }
   })
 
-
   // Add/update tracks as required
   let allTracks = (state.phrase.present.tracks || [])
   let atleastOneTrackSoloed = allTracks.some(track => track.solo)
+
   allTracks.forEach(track => {
     // Add new tracks
     if (!engine.trackModules[track.id]) {
@@ -34,6 +34,7 @@ export function updateNodes(engine, state) {
       let muteTrack = atleastOneTrackSoloed && !track.solo || track.mute
       let trackModule = engine.trackModules[track.id]
       trackModule.outputFinal.gain.value = 1.0 * !muteTrack
+      trackModule.effectsChain.forEach(node => node.update(track.instrument.config))
     }
   })
 }
@@ -71,8 +72,10 @@ function createTrackModule(engine, track) {
   let outputBuffer = new Uint8Array(OUTPUT_METER_SIZE)
 
   // The actual sound generation!
-  var synth = new Instruments[track.instrument.name].source(engine.ctx, 20)
-      synth.connect(outputPan)
+  let synth = new Instruments[track.instrument.id]
+    .Source(engine.ctx, track.instrument.config)
+
+  synth.connect(outputPan)
 
   let effectsChain = [
     synth

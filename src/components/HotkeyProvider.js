@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
+import { layout } from 'actions/actions'
+
 import {
   transportRecord,
   transportPlayToggle,
@@ -120,6 +122,10 @@ class HotkeyProvider extends Component {
         break
       case 222: // '"' - Metronome
         dispatch(transportMetronome())
+        e.preventDefault()
+        break
+      case 9: // 'tab' - toggle arrange / rack view
+        dispatch({ type: layout.TOGGLE_RACK })
         e.preventDefault()
         break
     }

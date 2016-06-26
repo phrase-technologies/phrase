@@ -8,7 +8,8 @@ import { layout, pianoroll, phrase } from '../actions/actions.js'
 
 let defaultState = {
   consoleEmbedded: false,
-  consoleSplitRatio: null
+  consoleSplitRatio: null,
+  rackOpen: false,
 }
 
 export default function reducerNavigation(state = defaultState, action) {
@@ -50,6 +51,14 @@ export default function reducerNavigation(state = defaultState, action) {
     case phrase.NEW_PHRASE:
     case phrase.LOAD_START:
       return defaultState
+
+    // ------------------------------------------------------------------------
+
+    case layout.TOGGLE_RACK:
+      return {
+        ...state,
+        rackOpen: !state.rackOpen
+      }
 
     // ------------------------------------------------------------------------
     default:

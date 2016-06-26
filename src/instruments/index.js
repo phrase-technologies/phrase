@@ -3,7 +3,7 @@ import PollyInterface from './Polly/PollyInterface'
 
 export default {
   Polly: {
-    source: PollySource,
-    interface: PollyInterface
+    Source: PollySource,
+    Interface: PollyInterface
   }
 }

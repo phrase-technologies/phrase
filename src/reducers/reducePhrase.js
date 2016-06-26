@@ -471,6 +471,10 @@ export const phraseLoginReminder    = ({ show }) => ({ type: phrase.LOGIN_REMIND
 export const phraseRephraseReminder = ({ show }) => ({ type: phrase.REPHRASE_REMINDER, payload: { show } })
 export const phrasePristine = ({ pristine }) => ({ type: phrase.PRISTINE, payload: { pristine } })
 
+export const phraseUpdateTrackConfig = ({ trackID, config }) => ({
+  type: phrase.UPDATE_TRACK_CONFIG, trackID, payload: { config }
+})
+
 // ============================================================================
 // Phrase Reducer
 // ============================================================================
@@ -515,6 +519,15 @@ export default function reducePhrase(state = defaultState, action) {
         tracks: u.updateIn(['*'], u.if(
           (track) => track.id === action.trackID,
           (track) => u({mute: !track.mute}, track)
+        ))
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.UPDATE_TRACK_CONFIG:
+      return u({
+        tracks: u.updateIn(['*'], u.if(
+          (track) => track.id === action.trackID,
+          (track) => u({instrument: {...track.instrument, config: action.payload.config}}, track)
         ))
       }, state)
 
@@ -760,8 +773,11 @@ export default function reducePhrase(state = defaultState, action) {
 
 function reduceCreateTrack(state, action) {
   let DEFAULT_INSTRUMENT = {
-    name: `Polly`,
-    config: ''
+    id: `Polly`,
+    config: {
+      polyphony: 32,
+      oscillatorType: `square`
+    }
   }
 
   return u({
