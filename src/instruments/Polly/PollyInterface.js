@@ -9,37 +9,34 @@ let style = {
   title: {
     fontSize: `3rem`,
     fontWeight: 100,
+    color: `rgb(61, 42, 59)`
   },
   button: {
+    color: `rgb(34, 101, 150)`,
     border: `1px solid #ccc`,
     borderRadius: `20px`,
     margin: `5px`,
     padding: `4px 8px`,
-    fontWeight: 100,
+    fontWeight: 300,
+    fontSize: `14px`,
     cursor: `pointer`,
-  },
-  buttonActive: {
-    backgroundColor: `#ccc`,
-    color: `rgb(34, 101, 150)`,
   }
 }
 
 let PollyInterface = ({ track, update }) => {
   return (
-    <div style={style.container}>
+    <div id="Plugin__Polly" style={style.container}>
       <div style={style.title}>POLLY</div>
       <div style={{ display: `flex`, marginLeft: `auto` }}>
         { [ `sine`, `triangle`, `sawtooth`, `square`, ].map(oscillatorType =>
-          <div
+          <button
             key={oscillatorType}
-            style={{
-              ...style.button,
-              ...(track.instrument.config.oscillatorType === oscillatorType ? style.buttonActive : {})
-            }}
+            className={track.instrument.config.oscillatorType === oscillatorType ? `active` : ``}
+            style={style.button}
             onClick={() => update({ ...track.instrument.config, oscillatorType })}
           >
             {oscillatorType.toUpperCase()}
-          </div>
+          </button>
         )}
       </div>
     </div>
