@@ -1,9 +1,9 @@
 import _ from 'lodash'
-import { getFrequencyFromKeyNum } from '../helpers/audioHelpers.js'
+import { getFrequencyFromKeyNum } from 'helpers/audioHelpers'
 
 const DEFAULT_EASING = 0.001
 
-export class PolyphonicSynth {
+export default class PollySource {
 
   constructor(AudioContext, polyphony = 32, VoiceClass = MonophonicSynth) {
     this.ctx = AudioContext
