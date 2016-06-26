@@ -475,6 +475,10 @@ export const phraseUpdateTrackConfig = (trackID, config) => ({
   type: phrase.UPDATE_TRACK_CONFIG, trackID, payload: { config }
 })
 
+export const phraseChangeInstrument = (trackID, instrument) => ({
+  type: phrase.CHANGE_INSTRUMENT, trackID, payload: { instrument }
+})
+
 // ============================================================================
 // Phrase Reducer
 // ============================================================================
@@ -528,6 +532,15 @@ export default function reducePhrase(state = defaultState, action) {
         tracks: u.updateIn(['*'], u.if(
           (track) => track.id === action.trackID,
           (track) => u({instrument: {...track.instrument, config: action.payload.config}}, track)
+        ))
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.CHANGE_INSTRUMENT:
+      return u({
+        tracks: u.updateIn(['*'], u.if(
+          (track) => track.id === action.trackID,
+          (track) => u({instrument: action.payload.instrument}, track)
         ))
       }, state)
 
