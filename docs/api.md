@@ -12,8 +12,8 @@ You need three files:
 #### `Info`
 
   `id` *required -  Your unique plugin id*
-  `description` *required -  What does this do?*
-  `settings` *required - an array with at least one config*
+  `description` *required -  What does this plugin do?*
+  `settings` *required - an array with at least one config.. the first will load by default*
 
 
   example:
@@ -30,27 +30,30 @@ You need three files:
 
 #### `Graph` class
 
-    constructor (
-      AudioContext,
-      config
-    )
+    class WobblerSource {
 
-    // Required
+      constructor (
+        AudioContext,
+        config
+      )
 
-    connect(node)
-    update(nextConfig)
-    destroy()
+      // Required
 
-    // Instrument
+      connect(node)
+      update(nextConfig)
+      destroy()
 
-    fireNote(keyNum, velocity, time)
+      // Instrument
+
+      fireNote(keyNum, velocity, time)
+    }
 
 
 #### `Interface ({ track, update }) =>`
 
   A function that returns the display of the plugin. Can call `update` to update the settings of the currently selected track's instance.
 
-    function Wobbler ({ track, update }) {
+    function WobblerInterface ({ track, update }) {
       return (
         <WobblerSkin>
           <WobblerTitle />
@@ -62,3 +65,21 @@ You need three files:
         </WobblerSkin>
       )
     }
+
+## Styling your plugin
+
+  - full screen mode
+  - responsive designs
+  - ajax (images / fonts)
+
+
+## Testing your plugin
+
+  - survive a 'Phrase plugin' test?
+
+
+_____
+
+#### Random thoughts
+
+ - 'gitter' style chatroom for every plugin?
