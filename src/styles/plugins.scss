@@ -35,3 +35,8 @@
   background: linear-gradient(to right, rgba(176,41,86,1) 0%, rgba(182,47,81,1) 46%, rgba(183,48,80,1) 56%, rgba(189,53,75,1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b02956', endColorstr='#bd354b', GradientType=1 );
 }
+
+#Plugin__Piano {
+  background:  url('img/piano_cover.jpg');
+  background-size: cover;
+}

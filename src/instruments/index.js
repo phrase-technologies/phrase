@@ -4,6 +4,9 @@ import PollyMeta from './Polly/PollyMeta'
 import SamplerSource from './Sampler/SamplerSource'
 import SamplerInterface from './Sampler/SamplerInterface'
 import SamplerMeta from './Sampler/SamplerMeta'
+import PianoSource from './Piano/PianoSource'
+import PianoInterface from './Piano/PianoInterface'
+import PianoMeta from './Piano/PianoMeta'
 
 export default {
   Polly: {
@@ -15,5 +18,10 @@ export default {
     Source: SamplerSource,
     Interface: SamplerInterface,
     Meta: SamplerMeta,
+  },
+  Piano: {
+    Source: PianoSource,
+    Interface: PianoInterface,
+    Meta: PianoMeta,
   },
 }
