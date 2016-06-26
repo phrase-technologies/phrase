@@ -11,7 +11,7 @@ import { getTracksHeight } from '../helpers/trackHelpers.js'
 import { phraseCreateTrack } from '../reducers/reducePhrase.js'
 
 import MixerTrack from './MixerTrack.js'
-import MixerTrackNew from './MixerTrackNew.js'
+import NewRibbon from './NewRibbon.js'
 
 export default class MixerTracks extends Component {
 
@@ -32,7 +32,7 @@ export default class MixerTracks extends Component {
               atleastOneTrackSoloed={this.props.atleastOneTrackSoloed}
             />
           ))}
-          <MixerTrackNew handleClickNew={this.addNewTrack} />
+          <NewRibbon handleClick={this.addNewTrack} text=" Add MIDI Track" />
         </ul>
         <div className="mixer-empty-area" style={{top: emptyAreaOffset}} />
       </div>
