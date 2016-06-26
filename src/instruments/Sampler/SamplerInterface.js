@@ -14,7 +14,7 @@ let style = {
 
 let SamplerInterface = ({ track, update }) => {
   return (
-    <div style={style.container}>
+    <div id="Plugin__Sampler" style={style.container}>
       <div style={style.title}>SAMPLER</div>
     </div>
   )
