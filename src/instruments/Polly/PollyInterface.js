@@ -36,12 +36,7 @@ let PollyInterface = ({ track, update }) => {
               ...style.button,
               ...(track.instrument.config.oscillatorType === oscillatorType ? style.buttonActive : {})
             }}
-            onClick={
-              () => update({
-                trackID: track.id,
-                config: { ...track.instrument.config, oscillatorType }
-              })
-            }
+            onClick={() => update({ ...track.instrument.config, oscillatorType })}
           >
             {oscillatorType.toUpperCase()}
           </div>

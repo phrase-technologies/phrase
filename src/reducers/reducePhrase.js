@@ -471,7 +471,7 @@ export const phraseLoginReminder    = ({ show }) => ({ type: phrase.LOGIN_REMIND
 export const phraseRephraseReminder = ({ show }) => ({ type: phrase.REPHRASE_REMINDER, payload: { show } })
 export const phrasePristine = ({ pristine }) => ({ type: phrase.PRISTINE, payload: { pristine } })
 
-export const phraseUpdateTrackConfig = ({ trackID, config }) => ({
+export const phraseUpdateTrackConfig = (trackID, config) => ({
   type: phrase.UPDATE_TRACK_CONFIG, trackID, payload: { config }
 })
 

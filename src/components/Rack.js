@@ -1,6 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import _ from 'lodash'
 import Instruments from 'instruments'
 import { phraseUpdateTrackConfig } from 'reducers/reducePhrase'
 
@@ -15,8 +16,8 @@ function Rack ({ track, update }) {
   )
 }
 
-function mapDispatchToProps(dispatch) {
-  return { update: bindActionCreators(phraseUpdateTrackConfig, dispatch) }
+function mapDispatchToProps(dispatch, {track: {id}}) {
+  return { update: bindActionCreators(_.partial(phraseUpdateTrackConfig, id), dispatch) }
 }
 
 export default connect(null, mapDispatchToProps)(Rack)
