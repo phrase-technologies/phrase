@@ -3,12 +3,15 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import Helmet from "react-helmet"
 
-import { phrase } from 'actions/actions'
-import { phraseLoadFromDb,
-         phraseNewPhrase,
-         phraseLoginReminder,
-         phraseRephraseReminder,
-       } from 'reducers/reducePhrase'
+import { phrase, layout } from 'actions/actions'
+
+import {
+  phraseLoadFromDb,
+  phraseNewPhrase,
+  phraseLoginReminder,
+  phraseRephraseReminder,
+} from 'reducers/reducePhrase'
+
 import { layoutConsoleSplit } from 'actions/actionsLayout'
 
 import WorkstationHeader from './WorkstationHeader'
@@ -109,6 +112,7 @@ export class Workstation extends Component {
           <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
             <h2
               className="workstation-heading"
+              onClick={() => this.props.dispatch({ type: layout.TOGGLE_RACK })}
               { ...(this.props.rackOpen ? { style: { right: `505px` }} : {}) }
             >
               <span className="workstation-heading-vertical">
@@ -200,19 +204,12 @@ export class Workstation extends Component {
   }
 
   getMainSplit() {
-<<<<<<< HEAD
-    return this.props.sidebar ? { right: 300 } : { right: 0 }
-  }
-
-  getSidebarSplit() {
-    return this.props.sidebar ? { width: 300 } : { display: 'none' }
-=======
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
     return this.props.rackOpen ? { right: 550 } : { right: 45 }
   }
 
   getSidebarSplit() {
     return this.props.rackOpen ? { width: 550 } : { width: 45 }
->>>>>>> 232de14... Basic Rack idea
   }
 
   shouldComponentUpdate(nextProps) {
