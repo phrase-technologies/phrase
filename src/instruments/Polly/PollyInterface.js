@@ -1,5 +1,4 @@
 import React from 'react'
-import { phraseUpdateTrackConfig } from 'reducers/reducePhrase'
 
 let style = {
   container: {
@@ -25,12 +24,12 @@ let style = {
   }
 }
 
-let PollyInterface = ({ track, dispatch }) => {
+let PollyInterface = ({ track, update }) => {
   return (
     <div style={style.container}>
       <div style={style.title}>POLLY</div>
       <div style={{ display: `flex` }}>
-        { [ `sine`, `sawtooth`, `square` ].map(oscillatorType =>
+        { [ `sine`, `triangle`, `sawtooth`, `square`, ].map(oscillatorType =>
           <div
             key={oscillatorType}
             style={{
@@ -38,9 +37,10 @@ let PollyInterface = ({ track, dispatch }) => {
               ...(track.instrument.config.oscillatorType === oscillatorType ? style.buttonActive : {})
             }}
             onClick={
-              () => dispatch(phraseUpdateTrackConfig({
-                trackID: track.id, config: { ...track.instrument.config, oscillatorType }
-              }))
+              () => update({
+                trackID: track.id,
+                config: { ...track.instrument.config, oscillatorType }
+              })
             }
           >
             {oscillatorType.toUpperCase()}
