@@ -4,11 +4,11 @@
   "description": "Attempt at using React for this sequencer prototype!",
   "scripts": {
     "prestart": "npm install",
-    "start": "API_URL=$'\"http://localhost:5000\"' NODE_ENV=development node server.js",
-    "start-prod": "API_URL=$'\"http://159.203.75.254:5000\"' NODE_ENV=production node server.js",
-    "build": "API_URL=$'\"http://159.203.75.254:5000\"' NODE_ENV=production webpack -p --config webpack.production.config.js && NODE_ENV=production PORT=80 node server.prod.js",
-    "build-local": "API_URL=$'\"http://localhost:5000\"' NODE_ENV=production webpack -p --config webpack.production.config.js && NODE_ENV=production PORT=3333 node server.prod.js",
-    "test": "find ./src -name '*.test.js' | env API_URL=$'\"http://localhost:5000\"' NODE_ENV=test NODE_PATH=./src xargs mocha --require babel-core/register --compilers jpg:./mocha.config.js --compilers png:./mocha.config.js --compilers ico:./mocha.config.js -r mock-local-storage",
+    "start": "API_URL='\"http://localhost:5000\"' NODE_ENV=development node server.js",
+    "start-prod": "API_URL='\"http://159.203.75.254:5000\"' NODE_ENV=production node server.js",
+    "build": "API_URL='\"http://159.203.75.254:5000\"' NODE_ENV=production webpack -p --config webpack.production.config.js && NODE_ENV=production PORT=80 node server.prod.js",
+    "build-local": "API_URL='\"http://localhost:5000\"' NODE_ENV=production webpack -p --config webpack.production.config.js && NODE_ENV=production PORT=3333 node server.prod.js",
+    "test": "find ./src -name '*.test.js' | env API_URL='\"http://localhost:5000\"' NODE_ENV=test NODE_PATH=./src xargs mocha --require babel-core/register --compilers jpg:./mocha.config.js --compilers png:./mocha.config.js --compilers ico:./mocha.config.js -r mock-local-storage",
     "test-watch": "find ./src -name '*.test.js' | env API_URL=$'\"http://localhost:5000\"' NODE_ENV=test NODE_PATH=./src xargs mocha --require babel-core/register --compilers jpg:./mocha.config.js --compilers png:./mocha.config.js --compilers ico:./mocha.config.js -r mock-local-storage -w",
     "lint": "eslint src",
     "lint-fix": "eslint --fix src"
