@@ -11,14 +11,15 @@ import _ from 'lodash'
  */
 
 export default class Delay {
-  constructor(AudioContext, config) {
+  constructor(AudioContext, config, state) {
     this.ctx = AudioContext
-
     this.inputGain = this.ctx.createGain()
     this.outputGain = this.ctx.createGain()
 
+    let bps = state.tempo / 60
+
     this.delayNodes = _.range(1, 5).map(x => {
-      let delay = this.ctx.createDelay(x * config.time)
+      let delay = this.ctx.createDelay(x * (config.time * bps))
       let gain = this.ctx.createGain()
 
       this.inputGain.connect(delay)
@@ -39,8 +40,12 @@ export default class Delay {
     this.outputGain.connect(target)
   }
 
-  update(config) {
+  update(config, state) {
     //  TODO: update all the things
-    this.delayNodes.forEach((node, i) => node.delayTime.value = (i + 1) * config.time)
+    let bps = state.tempo / 60
+    this.delayNodes.forEach((node, i) => {
+      let time = (i + 1) * (config.time * bps)
+      node.delayTime.value = time
+    })
   }
 }

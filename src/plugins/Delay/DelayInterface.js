@@ -23,10 +23,30 @@ let style = {
   }
 }
 
+let options = [
+  { display: `1/16`, value: 0.0625, },
+  { display: `1/8`, value: 0.125, },
+  { display: `1/4`, value: 0.25, },
+  { display: `1/2`, value: 0.5, },
+  { display: `1/1`, value: 1, },
+]
+
 let DelayInterface = ({ config, update }) => {
   return (
     <div id="Plugin__Delay" style={style.container}>
       <div style={style.title}>DELAY</div>
+      <div style={{ display: `flex`, marginLeft: `auto` }}>
+        { options.map(option =>
+          <button
+            key={option.value}
+            className={config.time === option.value ? `active` : ``}
+            style={style.button}
+            onClick={() => update({ ...config, time: option.value })}
+          >
+            {option.display}
+          </button>
+        )}
+      </div>
     </div>
   )
 }

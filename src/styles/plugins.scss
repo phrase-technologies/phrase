@@ -24,6 +24,20 @@
   }
 }
 
+#Plugin__Delay {
+  button:focus,
+  button {
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+    transition: all 0.3s ease;
+    outline: none;
+  }
+  button.active,
+  button:hover {
+    background: rgb(227, 227, 227);
+    text-shadow: 0 0 16px rgb(62, 211, 244);
+  }
+}
+
 
 #Plugin__Sampler {
   background: rgba(176,41,86,1);

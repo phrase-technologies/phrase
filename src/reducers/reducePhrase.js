@@ -471,8 +471,8 @@ export const phraseLoginReminder    = ({ show }) => ({ type: phrase.LOGIN_REMIND
 export const phraseRephraseReminder = ({ show }) => ({ type: phrase.REPHRASE_REMINDER, payload: { show } })
 export const phrasePristine = ({ pristine }) => ({ type: phrase.PRISTINE, payload: { pristine } })
 
-export const phraseUpdateTrackConfig = (trackID, config) => ({
-  type: phrase.UPDATE_TRACK_CONFIG, trackID, payload: { config }
+export const phraseUpdatePluginConfig = (trackID, rackIndex, config) => ({
+  type: phrase.UPDATE_PLUGIN_CONFIG, trackID, rackIndex, payload: { config }
 })
 
 export const phraseChangeInstrument = (trackID, instrument) => ({
@@ -527,11 +527,25 @@ export default function reducePhrase(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
-    case phrase.UPDATE_TRACK_CONFIG:
+    case phrase.UPDATE_PLUGIN_CONFIG:
       return u({
         tracks: u.updateIn(['*'], u.if(
           (track) => track.id === action.trackID,
-          (track) => u({instrument: {...track.instrument, config: action.payload.config}}, track)
+          (track) => {
+
+            // TODO: use updeep better here to update inner array item
+
+            let rack = [
+              ...track.rack.slice(0, action.rackIndex),
+              {
+                ...track.rack[action.rackIndex],
+                config: action.payload.config
+              },
+              ...track.rack.slice(action.rackIndex + 1, Infinity)
+            ]
+            
+            return u({ rack }, track)
+          }
         ))
       }, state)
 
@@ -801,7 +815,7 @@ function reduceCreateTrack(state, action) {
     {
       id: `Delay`,
       config: {
-        time: 0.5
+        time: 1
       }
     }
   ]

@@ -27,7 +27,7 @@ export function updateNodes(engine, state) {
   allTracks.forEach(track => {
     // Add new tracks
     if (!engine.trackModules[track.id]) {
-      engine.trackModules[track.id] = createTrackModule(engine, track)
+      engine.trackModules[track.id] = createTrackModule(engine, track, state)
     }
 
     // Update changed tracks
@@ -35,7 +35,9 @@ export function updateNodes(engine, state) {
       let muteTrack = atleastOneTrackSoloed && !track.solo || track.mute
       let trackModule = engine.trackModules[track.id]
       trackModule.outputFinal.gain.value = 1.0 * !muteTrack
-      trackModule.effectsChain.forEach((node, i) => node.update(track.rack[i].config))
+      trackModule.effectsChain.forEach((node, i) =>
+        node.update(track.rack[i].config, state.phrase.present)
+      )
     }
   })
 }
@@ -49,7 +51,7 @@ function destroyTrackModule(trackModule) {
 }
 
 // This function births a new trackModule
-function createTrackModule(engine, track) {
+function createTrackModule(engine, track, state) {
   // Used for MUTE / SOLO
   let outputFinal = engine.ctx.createGain()
       outputFinal.gain.value = 1.0
@@ -74,7 +76,7 @@ function createTrackModule(engine, track) {
 
   // Instantiate and wire up the plugins in the rack!
   let effectsChain = _.reverse(track.rack.slice()).reduce((rack, plugin) => {
-    let source = new Plugins[plugin.id].Source(engine.ctx, plugin.config)
+    let source = new Plugins[plugin.id].Source(engine.ctx, plugin.config, state.phrase.present)
 
     if (rack[0]) source.connect(rack[0].getInputNode())
     else source.connect(outputPan)

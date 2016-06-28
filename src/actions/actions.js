@@ -40,7 +40,7 @@ export const phrase = namespaceActions(
     'CREATE_TRACK',
     'MUTE_TRACK',
     'SOLO_TRACK',
-    'UPDATE_TRACK_CONFIG',
+    'UPDATE_PLUGIN_CONFIG',
     'UPDATE_RACK',
     'SET_TEMPO',
     'CREATE_CLIP',
