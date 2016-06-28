@@ -48,6 +48,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "audio-loader": "^0.5.0",
     "bootstrap-sass": "^3.3.6",
     "css-element-queries": "^0.3.2",
     "file-saver": "^1.2.2",

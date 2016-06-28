@@ -41,7 +41,7 @@ export const phrase = namespaceActions(
     'MUTE_TRACK',
     'SOLO_TRACK',
     'UPDATE_TRACK_CONFIG',
-    'CHANGE_INSTRUMENT',
+    'UPDATE_RACK',
     'SET_TEMPO',
     'CREATE_CLIP',
     'DELETE_CLIP',

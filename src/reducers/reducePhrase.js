@@ -476,7 +476,7 @@ export const phraseUpdateTrackConfig = (trackID, config) => ({
 })
 
 export const phraseChangeInstrument = (trackID, instrument) => ({
-  type: phrase.CHANGE_INSTRUMENT, trackID, payload: { instrument }
+  type: phrase.UPDATE_RACK, trackID, payload: { instrument }
 })
 
 // ============================================================================
@@ -536,11 +536,11 @@ export default function reducePhrase(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
-    case phrase.CHANGE_INSTRUMENT:
+    case phrase.UPDATE_RACK:
       return u({
         tracks: u.updateIn(['*'], u.if(
           (track) => track.id === action.trackID,
-          (track) => u({instrument: action.payload.instrument}, track)
+          (track) => u({rack: [action.payload.instrument]}, track)
         ))
       }, state)
 
@@ -799,7 +799,9 @@ function reduceCreateTrack(state, action) {
         id: state.trackAutoIncrement,
         name: action.name || 'MIDI Track '+(state.trackAutoIncrement + 1),
         color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
-        instrument: action.instrument || DEFAULT_INSTRUMENT,
+        rack: [
+          action.instrument || DEFAULT_INSTRUMENT,
+        ],
         mute: false,
         solo: false
       }

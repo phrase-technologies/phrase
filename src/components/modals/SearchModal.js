@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Instruments from 'instruments'
-import _ from 'lodash'
+import Plugins from 'plugins'
 import { phraseChangeInstrument } from 'reducers/reducePhrase'
 
 let SearchModal = ({ show, trackSelectionID, dispatch }) => !show ? null :
@@ -12,15 +11,15 @@ let SearchModal = ({ show, trackSelectionID, dispatch }) => !show ? null :
       placeholder="Start typing to find an instrument or plugin by name or tag, eg. filter, distortion"
     />
     <div style={{ display: `flex` }}>
-      { Object.keys(Instruments).map(id =>
+      { Object.keys(Plugins).map(id =>
         <div key={id} style={{ flex: 2 }}>
           <div className="search-result-id">
-            {id} <span className="search-result-author">{Instruments[id].Meta.author}</span>
+            {id} <span className="search-result-author">{Plugins[id].Meta.author}</span>
           </div>
-          <div className="search-result-description">{Instruments[id].Meta.description}</div>
+          <div className="search-result-description">{Plugins[id].Meta.description}</div>
           <button
             className="search-result-add-btn"
-            onClick={() => dispatch(phraseChangeInstrument(trackSelectionID, Instruments[id].Meta))}
+            onClick={() => dispatch(phraseChangeInstrument(trackSelectionID, Plugins[id].Meta))}
           >
             SET AS TRACK INSTRUMENT
           </button>

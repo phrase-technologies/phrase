@@ -23,7 +23,7 @@ let style = {
   }
 }
 
-let PollyInterface = ({ track, update }) => {
+let PollyInterface = ({ config, update }) => {
   return (
     <div id="Plugin__Polly" style={style.container}>
       <div style={style.title}>POLLY</div>
@@ -31,9 +31,9 @@ let PollyInterface = ({ track, update }) => {
         { [ `sine`, `triangle`, `sawtooth`, `square`, ].map(oscillatorType =>
           <button
             key={oscillatorType}
-            className={track.instrument.config.oscillatorType === oscillatorType ? `active` : ``}
+            className={config.oscillatorType === oscillatorType ? `active` : ``}
             style={style.button}
-            onClick={() => update({ ...track.instrument.config, oscillatorType })}
+            onClick={() => update({ ...config, oscillatorType })}
           >
             {oscillatorType.toUpperCase()}
           </button>

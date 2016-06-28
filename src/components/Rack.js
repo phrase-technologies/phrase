@@ -2,17 +2,19 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import Instruments from 'instruments'
+import Plugins from 'plugins'
 import { phraseUpdateTrackConfig } from 'reducers/reducePhrase'
 import NewRibbon from 'components/NewRibbon'
 import { modalOpen } from 'reducers/reduceModal'
 
 function Rack ({ track, update, modalOpen }) {
-  let InstrumentInterface = Instruments[track.instrument.id].Interface
   return (
     <div className="rack-container">
       <div className="rack-item">
-        <InstrumentInterface track={track} update={update} />
+        { track.rack.map((plugin, i) => {
+          let PluginInterface = Plugins[plugin.id].Interface
+          return <PluginInterface key={`${plugin.id}-${i}`} config={plugin.config} update={update} />
+        })}
       </div>
 
       <NewRibbon

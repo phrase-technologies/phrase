@@ -1,4 +1,4 @@
-import Instruments from 'instruments'
+import Plugins from 'plugins'
 
 const OUTPUT_METER_SIZE = 2048
 
@@ -34,7 +34,7 @@ export function updateNodes(engine, state) {
       let muteTrack = atleastOneTrackSoloed && !track.solo || track.mute
       let trackModule = engine.trackModules[track.id]
       trackModule.outputFinal.gain.value = 1.0 * !muteTrack
-      trackModule.effectsChain.forEach(node => node.update(track.instrument.config))
+      trackModule.effectsChain.forEach((node, i) => node.update(track.rack[i].config))
     }
   })
 }
@@ -72,8 +72,8 @@ function createTrackModule(engine, track) {
   let outputBuffer = new Uint8Array(OUTPUT_METER_SIZE)
 
   // The actual sound generation!
-  let synth = new Instruments[track.instrument.id]
-    .Source(engine.ctx, track.instrument.config)
+  let synth = new Plugins[track.rack[0].id]
+    .Source(engine.ctx, track.rack[0].config)
 
   synth.connect(outputPan)
 

@@ -35,7 +35,7 @@ export default function reduceModals(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
-    case phrase.CHANGE_INSTRUMENT:
+    case phrase.UPDATE_RACK:
     case modal.CLOSE:
     case auth.LOGIN_SUCCESS: // Close modals after successful login
       return u({

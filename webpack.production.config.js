@@ -46,7 +46,7 @@ module.exports = {
        actions: 'src/actions',
        audio: 'src/audio',
        img: 'src/img',
-       instruments: 'src/instruments',
+       plugins: 'src/plugins',
        helpers: 'src/helpers',
        selectors: 'src/selectors',
        middleware: 'src/middleware',
