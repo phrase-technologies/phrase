@@ -785,6 +785,9 @@ export default function reducePhrase(state = defaultState, action) {
 }
 
 function reduceCreateTrack(state, action) {
+
+  // for testing
+
   let DEFAULT_INSTRUMENT = {
     id: `Piano`,
     config: {
@@ -793,15 +796,23 @@ function reduceCreateTrack(state, action) {
     }
   }
 
+  let DEFAULT_RACK = [
+    DEFAULT_INSTRUMENT,
+    {
+      id: `Delay`,
+      config: {
+        time: 0.5
+      }
+    }
+  ]
+
   return u({
     tracks: uAppend(
       {
         id: state.trackAutoIncrement,
         name: action.name || 'MIDI Track '+(state.trackAutoIncrement + 1),
         color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
-        rack: [
-          action.instrument || DEFAULT_INSTRUMENT,
-        ],
+        rack: action.rack || DEFAULT_RACK,
         mute: false,
         solo: false
       }

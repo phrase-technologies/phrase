@@ -7,6 +7,9 @@ import SamplerMeta from './Sampler/SamplerMeta'
 import PianoSource from './Piano/PianoSource'
 import PianoInterface from './Piano/PianoInterface'
 import PianoMeta from './Piano/PianoMeta'
+import DelaySource from './Delay/DelaySource'
+import DelayInterface from './Delay/DelayInterface'
+import DelayMeta from './Delay/DelayMeta'
 
 export default {
   Polly: {
@@ -23,5 +26,10 @@ export default {
     Source: PianoSource,
     Interface: PianoInterface,
     Meta: PianoMeta,
+  },
+  Delay: {
+    Source: DelaySource,
+    Interface: DelayInterface,
+    Meta: DelayMeta,
   },
 }

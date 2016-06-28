@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import Plugins from 'plugins'
 
 const OUTPUT_METER_SIZE = 2048
@@ -71,15 +72,15 @@ function createTrackModule(engine, track) {
   // Used for track METER
   let outputBuffer = new Uint8Array(OUTPUT_METER_SIZE)
 
-  // The actual sound generation!
-  let synth = new Plugins[track.rack[0].id]
-    .Source(engine.ctx, track.rack[0].config)
+  // Instantiate and wire up the plugins in the rack!
+  let effectsChain = _.reverse(track.rack.slice()).reduce((rack, plugin) => {
+    let source = new Plugins[plugin.id].Source(engine.ctx, plugin.config)
 
-  synth.connect(outputPan)
+    if (rack[0]) source.connect(rack[0].getInputNode())
+    else source.connect(outputPan)
 
-  let effectsChain = [
-    synth
-  ]
+    return [ source, ...rack ]
+  }, [])
 
   let trackModule = {
     trackID: track.id,
