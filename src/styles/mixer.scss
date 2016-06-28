@@ -3,6 +3,8 @@ $mixer-timeline: 35px;
 $mixer-track-height: 50px;
 $mixer-track-tag: 8px;
 $mixer-track-control: 113px;
+$mixer-scrollbar-horizontal: 20px;
+$mixer-scrollbar-vertical: 14px;
 @import './mixer-tracks.scss';
 
 // ============================================================================
@@ -12,11 +14,11 @@ $mixer-track-control: 113px;
   position: absolute;
   top:    15px + $mixer-timeline;
   left:   15px;
-  right:  35px;
-  bottom: 35px;
+  right:  15px;
+  bottom: 15px;
 
   border: 1px solid #000;
-  border-radius: $mixer-corner+3px 0 $mixer-corner+3px $mixer-corner+3px;
+  border-radius: 0 0 $mixer-corner+3px $mixer-corner+3px;
   background: #111;
 
   &:before,
@@ -25,21 +27,19 @@ $mixer-track-control: 113px;
     position: absolute;
     left: 0;
     right: 0;
-    height: 10px;
+    height: 15px;
     z-index: 3; // Above .mixer-track-list
     pointer-events: none;
   }
   &:before {
     top: 0;
 
-    border-radius: $mixer-corner+3px 0 0 0;
-    box-shadow: inset 0 10px 10px -8px #000;
+    box-shadow: inset 0 10px 10px -8px #111;
   }
   &:after {
-    bottom: 0;
+    bottom: $mixer-scrollbar-horizontal;
 
-    border-radius: 0 0 $mixer-corner+3px $mixer-corner+3px;
-    box-shadow: inset 0 -10px 10px -8px #000;
+    box-shadow: inset 0 -12px 6px -8px #111;
   }
 
   > .timeline-cursor-window {
@@ -82,6 +82,21 @@ $mixer-track-control: 113px;
 }
 
 // ============================================================================
+// Mixer Settings
+// ============================================================================
+.mixer-settings {
+  position: absolute;
+  top: -1px - $mixer-timeline;
+  left: -1px;
+  height: $mixer-timeline;
+  width: 1px + $mixer-track-tag + $mixer-track-control + 3px;
+
+  border-radius: $mixer-corner+3px 0 0 0;
+  box-shadow: inset  5px 5px 5px -4px #000;
+  background: #333;
+}
+
+// ============================================================================
 // Mixer Timeline
 // ============================================================================
 .mixer-timeline {
@@ -92,7 +107,7 @@ $mixer-track-control: 113px;
   height:  $mixer-timeline;
   z-index:  2;
 
-  border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
+  border-radius: 0 $mixer-corner+3px 0 0;
   background: #222;
 
   > canvas {
@@ -108,7 +123,7 @@ $mixer-track-control: 113px;
     right:  0;
     bottom: 0;
 
-    border-radius: $mixer-corner+3px $mixer-corner+3px 0 0;
+    border-radius: 0 $mixer-corner+3px 0 0;
     box-shadow: inset  5px 5px 5px -4px #000,
                 inset -5px 5px 5px -4px #000;
     z-index: 2;   // Above Timeline Canvas
@@ -123,7 +138,7 @@ $mixer-track-control: 113px;
   position: relative;
   padding-left: 0;
   list-style: none;
-  z-index: 2; // Above .mixer-scroll-window
+  z-index: 3; // Above .mixer-empty-area
 
   border-radius: $mixer-corner+3px 0 $mixer-corner+3px $mixer-corner+3px;
   height: 100%;
@@ -134,12 +149,13 @@ $mixer-track-control: 113px;
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  right: $mixer-scrollbar-vertical;
+  bottom: $mixer-scrollbar-horizontal;
   overflow: hidden;
 
   border-radius: $mixer-corner+3px;
-  z-index: 1; // Solves unclipped border-radius bug
+  z-index: 3; // Above .mixer-scroll-window
+              // Also: solves unclipped border-radius bug
 
   pointer-events: none;
 }
@@ -148,7 +164,7 @@ $mixer-track-control: 113px;
   top: 264px;
   left: 3px + $mixer-track-control + $mixer-track-tag;
   right: 0px;
-  bottom: 0px;
+  bottom: 0;
   z-index: 1; // Above mixer-tracks
 
   box-shadow: inset 0 0 20px 10px #111;
@@ -161,14 +177,18 @@ $mixer-track-control: 113px;
   top: 0;
   left: 3px + 1px + $mixer-track-control + $mixer-track-tag;
   right: 0;
-  bottom: 0;
+  bottom: $mixer-scrollbar-horizontal;
+
+  // Must be below .mixer-track-list (because the NEW TRACK button must be clickable!)
+  // Must be above .mixer-window-focus
+  z-index: 2;
 }
 .mixer-window-display {
   position: absolute;
   top: 0;
   left: 3px + 1px + $mixer-track-control + $mixer-track-tag;
-  right: 3px + 1px;
-  bottom: 0;
+  right: 3px + 1px + $mixer-scrollbar-vertical;
+  bottom: $mixer-scrollbar-horizontal;
 
   &:before,
   &:after {
@@ -194,20 +214,21 @@ $mixer-track-control: 113px;
     width: 100%;
   }
 }
-.mixer-scroll-horizontal {
+.mixer-scrollbar-horizontal {
   position: absolute;
-  left:     0px;
-  right:   -5px;
+  left:    -1px;
+  right:    0px;
   bottom: -20px;
   height:  20px;
 
-  padding: 10px 0 0;
+  padding: 5px 17px 5px 1px; // Use the padding to cover .mixer-window-focus overflows
+  background: #111;
 }
-.mixer-scroll-vertical {
+.mixer-scrollbar-vertical {
   position: absolute;
-  top: 0px;
-  right: -20px;
-  bottom: 0px;
+  top: 3px;
+  right: 3px;
+  bottom: 5px;
 
   padding: 0 0 0 10px;
 }
@@ -229,6 +250,7 @@ $mixer-track-control: 113px;
 
   pointer-events: none;
   overflow: hidden;
+  z-index: 1; // Below .mixer-window-control
 }
 .mixer-window-focus-grid {
   position: absolute;

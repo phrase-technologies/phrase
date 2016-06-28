@@ -1,7 +1,8 @@
 $pianoroll-corner:             4px;
+$pianoroll-settings:         125px;
 $pianoroll-timeline:          50px;
 $pianoroll-spacing:           15px;
-$pianoroll-keyboard-width:   125px;
+$pianoroll-keyboard-width:    85px;
 $pianoroll-scroll-horizontal: 20px;
 $pianoroll-scroll-vertical: 20px;
 
@@ -17,9 +18,9 @@ $pianoroll-scroll-vertical: 20px;
 
   > .timeline-cursor-window {
     top: 1px;
-    left: $pianoroll-keyboard-width;
-    right: $pianoroll-scroll-vertical;
-    bottom: $pianoroll-scroll-horizontal + 1px;
+    left: $pianoroll-settings + $pianoroll-keyboard-width;
+    right: 0;
+    bottom: 0 + 1px;
 
     > .timeline-cursor-grid {
       top:  0px;
@@ -31,9 +32,9 @@ $pianoroll-scroll-vertical: 20px;
 
   > .timeline-playhead-window {
     top: 20px;
-    left: $pianoroll-keyboard-width;
-    right: $pianoroll-scroll-vertical;
-    bottom: $pianoroll-scroll-horizontal + 1px;
+    left: $pianoroll-settings + $pianoroll-keyboard-width;
+    right: 0;
+    bottom: 0 + 1px;
 
     > .timeline-playhead-grid {
       top:  0px;
@@ -45,9 +46,9 @@ $pianoroll-scroll-vertical: 20px;
 
   > .timeline-selection-window {
     top: $pianoroll-timeline;
-    left: $pianoroll-keyboard-width;
-    right: $pianoroll-scroll-vertical;
-    bottom: $pianoroll-scroll-horizontal + 1px;
+    left: $pianoroll-settings + $pianoroll-keyboard-width;
+    right: 0;
+    bottom: 0 + 1px;
 
     > .timeline-selection-grid {
       top:  1px;
@@ -59,13 +60,92 @@ $pianoroll-scroll-vertical: 20px;
 }
 
 // ----------------------------------------------------------------------------
+// Settings / Configuration Panel
+// ----------------------------------------------------------------------------
+.pianoroll-settings {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: $pianoroll-settings;
+  bottom: 0;
+
+  border: 1px solid #000;
+  border-right: 0;
+  border-radius: $pianoroll-corner 0 0 $pianoroll-corner;
+  box-shadow: inset 2px  3px 3px -1px rgba(0,0,0,0.64),
+              inset 2px -3px 3px -1px rgba(0,0,0,0.64);
+  background: #282828;
+  padding: 10px;
+  text-align: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  &:hover {
+    .pianoroll-sound-menu {
+      display: block;
+    }
+  }
+}
+.pianoroll-sound-name {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  padding: 2px 5px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000;
+  line-height: 1;
+}
+.pianoroll-sound-thumbnail {
+  border: 1px solid #000;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  margin: 5px auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pianoroll-sound-menu {
+  display: none;
+
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+}
+// Small chunk of space beside setttings panel and keyboard
+.pianoroll-chunk {
+  position: absolute;
+  top: 0;
+  left: $pianoroll-settings;
+  width: $pianoroll-keyboard-width;
+  height: $pianoroll-timeline;
+
+  border: 1px solid #000;
+  border-right: 0;
+  border-bottom: 0;
+  box-shadow: inset 0px  3px 3px -1px rgba(0,0,0,0.64);
+  background: #777;
+  overflow: hidden;
+}
+
+// ----------------------------------------------------------------------------
 // Timeline
 // ----------------------------------------------------------------------------
 .pianoroll-timeline-control {
   position: absolute;
   top: 0;
-  left: $pianoroll-keyboard-width;
-  right: $pianoroll-scroll-vertical;
+  left: $pianoroll-settings + $pianoroll-keyboard-width;
+  right: 0;
   height: $pianoroll-timeline;
 
   background: none;
@@ -73,13 +153,13 @@ $pianoroll-scroll-vertical: 20px;
 .pianoroll-timeline-display {
   position: absolute;
   top: 0;
-  left: $pianoroll-keyboard-width;
-  right: $pianoroll-scroll-vertical;
+  left: $pianoroll-settings + $pianoroll-keyboard-width;
+  right: 0;
   height: $pianoroll-timeline;
 
   border: 1px solid #000;
   border-bottom: 0;
-  border-radius: $pianoroll-corner $pianoroll-corner 0 0;
+  border-radius: 0 $pianoroll-corner 0 0;
   background: #333;
 
   > canvas {
@@ -103,7 +183,7 @@ $pianoroll-scroll-vertical: 20px;
     right: 0;
     bottom: 0;
 
-    border-radius: $pianoroll-corner - 1px $pianoroll-corner - 1px 0 0;
+    border-radius: 0 $pianoroll-corner - 1px 0 0;
     box-shadow: inset 1px  1px 3px -1px #000,
                 inset -1px 1px 3px -1px #000;
     z-index: 2; // Above scroll-zone
@@ -117,18 +197,18 @@ $pianoroll-scroll-vertical: 20px;
 .pianoroll-window-control {
   position: absolute;
   top: $pianoroll-timeline;
-  left: $pianoroll-keyboard-width;
-  right: $pianoroll-scroll-vertical;
-  bottom: $pianoroll-scroll-horizontal;
+  left: $pianoroll-settings + $pianoroll-keyboard-width;
+  right: 0;
+  bottom: 0;
 
   background: none;
 }
 .pianoroll-window-display {
   position: absolute;
   top: $pianoroll-timeline;
-  left: $pianoroll-keyboard-width;
-  right: $pianoroll-scroll-vertical;
-  bottom: $pianoroll-scroll-horizontal;
+  left: $pianoroll-settings + $pianoroll-keyboard-width;
+  right: 0;
+  bottom: 0;
 
   border: 1px solid #000;
   border-radius: 0 0 $pianoroll-corner 0;
@@ -167,9 +247,9 @@ $pianoroll-scroll-vertical: 20px;
 .pianoroll-scrollbar-horizontal {
   position: absolute;
   height: $pianoroll-scroll-horizontal;
-  left: 0;
-  right: 0;
-  bottom: -$pianoroll-scroll-horizontal;
+  left: 8px;
+  right: 20px;
+  bottom: 8px;
   z-index: 2;
 
   padding: 10px 0 0;
@@ -177,9 +257,9 @@ $pianoroll-scroll-vertical: 20px;
 .pianoroll-scrollbar-vertical {
   position: absolute;
   width: $pianoroll-scroll-vertical;
-  top: 0;
-  bottom: 0;
-  right: -$pianoroll-scroll-vertical;
+  top: 8px;
+  bottom: 20px;
+  right: 8px;
   z-index: 2;
 
   padding: 0 0 0 10px;
@@ -191,14 +271,13 @@ $pianoroll-scroll-vertical: 20px;
 .pianoroll-keyboard {
   position: absolute;
   top: $pianoroll-timeline;
-  left: 0;
+  left: $pianoroll-settings;
   width: $pianoroll-keyboard-width - 1px;
-  bottom: $pianoroll-scroll-horizontal;
+  bottom: 0;
   box-sizing: content-box;
 
   border: 1px solid #000;
   border-right: 0;
-  border-radius: $pianoroll-corner 0 0 $pianoroll-corner;
   z-index: 5; // Above the timeline
   background: #777;
   overflow: hidden;
@@ -210,11 +289,11 @@ $pianoroll-scroll-vertical: 20px;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: -1px;
+    border-bottom: 1px solid #000;
 
-    border-radius: $pianoroll-corner - 1px 0 0 $pianoroll-corner - 1px;
-    box-shadow: inset 2px  3px 3px -1px rgba(0,0,0,0.64),
-                inset 2px -3px 3px -1px rgba(0,0,0,0.64);
+    box-shadow: inset 0px  3px 3px -1px rgba(0,0,0,0.64),
+                inset 0px -3px 3px -1px rgba(0,0,0,0.64);
     z-index: 2; // Above keyboard
     pointer-events: none;
   }
@@ -248,7 +327,7 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
     height: 1.75*$key-thickness;   // Make white keys thicker
 
     display: flex;
-    padding-right: 5%; 
+    padding-right: 5%;
     .pianoroll-key-label {
       visibility: hidden;
       font-size: 10px;
@@ -346,7 +425,7 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 .pianoroll-octave {
   position: relative;
   height: $octave-thickness;
-  //width: 100px; // Fixed width will 
+  //width: 100px; // Fixed width will
 
   &:first-child {
     height: percentage(1.0625/$total-keys);
@@ -390,13 +469,13 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
   border-top: 0;
   border-right: 0;
 
-  font-size: 12px;
+  font-size: 10px;
   color: #000;
   display: flex;
   > * {
     align-self: flex-end;
     width: 100%;
-    padding-right: 4px;
+    padding-right: 3px;
     padding-bottom: 2px;
     text-align: right;
   }

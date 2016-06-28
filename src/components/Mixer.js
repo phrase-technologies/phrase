@@ -81,14 +81,15 @@ export class Mixer extends Component {
 
     return (
       <div className={mixerClasses}>
+        <div className="mixer-settings" />
         <MixerTimeline {...timelineProps} />
         <MixerTracks {...trackRangeProps} />
         <MixerWindowDisplay {...timelineProps} {...trackRangeProps} {...contentProps} />
         <MixerWindowControl {...timelineProps} {...trackRangeProps} {...contentProps}>
-          <div className="mixer-scroll-horizontal">
+          <div className="mixer-scrollbar-horizontal">
             <ScrollBar draggableEndpoints min={this.props.xMin} max={this.props.xMax} setScroll={this.setHorizontalScroll} />
           </div>
-          <div className="mixer-scroll-vertical">
+          <div className="mixer-scrollbar-vertical">
             <ScrollBar vertical min={this.props.yMin} max={this.props.yMax} setScroll={this.setVerticalScroll} />
           </div>
         </MixerWindowControl>

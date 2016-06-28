@@ -65,8 +65,32 @@ export default class Pianoroll extends Component {
       scrollYActionCreator: pianorollScrollY,
     }
 
+    let settingsStyle = {
+      background: this.props.currentTrack.color,
+    }
+    let thumbnailStyle = {
+      backgroundImage: `url(${require('img/piano.jpg')})`,
+    }
+
     return (
       <div className="pianoroll">
+        <div className="pianoroll-settings" style={settingsStyle}>
+          <div className="pianoroll-sound-name">{this.props.currentTrack.name}</div>
+          <div className="pianoroll-sound-thumbnail" style={thumbnailStyle} />
+          <div className="pianoroll-sound-menu btn-group-vertical">
+            <div className="btn btn-xs btn-bright">
+              <span className="fa fa-caret-left" />
+              <span> Choose </span>
+              <span className="fa fa-caret-right" />
+            </div>
+            <div className="btn btn-xs btn-bright">
+              <span className="fa fa-wrench" />
+              <span> Configure</span>
+            </div>
+          </div>
+        </div>
+        <div className="pianoroll-chunk">
+        </div>
         <PianorollKeyboard {...dispatchProp} {...keyboardProps} currentTrack={this.props.currentTrack} />
         <PianorollTimelineDisplay {...dispatchProp} {...timelineProps} clips={this.props.clips} />
         <PianorollTimelineControl {...dispatchProp} {...timelineProps} clips={this.props.clips} />

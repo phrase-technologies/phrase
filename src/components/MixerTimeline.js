@@ -86,7 +86,7 @@ export class MixerTimeline extends Component {
 
   componentDidMount() {
     this.props.grid.marginLeft   = 11
-    this.props.grid.marginRight  = 12
+    this.props.grid.marginRight  = 26
     this.container = ReactDOM.findDOMNode(this)
     this.container.addEventListener('mousedown', this.mouseDownEvent)
   }

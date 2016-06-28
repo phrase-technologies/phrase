@@ -16,7 +16,7 @@ export class PianorollKeyboard extends Component {
         keybedOffset = Math.round(keybedOffset)
     let keybedWidth = keybedHeight / 12.5
 
-    let isCompact = keybedWidth < 100
+    let isCompact = keybedWidth < 75
 
     let style = {
       transform: 'translate3d(0,'+(-keybedOffset)+'px,0)',
