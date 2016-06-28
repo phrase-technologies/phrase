@@ -786,10 +786,10 @@ export default function reducePhrase(state = defaultState, action) {
 
 function reduceCreateTrack(state, action) {
   let DEFAULT_INSTRUMENT = {
-    id: `Polly`,
+    id: `Piano`,
     config: {
-      polyphony: 32,
-      oscillatorType: `square`
+      // polyphony: 32,
+      // oscillatorType: `square`
     }
   }
 
