@@ -28,12 +28,7 @@ export class Mixer extends Component {
 
   render() {
     if (this.props.minimized) {
-      return (
-        <h2 className="workstation-heading" onClick={this.props.maximize}>
-          Arrangement
-          <span className="fa fa-plus-square pull-right" />
-        </h2>
-      )
+      return null
     }
 
     let mixerClasses = 'mixer'

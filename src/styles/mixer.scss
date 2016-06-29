@@ -12,10 +12,10 @@ $mixer-scrollbar-vertical: 14px;
 // ============================================================================
 .mixer {
   position: absolute;
-  top:    15px + $mixer-timeline;
-  left:   15px;
-  right:  15px;
-  bottom: 15px;
+  top: 7px + $mixer-timeline;
+  left: 15px;
+  right: 15px;
+  bottom: 7px;
 
   border: 1px solid #000;
   border-radius: 0 0 $mixer-corner+3px $mixer-corner+3px;
@@ -217,20 +217,23 @@ $mixer-scrollbar-vertical: 14px;
 .mixer-scrollbar-horizontal {
   position: absolute;
   left:    -1px;
-  right:    0px;
+  right:    2px;
   bottom: -20px;
   height:  20px;
 
-  padding: 5px 17px 5px 1px; // Use the padding to cover .mixer-window-focus overflows
+  // Use the padding and opaque background to cover .mixer-window-focus overflows
+  padding: 5px 15px 5px 1px;
   background: #111;
 }
 .mixer-scrollbar-vertical {
   position: absolute;
-  top: 3px;
-  right: 3px;
-  bottom: 5px;
+  top: 0;
+  right: 0;
+  bottom: 0px;
 
-  padding: 0 0 0 10px;
+  // Use the padding and opaque background to cover .mixer-window-focus overflows
+  padding: 3px 3px 2px 5px;
+  background: #111;
 }
 
 // ----------------------------------------------------------------------------

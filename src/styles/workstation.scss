@@ -1,12 +1,11 @@
 $workstation-minimize-transition: 0.125s;
 $workstation-mixer-width: 240px;
 $workstation-mixer-z-index: 200;          // Above Page
-$workstation-header-top: 3px; //55px + 3px;
-$workstation-header-height: 110px;
+$workstation-header-height: 103px;
 $workstation-header-z-index: 300;         // Above Page & Mixer
 $workstation-clip-width: 240px;
 $workstation-clip-z-index: 400;           // Above Page & Mixer
-$workstation-footer-height: 55px;
+$workstation-footer-height: 37px;
 $workstation-footer-z-index: 500;         // Above Clip
 $workstation-effects-chain-width: 300px;
 $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after removing box-shadows....?
@@ -14,6 +13,28 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 // ============================================================================
 // Overall Console (Mixer, Clip, Effects Chain)
 // ============================================================================
+.workstation-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: #222;
+  color: #CCC;
+}
+.workstation-container {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  // Vertically center loading icon
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .workstation {
   position: absolute;
   top: 100%;
@@ -21,40 +42,32 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   right: 0;
   height: 100%;
 
-  background: #222;
-  color: #CCC;
+  box-shadow:
+    inset  0px  1px 1px -1px #FFF,
+    0 -1px 3px #222;
+  background: #444;
+  background-image: linear-gradient(165deg, #555 0%, #444 40%, #606060 60%,#555 100% );
 
   overflow: hidden;
   z-index: 2; // Over the Body (1) and below the Header (3)
   pointer-events: none;
 
-  // Vertically center loading icon
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   // Use CSS translations (CPU Optimized) for smooth minimization and maximization
   transition: transform $workstation-minimize-transition;
-  transform: translateY(- $workstation-header-top - $workstation-header-height + 55px);
+  transform: translateY(55px - $workstation-header-height);
   &.workstation-maximized {
     transform: translateY(-100%);
   }
 }
 .workstation-header {
   position: absolute;
-  top: $workstation-header-top;
+  top: 0;
   left: 0;
   right: 0;
   height: $workstation-header-height;
   z-index: $workstation-header-z-index;
 
-  box-shadow:
-    inset  0px  1px 1px -1px #FFF,
-    0 -1px 3px #222;
-  background: #444;
-  background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
-  // background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
-  padding: 10px;
+  padding: 10px 15px;
   text-align: left;
 
   pointer-events: all;
@@ -66,12 +79,6 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
       font-size: 16px;
       padding: 8px 10px 8px 11px;
     }
-  }
-}
-.workstation-maximized {
-  > .workstation-header {
-    box-shadow: inset  0px  1px 1px -1px #FFF,
-                inset  0px -1px 0px  0px #111;
   }
 }
 .workstation-drop-target {
@@ -201,7 +208,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 }
 .workstation-body {
   position: absolute;
-  top: $workstation-header-top + $workstation-header-height;
+  top: $workstation-header-height;
   left: 0;
   right: 0;
   bottom: 0;
@@ -214,6 +221,8 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   left: 0;
   right: $workstation-effects-chain-width;
   bottom: $workstation-footer-height;
+
+  z-index: $workstation-footer-z-index + 1;
 }
 .workstation-heading {
   position: absolute;
@@ -260,12 +269,6 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   right: 0;
   z-index: $workstation-mixer-z-index;
 
-  box-shadow: inset  0px  1px 1px -1px #FFF,
-              inset -1px -1px 0px  0px #111;
-  background: #444;
-  background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
-  // background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
-
   transition: left .25s, right .25s, margin .25s;
 
   &.collapsed {
@@ -284,12 +287,6 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   right: 0;
   bottom: 0;
   z-index: $workstation-clip-z-index;
-
-  box-shadow: inset  0px  1px 1px -1px #FFF,
-              inset -1px -1px 0px  0px #111;
-  background: #444;
-  background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
-  // background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
 }
 .workstation-split {
   position: absolute;
@@ -305,13 +302,12 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   position: absolute;
   left: 0;
   right: 0;
-  height: 8px;
-  margin-top: -4px;
+  height: 6px;
+  margin-top: -3px;
 
   cursor: row-resize;
   pointer-events: all;
 
-  &:before,
   &:after {
     content: '';
     position: absolute;
@@ -322,11 +318,8 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
     border-top: 1px solid #000;
     border-bottom: 1px solid #888;
   }
-  &:before {
-    top: 0px;
-  }
   &:after {
-    bottom: 0px;
+    bottom: 2px;
   }
 }
 
@@ -340,12 +333,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   height: $workstation-footer-height;
   bottom: 0;
 
-  box-shadow: inset  0px  1px 1px -1px #FFF,
-              inset  0px -1px 0px  0px #111;
-  background: #444;
-  background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
-
-  padding: 10px;
+  padding: 0px 10px 5px;
 
   z-index: $workstation-footer-z-index;
 }
@@ -360,12 +348,6 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   right: 0;
   bottom: $workstation-footer-height;
   z-index: $workstation-effects-chain-z-index;
-
-  box-shadow: inset  1px  1px 1px -1px #FFF,
-              inset  0px -1px 0px  0px #111;
-  background: #444;
-  background-image: linear-gradient(165deg, #444 0%, #555 20%, #444 40%, #333 100% );
-  // background-image: linear-gradient(170deg, #444 0%, #777 20%, #444 23%, #404040 90%, #333 100% );
 }
 
 .workstation-phrase-actions {

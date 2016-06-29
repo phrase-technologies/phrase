@@ -19,7 +19,7 @@ export class ControllerMIDI extends Component {
 
     return (
       <Dropdown id="workstation-footer-midi-controllers" dropup className="dropdown-dark">
-        <a className="btn btn-dark dropdown-toggle" bsRole="toggle">
+        <a className="btn btn-narrow btn-link link-dark dropdown-toggle" bsRole="toggle">
           <span className={signalClasses} />
           <span className="fa fa-plug" />
           <span> MIDI Controller ({ this.state.controllers.length || "N/A" }) </span>

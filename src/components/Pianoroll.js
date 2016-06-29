@@ -20,12 +20,7 @@ export default class Pianoroll extends Component {
 
   render() {
     if (this.props.minimized) {
-      return (
-        <h2 className="workstation-heading" onClick={this.props.maximize}>
-          Clip Editor
-          <span className="fa fa-plus-square pull-right" />
-        </h2>
-      )
+      return null
     }
 
     let dispatchProp = {

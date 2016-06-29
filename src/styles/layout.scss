@@ -36,7 +36,7 @@ body {
   // ---------------------------------
   // background: transparentize(#EEE, 0.1);
   // box-shadow: 0 0 10px 10px transparentize(#EEE, 0.1);
-  padding: 10px;
+  padding: 10px 15px;
 
   z-index: 3; // So outer box-shadow + dropdown flows ver the Body (1) and over the Workstation (2)
   transition: background $header-transition, height $header-transition;

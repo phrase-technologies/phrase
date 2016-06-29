@@ -54,11 +54,11 @@ export class WorkstationHeader extends Component {
           </div>
         </div>
         <div className="workstation-divider" />
-        <WorkstationHeaderStorage {...this.props} style={{ position: 'absolute', top: 65, left: 10 }} />
+        <WorkstationHeaderStorage {...this.props} style={{ position: 'absolute', top: 65, left: 15 }} />
         <div className="text-center">
           <TransportControls style={{ display: 'inline-block' }} />
         </div>
-        <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 10 }}>
+        <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 15 }}>
           { this.renderEditTool() }
         </div>
       </div>

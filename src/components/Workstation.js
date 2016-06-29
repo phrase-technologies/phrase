@@ -60,13 +60,15 @@ export class Workstation extends Component {
       }
 
       return (
-        <div className="workstation workstation-maximized disable-select text-center">
-          <Helmet title={`${loadingMessage} - Phrase.fm`} />
-          <div className="workstation-loading text-center">
-            <span className="fa fa-music fa-2x" />
-            <p style={{ marginTop: 15 }}>
-              { loadingMessage }
-            </p>
+        <div className="workstation-background">
+          <div className="workstation-container">
+            <Helmet title={`${loadingMessage} - Phrase.fm`} />
+            <div className="workstation-loading text-center">
+              <span className="fa fa-music fa-2x" />
+              <p style={{ marginTop: 15 }}>
+                { loadingMessage }
+              </p>
+            </div>
           </div>
         </div>
       )
@@ -76,27 +78,31 @@ export class Workstation extends Component {
     let minimizeClipEditor = this.props.consoleSplitRatio > 0.8 || this.props.focusedTrack === null
 
     return (
-      <div className="workstation workstation-maximized disable-select">
-        <Helmet title={`${this.props.phraseName || "Untitled Phrase"} by ${this.props.authorUsername} - Phrase.fm`} />
-        <WorkstationHeader />
-        <div className="workstation-body">
-          <div className="workstation-main" style={this.getMainSplit()}>
-            <div className="workstation-mixer" style={this.getMixerSplit()}>
-              <Mixer minimized={minimizeMixer} maximize={() => this.setConsoleSplit(0.5)} />
+      <div className="workstation-background">
+        <div className="workstation-container">
+          <div className="workstation workstation-maximized disable-select">
+            <Helmet title={`${this.props.phraseName || "Untitled Phrase"} by ${this.props.authorUsername} - Phrase.fm`} />
+            <WorkstationHeader />
+            <div className="workstation-body">
+              <div className="workstation-main" style={this.getMainSplit()}>
+                <div className="workstation-mixer" style={this.getMixerSplit()}>
+                  <Mixer minimized={minimizeMixer} maximize={() => this.setConsoleSplit(0.5)} />
+                </div>
+                <WorkstationSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.setConsoleSplit} />
+                <div className="workstation-clip" style={this.getClipSplit()}>
+                  <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
+                </div>
+              </div>
+              <WorkstationFooter />
+              <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
+                <h2 className="workstation-heading">
+                  <span className="workstation-heading-vertical">
+                    <span>Effects Chain </span>
+                    <span className="fa fa-plus-square" />
+                  </span>
+                </h2>
+              </div>
             </div>
-            <WorkstationSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.setConsoleSplit} />
-            <div className="workstation-clip" style={this.getClipSplit()}>
-              <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
-            </div>
-          </div>
-          <WorkstationFooter />
-          <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
-            <h2 className="workstation-heading">
-              <span className="workstation-heading-vertical">
-                <span>Effects Chain </span>
-                <span className="fa fa-plus-square" />
-              </span>
-            </h2>
           </div>
         </div>
       </div>
@@ -160,24 +166,24 @@ export class Workstation extends Component {
 
   getMixerSplit() {
     if (this.props.focusedTrack === null) return { bottom: 0 }
-    else if (this.props.consoleSplitRatio < 0.2) return { height: 45 }
-    else if (this.props.consoleSplitRatio > 0.8) return { bottom: 45 }
+    else if (this.props.consoleSplitRatio < 0.2) return { height: 0 }
+    else if (this.props.consoleSplitRatio > 0.8) return { bottom: 0 }
     return { bottom: ((1 - this.props.consoleSplitRatio) * 100) + '%' }
   }
 
   getClipSplit() {
     if (this.props.focusedTrack === null) return { display: 'none' }
-    else if (this.props.consoleSplitRatio < 0.2) return { top:    45 }
-    else if (this.props.consoleSplitRatio > 0.8) return { height: 45 }
+    else if (this.props.consoleSplitRatio < 0.2) return { top:    0 }
+    else if (this.props.consoleSplitRatio > 0.8) return { height: 0 }
     return { top: (this.props.consoleSplitRatio  * 100) + '%' }
   }
 
   getMainSplit() {
-    return this.props.sidebar ? { right: 300 } : { right: 45 }
+    return this.props.sidebar ? { right: 300 } : { right: 0 }
   }
 
   getSidebarSplit() {
-    return this.props.sidebar ? { width: 300 } : { width: 45 }
+    return this.props.sidebar ? { width: 300 } : { display: 'none' }
   }
 
   shouldComponentUpdate(nextProps) {
