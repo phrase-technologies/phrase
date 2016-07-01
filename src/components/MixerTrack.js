@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 
-import { phraseMuteTrack,
-         phraseSoloTrack,
-         phraseSelectTrack,
-       } from '../reducers/reducePhrase.js'
+import {
+  phraseMuteTrack,
+  phraseSoloTrack,
+  phraseSelectTrack,
+} from '../reducers/reducePhrase.js'
+import { getDarkenedColor } from '../helpers/trackHelpers.js'
 
 import MixerTrackButton from './MixerTrackButton.js'
 import MixerTrackLevel from './MixerTrackLevel.js'
@@ -14,23 +16,31 @@ export default class MixerTrack extends Component {
     let mixerTrackClasses  = 'mixer-track'
         mixerTrackClasses += this.props.track.selected ? ' active' : ''
 
-    let tagStyle = {
-      backgroundColor: this.props.track.color
+    let controlStyle = {
+      backgroundColor: this.props.track.color,
+      backgroundImage: `linear-gradient(to bottom, ${this.props.track.color}, ${getDarkenedColor(this.props.track.color, 0.266)})`,
     }
-
+    let nameStyle = this.props.track.selected
+      ? {
+        color: this.props.track.color,
+        backgroundImage: `linear-gradient(to bottom, ${getDarkenedColor(this.props.track.color, 0.533)}, ${getDarkenedColor(this.props.track.color, 0.733)})`,
+      } : {}
     let buttonProps = {
       dispatch: this.props.dispatch,
       trackID: this.props.track.id
+    }
+    let thumbnailStyle = {
+      backgroundImage: `url(${require('img/piano.jpg')})`,
     }
 
     return (
       <div className={mixerTrackClasses}>
         <div
           className="mixer-track-control" ref={ref => this.control = ref}
-          onClick={this.handleClick}
+          onClick={this.handleClick} style={controlStyle}
         >
-          <div className="mixer-track-tag" style={tagStyle} />
-          <h3 className="mixer-track-name">
+          <div className="mixer-track-thumbnail" style={thumbnailStyle} />
+          <h3 className="mixer-track-name" style={nameStyle}>
             {this.props.track.name}
           </h3>
           <span className="mixer-track-caret fa fa-ellipsis-h" />

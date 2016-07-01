@@ -32,7 +32,7 @@ let Header = ({
   let containerClasses = "container"
       containerClasses += (props.maximize) ? " container-maximize" : ''
       containerClasses += isSafari() ? ' container-safari-fix' : ''
-  let buttonClasses = "btn btn-bright btn-round"
+  let buttonClasses = "btn btn-link link-dark"
       buttonClasses += (theme === 'solid') ? ' link-bright' : ''
 
   return (
@@ -40,7 +40,7 @@ let Header = ({
       <div className={containerClasses}>
         <div className="btn-toolbar pull-left">
           <HeaderSearch theme={theme} />
-          <div className="btn-group" style={{ marginLeft: 10 }}>
+          <div className="btn-group">
             <a
               className={buttonClasses}
               onClick={() => handleNewPhraseClick({ dispatch, params, phrase })}

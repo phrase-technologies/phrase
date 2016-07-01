@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { mapPianorollToProps } from '../selectors/selectorPianoroll.js'
-import { pianorollScrollX,
-         pianorollScrollY
-       } from '../reducers/reducePianoroll.js'
+import {
+  pianorollScrollX,
+  pianorollScrollY,
+} from '../reducers/reducePianoroll.js'
+import { getDarkenedColor } from '../helpers/trackHelpers.js'
 
 import PianorollTimelineDisplay from './PianorollTimelineDisplay.js'
 import PianorollTimelineControl from './PianorollTimelineControl.js'
@@ -62,6 +64,7 @@ export default class Pianoroll extends Component {
 
     let settingsStyle = {
       background: this.props.currentTrack.color,
+      backgroundImage: `linear-gradient(to bottom, ${this.props.currentTrack.color}, ${getDarkenedColor(this.props.currentTrack.color, 0.266)})`,
     }
     let thumbnailStyle = {
       backgroundImage: `url(${require('img/piano.jpg')})`,

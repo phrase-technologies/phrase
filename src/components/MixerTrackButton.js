@@ -1,6 +1,8 @@
 import React from 'react'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
+import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
+
 export default ({ active, buttonClasses, action, trackID, tooltip, children, ...props }) => {
 
   buttonClasses = 'mixer-track-btn ' + buttonClasses
@@ -10,7 +12,10 @@ export default ({ active, buttonClasses, action, trackID, tooltip, children, ...
 
   return (
     <OverlayTrigger placement="top" overlay={buttonTooltip} delayShow={640}>
-      <button className={buttonClasses} onClick={action} {...props}>
+      <button
+        className={buttonClasses} {...props}
+        onClick={action} onMouseDown={makeButtonUnfocusable}
+      >
         {children}
       </button>
     </OverlayTrigger>
