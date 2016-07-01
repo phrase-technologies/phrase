@@ -55,9 +55,8 @@ export const clipSelectionOffsetValidated = createSelector(
           : [offsetStart, offsetEnd]
 
         // Avoid negative clip lengths and positions!
-        let finalOffsetStart, finalOffsetEnd
-        [finalOffsetStart, finalOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
-        [finalOffsetStart, finalOffsetEnd] = validateOffsetPosition(snappedOffsetStart, snappedOffsetEnd, selectedClips)
+        let [tempoOffsetStart, tempoOffsetEnd] = validateOffsetLengths(snappedOffsetStart, snappedOffsetEnd, selectedClips)
+        let [finalOffsetStart, finalOffsetEnd] = validateOffsetPosition(tempoOffsetStart, tempoOffsetEnd, selectedClips)
 
         // Validate Track Offset
         let finalOffsetTrack = validateTrackOffset(offsetTrack, tracks, selectedClips)
