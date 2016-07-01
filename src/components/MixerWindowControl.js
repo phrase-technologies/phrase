@@ -113,6 +113,7 @@ export class MixerWindowControl extends Component {
     let bar = (this.props.xMin + mouseXByRange) * this.props.barCount
     let trackID = this.getTrackFromCursor(e)
 
+console.log( bar )
     let foundClip = _.findLast(this.props.clips, clip =>
       clip.trackID === trackID && clip.start <= bar && clip.end > bar
     )

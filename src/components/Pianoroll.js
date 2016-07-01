@@ -75,12 +75,12 @@ export default class Pianoroll extends Component {
           <div className="pianoroll-sound-menu btn-group-vertical">
             <div className="btn btn-xs btn-bright">
               <span className="fa fa-caret-left" />
-              <span> Choose </span>
+              <span> Preset </span>
               <span className="fa fa-caret-right" />
             </div>
             <div className="btn btn-xs btn-bright">
               <span className="fa fa-wrench" />
-              <span> Configure</span>
+              <span> Edit</span>
             </div>
           </div>
         </div>

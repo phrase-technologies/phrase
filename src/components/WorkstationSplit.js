@@ -13,9 +13,9 @@ export default class WorkstationSplit extends Component {
     if (!this.props.splitRatio)
       scrollPosition = { display: 'none' }
     else if (this.props.splitRatio < 0.2)
-      scrollPosition = { top: 0 }
+      scrollPosition = { top: 0 + 4 }
     else if (this.props.splitRatio > 0.8)
-      scrollPosition = { bottom: 0 - 4 }
+      scrollPosition = { bottom: 0 - 4 + 4 }
     else
       scrollPosition = { top: (this.props.splitRatio * 100) + '%' }
 

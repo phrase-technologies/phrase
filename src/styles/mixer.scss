@@ -45,7 +45,7 @@ $mixer-scrollbar-vertical: 14px;
   > .timeline-cursor-window {
     top: -$mixer-timeline;
     left:   3px + $mixer-track-control + $mixer-track-tag;
-    right:  0px;
+    right:  3px + 1px + $mixer-scrollbar-vertical;
     bottom: 0px;
 
     > .timeline-cursor-grid {
@@ -59,7 +59,7 @@ $mixer-scrollbar-vertical: 14px;
   > .timeline-playhead-window {
     top: -12px;
     left:   3px + $mixer-track-control + $mixer-track-tag;
-    right:  0px;
+    right:  3px + $mixer-scrollbar-vertical;
     bottom: 0px;
 
     > .timeline-playhead-grid {
@@ -176,7 +176,7 @@ $mixer-scrollbar-vertical: 14px;
   position: absolute;
   top: 0;
   left: 3px + 1px + $mixer-track-control + $mixer-track-tag;
-  right: 0;
+  right: 3px + 1px + $mixer-scrollbar-vertical;
   bottom: $mixer-scrollbar-horizontal;
 
   // Must be below .mixer-track-list (because the NEW TRACK button must be clickable!)
@@ -217,18 +217,18 @@ $mixer-scrollbar-vertical: 14px;
 .mixer-scrollbar-horizontal {
   position: absolute;
   left:    -1px;
-  right:    2px;
+  right:   -1px;
   bottom: -20px;
   height:  20px;
 
   // Use the padding and opaque background to cover .mixer-window-focus overflows
-  padding: 5px 15px 5px 1px;
+  padding: 5px 0px 5px 1px;
   background: #111;
 }
 .mixer-scrollbar-vertical {
   position: absolute;
   top: 0;
-  right: 0;
+  right: -18px;
   bottom: 0px;
 
   // Use the padding and opaque background to cover .mixer-window-focus overflows

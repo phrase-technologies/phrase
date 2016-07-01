@@ -221,8 +221,6 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   left: 0;
   right: $workstation-effects-chain-width;
   bottom: $workstation-footer-height;
-
-  z-index: $workstation-footer-z-index + 1;
 }
 .workstation-heading {
   position: absolute;

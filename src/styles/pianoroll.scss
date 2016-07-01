@@ -72,8 +72,6 @@ $pianoroll-scroll-vertical: 20px;
   border: 1px solid #000;
   border-right: 0;
   border-radius: $pianoroll-corner 0 0 $pianoroll-corner;
-  box-shadow: inset 2px  3px 3px -1px rgba(0,0,0,0.64),
-              inset 2px -3px 3px -1px rgba(0,0,0,0.64);
   background: #282828;
   padding: 10px;
   text-align: center;
@@ -82,12 +80,6 @@ $pianoroll-scroll-vertical: 20px;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-
-  &:hover {
-    .pianoroll-sound-menu {
-      display: block;
-    }
-  }
 }
 .pianoroll-sound-name {
   position: absolute;
@@ -115,8 +107,6 @@ $pianoroll-scroll-vertical: 20px;
   justify-content: center;
 }
 .pianoroll-sound-menu {
-  display: none;
-
   position: absolute;
   left: 10px;
   right: 10px;
@@ -133,7 +123,7 @@ $pianoroll-scroll-vertical: 20px;
   border: 1px solid #000;
   border-right: 0;
   border-bottom: 0;
-  box-shadow: inset 0px  3px 3px -1px rgba(0,0,0,0.64);
+  box-shadow: inset 2px  3px 3px -1px rgba(0,0,0,0.64);
   background: #777;
   overflow: hidden;
 }
@@ -293,7 +283,7 @@ $pianoroll-scroll-vertical: 20px;
     border-bottom: 1px solid #000;
 
     box-shadow: inset 0px  3px 3px -1px rgba(0,0,0,0.64),
-                inset 0px -3px 3px -1px rgba(0,0,0,0.64);
+                inset 2px -3px 3px -1px rgba(0,0,0,0.64);
     z-index: 2; // Above keyboard
     pointer-events: none;
   }

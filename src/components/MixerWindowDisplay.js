@@ -7,9 +7,7 @@
 
 import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider'
-import provideGridScroll from './GridScrollProvider'
 
-import _ from 'lodash'
 import { closestHalfPixel,
          drawLine,
          drawRoundedRectangle } from '../helpers/canvasHelpers.js'
@@ -23,7 +21,7 @@ export class MixerWindowDisplay extends Component {
 
   componentDidMount() {
     this.props.grid.marginLeft   = 10
-    this.props.grid.marginRight  = 7
+    this.props.grid.marginRight  = 11
   }
 
   render() {
@@ -37,7 +35,7 @@ export class MixerWindowDisplay extends Component {
   renderFrame() {
     return function(canvasContext) {
       canvasContext.fillStyle = '#444444'
-      canvasContext.fillRect( 0, 0, this.props.grid.width, this.props.grid.height )
+      canvasContext.fillRect(0, 0, this.props.grid.width, this.props.grid.height)
       this.props.grid.calculateZoomThreshold()
       this.renderTimeline(canvasContext, this.props.xMin, this.props.xMax)
       this.renderClips(canvasContext,
@@ -54,61 +52,60 @@ export class MixerWindowDisplay extends Component {
   renderTimeline(canvasContext, xMin, xMax) {
     // Draw lines for each beat
     canvasContext.lineWidth = 1.0
-    var minBar = this.props.grid.percentToBar( xMin ) - 1
-    var maxBar = this.props.grid.percentToBar( xMax )
-    var minorIncrement = this.props.grid.lineThresholdsNoKeys.minorLine || this.props.grid.lineThresholdsNoKeys.middleLine
+    let minBar = this.props.grid.percentToBar(xMin) - 1
+    let maxBar = this.props.grid.percentToBar(xMax)
+    let minorIncrement = this.props.grid.lineThresholdsNoKeys.minorLine || this.props.grid.lineThresholdsNoKeys.middleLine
 
     // Ensure we increment off a common denominator
     minBar = minBar - (minBar % minorIncrement)
 
-    for( var bar = minBar; bar <= maxBar; bar += minorIncrement )
-    {
+    for (let bar = minBar; bar <= maxBar; bar += minorIncrement) {
       // Draw each line as a separate path (different colors)
-      var xPosition = closestHalfPixel( this.props.grid.barToXCoord( bar ) )
+      let xPosition = closestHalfPixel(this.props.grid.barToXCoord(bar))
 
       // Major Bar lines
-      if( bar % this.props.grid.lineThresholdsNoKeys.majorLine === 0 )
+      if (bar % this.props.grid.lineThresholdsNoKeys.majorLine === 0)
         canvasContext.strokeStyle = '#222222'
       // Intermediary Bar lines
-      else if( bar % this.props.grid.lineThresholdsNoKeys.middleLine === 0 )
+      else if (bar % this.props.grid.lineThresholdsNoKeys.middleLine === 0)
         canvasContext.strokeStyle = '#333333'
       // Minor Bar lines
-      else if( this.props.grid.lineThresholdsNoKeys.minorLine )
+      else if (this.props.grid.lineThresholdsNoKeys.minorLine)
         canvasContext.strokeStyle = '#3C3C3C'
 
       canvasContext.beginPath()
-      drawLine( canvasContext, xPosition, 0, xPosition, this.props.grid.height )
+      drawLine(canvasContext, xPosition, 0, xPosition, this.props.grid.height)
       canvasContext.stroke()
-    }    
+    }
   }
 
   renderClips(canvasContext, xMin, xMax, yMin, yMax, tracks, clips) {
     canvasContext.lineWidth = this.props.grid.pixelScale
     canvasContext.font = 11*this.props.grid.pixelScale + 'px Helvetica Neue, Helvetica, Arial, sans-serif'
 
-    var contentHeight = getTracksHeight(tracks)*this.props.grid.pixelScale
-    var startingEdge = 0 - contentHeight * yMin
-    var radius = 6
+    let contentHeight = getTracksHeight(tracks)*this.props.grid.pixelScale
+    let startingEdge = 0 - contentHeight * yMin
+    let radius = 6
 
     // Iterate through each track
     tracks.reduce((currentEdge, track) => {
-      var trackHeight = getTrackHeight(track)*this.props.grid.pixelScale
-      var nextEdge = currentEdge + trackHeight
+      let trackHeight = getTrackHeight(track)*this.props.grid.pixelScale
+      let nextEdge = currentEdge + trackHeight
 
       // Skip tracks that are out of view
       if (nextEdge < 0 || currentEdge > this.props.grid.height)
         return nextEdge
 
-      // Render all 
-      let top = closestHalfPixel( currentEdge + 7 * this.props.grid.pixelScale, this.props.grid.pixelScale )
-      let bottom = closestHalfPixel( nextEdge - 5 * this.props.grid.pixelScale, this.props.grid.pixelScale )
+      // Render all
+      let top = closestHalfPixel(currentEdge + 7 * this.props.grid.pixelScale, this.props.grid.pixelScale)
+      let bottom = closestHalfPixel(nextEdge - 5 * this.props.grid.pixelScale, this.props.grid.pixelScale)
       clips.forEach(clip => {
         // Filter by current track
-        if (clip.trackID != track.id)
+        if (clip.trackID !== track.id)
           return
 
-        var left   = closestHalfPixel( this.props.grid.barToXCoord( clip.start ), this.props.grid.pixelScale )
-        var right  = closestHalfPixel( this.props.grid.barToXCoord( clip.end   ), this.props.grid.pixelScale )
+        let left   = closestHalfPixel(this.props.grid.barToXCoord(clip.start), this.props.grid.pixelScale)
+        let right  = closestHalfPixel(this.props.grid.barToXCoord(clip.end), this.props.grid.pixelScale)
         // Don't waste CPU cycles drawing stuff that's not visible
         if (right < 0 || left > this.props.grid.width)
           return
@@ -161,12 +158,12 @@ export class MixerWindowDisplay extends Component {
     }
 
     // Loop Lines
-    var currentLoopStart = clip.start + clip.offset + clip.loopLength
-    var currentLoopStartCutoff = clip.start - currentLoopStart                      // Used to check if a note is cut off at the beginning of the current loop iteration
-    var currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
-    while( currentLoopStart < clip.end ) {
+    let currentLoopStart = clip.start + clip.offset + clip.loopLength
+    let currentLoopStartCutoff = clip.start - currentLoopStart                      // Used to check if a note is cut off at the beginning of the current loop iteration
+    let currentLoopEndCutoff   = Math.min(clip.loopLength, clip.end - currentLoopStart) // Used to check if a note is cut off at the end of the current loop iteration
+    while (currentLoopStart < clip.end) {
       // Draw current line
-      var currentLoopLine = closestHalfPixel( this.props.grid.barToXCoord( currentLoopStart ), this.props.grid.pixelScale )
+      let currentLoopLine = closestHalfPixel(this.props.grid.barToXCoord(currentLoopStart), this.props.grid.pixelScale)
       drawLine(
         canvasContext,
         currentLoopLine,
@@ -181,7 +178,7 @@ export class MixerWindowDisplay extends Component {
       currentLoopStart += clip.loopLength
       currentLoopStartCutoff = 0
       currentLoopEndCutoff = Math.min(clip.loopLength, clip.end - currentLoopStart)
-    }    
+    }
 
     // Label
     if (right - left > 30*this.props.grid.pixelScale) {
@@ -194,7 +191,7 @@ export class MixerWindowDisplay extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    var propsToCheck = [
+    let propsToCheck = [
       'dispatch',
       'grid',
       'tracks',
@@ -205,10 +202,10 @@ export class MixerWindowDisplay extends Component {
       'yMin',
       'yMax'
     ]
-    var changeDetected = propsToCheck.some(prop => {
-      return nextProps[prop] != this.props[prop]
+    let changeDetected = propsToCheck.some(prop => {
+      return nextProps[prop] !== this.props[prop]
     })
-    return changeDetected    
+    return changeDetected
   }
 }
 
