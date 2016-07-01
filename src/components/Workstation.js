@@ -99,35 +99,26 @@ export class Workstation extends Component {
               </div>
               <WorkstationFooter />
               <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
-                <h2 className="workstation-heading">
+                <h2
+                  className="workstation-heading"
+                  onClick={() => this.props.dispatch({ type: layout.TOGGLE_RACK })}
+                  { ...(this.props.rackOpen ? { style: { right: `505px` }} : {}) }
+                >
                   <span className="workstation-heading-vertical">
-                    <span>Effects Chain </span>
+                    <span>Effects Chain &nbsp;&nbsp;</span>
                     <span className="fa fa-plus-square" />
                   </span>
                 </h2>
+                { this.props.rackOpen && this.props.selectedTrack &&
+                  <Rack track={this.props.selectedTrack} />
+                }
+                { this.props.rackOpen && !this.props.selectedTrack &&
+                  <div className="rack-select-track">
+                    Select a track to view its Rack
+                  </div>
+                }
               </div>
             </div>
-          </div>
-          <WorkstationFooter />
-          <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
-            <h2
-              className="workstation-heading"
-              onClick={() => this.props.dispatch({ type: layout.TOGGLE_RACK })}
-              { ...(this.props.rackOpen ? { style: { right: `505px` }} : {}) }
-            >
-              <span className="workstation-heading-vertical">
-                <span>Effects Chain &nbsp;&nbsp;</span>
-                <span className="fa fa-plus-square" />
-              </span>
-            </h2>
-            { this.props.rackOpen && this.props.selectedTrack &&
-              <Rack track={this.props.selectedTrack} />
-            }
-            { this.props.rackOpen && !this.props.selectedTrack &&
-              <div className="rack-select-track">
-                Select a track to view its Rack
-              </div>
-            }
           </div>
         </div>
       </div>
