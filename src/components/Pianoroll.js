@@ -76,12 +76,12 @@ export default class Pianoroll extends Component {
           <div className="pianoroll-sound-name">{this.props.currentTrack.name}</div>
           <div className="pianoroll-sound-thumbnail" style={thumbnailStyle} />
           <div className="pianoroll-sound-menu btn-group-vertical">
-            <div className="btn btn-xs btn-bright">
+            <div className="btn btn-xs btn-bright" onClick={this.clickPreset}>
               <span className="fa fa-caret-left" />
               <span> Preset </span>
               <span className="fa fa-caret-right" />
             </div>
-            <div className="btn btn-xs btn-bright">
+            <div className="btn btn-xs btn-bright" onClick={this.clickRack}>
               <span className="fa fa-wrench" />
               <span> Edit</span>
             </div>
@@ -113,6 +113,15 @@ export default class Pianoroll extends Component {
       </div>
     )
   }
+
+  clickPreset() {
+    console.log("TODO: Open Preset Chooser")
+  }
+
+  clickRack() {
+    console.log("TODO: Open Rack View")
+  }
+
 }
 
 Pianoroll.propTypes = {

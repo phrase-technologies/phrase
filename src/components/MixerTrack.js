@@ -37,9 +37,13 @@ export default class MixerTrack extends Component {
       <div className={mixerTrackClasses}>
         <div
           className="mixer-track-control" ref={ref => this.control = ref}
-          onClick={this.handleClick} style={controlStyle}
+          onClick={this.clickTrack} style={controlStyle}
         >
-          <div className="mixer-track-thumbnail" style={thumbnailStyle} />
+          <div className="mixer-track-thumbnail" style={thumbnailStyle} onClick={this.clickRack}>
+            <div>
+              <span className="fa fa-wrench" />
+            </div>
+          </div>
           <h3 className="mixer-track-name" style={nameStyle}>
             {this.props.track.name}
           </h3>
@@ -66,12 +70,16 @@ export default class MixerTrack extends Component {
     )
   }
 
-  handleClick = (e) => {
+  clickTrack = (e) => {
     // Don't intercept bubbled events from child buttons
     if (e.target !== this.control)
       return
 
     this.armTrack(e)
+  }
+
+  clickRack = () => {
+    console.log("TODO: Open Rack")
   }
 
   armTrack = (e) => {
