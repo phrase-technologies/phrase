@@ -9,6 +9,7 @@ import React, { Component } from 'react'
 
 import { getTracksHeight } from '../helpers/trackHelpers.js'
 import { phraseCreateTrack } from '../reducers/reducePhrase.js'
+import { mixerScrollY } from 'reducers/reduceMixer.js'
 
 import MixerTrack from './MixerTrack.js'
 import NewRibbon from './NewRibbon.js'
@@ -22,7 +23,7 @@ export default class MixerTracks extends Component {
 
     return (
       <div className="mixer-track-list-gutter">
-        <ul className="mixer-track-list" style={{marginTop: scrollOffset}}>
+        <ul className="mixer-track-list" style={{marginTop: scrollOffset}} onWheel={this.handleScroll}>
           {this.props.tracks.map(track => (
             <MixerTrack
               key={track.id}
@@ -43,6 +44,15 @@ export default class MixerTracks extends Component {
     this.props.dispatch(phraseCreateTrack())
   }
 
+  handleScroll = (e) => {
+    if (e.deltaY) {
+      this.props.dispatch(mixerScrollY({
+        delta: e.deltaY
+      }))
+    }
+    e.preventDefault()
+  }
+
   shouldComponentUpdate(nextProps) {
     let propsToCheck = [
       'dispatch',
@@ -55,6 +65,7 @@ export default class MixerTracks extends Component {
     })
     return changeDetected
   }
+
 }
 
 MixerTracks.propTypes = {

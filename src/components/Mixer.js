@@ -75,7 +75,7 @@ export class Mixer extends Component {
     }
 
     return (
-      <div className={mixerClasses}>
+      <div className={mixerClasses} onWheel={this.handleScroll}>
         <div className="mixer-settings" />
         <MixerTimeline {...timelineProps} />
         <MixerTracks {...trackRangeProps} />
@@ -93,6 +93,15 @@ export class Mixer extends Component {
         <TimelinePlayhead {...playheadProps} />
       </div>
     )
+  }
+
+  handleScroll = (e) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      this.props.dispatch(mixerScrollY({
+        delta: e.deltaY
+      }))
+    }
+    e.preventDefault()
   }
 
   setVerticalScroll = (min, max) => {
