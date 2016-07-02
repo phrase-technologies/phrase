@@ -543,7 +543,7 @@ export default function reducePhrase(state = defaultState, action) {
               },
               ...track.rack.slice(action.rackIndex + 1, Infinity)
             ]
-            
+
             return u({ rack }, track)
           }
         ))
@@ -803,21 +803,15 @@ function reduceCreateTrack(state, action) {
   // for testing
 
   let DEFAULT_INSTRUMENT = {
-    id: `Piano`,
+    id: `Polly`,
     config: {
-      // polyphony: 32,
-      // oscillatorType: `square`
+      polyphony: 32,
+      oscillatorType: `square`
     }
   }
 
   let DEFAULT_RACK = [
-    DEFAULT_INSTRUMENT,
-    {
-      id: `Delay`,
-      config: {
-        time: 1
-      }
-    }
+    DEFAULT_INSTRUMENT
   ]
 
   return u({
