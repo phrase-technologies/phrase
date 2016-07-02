@@ -691,7 +691,13 @@ export default function reducePhrase(state = defaultState, action) {
             return clip
           }
 
-          // No copy - simply modify the original
+          // No copy - simply modify the original clip
+          // Move it's notes to the new track if necessary
+          mappedNotes = u.map(note => {
+            return (note.clipID === clip.id)
+              ? u({ trackID: newTrackID }, note)
+              : note
+          }, mappedNotes)
           return modifiedClip
         }
 
