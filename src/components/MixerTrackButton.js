@@ -14,7 +14,7 @@ export default ({ active, buttonClasses, action, trackID, tooltip, children, ...
     <OverlayTrigger placement="top" overlay={buttonTooltip} delayShow={640}>
       <button
         className={buttonClasses} {...props}
-        onClick={action} onMouseDown={makeButtonUnfocusable}
+        onClick={action} {...makeButtonUnfocusable}
       >
         {children}
       </button>

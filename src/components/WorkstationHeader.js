@@ -16,6 +16,7 @@ import {
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 import { exportToMidi } from 'actions/actionsMidi'
 import isSafari from 'helpers/isSafari'
+import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 
 export class WorkstationHeader extends Component {
 
@@ -88,7 +89,7 @@ export class WorkstationHeader extends Component {
       <OverlayTrigger placement="top" overlay={MIDIExportTooltip} delayShow={250}>
         <button
           className="btn btn-sm btn-dark"
-          disabled={disabled}
+          disabled={disabled} {...makeButtonUnfocusable}
           onClick={ () => this.props.dispatch(exportToMidi()) }
          >
           <span className="fa fa-download" />
@@ -103,7 +104,10 @@ export class WorkstationHeader extends Component {
 
     return this.props.existingPhrase ? (
       <OverlayTrigger placement="top" overlay={RephraseTooltip} delayShow={250}>
-        <button className="btn btn-sm btn-bright" onClick={this.rephrase}>
+        <button
+          className="btn btn-sm btn-bright"
+          onClick={this.rephrase} {...makeButtonUnfocusable}
+        >
           <span className="fa fa-pencil-square-o" />
           <span> Rephrase</span>
         </button>
@@ -140,7 +144,7 @@ export class WorkstationHeader extends Component {
         <OverlayTrigger placement="top" overlay={DefaultTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `pointer` ? `active` : ``}` }
-            onClick={() => dispatch(arrangeToolSelect(`pointer`))}
+            onClick={() => dispatch(arrangeToolSelect(`pointer`))} {...makeButtonUnfocusable}
           >
             <span className="fa fa-fw fa-mouse-pointer" />
           </button>
@@ -148,7 +152,7 @@ export class WorkstationHeader extends Component {
         <OverlayTrigger placement="top" overlay={PencilTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `pencil` ? `active` : ``}` }
-            onClick={() => dispatch(arrangeToolSelect(`pencil`))}
+            onClick={() => dispatch(arrangeToolSelect(`pencil`))} {...makeButtonUnfocusable}
           >
             <span className="fa fa-fw fa-pencil" />
           </button>
@@ -156,7 +160,7 @@ export class WorkstationHeader extends Component {
         <OverlayTrigger placement="top" overlay={EraserTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `eraser` ? `active` : ``}` }
-            onClick={() => dispatch(arrangeToolSelect(`eraser`))}
+            onClick={() => dispatch(arrangeToolSelect(`eraser`))} {...makeButtonUnfocusable}
           >
             <span className="fa fa-fw fa-eraser" />
           </button>
@@ -164,7 +168,7 @@ export class WorkstationHeader extends Component {
         <OverlayTrigger placement="top" overlay={SliceTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `scissors` ? `active` : ``}` }
-            onClick={() => dispatch(arrangeToolSelect(`scissors`))}
+            onClick={() => dispatch(arrangeToolSelect(`scissors`))} {...makeButtonUnfocusable}
           >
             <span className="fa fa-fw fa-scissors fa-rotate-90" />
           </button>

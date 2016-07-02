@@ -7,6 +7,7 @@ import {
   pianorollScrollY,
 } from '../reducers/reducePianoroll.js'
 import { getDarkenedColor } from '../helpers/trackHelpers.js'
+import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 
 import PianorollTimelineDisplay from './PianorollTimelineDisplay.js'
 import PianorollTimelineControl from './PianorollTimelineControl.js'
@@ -76,12 +77,18 @@ export default class Pianoroll extends Component {
           <div className="pianoroll-sound-name">{this.props.currentTrack.name}</div>
           <div className="pianoroll-sound-thumbnail" style={thumbnailStyle} />
           <div className="pianoroll-sound-menu btn-group-vertical">
-            <div className="btn btn-xs btn-bright" onClick={this.clickPreset}>
+            <div
+              className="btn btn-xs btn-bright"
+              onClick={this.clickPreset} {...makeButtonUnfocusable}
+            >
               <span className="fa fa-caret-left" />
               <span> Preset </span>
               <span className="fa fa-caret-right" />
             </div>
-            <div className="btn btn-xs btn-bright" onClick={this.clickRack}>
+            <div
+              className="btn btn-xs btn-bright"
+              onClick={this.clickRack} {...makeButtonUnfocusable}
+            >
               <span className="fa fa-wrench" />
               <span> Edit</span>
             </div>

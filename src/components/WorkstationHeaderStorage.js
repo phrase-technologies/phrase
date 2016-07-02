@@ -5,6 +5,7 @@ import Moment from 'moment'
 
 import { modalOpen } from 'reducers/reduceModal.js'
 import { isMacPlatform } from 'helpers/localizationHelpers.js'
+import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 
 export default class WorkstationHeaderStorage extends Component {
 
@@ -22,7 +23,7 @@ export default class WorkstationHeaderStorage extends Component {
         <div className="btn-group">
           <OverlayTrigger placement="top" overlay={UndoTooltip} delayShow={250}>
             <button
-              className="btn btn-dark btn-narrow"
+              className="btn btn-dark btn-narrow" {...makeButtonUnfocusable}
               disabled={!this.props.undoable} onClick={this.undo}
             >
               <span className="fa fa-fw fa-undo" />
@@ -30,7 +31,7 @@ export default class WorkstationHeaderStorage extends Component {
           </OverlayTrigger>
           <OverlayTrigger placement="top" overlay={RedoTooltip} delayShow={250}>
             <button
-              className="btn btn-dark btn-narrow"
+              className="btn btn-dark btn-narrow" {...makeButtonUnfocusable}
               disabled={!this.props.redoable} onClick={this.redo}
             >
               <span className="fa fa-fw fa-repeat" />

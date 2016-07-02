@@ -14,7 +14,7 @@ export default (props) => {
     <OverlayTrigger placement="top" overlay={buttonTooltip} delay={640}>
       <button
         type="button" className={buttonClasses}
-        onMouseDown={makeButtonUnfocusable}
+        {...makeButtonUnfocusable}
         onClick={props.onButtonClick}
         tabIndex="-1"
       >
