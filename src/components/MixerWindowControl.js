@@ -113,7 +113,6 @@ export class MixerWindowControl extends Component {
     let bar = (this.props.xMin + mouseXByRange) * this.props.barCount
     let trackID = this.getTrackFromCursor(e)
 
-console.log( bar )
     let foundClip = _.findLast(this.props.clips, clip =>
       clip.trackID === trackID && clip.start <= bar && clip.end > bar
     )
@@ -156,7 +155,6 @@ console.log( bar )
           }
 
           let clipLength = foundClip.end - foundClip.start
-
           let threshold = Math.min(
             8 * this.props.grid.pixelScale / this.props.grid.width * this.props.grid.getBarRange() * this.props.barCount,
             0.25 * clipLength
@@ -243,7 +241,6 @@ console.log( bar )
   }
 
   mouseMoveEvent(e) {
-
     let mouseXByRange = this.props.grid.getMouseXPercent(e) * this.props.grid.getBarRange()
     let bar = (this.props.xMin + mouseXByRange) * this.props.barCount
     let trackID = this.getTrackFromCursor(e, true)       // Strict = true:  treat the gaps between each track as NOT considered a track
@@ -288,13 +285,9 @@ console.log( bar )
     if (e.target !== this.container)
       return
 
-    let foundClip = clips.find(clip =>
-      clip.trackID === trackID && clip.start <= bar && clip.end > bar
-    )
-
+    let foundClip = clips.find(clip => clip.trackID === trackID && clip.start <= bar && clip.end > bar)
     if (foundClip) {
       let clipLength = foundClip.end - foundClip.start
-
       let threshold = Math.min(
         8 * grid.pixelScale / grid.width * grid.getBarRange() * barCount,
         0.25 * clipLength
@@ -307,10 +300,11 @@ console.log( bar )
       } else if (bar > foundClip.end - threshold) {
         if (foundClip.loopLength !== foundClip.end - foundClip.start)
           dispatch(cursorResizeRight('implicit'))
-        else
+        else {
           this.isCursorAtTrackTopHalf(e, trackID)
             ? dispatch(cursorResizeRightClip('implicit'))
             : dispatch(cursorResizeRightLoop('implicit'))
+        }
       } else {
         dispatch(cursorClear('implicit'))
       }
@@ -323,7 +317,7 @@ console.log( bar )
     }
   }
 
-  mouseUpEvent(e) {
+  mouseUpEvent() {
     // First Click - Empty Area
     if (this.lastEvent &&
         this.lastEvent.action === SELECT_EMPTY_AREA) {
@@ -387,7 +381,7 @@ console.log( bar )
     }
   }
 
-  isCursorAtTrackTopHalf(e, currentTrackID) {
+  isCursorAtTrackTopHalf(e) {
     let contentHeight = getTracksHeight(this.props.tracks)
     let previousEdge = 0 - contentHeight * this.props.yMin
     let nextEdge

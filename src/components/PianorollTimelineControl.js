@@ -123,10 +123,11 @@ export class PianorollTimelineControl extends Component {
             looped: (foundClip.loopLength !== foundClip.end - foundClip.start),
             time: Date.now()
           }
+
           let clipLength = foundClip.end - foundClip.start
           let threshold = Math.min(
-            8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
-            0.25*clipLength
+            8 * this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
+            0.25 * clipLength
           )
 
           if (!foundClip.selected) {
@@ -201,7 +202,7 @@ export class PianorollTimelineControl extends Component {
       }
 
       if (this.props.arrangeTool === `pencil`) {
-        this.props.dispatch(phraseCreateClip(this.props.currentTrack.id, bar))
+        this.props.dispatch(phraseCreateClip({ trackID: this.props.currentTrack.id, start: bar }))
       } else {
         this.props.dispatch(transportMovePlayhead(bar, !e.metaKey))
       }
@@ -246,43 +247,45 @@ export class PianorollTimelineControl extends Component {
   }
 
   hoverEvent(e, bar) {
+    let { clips, grid, barCount, arrangeTool, dispatch } = this.props
+
     if (e.target !== this.container)
       return
 
-    let foundClip = this.props.clips.find(clip => clip.start <= bar && clip.end > bar)
+    let foundClip = clips.find(clip => clip.start <= bar && clip.end > bar)
     if (foundClip) {
       let clipLength = foundClip.end - foundClip.start
       let threshold = Math.min(
-        8*this.props.grid.pixelScale/this.props.grid.width*this.props.grid.getBarRange()*this.props.barCount,
-        0.25*clipLength
+        8 * grid.pixelScale / grid.width * grid.getBarRange() * barCount,
+        0.25 * clipLength
       )
 
-      if (this.props.arrangeTool !== "pencil") {
-        this.props.dispatch(cursorChange({ icon: this.props.arrangeTool, priority: `implicit` }))
+      if (arrangeTool !== "pointer") {
+        dispatch(cursorChange({ icon: arrangeTool, priority: `implicit` }))
       } else if (bar < foundClip.start + threshold) {
-        this.props.dispatch(cursorResizeLeft('implicit'))
+        dispatch(cursorResizeLeft('implicit'))
       } else if (bar > foundClip.end - threshold) {
         if (foundClip.loopLength !== foundClip.end - foundClip.start)
-          this.props.dispatch(cursorResizeRight('implicit'))
+          dispatch(cursorResizeRight('implicit'))
         else {
           let top = e.clientY - this.container.getBoundingClientRect().top
           top <= 37.5
-            ? this.props.dispatch(cursorResizeRightClip('implicit'))
-            : this.props.dispatch(cursorResizeRightLoop('implicit'))
+            ? dispatch(cursorResizeRightClip('implicit'))
+            : dispatch(cursorResizeRightLoop('implicit'))
         }
       } else {
-        this.props.dispatch(cursorClear('implicit'))
+        dispatch(cursorClear('implicit'))
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else {
-      if (this.props.arrangeTool === `pencil`) {
-        this.props.dispatch(cursorChange({ icon: this.props.arrangeTool, priority: `implicit` }))
+      if (arrangeTool === `pencil`) {
+        dispatch(cursorChange({ icon: arrangeTool, priority: `implicit` }))
       }
-      else this.props.dispatch(cursorClear('implicit'))
+      else dispatch(cursorClear('implicit'))
     }
   }
 
-  mouseUpEvent(e) {
+  mouseUpEvent() {
     // First Click - Empty Area
     if (this.lastEvent &&
         this.lastEvent.action === SELECT_EMPTY_AREA) {

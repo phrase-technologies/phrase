@@ -224,7 +224,7 @@ export class PianorollWindowControl extends Component {
       }
 
       if (this.props.arrangeTool === `pencil`) {
-        this.props.dispatch(phraseCreateNote(this.props.currentTrack.id, bar, key))
+        this.props.dispatch(phraseCreateNote({ trackID: this.props.currentTrack.id, start: bar, key }))
       } else {
         this.props.dispatch(transportMovePlayhead(bar, !e.metaKey))
       }
