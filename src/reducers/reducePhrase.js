@@ -367,19 +367,22 @@ export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
 }
 
 export const phraseDragNoteVelocity = ({ noteID, increase }) => {
-  return (dispatch, getState) => {
-
+  return (dispatch, getState) => { // TODO: dispatch tooltip?
     let state = getState()
 
-    let foundNote = phraseMidiSelector(state).find(x =>
+    let noteToChange = phraseMidiSelector(state).find(x =>
       x.type === `addNoteOn` && x.id === noteID
     )
 
-    let velocity = increase ? foundNote.velocity + 1 : foundNote.velocity - 1
+    let velocity = increase
+      ? Math.min(noteToChange.velocity + 1, 127)
+      : Math.max(0, noteToChange.velocity - 1)
+
+    console.log('>>>', velocity)
 
     dispatch({
       type: phrase.CHANGE_NOTE_VELOCITY,
-      payload: { noteID, velocity }
+      payload: { noteToChange, velocity }
     })
   }
 }
@@ -820,19 +823,13 @@ export default function reducePhrase(state = defaultState, action) {
     // ------------------------------------------------------------------------
 
     case phrase.CHANGE_NOTE_VELOCITY:
-      let { noteID, velocity } = action.payload
-
-      let note = state.notes.find(note => note.id === noteID)
-
-      // if min or max velocity, do nothing
-      if (velocity > 127 || velocity < 0)
-        return state
+      let { noteToChange, velocity } = action.payload
 
       return {
         ...state,
         notes: [
-          ...state.notes.filter(note => note.id !== noteID),
-          { ...note, velocity }
+          ...state.notes.filter(note => note.id !== noteToChange.id),
+          { ...noteToChange, velocity }
         ]
       }
 

@@ -7,6 +7,7 @@ import {
   phraseCreateNote,
   phraseSliceClip,
   phraseSliceNote,
+  phraseDragNoteVelocity,
 } from 'reducers/reducePhrase'
 
 import { testReducer } from 'reducers/reduce'
@@ -208,6 +209,20 @@ describe('Phrase', () => {
 
       expect(store.getState().phrase.present.notes.find(x => x.id === 0)).to.be.undefined
       expect(store.getState().phrase.present.notes).to.have.lengthOf(2)
+    })
+  })
+
+  describe(`Drag Note Velocity`, () => {
+    it(`should increase the velocty of the note by one if dragging up`, () => {
+      let trackID = 0
+      store.dispatch(phraseCreateClip(trackID, 0))
+      store.dispatch(phraseCreateNote(trackID, 0, 36.000))
+
+      expect(store.getState().phrase.present.notes.find(x => x.id === 0).velocity).to.eq(127)
+
+      store.dispatch(phraseDragNoteVelocity({ noteID: 0, increase: false }))
+
+      expect(store.getState().phrase.present.notes.find(x => x.id === 0).velocity).to.eq(126)
     })
   })
 

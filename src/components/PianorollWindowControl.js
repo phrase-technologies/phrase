@@ -119,7 +119,7 @@ export class PianorollWindowControl extends Component {
 
   noteEvent(e, bar, key, foundNote) {
     // Play the sound
-    this.previewNoteSound([key])
+    this.previewNoteSound([key], foundNote.velocity)
 
     // Second Click - Note
     if (this.lastEvent &&
@@ -237,7 +237,7 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseMoveEvent(e) {
-    let { dispatch, arrangeTool } = this.props
+    let { dispatch, arrangeTool, currentTrack, notes, ENGINE } = this.props
 
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     let key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount
@@ -294,11 +294,14 @@ export class PianorollWindowControl extends Component {
                 noteID: this.lastEvent.noteID,
                 increase: this.lastEvent.mouseY > e.clientY
               }))
+
+              let note = notes.find(x => x.id === this.lastEvent.noteID)
+
+              ENGINE.fireNote(currentTrack.id, note.keyNum, note.velocity)
             }
 
             this.lastEvent.action = CHANGE_NOTE_VELOCITY
             this.lastEvent.mouseY = e.clientY
-            this.previewDragSound(0)
             return
         }
     }
@@ -401,14 +404,14 @@ export class PianorollWindowControl extends Component {
     this.lastEvent = null
   }
 
-  previewNoteSound(keyNum) {
+  previewNoteSound(keyNum, velocity = 127) {
     // Cancel any previous key
     if (this.lastKeysPlayed && (this.lastKeysPlayed.length > 1 || this.lastKeysPlayed[0] !== keyNum))
       this.killPreviewSound()
 
     // Play new key
     keyNum = Math.ceil(keyNum)
-    this.props.ENGINE.fireNote(this.props.currentTrack.id, keyNum, 127)
+    this.props.ENGINE.fireNote(this.props.currentTrack.id, keyNum, velocity)
     this.lastKeysPlayed = [keyNum]
   }
 
@@ -479,7 +482,9 @@ PianorollWindowControl.propTypes = {
 }
 
 export default
-connect(state => ({ arrangeTool: state.arrangeTool }))(
+connect(state => ({
+  arrangeTool: state.arrangeTool
+}))(
   connectEngine(
     provideGridSystem(
       provideGridScroll(
