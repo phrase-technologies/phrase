@@ -12,7 +12,7 @@ import {
   phraseRephraseReminder,
 } from 'reducers/reducePhrase'
 
-import { layoutConsoleSplit } from 'actions/actionsLayout'
+import { layoutConsoleSplit } from 'reducers/reduceNavigation'
 
 import WorkstationHeader from './WorkstationHeader'
 import WorkstationSplit from './WorkstationSplit'
@@ -80,6 +80,11 @@ export class Workstation extends Component {
 
     let minimizeMixer = this.props.consoleSplitRatio < 0.2 && this.props.focusedTrack !== null
     let minimizeClipEditor = this.props.consoleSplitRatio > 0.8 || this.props.focusedTrack === null
+    let footerProps = {
+      dispatch: this.props.dispatch,
+      consoleSplitRatio: this.props.consoleSplitRatio,
+      focusedTrack: this.props.focusedTrack,
+    }
 
     return (
       <div className="workstation-background">
@@ -97,7 +102,7 @@ export class Workstation extends Component {
                   <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
                 </div>
               </div>
-              <WorkstationFooter />
+              <WorkstationFooter {...footerProps} />
               <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
                 <h2
                   className="workstation-heading"
@@ -205,7 +210,7 @@ export class Workstation extends Component {
 
   shouldComponentUpdate(nextProps) {
     // Ensure all canvases are re-rendered upon clip editor being shown
-    if (this.props.focusedTrack === null && nextProps.focusedTrack !== null) {
+    if (Math.abs(this.props.consoleSplitRatio - nextProps.consoleSplitRatio) > 0.25) {
       setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
       setTimeout(() => window.dispatchEvent(new Event('resize')), 0) // Some lifecycle methods are missed on the first event propogation due to race conditions
     }

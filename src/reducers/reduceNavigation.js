@@ -1,11 +1,16 @@
-// ============================================================================
-// Layout Navigation
-// ============================================================================
-
 import u from 'updeep'
 
 import { layout, pianoroll, phrase } from '../actions/actions.js'
 
+// ============================================================================
+// Layout Navigation Action Creators
+// ============================================================================
+export const layoutConsoleEmbedded        = ()        => ({type: layout.CONSOLE_EMBED})
+export const layoutConsoleSplit           = (ratio)   => ({type: layout.CONSOLE_SPLIT, ratio})
+
+// ============================================================================
+// Layout Navigation Reducer
+// ============================================================================
 let defaultState = {
   consoleEmbedded: false,
   consoleSplitRatio: null,
@@ -24,8 +29,7 @@ export default function reducerNavigation(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case layout.CONSOLE_SPLIT:
       let stateChanges = {}
-      stateChanges.consoleSplitRatio = action.ratio < 0.0 ? null : action.ratio
-      stateChanges.consoleSplitRatio = action.ratio > 1.0 ? null : stateChanges.consoleSplitRatio
+      stateChanges.consoleSplitRatio = Math.min(1.0, Math.max(action.ratio, 0.0))
       return u(stateChanges, state)
 
     // ------------------------------------------------------------------------
@@ -43,8 +47,12 @@ export default function reducerNavigation(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.SELECT_TRACK:
     case pianoroll.SET_FOCUS_WINDOW:
+      let newConsoleSplitRatio = state.consoleSplitRatio
+      if (!state.consoleSplitRatio || state.consoleSplitRatio > 0.8)
+        newConsoleSplitRatio = 0.500
+
       return u({
-        consoleSplitRatio: state.consoleSplitRatio ? state.consoleSplitRatio : 0.500
+        consoleSplitRatio: newConsoleSplitRatio
       }, state)
 
     // ------------------------------------------------------------------------
