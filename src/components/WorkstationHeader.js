@@ -138,6 +138,7 @@ export class WorkstationHeader extends Component {
     let PencilTooltip = <Tooltip id="tooltip-pencil-tool">Pencil Tool (2)</Tooltip>
     let EraserTooltip = <Tooltip id="tooltip-eraser-tool">Eraser Tool (3)</Tooltip>
     let SliceTooltip = <Tooltip id="tooltip-slice-tool">Slice Tool (4)</Tooltip>
+    let VelocityTooltip = <Tooltip id="tooltip-velocity-tool">Velocity Tool (5)</Tooltip>
 
     return (
       <div className="btn-group">
@@ -171,6 +172,14 @@ export class WorkstationHeader extends Component {
             onClick={() => dispatch(arrangeToolSelect(`scissors`))} {...makeButtonUnfocusable}
           >
             <span className="fa fa-fw fa-scissors fa-rotate-90" />
+          </button>
+        </OverlayTrigger>
+        <OverlayTrigger placement="top" overlay={VelocityTooltip} delayShow={250}>
+          <button
+            className={ `btn btn-dark btn-narrow ${arrangeTool === `velocity` ? `active` : ``}` }
+            onClick={() => dispatch(arrangeToolSelect(`velocity`))}
+          >
+            <span style={{ padding: `0 0.45rem` }}>V</span>
           </button>
         </OverlayTrigger>
       </div>

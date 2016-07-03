@@ -2,10 +2,13 @@ import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider.js'
 import provideTween from './TweenProvider.js'
 
-import { closestHalfPixel,
-         drawLine,
-         drawRoundedRectangle } from '../helpers/canvasHelpers.js'
-import { getDarkenedColor } from '../helpers/trackHelpers.js'
+import {
+  closestHalfPixel,
+  drawLine,
+  drawRoundedRectangle
+} from 'helpers/canvasHelpers'
+
+import { getDarkenedColor, desaturateFromVelocity } from 'helpers/trackHelpers'
 
 import CanvasComponent from './CanvasComponent'
 
@@ -179,6 +182,8 @@ export class PianorollWindowDisplay extends Component {
   }
 
   renderNotes(canvasContext, xMin, xMax, yMin, yMax, notes) {
+    let { currentTrack } = this.props
+
     let keyboardHeight = this.props.grid.getActiveHeight() / this.props.grid.getKeyRange()
     let keyHeight = keyboardHeight / this.props.keyCount
     let fontSize = keyHeight - 8.5*this.props.grid.pixelScale + 2*this.props.grid.pixelScale
@@ -205,11 +210,30 @@ export class PianorollWindowDisplay extends Component {
         label = keyLetter + Math.floor((note.keyNum+8)/12)
       }
 
-      this.renderNote(canvasContext, left, right, top, bottom, note.selected, label, this.props.currentTrack.color, note.outOfViewLeft, note.outOfViewRight)
+      let color = desaturateFromVelocity(currentTrack.color, note.velocity)
+
+      this.renderNote({
+        canvasContext,
+        left, right, top, bottom,
+        note,
+        label,
+        color,
+        leftCutoff: note.outOfViewLeft,
+        rightCutoff: note.outOfViewRight
+      })
     })
   }
 
-  renderNote(canvasContext, left, right, top, bottom, selected, label, color, leftCutoff = false, rightCutoff = false, gradient = true) {
+  renderNote({
+    canvasContext,
+    left, right, top, bottom,
+    note,
+    label,
+    color,
+    leftCutoff = false,
+    rightCutoff = false,
+    gradient = true
+  }) {
     // Gradient Fill
     if (gradient) {
       let gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
@@ -232,10 +256,10 @@ export class PianorollWindowDisplay extends Component {
     drawRoundedRectangle(canvasContext, left, right, top, bottom, radius, leftCutoff, rightCutoff)
 
     // Selected
-    if (selected) {
+    if (note.selected) {
       if (gradient) {
         let gradient = canvasContext.createLinearGradient(0, top, 0, bottom)
-        if (selected === "faded") {
+        if (note.selected === "faded") {
           gradient.addColorStop(0, getDarkenedColor(color, 0.266))
           gradient.addColorStop(1, getDarkenedColor(color, 0.466))
         } else {
@@ -260,7 +284,7 @@ export class PianorollWindowDisplay extends Component {
 
     // Label
     if (label && width > 30*this.props.grid.pixelScale) {
-      canvasContext.fillStyle = selected ? color : '#000'
+      canvasContext.fillStyle = note.selected ? color : '#000'
       canvasContext.textAlign = 'start'
       let x = left   + 4*this.props.grid.pixelScale
       let y = bottom - 5*this.props.grid.pixelScale

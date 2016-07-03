@@ -25,7 +25,8 @@ import {
   phraseDeleteNote,
   phraseSliceNote,
   phraseDragNoteSelection,
-  phraseDropNoteSelection
+  phraseDropNoteSelection,
+  phraseDragNoteVelocity,
 } from 'reducers/reducePhrase'
 
 import {
@@ -40,11 +41,12 @@ import { transportMovePlayhead } from 'reducers/reduceTransport'
 import { phrase } from 'actions/actions'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
-const CLICK_EMPTY_AREA  = 'CLICK_EMPTY_AREA'
-const SELECT_NOTE       = 'SELECT_NOTE'
-const CLICK_NOTE        = 'CLICK_NOTE'
-const DRAG_NOTE         = 'DRAG_NOTE'
-const SELECTION_BOX     = 'SELECTION_BOX'
+const CLICK_EMPTY_AREA = 'CLICK_EMPTY_AREA'
+const SELECT_NOTE = 'SELECT_NOTE'
+const CLICK_NOTE = 'CLICK_NOTE'
+const DRAG_NOTE = 'DRAG_NOTE'
+const CHANGE_NOTE_VELOCITY = 'CHANGE_NOTE_VELOCITY'
+const SELECTION_BOX = 'SELECTION_BOX'
 const DOUBLECLICK_DELAY = 360
 
 export class PianorollWindowControl extends Component {
@@ -135,12 +137,13 @@ export class PianorollWindowControl extends Component {
     if (!this.lastEvent) {
       switch (this.props.arrangeTool) {
         case 'pointer':
+        case 'velocity':
           this.lastEvent = {
             action: SELECT_NOTE,
             noteID: foundNote.id,
             bar,
             key,
-            time: Date.now()
+            time: Date.now(),
           }
           let noteLength = foundNote.end - foundNote.start
           let threshold = Math.min(
@@ -234,33 +237,70 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseMoveEvent(e) {
+    let { dispatch, arrangeTool } = this.props
+
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     let key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount
 
     // Drag Selected Note(s)?
     if (this.lastEvent &&
        (this.lastEvent.action === SELECT_NOTE ||
-        this.lastEvent.action === DRAG_NOTE)) {
-      // Adjust Note
-      let offsetStart, offsetEnd, offsetKey
-      let offsetBar = bar - this.lastEvent.bar
-      switch (this.lastEvent.grip) {
-        case 'MIN': offsetStart = offsetBar; offsetEnd =         0; offsetKey = 0; break
-        case 'MID': offsetStart = offsetBar; offsetEnd = offsetBar; offsetKey = key - this.lastEvent.key; break
-        case 'MAX': offsetStart =         0; offsetEnd = offsetBar; offsetKey = 0; break
-      }
-      this.props.dispatch(phraseDragNoteSelection({
-        grippedNoteID: this.lastEvent.noteID,
-        targetBar: bar,
-        offsetStart,
-        offsetEnd,
-        offsetKey,
-        offsetSnap: !e.metaKey,
-        offsetCopy: e.altKey,
-      }))
-      this.previewDragSound(offsetKey)
-      this.lastEvent.action = DRAG_NOTE
-      return
+        this.lastEvent.action === DRAG_NOTE ||
+        this.lastEvent.action === CHANGE_NOTE_VELOCITY)) {
+
+        switch (arrangeTool) {
+          case `pointer`:
+            // Adjust Note
+            let offsetStart, offsetEnd, offsetKey
+            let offsetBar = bar - this.lastEvent.bar
+
+            switch (this.lastEvent.grip) {
+              case 'MIN':
+                offsetStart = offsetBar
+                offsetEnd = 0
+                offsetKey = 0
+                break
+
+              case 'MID':
+                offsetStart = offsetBar
+                offsetEnd = offsetBar
+                offsetKey = key - this.lastEvent.key
+                break
+
+              case 'MAX':
+                offsetStart = 0
+                offsetEnd = offsetBar
+                offsetKey = 0
+                break
+            }
+
+            dispatch(phraseDragNoteSelection({
+              grippedNoteID: this.lastEvent.noteID,
+              targetBar: bar,
+              offsetStart,
+              offsetEnd,
+              offsetKey,
+              offsetSnap: !e.metaKey,
+              offsetCopy: e.altKey,
+            }))
+
+            this.previewDragSound(offsetKey)
+            this.lastEvent.action = DRAG_NOTE
+            return
+
+          case `velocity`:
+            if (this.lastEvent.mouseY !== e.clientY) {
+              dispatch(phraseDragNoteVelocity({
+                noteID: this.lastEvent.noteID,
+                increase: this.lastEvent.mouseY > e.clientY
+              }))
+            }
+
+            this.lastEvent.action = CHANGE_NOTE_VELOCITY
+            this.lastEvent.mouseY = e.clientY
+            this.previewDragSound(0)
+            return
+        }
     }
 
     // Selection Box?
@@ -268,7 +308,7 @@ export class PianorollWindowControl extends Component {
        (this.lastEvent.action === SELECT_EMPTY_AREA ||
         this.lastEvent.action === SELECTION_BOX)) {
       // Resize Selection Box
-      this.props.dispatch(pianorollSelectionBoxResize(bar, key))
+      dispatch(pianorollSelectionBoxResize(bar, key))
       this.lastEvent.action = SELECTION_BOX
       return
     }

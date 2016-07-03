@@ -1,3 +1,5 @@
+import { hexToRgb, rgbToHex, rgbToHsl, hslToRgb } from 'helpers/colors'
+
 // ----------------------------------------------------------------------------
 // Track Helpers
 // ----------------------------------------------------------------------------
@@ -17,9 +19,9 @@ export function getTracksHeight(tracks) {
 // Calculates the total distance from the top of the
 // track list to the target track, in pixels
 export function getPixelsToTrack(tracks, targetTrackID) {
-  var pixels = 0
-  var i = 0
-  while((tracks[i] || {}).id != targetTrackID && i < tracks.length) {
+  let pixels = 0
+  let i = 0
+  while((tracks[i] || {}).id !== targetTrackID && i < tracks.length) {
     pixels += getTrackHeight(tracks[i])
     i++
   }
@@ -38,27 +40,32 @@ export function getOffsetedTrackID(currentTrackID, offset, allTracks) {
 }
 
 export function getDarkenedColor(color, shadeFactor, alpha = 1.0) {
-  if (typeof color != 'string' || color[0] != '#' || color.length != 4)
-    throw Error('Invalid Color: ' + color + ' - must be in the form of #XXX')
+  let [ r, g, b ] = hexToRgb(color)
 
-  var r = parseInt(color[1], 16)
-  var g = parseInt(color[2], 16)
-  var b = parseInt(color[3], 16)
+  let brightness = 1.0 - shadeFactor
 
-  var brightness = 1.0 - shadeFactor
+  let r2 = Math.floor(r*brightness).toString(16)
+  let g2 = Math.floor(g*brightness).toString(16)
+  let b2 = Math.floor(b*brightness).toString(16)
 
-  var r2 = Math.floor(r*brightness).toString(16)
-  var g2 = Math.floor(g*brightness).toString(16)
-  var b2 = Math.floor(b*brightness).toString(16)
-
-  if (typeof alpha == 'number' && alpha < 1.0 && alpha >= 0.0) {
-    var r3 = parseInt(r2+r2, 16)
-    var g3 = parseInt(g2+g2, 16)
-    var b3 = parseInt(b2+b2, 16)
-    var darkenedTransparentedColor = `rgba(${r3},${g3},${b3},${alpha})`
+  if (typeof alpha === 'number' && alpha < 1.0 && alpha >= 0.0) {
+    let r3 = parseInt(r2+r2, 16)
+    let g3 = parseInt(g2+g2, 16)
+    let b3 = parseInt(b2+b2, 16)
+    let darkenedTransparentedColor = `rgba(${r3},${g3},${b3},${alpha})`
     return darkenedTransparentedColor
-  } else {
-    var darkenedColor = `#${r2}${g2}${b2}`
-    return darkenedColor
   }
+
+  let darkenedColor = `#${r2}${g2}${b2}`
+  return darkenedColor
+}
+
+export function desaturateFromVelocity (color, velocity) {
+  let rgb = hexToRgb(color)
+  let [ h, s, l ] = rgbToHsl(...rgb)
+
+  s *= velocity / 127
+  rgb = hslToRgb(h, s, l)
+
+  return rgbToHex(...rgb)
 }

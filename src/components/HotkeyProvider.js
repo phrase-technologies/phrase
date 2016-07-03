@@ -125,6 +125,9 @@ class HotkeyProvider extends Component {
       case 52:  // 4 - Slice tool
         dispatch(arrangeToolSelect(`scissors`))
         break
+      case 53:  // 5 - Velocity tool
+        dispatch(arrangeToolSelect(`velocity`))
+        break
       case 59:  // ';' - Recording Count In
       case 186:
         dispatch(transportCountIn())

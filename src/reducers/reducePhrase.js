@@ -71,7 +71,9 @@ export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ign
   }
 }
 
-export const phraseCreateNote = ({ targetClipID, trackID, key, start, end, velocity, ignore, snapStart = true }) => {
+export const phraseCreateNote = ({
+  targetClipID, trackID, key, start, end, velocity, ignore, snapStart = true
+}) => {
   return (dispatch, getState) => {
     dispatch({
       type: phrase.CREATE_NOTE,
@@ -87,7 +89,8 @@ export const phraseCreateNote = ({ targetClipID, trackID, key, start, end, veloc
       ignore,
     })
 
-    // Select the note after it's created, but NOT if it's an ignored middle step of a large operation (e.g. slice or record)
+    // Select the note after it's created, but NOT if it's an ignored middle step
+    // of a large operation (e.g. slice or record)
     if (!ignore) {
       let state = getState()
       let notes = state.phrase.present.notes
@@ -348,6 +351,7 @@ export const phraseSliceClip = ({ bar, trackID, foundClip, snap = 4 }) => {
 export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
   return (dispatch, getState) => {
     let state = getState()
+
     let foundNote = phraseMidiSelector(state).find(x =>
       x.type === `addNoteOn` && x.id === noteID
     )
@@ -361,6 +365,25 @@ export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
     dispatch(phraseCreateNote(trackID, bar, foundNote.keyNum, bar, foundNote.end, false))
   }
 }
+
+export const phraseDragNoteVelocity = ({ noteID, increase }) => {
+  return (dispatch, getState) => {
+
+    let state = getState()
+
+    let foundNote = phraseMidiSelector(state).find(x =>
+      x.type === `addNoteOn` && x.id === noteID
+    )
+
+    let velocity = increase ? foundNote.velocity + 1 : foundNote.velocity - 1
+
+    dispatch({
+      type: phrase.CHANGE_NOTE_VELOCITY,
+      payload: { noteID, velocity }
+    })
+  }
+}
+
 
 export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated, dateModified, state }) => {
   return (dispatch) => {
@@ -793,6 +816,25 @@ export default function reducePhrase(state = defaultState, action) {
         noteAutoIncrement,
       }, state)
     }
+
+    // ------------------------------------------------------------------------
+
+    case phrase.CHANGE_NOTE_VELOCITY:
+      let { noteID, velocity } = action.payload
+
+      let note = state.notes.find(note => note.id === noteID)
+
+      // if min or max velocity, do nothing
+      if (velocity > 127 || velocity < 0)
+        return state
+
+      return {
+        ...state,
+        notes: [
+          ...state.notes.filter(note => note.id !== noteID),
+          { ...note, velocity }
+        ]
+      }
 
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:
