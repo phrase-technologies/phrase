@@ -27,3 +27,9 @@ input::-webkit-inner-spin-button {
 
   text-shadow: 0 0 5px #AAA;
 }
+
+.clipboard-popover {
+  > .popover-content {
+    padding: 0 5px 5px;
+  }
+}

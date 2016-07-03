@@ -17,7 +17,7 @@ import { Provider as StoreProvider } from 'react-redux'
 import EngineProvider from 'audio/AudioEngineProvider.js'
 import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
-import { Router, Route, IndexRoute, useRouterHistory } from 'react-router'
+import { Router, useRouterHistory } from 'react-router'
 import { createHistory, useBeforeUnload } from 'history'
 import { phraseCreateTrack } from 'reducers/reducePhrase.js'
 
@@ -68,12 +68,7 @@ const ENGINE = createAudioEngine(STORE)
 // ============================================================================
 // APPLICATION ENTRY POINT
 // ============================================================================
-import App from 'components/App.js'
-import Workstation from 'components/Workstation.js'
-import Library from 'components/Library.js'
-import UserProfile from 'components/UserProfile.js'
-import About from 'components/About.js'
-import Error404 from 'components/Error404.js'
+import Routes from 'components/Routes.js'
 
 // window.onload - Require all assets to be loaded before rendering.
 // This is only necessary because we are using Google Font API in font.scss.
@@ -87,18 +82,7 @@ window.onload = () => {
       <EngineProvider engine={ENGINE}>
 
         <Router history={HISTORY}>
-          <Route path="/" component={App}>
-            <IndexRoute phraseMode={false} component={Library} />
-            <Route path="/search" component={Library} />
-            <Route path="/search/:searchTerm" component={Library} />
-            <Route path="/user/:userId" component={UserProfile} />
-            <Route path="/phrase/new" component={Workstation} maximize={true} />
-            <Route path="/phrase/:username/:phraseId" component={Workstation} maximize={true} />
-            <Route path="/phrase/:username/:phraseId/:phrasename" component={Workstation} />
-            <Route path="/about" component={About} />
-            <Route path="/developers" component={About} />
-            <Route path="*" component={Error404} />
-          </Route>
+          {Routes}
         </Router>
 
       </EngineProvider>
