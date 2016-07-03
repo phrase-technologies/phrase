@@ -34,7 +34,7 @@ module.exports = {
         include: path.join(__dirname, 'src')
       },
       {
-        test: /\.(jpe?g|png|gif|svg|eot|ttf|woff|woff2|otf|ico)(\?v=\d+\.\d+\.\d+)?$/,
+        test: /\.(jpe?g|png|gif|svg|eot|ttf|woff|woff2|otf|ico)(\?(.)+)?$/,
         loaders: ['file']
       },
     ]

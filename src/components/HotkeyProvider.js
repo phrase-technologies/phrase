@@ -115,13 +115,11 @@ class HotkeyProvider extends Component {
       case 190: // > - Advance Playhead
         dispatch(transportAdvancePlayhead())
         break
-      case 59:  // ';' - Recording Count In
-      case 186:
-        dispatch(transportCountIn())
-        e.preventDefault()
-        break
-      case 222: // '"" - Metronome
-        dispatch(transportMetronome())
+      case 77:  // 'M' - Metronome / Count In
+        if (e.shiftKey)
+          dispatch(transportCountIn())
+        else
+          dispatch(transportMetronome())
         e.preventDefault()
         break
       // ----------------------------------------------------------------------
