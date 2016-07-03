@@ -5,8 +5,8 @@ import { layout, pianoroll, phrase } from '../actions/actions.js'
 // ============================================================================
 // Layout Navigation Action Creators
 // ============================================================================
-export const layoutConsoleEmbedded        = ()        => ({type: layout.CONSOLE_EMBED})
-export const layoutConsoleSplit           = (ratio)   => ({type: layout.CONSOLE_SPLIT, ratio})
+export const layoutConsoleEmbedded = () => ({type: layout.CONSOLE_EMBED})
+export const layoutConsoleSplit = (ratio) => ({type: layout.CONSOLE_SPLIT, ratio})
 
 // ============================================================================
 // Layout Navigation Reducer

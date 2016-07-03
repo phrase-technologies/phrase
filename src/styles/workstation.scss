@@ -7,7 +7,7 @@ $workstation-clip-width: 240px;
 $workstation-clip-z-index: 400;           // Above Page & Mixer
 $workstation-footer-height: 37px;
 $workstation-footer-z-index: 500;         // Above Clip
-$workstation-effects-chain-width: 300px;
+$workstation-effects-chain-width: 500px;
 $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after removing box-shadows....?
 
 // ============================================================================
@@ -341,10 +341,10 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 // ============================================================================
 .workstation-effects-chain {
   position: absolute;
-  top: 0;
+  top: 7px;
   width: $workstation-effects-chain-width;
-  right: 0;
-  bottom: $workstation-footer-height;
+  right: 15px;
+  bottom: 7px + $workstation-footer-height;
   z-index: $workstation-effects-chain-z-index;
 }
 

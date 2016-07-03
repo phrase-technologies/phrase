@@ -125,9 +125,17 @@ a,
   }
   &.active-red {
     color: #866;
+    &:hover,
+    &:focus {
+      color: #F00;
+    }
   }
   &.active-green {
     color: #686;
+    &:hover,
+    &:focus {
+      color: #0F0;
+    }
   }
   &.active {
     &.active-red {

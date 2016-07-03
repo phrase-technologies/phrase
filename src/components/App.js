@@ -3,9 +3,6 @@ import { connect } from 'react-redux'
 import Helmet from "react-helmet"
 
 import Header from 'components/Header'
-import CursorProvider from 'components/CursorProvider'
-import HotkeyProvider from 'components/HotkeyProvider'
-import MouseEventProvider from 'components/MouseEventProvider'
 
 import * as AllModals from 'components/modals'
 import MouseTooltip from 'components/MouseTooltip'
@@ -23,23 +20,15 @@ export class App extends Component {
     }]
 
     return (
-      <CursorProvider>
-        <HotkeyProvider>
-          <MouseEventProvider>
-
-            <div>
-              <Helmet link={faviconConfig} />
-              <Header theme={headerTheme} params={this.props.params} maximize={maximize}/>
-              <div className="body">
-                { this.props.children }
-              </div>
-              <ActiveModal show={this.props.show} />
-              <MouseTooltip />
-            </div>
-
-          </MouseEventProvider>
-        </HotkeyProvider>
-      </CursorProvider>
+      <div>
+        <Helmet link={faviconConfig} />
+        <Header theme={headerTheme} params={this.props.params} maximize={maximize}/>
+        <div className="body">
+          { this.props.children }
+        </div>
+        <ActiveModal show={this.props.show} />
+        <MouseTooltip />
+      </div>
     )
   }
 }

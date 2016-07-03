@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import Helmet from "react-helmet"
 
-import { phrase, layout } from 'actions/actions'
+import { phrase } from 'actions/actions'
 
 import {
   phraseLoadFromDb,
@@ -13,6 +13,10 @@ import {
 } from 'reducers/reducePhrase'
 
 import { layoutConsoleSplit } from 'reducers/reduceNavigation'
+
+import CursorProvider from 'components/CursorProvider.js'
+import HotkeyProvider from 'components/HotkeyProvider.js'
+import MouseEventProvider from 'components/MouseEventProvider'
 
 import WorkstationHeader from './WorkstationHeader'
 import WorkstationSplit from './WorkstationSplit'
@@ -84,49 +88,48 @@ export class Workstation extends Component {
       dispatch: this.props.dispatch,
       consoleSplitRatio: this.props.consoleSplitRatio,
       focusedTrack: this.props.focusedTrack,
+      rackOpen: this.props.rackOpen,
     }
 
     return (
-      <div className="workstation-background">
-        <div className="workstation-container">
-          <div className="workstation workstation-maximized disable-select">
-            <Helmet title={`${this.props.phraseName || "Untitled Phrase"} by ${this.props.authorUsername || "Unknown"} - Phrase.fm`} />
-            <WorkstationHeader />
-            <div className="workstation-body">
-              <div className="workstation-main" style={this.getMainSplit()}>
-                <div className="workstation-mixer" style={this.getMixerSplit()}>
-                  <Mixer minimized={minimizeMixer} maximize={() => this.setConsoleSplit(0.5)} />
-                </div>
-                <WorkstationSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.setConsoleSplit} />
-                <div className="workstation-clip" style={this.getClipSplit()}>
-                  <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
-                </div>
-              </div>
-              <WorkstationFooter {...footerProps} />
-              <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
-                <h2
-                  className="workstation-heading"
-                  onClick={() => this.props.dispatch({ type: layout.TOGGLE_RACK })}
-                  { ...(this.props.rackOpen ? { style: { right: `505px` }} : {}) }
-                >
-                  <span className="workstation-heading-vertical">
-                    <span>Effects Chain &nbsp;&nbsp;</span>
-                    <span className="fa fa-plus-square" />
-                  </span>
-                </h2>
-                { this.props.rackOpen && this.props.selectedTrack &&
-                  <Rack track={this.props.selectedTrack} />
-                }
-                { this.props.rackOpen && !this.props.selectedTrack &&
-                  <div className="rack-select-track">
-                    Select a track to view its Rack
+      <CursorProvider>
+        <HotkeyProvider>
+          <MouseEventProvider>
+
+            <div className="workstation-background">
+              <div className="workstation-container">
+                <div className="workstation workstation-maximized disable-select">
+                  <Helmet title={`${this.props.phraseName || "Untitled Phrase"} by ${this.props.authorUsername || "Unknown"} - Phrase.fm`} />
+                  <WorkstationHeader />
+                  <div className="workstation-body">
+                    <div className="workstation-main" style={this.getMainSplit()}>
+                      <div className="workstation-mixer" style={this.getMixerSplit()}>
+                        <Mixer minimized={minimizeMixer} maximize={() => this.setConsoleSplit(0.5)} />
+                      </div>
+                      <WorkstationSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.setConsoleSplit} />
+                      <div className="workstation-clip" style={this.getClipSplit()}>
+                        <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
+                      </div>
+                    </div>
+                    <WorkstationFooter {...footerProps} />
+                    <div className="workstation-effects-chain" style={this.getSidebarSplit()}>
+                      { this.props.rackOpen && this.props.selectedTrack &&
+                        <Rack track={this.props.selectedTrack} />
+                      }
+                      { this.props.rackOpen && !this.props.selectedTrack &&
+                        <div className="rack-select-track">
+                          Select a track to view its Rack
+                        </div>
+                      }
+                    </div>
                   </div>
-                }
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+
+          </MouseEventProvider>
+        </HotkeyProvider>
+      </CursorProvider>
     )
   }
 
@@ -201,11 +204,11 @@ export class Workstation extends Component {
 
   getMainSplit() {
     setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
-    return this.props.rackOpen ? { right: 550 } : { right: 45 }
+    return this.props.rackOpen ? { right: 515 } : { right: 0 }
   }
 
   getSidebarSplit() {
-    return this.props.rackOpen ? { width: 550 } : { width: 45 }
+    return this.props.rackOpen ? { width: 500 } : { width: 0 }
   }
 
   shouldComponentUpdate(nextProps) {

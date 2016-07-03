@@ -2,10 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
-import { layout } from 'actions/actions'
-
 import { modalClose } from 'reducers/reduceModal'
-
+import connectEngine from '../audio/AudioEngineConnect.js'
 import {
   transportRecord,
   transportPlayToggle,
@@ -37,10 +35,12 @@ class HotkeyProvider extends Component {
   constructor() {
     super()
     document.addEventListener('keydown', this.handleKeyDown)
+    document.addEventListener('keyup', this.handleKeyUp)
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('keyup', this.handleKeyUp)
   }
 
   handleKeyDown = (e) => {
@@ -66,16 +66,21 @@ class HotkeyProvider extends Component {
     if (e.target.tagName === 'BUTTON')
       return
 
-      // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // Overrides
 
+    // ----------------------------------------------------------------------
+    // Musical Typing
+    let note = this.getNoteFromKeyCode(e.keyCode)
+    if (!e.metaKey && !e.ctrlKey && note) {
+      this.props.ENGINE.fireNote(0, note, 127)
+      e.preventDefault()
+      return
+    }
+
     switch(e.keyCode) {
-      case 70:  // CTRL/CMD+F - Search
-        if (e.metaKey || e.ctrlKey) {
-          this.context.router.push('/search')
-          e.preventDefault()
-        }
-        break
+      // ----------------------------------------------------------------------
+      // Undo History
       case 90:  // CTRL/CMD+Z - Undo last action
         if (e.metaKey && e.shiftKey) {
           dispatch(UndoActions.redo())
@@ -91,6 +96,8 @@ class HotkeyProvider extends Component {
           e.preventDefault()
         }
         break
+      // ----------------------------------------------------------------------
+      // Transport Controls
       case 82:  // R - Record
         dispatch(transportRecord())
         break
@@ -108,11 +115,24 @@ class HotkeyProvider extends Component {
       case 190: // > - Advance Playhead
         dispatch(transportAdvancePlayhead())
         break
+      case 59:  // ';' - Recording Count In
+      case 186:
+        dispatch(transportCountIn())
+        e.preventDefault()
+        break
+      case 222: // '"" - Metronome
+        dispatch(transportMetronome())
+        e.preventDefault()
+        break
+      // ----------------------------------------------------------------------
+      // Editing
       case 8:   // Backspace - Delete Selection
       case 46:  // Delete
         dispatch(phraseDeleteSelection())
         e.preventDefault()
         break
+      // ----------------------------------------------------------------------
+      // Mouse Tools
       case 49:  // 1 - Default tool
         dispatch(arrangeToolSelect(`pointer`))
         break
@@ -128,22 +148,57 @@ class HotkeyProvider extends Component {
       case 53:  // 5 - Velocity tool
         dispatch(arrangeToolSelect(`velocity`))
         break
-      case 59:  // ';' - Recording Count In
-      case 186:
-        dispatch(transportCountIn())
-        e.preventDefault()
-        break
-      case 222: // '"' - Metronome
-        dispatch(transportMetronome())
-        e.preventDefault()
-        break
-      case 9: // 'tab' - toggle arrange / rack view
+      // ----------------------------------------------------------------------
+      // Layout
+      case 9:   // Tab - toggle arrange / rack view
         dispatch({ type: layout.TOGGLE_RACK })
         e.preventDefault()
         break
-
     }
   }
+
+  handleKeyUp = (e) => {
+    // -----------------------------------------------------------------------
+    // Bypass - Prevent doublebooking events with form <inputs>
+    if (e.target.tagName === 'INPUT')
+      return
+    if (e.target.tagName === 'SELECT')
+      return
+    if (e.target.tagName === 'TEXTAREA')
+      return
+    if (e.target.tagName === 'A')
+      return
+    if (e.target.tagName === 'BUTTON')
+      return
+
+    this.props.ENGINE.killNote(0, this.getNoteFromKeyCode(e.keyCode))
+  }
+
+  getNoteFromKeyCode(keyCode) {
+    switch(keyCode) {
+      case 65: return 40  // A - Key C of current octave
+      case 83: return 42  // S - Key D of current octave
+      case 68: return 44  // D - Key E of current octave
+      case 70: return 45  // F - Key F of current octave
+      case 71: return 47  // G - Key G of current octave
+      case 72: return 49  // H - Key A of current octave
+      case 74: return 51  // J - Key B of current octave
+      case 75: return 52  // K - Key C of next octave
+      case 76: return 54  // L - Key D of next octave
+      case 186:
+      case 59: return 56  // ; - Key E of next octave
+      case 222: return 57 // ' - Key F of next octave
+      case 87: return 41  // W - Key C# of current octave
+      case 69: return 43  // E - Key D# of current octave
+      case 84: return 46  // T - Key F# of current octave
+      case 89: return 48  // Y - Key G# of current octave
+      case 85: return 50  // U - Key A# of current octave
+      case 79: return 53  // O - Key C# of current octave
+      case 80: return 55  // P - Key D# of current octave
+      default: return null
+    }
+  }
+
 }
 
 HotkeyProvider.contextTypes = {
@@ -154,4 +209,4 @@ HotkeyProvider.propTypes = {
   dispatch: React.PropTypes.func.isRequired
 }
 
-export default connect(state => state.modal)(HotkeyProvider)
+export default connectEngine(connect(state => state.modal)(HotkeyProvider))
