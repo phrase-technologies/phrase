@@ -366,6 +366,8 @@ export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
   }
 }
 
+const DRAG_VELOCITY_STEP = 4
+
 export const phraseDragNoteVelocity = ({ noteID, increase }) => {
   return (dispatch, getState) => { // TODO: dispatch tooltip?
     let state = getState()
@@ -375,8 +377,8 @@ export const phraseDragNoteVelocity = ({ noteID, increase }) => {
     )
 
     let velocity = increase
-      ? Math.min(noteToChange.velocity + 1, 127)
-      : Math.max(0, noteToChange.velocity - 1)
+      ? Math.min(noteToChange.velocity + DRAG_VELOCITY_STEP, 127)
+      : Math.max(0, noteToChange.velocity - DRAG_VELOCITY_STEP)
 
     console.log('>>>', velocity)
 
