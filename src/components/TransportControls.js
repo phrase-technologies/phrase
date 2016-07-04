@@ -54,9 +54,11 @@ let TransportControls = (props) => {
         >
           <i className="fa fa-fw fa-circle" />
         </TransportButton>
+      </div>
+      <div className="btn-group">
         <TransportButton
           onButtonClick={() => dispatch(transportCountIn())}
-          toggle={countIn} tooltip="Count In (⇧M)" narrow={true}
+          toggle={countIn} tooltip="Count In (⇧M)" narrow={true} link={true}
         >
           <span style={{ fontSize:  8 }}>1</span>
           <span style={{ fontSize: 10 }}>2</span>
@@ -65,7 +67,7 @@ let TransportControls = (props) => {
         </TransportButton>
         <TransportButton
           onButtonClick={() => dispatch(transportMetronome())}
-          toggle={metronome} tooltip='Metronome (M)' narrow={true}
+          toggle={metronome} tooltip='Metronome (M)' narrow={true} link={true}
         >
           <i className="phrase-icon-metronome" />
         </TransportButton>

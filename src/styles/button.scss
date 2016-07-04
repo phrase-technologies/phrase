@@ -111,7 +111,6 @@ a,
 
   transition: color 0.125s, text-shadow 0.125s;
 }
-.btn-dark,
 .btn-glow {
   &:hover,
   &:focus {
@@ -145,6 +144,57 @@ a,
     &.active-green {
       color: #0F0;
       text-shadow: 0 0 16px #8F8;
+    }
+  }
+}
+.btn-dark {
+  &:hover,
+  &:focus {
+    color: #FFF;
+  }
+
+  &.active,
+  &:active {
+    color: #FFF;
+    text-shadow:
+     -0.5px -0.5px 0px #000,
+      0.5px  0.5px 0px #000,
+      0.5px -0.5px 0px #000,
+     -0.5px  0.5px 0px #000,
+      0 0 10px #FFF;
+  }
+  &.active-red {
+    color: #866;
+    &:hover,
+    &:focus {
+      color: #F00;
+    }
+  }
+  &.active-green {
+    color: #686;
+    &:hover,
+    &:focus {
+      color: #0F0;
+    }
+  }
+  &.active {
+    &.active-red {
+      color: #F00;
+      text-shadow:
+       -0.5px -0.5px 0px #000,
+        0.5px  0.5px 0px #000,
+        0.5px -0.5px 0px #000,
+       -0.5px  0.5px 0px #000,
+        0 0 16px #F44;
+    }
+    &.active-green {
+      color: #0F0;
+      text-shadow:
+       -0.5px -0.5px 0px #000,
+        0.5px  0.5px 0px #000,
+        0.5px -0.5px 0px #000,
+       -0.5px  0.5px 0px #000,
+        0 0 16px #8F8;
     }
   }
 }

@@ -7,7 +7,8 @@ export default (props) => {
   let colorClass = ` ${props.color ? `active-${props.color}` : ''}`
   let activeClass = ` ${props.toggle ? 'active' : ''}`
   let narrowClass = ` ${props.narrow ? 'btn-narrow' : 'transport-btn'}`
-  let buttonClasses = 'btn btn-link btn-glow' + activeClass + colorClass + narrowClass
+  let buttonLookClass = ` ${props.link ? 'btn-link btn-glow' : 'btn-dark'}`
+  let buttonClasses = 'btn' + buttonLookClass + activeClass + colorClass + narrowClass
   let buttonTooltip = <Tooltip id="tooltip-all-versions">{props.tooltip}</Tooltip>
 
   return (
