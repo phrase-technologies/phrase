@@ -48,7 +48,6 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   background: #444;
   background-image: linear-gradient(165deg, #555 0%, #444 40%, #606060 60%,#555 100% );
 
-  overflow: hidden;
   z-index: 2; // Over the Body (1) and below the Header (3)
   pointer-events: none;
 

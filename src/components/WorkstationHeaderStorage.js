@@ -66,11 +66,19 @@ export default class WorkstationHeaderStorage extends Component {
     if (this.props.existingPhrase && this.props.pristine) {
       let timestamp = (Date.now() - this.props.lastSavedTimestamp < 1000) // Just saved?
                     ? "Autosaved."
-                    : `Last change: ${Moment(this.props.lastSavedTimestamp).calendar().toString()}`
+                    : `Last edit: ${Moment(this.props.lastSavedTimestamp).fromNow().toString()}`
+      let timestampTooltip = (
+        <Tooltip id="tooltip-exact-timestamp">
+          {Moment(this.props.lastSavedTimestamp).format('llll').toString()}
+        </Tooltip>
+      )
+
       return (
-        <span className="btn btn-link link-dark" style={{ cursor: 'default' }}>
-          <span className="text-muted">{timestamp}</span>
-        </span>
+        <OverlayTrigger placement="top" overlay={timestampTooltip} delayShow={250}>
+          <span className="btn btn-link link-dark" style={{ cursor: 'default' }}>
+            <span className="text-muted">{timestamp}</span>
+          </span>
+        </OverlayTrigger>
       )
     }
 
