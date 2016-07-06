@@ -69,7 +69,8 @@ export const defaultState = {
   selectionStartY: null,
   selectionEndX: null,
   selectionEndY: null,
-  cursor: null
+  cursor: null,
+  tooltip: null,
 }
 
 export default function reducePianoroll(state = defaultState, action) {
@@ -252,6 +253,13 @@ export default function reducePianoroll(state = defaultState, action) {
         }, state)
       }
       return state
+
+    // ------------------------------------------------------------------------
+    case phrase.TOGGLE_TOOLTIP:
+      return {
+        ...state,
+        tooltip: action.payload
+      }
 
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:

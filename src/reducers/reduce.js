@@ -14,6 +14,7 @@ import reducePhrase from './reducePhrase'
 import reducePhraseMeta from './reducePhraseMeta'
 import reduceLibrary from './reduceLibrary'
 import reduceMixer from './reduceMixer'
+import reduceMouse from './reduceMouse'
 import reducePianoroll from './reducePianoroll'
 import reduceCursor from './reduceCursor'
 import reduceAuth from './reduceAuth'
@@ -55,6 +56,7 @@ let reducerSpec = {
   transport: reduceTransport,
   library: reduceLibrary,
   mixer: reduceMixer,
+  mouse: reduceMouse,
   cursor: reduceCursor,
   auth: reduceAuth,
   arrangeTool: reduceArrangeTool,

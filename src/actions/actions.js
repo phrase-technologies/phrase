@@ -56,7 +56,7 @@ export const phrase = namespaceActions(
     'DRAG_NOTE_SELECTION',
     'DROP_CLIP_SELECTION',
     'DROP_NOTE_SELECTION',
-    'CHANGE_NOTE_VELOCITY', 
+    'CHANGE_NOTE_VELOCITY',
     'LOAD_START',
     'LOAD_FINISH',
     'SAVE_START',
@@ -87,6 +87,13 @@ export const modal = namespaceActions(
   ]
 )
 
+export const mouse = namespaceActions(
+  'mouse',
+  [
+    'UPDATE',
+  ]
+)
+
 export const mixer = namespaceActions(
   'mixer',
   [
@@ -111,7 +118,8 @@ export const pianoroll = namespaceActions(
     'SELECTION_BOX_RESIZE',
     'SELECTION_BOX_APPLY',
     'SET_FOCUS_WINDOW',
-    'MOVE_CURSOR'
+    'MOVE_CURSOR',
+    'TOGGLE_TOOLTIP',
   ]
 )
 

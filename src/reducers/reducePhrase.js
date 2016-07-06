@@ -8,7 +8,7 @@ import {
   uReplace,
 } from 'helpers/arrayHelpers'
 
-import { phrase, mixer } from 'actions/actions'
+import { phrase, mixer, pianoroll } from 'actions/actions'
 
 import {
   currentNotesSelector,
@@ -378,9 +378,14 @@ export const phraseDragNoteVelocity = ({ noteID, increase }) => {
 
     let velocity = increase
       ? Math.min(noteToChange.velocity + DRAG_VELOCITY_STEP, 127)
-      : Math.max(0, noteToChange.velocity - DRAG_VELOCITY_STEP)
+      : Math.max(1, noteToChange.velocity - DRAG_VELOCITY_STEP)
 
-    console.log('>>>', velocity)
+    dispatch({
+      type: pianoroll.TOGGLE_TOOLTIP,
+      payload: {
+        text: `Velocity: ${velocity}`
+      }
+    })
 
     dispatch({
       type: phrase.CHANGE_NOTE_VELOCITY,
