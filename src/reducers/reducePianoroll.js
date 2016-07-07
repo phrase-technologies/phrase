@@ -255,13 +255,6 @@ export default function reducePianoroll(state = defaultState, action) {
       return state
 
     // ------------------------------------------------------------------------
-    case phrase.TOGGLE_TOOLTIP:
-      return {
-        ...state,
-        tooltip: action.payload
-      }
-
-    // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:
     case phrase.LOAD_START:
       return defaultState

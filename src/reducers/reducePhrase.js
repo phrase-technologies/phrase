@@ -8,7 +8,7 @@ import {
   uReplace,
 } from 'helpers/arrayHelpers'
 
-import { phrase, mixer, pianoroll } from 'actions/actions'
+import { phrase, mixer, mouse } from 'actions/actions'
 
 import {
   currentNotesSelector,
@@ -381,7 +381,7 @@ export const phraseDragNoteVelocity = ({ noteID, increase }) => {
       : Math.max(1, noteToChange.velocity - DRAG_VELOCITY_STEP)
 
     dispatch({
-      type: pianoroll.TOGGLE_TOOLTIP,
+      type: mouse.TOGGLE_TOOLTIP,
       payload: {
         text: `Velocity: ${velocity}`
       }

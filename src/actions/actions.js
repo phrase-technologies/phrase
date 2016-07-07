@@ -91,6 +91,7 @@ export const mouse = namespaceActions(
   'mouse',
   [
     'UPDATE',
+    'TOGGLE_TOOLTIP',
   ]
 )
 
@@ -119,7 +120,6 @@ export const pianoroll = namespaceActions(
     'SELECTION_BOX_APPLY',
     'SET_FOCUS_WINDOW',
     'MOVE_CURSOR',
-    'TOGGLE_TOOLTIP',
   ]
 )
 

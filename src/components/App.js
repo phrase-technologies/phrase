@@ -24,7 +24,6 @@ export class App extends Component {
 
     console.log('>>>', this.props.tooltip)
 
-
     return (
       <CursorProvider>
         <HotkeyProvider>

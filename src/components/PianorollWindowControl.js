@@ -38,7 +38,7 @@ import {
 
 import { transportMovePlayhead } from 'reducers/reduceTransport'
 
-import { phrase } from 'actions/actions'
+import { phrase, mouse } from 'actions/actions'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
 const CLICK_EMPTY_AREA = 'CLICK_EMPTY_AREA'
@@ -398,6 +398,12 @@ export class PianorollWindowControl extends Component {
       this.props.dispatch(phraseDropNoteSelection())
       this.lastEvent = null
       return
+    }
+
+    if (this.lastEvent &&
+        this.lastEvent.action === CHANGE_NOTE_VELOCITY) {
+      this.props.dispatch({ type: mouse.TOGGLE_TOOLTIP, payload: null })
+      this.lastEvent = null
     }
 
     // No Action - Clear the queue
