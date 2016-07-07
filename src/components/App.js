@@ -22,8 +22,6 @@ export class App extends Component {
       type: "img/ico",
     }]
 
-    console.log('>>>', this.props.tooltip)
-
     return (
       <CursorProvider>
         <HotkeyProvider>

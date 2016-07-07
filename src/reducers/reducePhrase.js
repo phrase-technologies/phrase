@@ -366,15 +366,13 @@ export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
   }
 }
 
-const DRAG_VELOCITY_STEP = 4
+const DRAG_VELOCITY_STEP = 1
 
-export const phraseDragNoteVelocity = ({ noteID, increase }) => {
-  return (dispatch, getState) => { // TODO: dispatch tooltip?
+export const phraseDragNoteVelocity = ({ noteID, increase, targetBar }) => {
+  return (dispatch, getState) => {
     let state = getState()
 
-    let noteToChange = phraseMidiSelector(state).find(x =>
-      x.type === `addNoteOn` && x.id === noteID
-    )
+    let noteToChange = currentNotesSelector(state).find(x => x.id === noteID)
 
     let velocity = increase
       ? Math.min(noteToChange.velocity + DRAG_VELOCITY_STEP, 127)
@@ -388,8 +386,30 @@ export const phraseDragNoteVelocity = ({ noteID, increase }) => {
     })
 
     dispatch({
+      type: phrase.DRAG_NOTE_VELOCITY,
+      payload: {
+        grippedNoteID: noteID,
+        targetBar,
+        velocity
+      }
+    })
+  }
+}
+
+export const phraseDropNoteVelocity = ({ noteID }) => {
+  return (dispatch, getState) => {
+    let state = getState()
+
+    let noteToChange = currentNotesSelector(state).find(x => x.id === noteID)
+
+    dispatch({ type: mouse.TOGGLE_TOOLTIP, payload: null })
+
+    dispatch({
       type: phrase.CHANGE_NOTE_VELOCITY,
-      payload: { noteToChange, velocity }
+      payload: {
+        noteID,
+        velocity: noteToChange.velocity
+      }
     })
   }
 }
@@ -830,13 +850,13 @@ export default function reducePhrase(state = defaultState, action) {
     // ------------------------------------------------------------------------
 
     case phrase.CHANGE_NOTE_VELOCITY:
-      let { noteToChange, velocity } = action.payload
+      let { noteID, velocity } = action.payload
 
       return {
         ...state,
         notes: [
-          ...state.notes.filter(note => note.id !== noteToChange.id),
-          { ...noteToChange, velocity }
+          ...state.notes.filter(note => note.id !== noteID),
+          { ...state.notes.find(note => note.id === noteID), velocity }
         ]
       }
 

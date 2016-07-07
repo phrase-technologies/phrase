@@ -48,6 +48,7 @@ export const defaultState = {
   noteSelectionOffsetKey: null,
   noteSelectionOffsetSnap: true,
   noteSelectionOffsetCopy: null,
+  noteSelectionVelocity: null
 }
 
 export default function reducePhraseMeta(state = defaultState, action) {
@@ -213,6 +214,14 @@ export default function reducePhraseMeta(state = defaultState, action) {
     }
 
     // ------------------------------------------------------------------------
+    case phrase.DRAG_NOTE_VELOCITY: {
+      return u({
+        noteSelectionGrippedID: action.payload.grippedNoteID,
+        noteSelectionTargetBar: action.payload.targetBar,
+        noteSelectionVelocity: action.payload.velocity,
+      }, state)
+    }
+
     case phrase.DRAG_NOTE_SELECTION: {
       return u({
         noteSelectionGrippedID: action.payload.grippedNoteID,
@@ -294,6 +303,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
         noteSelectionOffsetCopy: null,
       }, state)
     }
+
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:
       return u({
