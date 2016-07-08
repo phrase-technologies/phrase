@@ -48,7 +48,12 @@ export default ({
         } else if (!trimmedUsername || !isValidUsername(trimmedUsername)) {
           res.json({
             success: false,
-            message: { usernameError: `Invalid username.` },
+            message: { usernameError: `Usernames may only contain letters, numbers, and underscores.` },
+          })
+        } else if (trimmedUsername.length > 20) {
+          res.json({
+            success: false,
+            message: { usernameError: `Usernames may be at most 20 characters long.`}
           })
         } else {
           let userByUsernameResults = await r
@@ -63,10 +68,10 @@ export default ({
               success: false,
               message: { usernameError: `Sorry, the username "${username}" is taken.` },
             })
-          } else if (!trimmedPassword) {
+          } else if (!trimmedPassword || trimmedPassword.length < 6) {
             res.json({
               success: false,
-              message: { passwordError: `Invalid password.` },
+              message: { passwordError: `Passwords must be at least 6 characters long` },
             })
           } else {
             let user = await r.table(`users`).insert({
@@ -93,8 +98,10 @@ export default ({
     let { email, password } = req.body
 
     try {
-
-      let cursor = await r.table(`users`).getAll(email, { index: `email` }).limit(1).run(db)
+      let lowerCaseUnameEmail = email.toLowerCase()
+      let cursor = await r.table(`users`).getAll(lowerCaseUnameEmail, { index: `email` }).limit(1)
+        .union(r.table(`users`).getAll(lowerCaseUnameEmail, {index: `usernameLC`}).limit(1))
+        .run(db)
       let users = await cursor.toArray()
       let user = users[0]
 
@@ -106,7 +113,7 @@ export default ({
       } else if (user.password !== doubleHash(password.trim())) {
         res.json({
           success: false,
-          message: `Bad email/password combination.`,
+          message: `Bad username or email / password combination.`,
         })
       } else {
         let token = jwt.sign(user, app.get(`superSecret`), {
