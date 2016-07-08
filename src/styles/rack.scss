@@ -1,0 +1,32 @@
+.rack-container {
+  background: #222020;
+  position: absolute;
+  left: 45px;
+  right: 0;
+  bottom: 0;
+  top: 0;
+}
+
+.rack-settings {
+  box-shadow: inset 1px 1px 1px -1px #FFF, inset 0px -1px 0px 0px #111;
+  background: #444;
+  background-image: -webkit-linear-gradient(195deg, #444 0%, #555 20%, #444 40%, #333 100%);
+  background-image: -o-linear-gradient(195deg, #444 0%, #555 20%, #444 40%, #333 100%);
+  background-image: linear-gradient(285deg, #444 0%, #555 20%, #444 40%, #333 100%);
+
+  button {
+    font-size: 0.8em;
+  }
+}
+
+
+.rack-select-track {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 45px;
+  right: 0;
+  bottom: 0;
+  top: 0;
+}

@@ -1,15 +1,20 @@
 import _ from 'lodash'
-import { getFrequencyFromKeyNum } from '../helpers/audioHelpers.js'
+import { getFrequencyFromKeyNum } from 'helpers/audioHelpers'
 
 const DEFAULT_EASING = 0.001
 
-export class PolyphonicSynth {
+export default class PollySource {
 
-  constructor(AudioContext, polyphony = 32, VoiceClass = MonophonicSynth) {
+  constructor(AudioContext, {
+    polyphony = 32,
+    oscillatorType = `square`
+  }) {
     this.ctx = AudioContext
+    this.oscillatorType = oscillatorType
     this.outputGain = this.ctx.createGain()
     this.polyphony = polyphony
-    this.VoiceClass = VoiceClass
+    // this.VoiceClass = VoiceClass
+    this.VoiceClass = MonophonicSynth
     this.voices = []
     this.activeVoices = []
     this.unusedVoices = []
@@ -18,6 +23,7 @@ export class PolyphonicSynth {
     // Populate the polyphony of voices
     for (let i = 0; i < this.polyphony; i++) {
       let newVoice = new this.VoiceClass(this.ctx)
+      newVoice.oscillator.type = this.oscillatorType
       newVoice.connect(this.outputGain)
       this.voices.push(newVoice)
       this.unusedVoices.push(newVoice)
@@ -26,6 +32,13 @@ export class PolyphonicSynth {
 
   connect(target) {
     this.outputGain.connect(target)
+  }
+
+  update(config) {
+    if (config.oscillatorType !== this.oscillatorType) {
+      this.oscillatorType = config.oscillatorType
+      this.voices.forEach(voice => voice.oscillator.type = config.oscillatorType)
+    }
   }
 
   fireNote(keyNum, velocity, time = 0, detune) {

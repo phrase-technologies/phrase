@@ -20,6 +20,7 @@ export class App extends Component {
       type: "img/ico",
     }]
 
+
     return (
       <CursorProvider>
         <HotkeyProvider>

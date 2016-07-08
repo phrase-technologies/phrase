@@ -471,6 +471,14 @@ export const phraseLoginReminder    = ({ show }) => ({ type: phrase.LOGIN_REMIND
 export const phraseRephraseReminder = ({ show }) => ({ type: phrase.REPHRASE_REMINDER, payload: { show } })
 export const phrasePristine = ({ pristine }) => ({ type: phrase.PRISTINE, payload: { pristine } })
 
+export const phraseUpdatePluginConfig = (trackID, rackIndex, config) => ({
+  type: phrase.UPDATE_PLUGIN_CONFIG, trackID, rackIndex, payload: { config }
+})
+
+export const phraseChangeInstrument = (trackID, instrument) => ({
+  type: phrase.UPDATE_RACK, trackID, payload: { instrument }
+})
+
 // ============================================================================
 // Phrase Reducer
 // ============================================================================
@@ -515,6 +523,38 @@ export default function reducePhrase(state = defaultState, action) {
         tracks: u.updateIn(['*'], u.if(
           (track) => track.id === action.trackID,
           (track) => u({mute: !track.mute}, track)
+        ))
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.UPDATE_PLUGIN_CONFIG:
+      return u({
+        tracks: u.updateIn(['*'], u.if(
+          (track) => track.id === action.trackID,
+          (track) => {
+
+            // TODO: use updeep better here to update inner array item
+
+            let rack = [
+              ...track.rack.slice(0, action.rackIndex),
+              {
+                ...track.rack[action.rackIndex],
+                config: action.payload.config
+              },
+              ...track.rack.slice(action.rackIndex + 1, Infinity)
+            ]
+
+            return u({ rack }, track)
+          }
+        ))
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.UPDATE_RACK:
+      return u({
+        tracks: u.updateIn(['*'], u.if(
+          (track) => track.id === action.trackID,
+          (track) => u({rack: [action.payload.instrument]}, track)
         ))
       }, state)
 
@@ -759,12 +799,28 @@ export default function reducePhrase(state = defaultState, action) {
 }
 
 function reduceCreateTrack(state, action) {
+
+  // for testing
+
+  let DEFAULT_INSTRUMENT = {
+    id: `Polly`,
+    config: {
+      polyphony: 32,
+      oscillatorType: `square`
+    }
+  }
+
+  let DEFAULT_RACK = [
+    DEFAULT_INSTRUMENT
+  ]
+
   return u({
     tracks: uAppend(
       {
         id: state.trackAutoIncrement,
         name: action.name || 'MIDI Track '+(state.trackAutoIncrement + 1),
         color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
+        rack: action.rack || DEFAULT_RACK,
         mute: false,
         solo: false
       }

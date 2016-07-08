@@ -1,4 +1,5 @@
-import { PolyphonicSynth } from './SynthPoly.js'
+import _ from 'lodash'
+import Plugins from 'plugins'
 
 const OUTPUT_METER_SIZE = 2048
 
@@ -19,14 +20,14 @@ export function updateNodes(engine, state) {
     }
   })
 
-
   // Add/update tracks as required
   let allTracks = (state.phrase.present.tracks || [])
   let atleastOneTrackSoloed = allTracks.some(track => track.solo)
+
   allTracks.forEach(track => {
     // Add new tracks
     if (!engine.trackModules[track.id]) {
-      engine.trackModules[track.id] = createTrackModule(engine, track)
+      engine.trackModules[track.id] = createTrackModule(engine, track, state)
     }
 
     // Update changed tracks
@@ -34,6 +35,9 @@ export function updateNodes(engine, state) {
       let muteTrack = atleastOneTrackSoloed && !track.solo || track.mute
       let trackModule = engine.trackModules[track.id]
       trackModule.outputFinal.gain.value = 1.0 * !muteTrack
+      trackModule.effectsChain.forEach((node, i) =>
+        node.update(track.rack[i].config, state.phrase.present)
+      )
     }
   })
 }
@@ -47,7 +51,7 @@ function destroyTrackModule(trackModule) {
 }
 
 // This function births a new trackModule
-function createTrackModule(engine, track) {
+function createTrackModule(engine, track, state) {
   // Used for MUTE / SOLO
   let outputFinal = engine.ctx.createGain()
       outputFinal.gain.value = 1.0
@@ -70,13 +74,15 @@ function createTrackModule(engine, track) {
   // Used for track METER
   let outputBuffer = new Uint8Array(OUTPUT_METER_SIZE)
 
-  // The actual sound generation!
-  let synth = new PolyphonicSynth(engine.ctx, 20)
-      synth.connect(outputPan)
+  // Instantiate and wire up the plugins in the rack!
+  let effectsChain = _.reverse(track.rack.slice()).reduce((rack, plugin) => {
+    let source = new Plugins[plugin.id].Source(engine.ctx, plugin.config, state.phrase.present)
 
-  let effectsChain = [
-    synth
-  ]
+    if (rack[0]) source.connect(rack[0].getInputNode())
+    else source.connect(outputPan)
+
+    return [ source, ...rack ]
+  }, [])
 
   let trackModule = {
     trackID: track.id,

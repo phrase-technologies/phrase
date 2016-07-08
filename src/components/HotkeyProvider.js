@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
+import { layout } from 'actions/actions'
+
+import { modalClose } from 'reducers/reduceModal'
+
 import {
   transportRecord,
   transportPlayToggle,
@@ -40,10 +44,19 @@ class HotkeyProvider extends Component {
   }
 
   handleKeyDown = (e) => {
+    let { dispatch, show: modalShowing } = this.props
+
+    if (modalShowing) {
+      if (e.keyCode === 27) { // 'escape' - close modals
+        return dispatch(modalClose())
+      }
+    }
+
     // -----------------------------------------------------------------------
     // Bypass - Prevent doublebooking events with form <inputs>
-    if (e.target.tagName === 'INPUT')
+    if (e.target.tagName === 'INPUT') {
       return
+    }
     if (e.target.tagName === 'SELECT')
       return
     if (e.target.tagName === 'TEXTAREA')
@@ -55,7 +68,6 @@ class HotkeyProvider extends Component {
 
       // -----------------------------------------------------------------------
     // Overrides
-    let { dispatch } = this.props
 
     switch(e.keyCode) {
       case 70:  // CTRL/CMD+F - Search
@@ -122,9 +134,12 @@ class HotkeyProvider extends Component {
         dispatch(transportMetronome())
         e.preventDefault()
         break
-    }
+      case 9: // 'tab' - toggle arrange / rack view
+        dispatch({ type: layout.TOGGLE_RACK })
+        e.preventDefault()
+        break
 
-    console.log( e.keyCode )
+    }
   }
 }
 
@@ -136,4 +151,4 @@ HotkeyProvider.propTypes = {
   dispatch: React.PropTypes.func.isRequired
 }
 
-export default connect()(HotkeyProvider)
+export default connect(state => state.modal)(HotkeyProvider)

@@ -1,15 +1,12 @@
 import u from 'updeep'
-import { modal } from '../actions/actions.js'
-import { auth } from '../actions/actions.js'
+import { modal, auth, phrase } from '../actions/actions.js'
 
 // ============================================================================
 // Modal Action Creators
 // ============================================================================
 export let modalOpen = ({ modalComponent }) => {
   return (dispatch) => {
-    dispatch({
-      type: modal.CLOSE,
-    })
+    dispatch({ type: modal.CLOSE })
     setTimeout(() => {
       dispatch({
         type: modal.OPEN,
@@ -38,6 +35,7 @@ export default function reduceModals(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
+    case phrase.UPDATE_RACK:
     case modal.CLOSE:
     case auth.LOGIN_SUCCESS: // Close modals after successful login
       return u({

@@ -84,3 +84,83 @@ $library-header-height: 60px;
   color: #888;
   margin-top: 10px;
 }
+
+// Search via modal idea?
+.search-box {
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 1000000;
+  position: absolute;
+  border-radius: 10px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+  .search-box-input {
+    color: rgb(236, 158, 26);
+    text-shadow: 0 0 16px rgb(244, 176, 62);
+    padding: 10px;
+    font-size: 1.5rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgb(184, 132, 46);
+    width: 100%;
+    outline: none;
+  }
+
+  ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: rgb(185, 125, 25);
+  }
+  :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+     color: rgb(185, 125, 25);
+     opacity: 1;
+  }
+  ::-moz-placeholder { /* Mozilla Firefox 19+ */
+     color: rgb(185, 125, 25);
+     opacity: 1;
+  }
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+     color: rgb(185, 125, 25);
+  }
+
+  .search-result-id {
+    color: rgb(246, 216, 57);
+    padding: 12px;
+    font-size: 3rem;
+    font-weight: 100;
+    text-shadow: 0 0 16px rgb(244, 176, 62);
+  }
+
+  .search-result-description {
+    color: rgb(245, 205, 35);
+    padding: 12px;
+    font-size: 1.8rem;
+    font-weight: 100;
+    text-shadow: 0 0 16px rgb(244, 176, 62);
+  }
+
+  .search-result-author {
+    font-size: 1.5rem;
+    font-weight: normal;
+    padding: 10px 27px;
+    color: rgb(193, 130, 24);
+    text-shadow: 0 0 16px rgb(244, 176, 62);
+  }
+
+  .search-result-add-btn {
+    background: transparent;
+    margin: 12px;
+    padding: 5px 9px;
+    outline: none;
+    border: 1px solid rgb(236, 158, 26);
+    text-shadow: 0 0 16px rgb(244, 176, 62);
+    color: rgb(246, 216, 57);
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: black;
+      background: rgb(236, 158, 26);
+    }
+  }
+
+}
