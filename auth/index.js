@@ -69,13 +69,10 @@ export default ({
               message: { passwordError: `Invalid password.` },
             })
           } else {
-            let username = trimmedUsername
-            let email = lowerCaseEmail
-
             let user = await r.table(`users`).insert({
-              username,
-              email,
-              password: doubleHash(password),
+              username: trimmedUsername,
+              email: lowerCaseEmail,
+              password: doubleHash(trimmedPassword),
             }).run(db)
 
             console.log(`${username} signed up!`)
@@ -106,7 +103,7 @@ export default ({
           success: false,
           message: `User not found.`,
         })
-      } else if (user.password !== doubleHash(password)) {
+      } else if (user.password !== doubleHash(password.trim())) {
         res.json({
           success: false,
           message: `Bad email/password combination.`,
