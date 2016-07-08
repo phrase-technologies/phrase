@@ -28,7 +28,7 @@ async function bootstrap () {
       await r.dbCreate(`phrase`).run(db)
       await r.tableCreate(`users`).run(db)
       await r.tableCreate(`connections`).run(db)
-      await r.table(`users`).indexCreate(`username`).run(db)
+      await r.table(`users`).indexCreate(`usernameLC`, function(user) { return r.add(user(`username`).downcase()) }).run(db)
       await r.table(`users`).indexCreate(`email`).run(db)
       await r.tableCreate(`phrases`).run(db)
       await r.table(`phrases`).indexCreate(`phrasename`).run(db)

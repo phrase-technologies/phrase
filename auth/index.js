@@ -32,10 +32,10 @@ export default ({
     } else {
 
       try {
-
+        let lowerCaseEmail = trimmedEmail.toLowerCase()
         let userByEmailResults = await r
           .table(`users`)
-          .getAll(email, { index: `email` })
+          .getAll(lowerCaseEmail, { index: `email` })
           .limit(1)
           .run(db)
         let userByEmail = await userByEmailResults.toArray()
@@ -53,7 +53,7 @@ export default ({
         } else {
           let userByUsernameResults = await r
             .table(`users`)
-            .getAll(username, { index: `username` })
+            .getAll(trimmedUsername.toLowerCase(), { index: `usernameLC` })
             .limit(1)
             .run(db)
           let userByUsername = await userByUsernameResults.toArray()
@@ -69,6 +69,9 @@ export default ({
               message: { passwordError: `Invalid password.` },
             })
           } else {
+            let username = trimmedUsername
+            let email = lowerCaseEmail
+
             let user = await r.table(`users`).insert({
               username,
               email,
