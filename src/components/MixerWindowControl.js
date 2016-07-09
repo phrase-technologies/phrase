@@ -285,7 +285,9 @@ export class MixerWindowControl extends Component {
     if (e.target !== this.container)
       return
 
-    let foundClip = clips.find(clip => clip.trackID === trackID && clip.start <= bar && clip.end > bar)
+    let foundClip = clips.find(clip => {
+      return clip.trackID === trackID && clip.start <= bar && clip.end > bar
+    })
     if (foundClip) {
       let clipLength = foundClip.end - foundClip.start
       let threshold = Math.min(
