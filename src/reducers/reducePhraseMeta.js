@@ -222,6 +222,15 @@ export default function reducePhraseMeta(state = defaultState, action) {
       }, state)
     }
 
+    // ------------------------------------------------------------------------
+    case phrase.CHANGE_NOTE_VELOCITY: {
+      return u({
+        noteSelectionGrippedID: null,
+        noteSelectionTargetBar: null,
+        noteSelectionVelocity: null,
+      }, state)
+    }
+
     case phrase.DRAG_NOTE_SELECTION: {
       return u({
         noteSelectionGrippedID: action.payload.grippedNoteID,

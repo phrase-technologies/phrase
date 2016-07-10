@@ -375,7 +375,7 @@ export const phraseDragNoteVelocity = ({ noteID, targetBar }) => {
     let mouseOffset = state.mouse.last.y - state.mouse.y
 
     let velocity =
-      Math.max(0, Math.min(noteToChange.velocity + mouseOffset, 127))
+      Math.max(1, Math.min(noteToChange.velocity + mouseOffset, 127))
 
     dispatch({
       type: mouse.TOGGLE_TOOLTIP,
