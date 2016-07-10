@@ -34,9 +34,7 @@ export class App extends Component {
                 { this.props.children }
               </div>
               <ActiveModal show={this.props.show} />
-              <MouseTooltip>
-                { this.props.tooltip }
-              </MouseTooltip>
+              <MouseTooltip />
             </div>
 
           </MouseEventProvider>
