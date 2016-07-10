@@ -366,17 +366,16 @@ export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
   }
 }
 
-const DRAG_VELOCITY_STEP = 1
-
-export const phraseDragNoteVelocity = ({ noteID, increase, targetBar }) => {
+export const phraseDragNoteVelocity = ({ noteID, targetBar }) => {
   return (dispatch, getState) => {
     let state = getState()
 
-    let noteToChange = currentNotesSelector(state).find(x => x.id === noteID)
+    let noteToChange = phraseMidiSelector(state).find(x => x.id === noteID)
 
-    let velocity = increase
-      ? Math.min(noteToChange.velocity + DRAG_VELOCITY_STEP, 127)
-      : Math.max(1, noteToChange.velocity - DRAG_VELOCITY_STEP)
+    let mouseOffset = state.mouse.last.y - state.mouse.y
+
+    let velocity =
+      Math.max(0, Math.min(noteToChange.velocity + mouseOffset, 127))
 
     dispatch({
       type: mouse.TOGGLE_TOOLTIP,

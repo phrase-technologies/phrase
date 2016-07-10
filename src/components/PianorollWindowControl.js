@@ -39,7 +39,7 @@ import {
 
 import { transportMovePlayhead } from 'reducers/reduceTransport'
 
-import { phrase } from 'actions/actions'
+import { phrase, mouse } from 'actions/actions'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
 const CLICK_EMPTY_AREA = 'CLICK_EMPTY_AREA'
@@ -176,6 +176,9 @@ export class PianorollWindowControl extends Component {
             this.props.dispatch(cursorClear('explicit'))
             this.lastEvent.grip = 'MID'
           }
+
+          // snapshot mouse position when clicked:
+          this.props.dispatch({ type: mouse.SNAPSHOT, payload: e })
           break
 
         case 'scissors':
@@ -293,7 +296,6 @@ export class PianorollWindowControl extends Component {
             if (this.lastEvent.mouseY !== e.clientY) {
               dispatch(phraseDragNoteVelocity({
                 noteID: this.lastEvent.noteID,
-                increase: this.lastEvent.mouseY > e.clientY,
                 targetBar: bar,
               }))
 

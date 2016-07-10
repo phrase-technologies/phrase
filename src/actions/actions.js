@@ -92,6 +92,7 @@ export const mouse = namespaceActions(
   'mouse',
   [
     'UPDATE',
+    'SNAPSHOT',
     'TOGGLE_TOOLTIP',
   ]
 )
