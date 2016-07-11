@@ -27,7 +27,7 @@ const noteSelectionOffsetStart  = (state) => (state.phraseMeta.noteSelectionOffs
 const noteSelectionOffsetEnd    = (state) => (state.phraseMeta.noteSelectionOffsetEnd)
 const noteSelectionOffsetKey    = (state) => (state.phraseMeta.noteSelectionOffsetKey)
 const noteSelectionOffsetSnap   = (state) => (state.phraseMeta.noteSelectionOffsetSnap)
-const noteSelectionVelocity     = (state) => (state.phraseMeta.noteSelectionVelocity)
+const noteSelectionVelocities = (state) => (state.phraseMeta.noteSelectionVelocities)
 
 export const clipSelectionOffsetValidated = createSelector(
   clipsSelector,
@@ -189,9 +189,9 @@ export const currentNotesSelector = createSelector(
   noteSelectionGrippedID,
   noteSelectionTargetBar,
   noteSelectionOffsetValidated,
-  noteSelectionVelocity,
+  noteSelectionVelocities,
   (currentClips, notes, selectionType, noteSelectionIDs, currentTrack, grippedNoteID,
-  targetBar, { offsetStart, offsetEnd, offsetKey }, noteSelectionVelocity) => {
+  targetBar, { offsetStart, offsetEnd, offsetKey }, noteSelectionVelocities) => {
 
     // Escape if pianoroll not open
     if (!currentTrack) return []
@@ -243,10 +243,10 @@ export const currentNotesSelector = createSelector(
             }
           }
 
-          if (noteSelectionVelocity) {
+          if (noteSelectionVelocities.length) {
             return {
               ...note,
-              velocity: noteSelectionVelocity,
+              velocity: noteSelectionVelocities.find(x => x.id === note.id).velocity,
               selected: true
             }
           }

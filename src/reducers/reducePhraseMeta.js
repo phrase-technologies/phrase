@@ -48,7 +48,7 @@ export const defaultState = {
   noteSelectionOffsetKey: null,
   noteSelectionOffsetSnap: true,
   noteSelectionOffsetCopy: null,
-  noteSelectionVelocity: null
+  noteSelectionVelocities: []
 }
 
 export default function reducePhraseMeta(state = defaultState, action) {
@@ -218,7 +218,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
       return u({
         noteSelectionGrippedID: action.payload.grippedNoteID,
         noteSelectionTargetBar: action.payload.targetBar,
-        noteSelectionVelocity: action.payload.velocity,
+        noteSelectionVelocities: action.payload.velocities,
       }, state)
     }
 
@@ -227,7 +227,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
       return u({
         noteSelectionGrippedID: null,
         noteSelectionTargetBar: null,
-        noteSelectionVelocity: null,
+        noteSelectionVelocities: [],
       }, state)
     }
 

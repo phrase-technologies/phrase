@@ -369,11 +369,18 @@ export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
 export const phraseDragNoteVelocity = ({ noteID, targetBar, delta }) => {
   return (dispatch, getState) => {
     let state = getState()
-
-    let noteToChange = currentNotesSelector(state).find(x => x.id === noteID)
+    let currentNotes = currentNotesSelector(state)
+    let selectedNotes = currentNotes.filter(x => x.selected)
+    let noteToChange = selectedNotes.find(x => x.id === noteID)
 
     let velocity =
       Math.max(1, Math.min(noteToChange.velocity - delta, 127))
+
+    let velocities =
+      selectedNotes.map(note => ({
+        id: note.id,
+        velocity: Math.max(1, Math.min(note.velocity - delta, 127))
+      }))
 
     dispatch({
       type: mouse.TOGGLE_TOOLTIP,
@@ -387,7 +394,7 @@ export const phraseDragNoteVelocity = ({ noteID, targetBar, delta }) => {
       payload: {
         grippedNoteID: noteID,
         targetBar,
-        velocity
+        velocities
       }
     })
   }
