@@ -384,7 +384,7 @@ export class PianorollWindowControl extends Component {
     }
   }
 
-  mouseUpEvent(e) {
+  mouseUpEvent(e) {  
     // Cancel any sounds
     this.killPreviewSound()
 
@@ -426,8 +426,6 @@ export class PianorollWindowControl extends Component {
 
     if (this.lastEvent &&
         this.lastEvent.action === CHANGE_NOTE_VELOCITY) {
-      document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock
-      document.exitPointerLock()
       this.props.dispatch(phraseDropNoteVelocity({ noteID: this.lastEvent.noteID }))
       this.lastEvent = null
     }
