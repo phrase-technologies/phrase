@@ -346,6 +346,14 @@ export class PianorollWindowControl extends Component {
       )
 
       if (this.props.arrangeTool !== "pointer") {
+        if (this.props.arrangeTool === `velocity`) {
+          this.props.dispatch({
+            type: mouse.TOGGLE_TOOLTIP,
+            payload: {
+              text: `Velocity: ${foundNote.velocity}`
+            }
+          })
+        }
         this.props.dispatch(cursorChange({
           icon: this.props.arrangeTool,
           priority: `implicit`
@@ -366,7 +374,13 @@ export class PianorollWindowControl extends Component {
           priority: `implicit`
         }))
       }
-      else this.props.dispatch(cursorClear('implicit'))
+      else {
+        this.props.dispatch(cursorClear('implicit'))
+        this.props.dispatch({
+          type: mouse.TOGGLE_TOOLTIP,
+          payload: null
+        })
+      }
     }
   }
 
