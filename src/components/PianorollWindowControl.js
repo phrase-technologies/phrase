@@ -177,8 +177,12 @@ export class PianorollWindowControl extends Component {
             this.lastEvent.grip = 'MID'
           }
 
-          // snapshot mouse position when clicked:
-          this.props.dispatch({ type: mouse.SNAPSHOT, payload: e })
+          if (this.props.arrangeTool === `velocity`) {
+            this.dragging = true
+            e.target.requestPointerLock = e.target.requestPointerLock || e.target.mozRequestPointerLock
+            e.target.requestPointerLock()
+          }
+
           break
 
         case 'scissors':
@@ -293,10 +297,12 @@ export class PianorollWindowControl extends Component {
             return
 
           case `velocity`:
-            if (this.lastEvent.mouseY !== e.clientY) {
+            let delta = e.movementY || e.mozMovementY || 0
+            if (this.lastEvent.delta !== delta) {
               dispatch(phraseDragNoteVelocity({
                 noteID: this.lastEvent.noteID,
                 targetBar: bar,
+                delta
               }))
 
               let note = notes.find(x => x.id === this.lastEvent.noteID)
@@ -305,7 +311,7 @@ export class PianorollWindowControl extends Component {
             }
 
             this.lastEvent.action = CHANGE_NOTE_VELOCITY
-            this.lastEvent.mouseY = e.clientY
+            this.lastEvent.delta = delta
             return
         }
     }
@@ -406,6 +412,8 @@ export class PianorollWindowControl extends Component {
 
     if (this.lastEvent &&
         this.lastEvent.action === CHANGE_NOTE_VELOCITY) {
+      document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock
+      document.exitPointerLock()
       this.props.dispatch(phraseDropNoteVelocity({ noteID: this.lastEvent.noteID }))
       this.lastEvent = null
     }
