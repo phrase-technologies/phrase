@@ -85,7 +85,7 @@ export class Workstation extends Component {
       <div className="workstation-background">
         <div className="workstation-container">
           <div className="workstation workstation-maximized disable-select">
-            <Helmet title={`${this.props.phraseName || "Untitled Phrase"} by ${this.props.authorUsername} - Phrase.fm`} />
+            <Helmet title={`${this.props.phraseName || "Untitled Phrase"} by ${this.props.authorUsername || "Unknown"} - Phrase.fm`} />
             <WorkstationHeader />
             <div className="workstation-body">
               <div className="workstation-main" style={this.getMainSplit()}>
