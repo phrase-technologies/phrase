@@ -400,20 +400,16 @@ export const phraseDragNoteVelocity = ({ noteID, targetBar, delta }) => {
   }
 }
 
-export const phraseDropNoteVelocity = ({ noteID }) => {
+export const phraseDropNoteVelocity = () => {
   return (dispatch, getState) => {
     let state = getState()
-
-    let noteToChange = currentNotesSelector(state).find(x => x.id === noteID)
+    let currentNotes = currentNotesSelector(state)
 
     dispatch({ type: mouse.TOGGLE_TOOLTIP, payload: null })
 
     dispatch({
       type: phrase.CHANGE_NOTE_VELOCITY,
-      payload: {
-        noteID,
-        velocity: noteToChange.velocity
-      }
+      payload: { currentNotes }
     })
   }
 }
@@ -854,14 +850,18 @@ export default function reducePhrase(state = defaultState, action) {
     // ------------------------------------------------------------------------
 
     case phrase.CHANGE_NOTE_VELOCITY:
-      let { noteID, velocity } = action.payload
+      let { currentNotes } = action.payload
 
       return {
         ...state,
-        notes: [
-          ...state.notes.filter(note => note.id !== noteID),
-          { ...state.notes.find(note => note.id === noteID), velocity }
-        ]
+        notes: state.notes.map(note => {
+          let currentNote = currentNotes.find(x => x.id === note.id)
+
+          return {
+            ...note,
+            velocity: currentNote ? currentNote.velocity : note.velocity
+          }
+        })
       }
 
     // ------------------------------------------------------------------------
