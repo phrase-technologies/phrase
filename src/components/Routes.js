@@ -1,5 +1,5 @@
 import React from 'react'
-import {  Route, IndexRoute } from 'react-router'
+import {  Route, IndexRedirect } from 'react-router'
 
 import App from 'components/App.js'
 import Workstation from 'components/Workstation.js'
@@ -11,7 +11,7 @@ import Error404 from 'components/Error404.js'
 
 export default (
   <Route path="/" component={App}>
-    <IndexRoute phraseMode={false} component={Library} />
+    <IndexRedirect to="/phrase/new" />
     <Route path="/search" component={Library} />
     <Route path="/search/:searchTerm" component={Library} />
     <Route path="/user/:userId" component={UserProfile} />

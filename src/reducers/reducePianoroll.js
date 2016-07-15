@@ -58,7 +58,7 @@ export const pianorollSetFocusWindow  = (clipID, tight) => {
 // Pianoroll Reducer
 // ============================================================================
 export const defaultState = {
-  currentTrack: null,
+  currentTrack: 0,
   width: 1000,
   height: 500,
   xMin: 0.000,

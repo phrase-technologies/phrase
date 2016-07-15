@@ -543,18 +543,18 @@ export const phraseChangeInstrument = (trackID, instrument) => ({
 // Phrase Reducer
 // ============================================================================
 const TRACK_COLORS = [
+  '#0DD',
+  '#48F',
+  '#88F',
+  '#A6E',
+  '#D6D',
+  '#F4A',
   '#F53',
   '#F80',
   '#FC0',
   '#8D0',
   '#0C0',
   '#0C8',
-  '#0DD',
-  '#48F',
-  '#88F',
-  '#A6E',
-  '#D6D',
-  '#F4A'
 ]
 
 export const defaultState = reduceCreateTrack(reduceCreateTrack({
@@ -886,10 +886,10 @@ function reduceCreateTrack(state, action) {
   // for testing
 
   let DEFAULT_INSTRUMENT = {
-    id: `Polly`,
+    id: `Piano`,
     config: {
-      polyphony: 32,
-      oscillatorType: `square`
+      // polyphony: 32,
+      // oscillatorType: `square`
     }
   }
 
