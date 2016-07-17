@@ -172,7 +172,7 @@ export default ({
 
   app.post(`/newPassword`, async (req, res) => {
     try {
-      let { email, token, password, confirmPassword } = req.body
+      let { email, resetToken, password, confirmPassword } = req.body
       let lowerCaseEmail = email.toLowerCase()
       let cursor = await r.table(`users`).getAll(lowerCaseEmail, { index: `email` }).limit(1).run(db)
       let users = await cursor.toArray()
@@ -184,7 +184,7 @@ export default ({
           message: { emailError: `Email not found` },
         })
       } 
-      else if (user.resetToken !== token) {
+      else if (user.resetToken !== resetToken) {
         res.json({
           success: false,
           message: { emailError: `Incorrect email, please provide the email address that the reset link was sent to` },
