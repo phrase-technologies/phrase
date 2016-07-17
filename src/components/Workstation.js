@@ -11,6 +11,7 @@ import {
   phraseLoginReminder,
   phraseRephraseReminder,
 } from 'reducers/reducePhrase'
+import { modalOpen } from '../reducers/reduceModal.js'
 
 import { layoutConsoleSplit } from 'actions/actionsLayout'
 
@@ -33,6 +34,15 @@ export class Workstation extends Component {
     // Load brand new phrase
     else if (loading !== phrase.REPHRASE)
       this.props.dispatch(phraseNewPhrase())
+
+    // Load the new password modal if we have a password reset token
+    if (params.resetToken) {
+      this.props.dispatch(
+        modalOpen({ 
+          modalComponent: 'NewPasswordModal', 
+          payload: { resetToken: params.resetToken }  
+        }))
+    }
 
     // Set Leave Hook ("You have unsaved changes!")
     this.props.router.setRouteLeaveHook(this.props.route, this.leaveHook)

@@ -1,8 +1,9 @@
-import { login as loginHelper, signup as signupHelper } from 'helpers/authHelpers'
+import { login as loginHelper, signup as signupHelper, forgotPassword as forgotPasswordHelper, newPassword as newPasswordHelper } from 'helpers/authHelpers'
 import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave } from 'reducers/reducePhrase'
+import { modalOpen } from 'reducers/reduceModal.js'
 
 // ============================================================================
 // Authentication Action Creators
@@ -66,6 +67,52 @@ export let signup = ({ email, username, password }) => {
   }
 }
 
+export let forgotPassword = ({ email }) => {
+  return (dispatch, getState) => {
+    dispatch({ type: auth.LOGIN_REQUEST})
+
+    forgotPasswordHelper({ email }, response => {
+      if (response.success)
+        dispatch(modalOpen({ modalComponent: 'LoginModal'  }))
+      else {
+        dispatch({
+          type: auth.LOGIN_FAIL,
+          payload: { message: response.message },
+        })
+      }
+    })
+  }
+}
+
+export let newPassword = ({ email, resetToken, password, confirmPassword }) => {
+  return (dispatch, getState) => {
+    dispatch({ type: auth.LOGIN_REQUEST})
+
+    newPasswordHelper({ email, resetToken, password, confirmPassword }, response => {
+      if (response.success) {
+        dispatch({
+          type: auth.LOGIN_SUCCESS,
+          payload: {
+            loggedIn: response.success,
+            user: response.user,
+          },
+        })
+
+        let phraseState = getState().phrase
+        if (phraseState.past.length || phraseState.future.length) {
+          dispatch(librarySaveNew())
+        }
+      }
+      else {
+        dispatch({
+          type: auth.LOGIN_FAIL,
+          payload: { message: response.message },
+        })
+      }
+    })
+  }
+}
+
 export let logout = () => {
   return (dispatch) => {
     localStorage.clear()
@@ -93,6 +140,7 @@ let intialState = {
     username: localStorage.username,
   },
   errorMessage: null,
+  resetToken: null
 }
 
 export default (state = intialState, action) => {
@@ -105,6 +153,12 @@ export default (state = intialState, action) => {
         return {
           ...state,
           errorMessage: null,
+        }
+      }
+      else if (action.modalComponent == 'NewPasswordModal') {
+        return {
+          ...state,
+          resetToken: action.payload.resetToken,
         }
       }
       return state

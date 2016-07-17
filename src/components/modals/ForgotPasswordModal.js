@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import LaddaButton from 'react-ladda'
 
-import { login } from '../../reducers/reduceAuth.js'
+import { forgotPassword } from '../../reducers/reduceAuth.js'
 import { modalOpen, modalClose } from '../../reducers/reduceModal.js'
 
-export class LoginModal extends Component {
+export class ForgotPasswordModal extends Component {
   render() {
     return (
       <Modal
@@ -17,29 +17,20 @@ export class LoginModal extends Component {
         <Modal.Body>
           <button type="button" className="close" onClick={this.closeModal}>&times;</button>
           <div className="form-group">
-            <h4 className="text-center">Have an account?</h4>
+            <h4 className="text-center">Need a new password?</h4>
           </div>
-          <form onSubmit={this.login} noValidate>
+          <form onSubmit={this.submit} noValidate>
             <div className="form-group" style={{marginBottom: 10}}>
               <input
                 className="form-control" type="email" autoComplete
-                placeholder="Email or Username" ref={(ref) => this.email = ref}
+                placeholder="Email" ref={(ref) => this.email = ref}
               />
-            </div>
-            <div className="form-group">
-              <input
-                className="form-control" type="password"
-                placeholder="Password" ref={(ref) => this.password = ref}
-              />
-              <p className="text-right">
-                <a href="" onClick={this.openForgotPasswordModal}><small>Forgot Password</small></a>
-              </p>
             </div>
             <LaddaButton
               className="btn btn-block btn-dark" buttonStyle="zoom-in"
               loading={this.props.requestingAuth} type="submit"
             >
-              Log in
+              Reset Password
             </LaddaButton>
             <p className="text-danger text-center" style={{ marginTop: 5, marginBottom: 0 }}>
               {this.props.errorMessage}
@@ -48,37 +39,31 @@ export class LoginModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <p className="text-center">
-            <span>New to Phrase? </span>
-            <a href="" onClick={this.openSignupModal}>
-              <strong>Sign up</strong>
+            <span>Back to login? </span>
+            <a href="" onClick={this.openLoginModal}>
+              <strong>Login</strong>
             </a>
           </p>
         </Modal.Footer>
       </Modal>
     )
-  }
+  }  
 
-  login = (e) => {
+  submit = (e) => {
     e.preventDefault()
 
-    this.props.dispatch(login({
+    this.props.dispatch(forgotPassword({
       email: this.email.value,
-      password: this.password.value,
     }))
-  }
-
-  openSignupModal = (e) => {
-    e.preventDefault()
-    this.props.dispatch(modalOpen({ modalComponent: 'SignupModal'  }))
-  }
-
-  openForgotPasswordModal = (e) => {
-    e.preventDefault()
-    this.props.dispatch(modalOpen({ modalComponent: 'ForgotPasswordModal' }))
   }
 
   closeModal = () => {
     this.props.dispatch(modalClose())
+  }
+
+  openLoginModal = (e) => {
+    e.preventDefault()
+    this.props.dispatch(modalOpen({ modalComponent: 'LoginModal'  }))
   }
 }
 
@@ -88,4 +73,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(LoginModal)
+export default connect(mapStateToProps)(ForgotPasswordModal)
