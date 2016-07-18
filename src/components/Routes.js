@@ -19,7 +19,7 @@ export default (
     <Route path="/phrase/:username/:phraseId/:phrasename" component={Workstation} />
     <Route path="/about" component={About} />
     <Route path="/developers" component={About} />
-    <Route path="/newPassword/:resetToken" component={Workstation} />
+    <Route path="/new-password/:resetToken" component={Workstation} />
     <Route path="*" component={Error404} />
   </Route>
 )
