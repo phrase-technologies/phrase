@@ -32,7 +32,7 @@ export let login = async (body, callback) =>  {
 }
 
 export let forgotPassword = async (body, callback) => {
-  let response = await fetch(`${API_URL}/forgotPassword`, {
+  let response = await fetch(`${API_URL}/forgot-password`, {
     method: `POST`,
     headers: { 'Content-Type': `application/json` },
     body: JSON.stringify(body),
@@ -45,7 +45,7 @@ export let forgotPassword = async (body, callback) => {
 }
 
 export let newPassword = async (body, callback) => {
-  let response = await fetch(`${API_URL}/newPassword`, {
+  let response = await fetch(`${API_URL}/new-password`, {
     method: `POST`,
     headers: { 'Content-Type': `application/json` },
     body: JSON.stringify(body),
