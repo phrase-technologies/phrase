@@ -133,7 +133,7 @@ export default ({
     catch (err) { console.log(err) }
   })
 
-  app.post(`/forgotPassword`, async (req, res) => {
+  app.post(`/forgot-password`, async (req, res) => {
     try {
       let { email } = req.body
       let lowerCaseEmail = email.toLowerCase()
@@ -170,7 +170,7 @@ export default ({
     catch (err) { console.log(err) }
   })
 
-  app.post(`/newPassword`, async (req, res) => {
+  app.post(`/new-password`, async (req, res) => {
     try {
       let { email, resetToken, password, confirmPassword } = req.body
       let lowerCaseEmail = email.toLowerCase()
