@@ -1,3 +1,5 @@
+import { push } from 'react-router-redux'
+
 import { login as loginHelper, signup as signupHelper, forgotPassword as forgotPasswordHelper, newPassword as newPasswordHelper } from 'helpers/authHelpers'
 import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
@@ -98,10 +100,7 @@ export let newPassword = ({ email, resetToken, password, confirmPassword }) => {
           },
         })
 
-        let phraseState = getState().phrase
-        if (phraseState.past.length || phraseState.future.length) {
-          dispatch(librarySaveNew())
-        }
+        dispatch(push(`/`))
       }
       else {
         dispatch({
@@ -139,8 +138,7 @@ let intialState = {
     password: localStorage.password,
     username: localStorage.username,
   },
-  errorMessage: null,
-  resetToken: null
+  errorMessage: null
 }
 
 export default (state = intialState, action) => {
@@ -153,12 +151,6 @@ export default (state = intialState, action) => {
         return {
           ...state,
           errorMessage: null,
-        }
-      }
-      else if (action.modalComponent == 'NewPasswordModal') {
-        return {
-          ...state,
-          resetToken: action.payload.resetToken,
         }
       }
       return state

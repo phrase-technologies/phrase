@@ -4,14 +4,13 @@ import { modal, auth, phrase } from '../actions/actions.js'
 // ============================================================================
 // Modal Action Creators
 // ============================================================================
-export let modalOpen = ({ modalComponent, payload }) => {
+export let modalOpen = ({ modalComponent }) => {
   return (dispatch) => {
     dispatch({ type: modal.CLOSE })
     setTimeout(() => {
       dispatch({
         type: modal.OPEN,
-        modalComponent,
-        payload
+        modalComponent
       })
     }, 10)
   }

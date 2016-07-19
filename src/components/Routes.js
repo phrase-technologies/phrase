@@ -6,6 +6,7 @@ import Workstation from 'components/Workstation.js'
 import Library from 'components/Library.js'
 import UserProfile from 'components/UserProfile.js'
 import About from 'components/About.js'
+import NewPassword from 'components/NewPassword.js'
 import Error404 from 'components/Error404.js'
 
 export default (
@@ -19,7 +20,7 @@ export default (
     <Route path="/phrase/:username/:phraseId/:phrasename" component={Workstation} />
     <Route path="/about" component={About} />
     <Route path="/developers" component={About} />
-    <Route path="/new-password/:resetToken" component={Workstation} />
+    <Route path="/new-password" component={NewPassword} />
     <Route path="*" component={Error404} />
   </Route>
 )
