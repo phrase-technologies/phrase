@@ -44,6 +44,13 @@ export default class PianoSource {
       ? 50 : velocity < 81
       ? 80 : 120
 
+    let dampen = velocity < 31
+      ? velocity / 30 : velocity < 51
+      ? velocity / 50 : velocity < 81
+      ? velocity / 80 : velocity / 127
+
+    dampen = Math.abs(dampen - 1)
+
     let buffer = this.bufferMap[`${keyNum - 8}-${nearestSample}`]
 
     if (!buffer) return
@@ -72,6 +79,9 @@ export default class PianoSource {
       source.connect(sourceGain)
       sourceGain.connect(this.outputGain)
 
+      // Reduce gain of chosen sample by velocity values lower than it's trigger point
+      sourceGain.gain.value = 1 - dampen
+      
       // Play sound + add to local sources array
       source.start()
       this.activeSources.push({ keyNum, source, sourceGain })
