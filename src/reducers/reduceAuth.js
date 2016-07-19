@@ -138,7 +138,7 @@ let intialState = {
     password: localStorage.password,
     username: localStorage.username,
   },
-  errorMessage: null
+  errorMessage: null,
 }
 
 export default (state = intialState, action) => {

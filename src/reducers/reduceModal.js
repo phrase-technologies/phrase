@@ -10,7 +10,7 @@ export let modalOpen = ({ modalComponent }) => {
     setTimeout(() => {
       dispatch({
         type: modal.OPEN,
-        modalComponent
+        modalComponent,
       })
     }, 10)
   }
