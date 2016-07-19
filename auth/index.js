@@ -140,7 +140,7 @@ export default ({
       let cursor = await r.table(`users`).getAll(lowerCaseEmail, { index: `email` }).limit(1).run(db)
       let users = await cursor.toArray()
       let user = users[0]
-    
+
       if(!user) {
         res.json({
           success: false,
@@ -152,7 +152,7 @@ export default ({
           var cursor = await r.table(`users`).getAll(token, { index: `resetToken` }).limit(1).run(db)
           var users = await cursor.toArray()
           var user = users[0]
-          if (user) 
+          if (user)
             token = crypto.randomBytes(20).toString('hex')
           else
             break
@@ -161,7 +161,7 @@ export default ({
         r.table(`users`).getAll(lowerCaseEmail, { index: `email`}).limit(1).update({resetToken: token}).run(db)
 
         // TODO: send password reset email with token link
-        
+
         res.json({
           success: true,
         })
@@ -177,17 +177,17 @@ export default ({
       let cursor = await r.table(`users`).getAll(lowerCaseEmail, { index: `email` }).limit(1).run(db)
       let users = await cursor.toArray()
       let user = users[0]
-    
+
       if(!user) {
         res.json({
           success: false,
-          message: { emailError: `Email not found` },
+          message: { emailError: `Invalid email, please re-follow the link received in the forgot password email` },
         })
-      } 
+      }
       else if (user.resetToken !== resetToken) {
         res.json({
           success: false,
-          message: { emailError: `Incorrect email, please provide the email address that the reset link was sent to` },
+          message: { emailError: `Invalid token, please re-follow the link received in the forgot password email` },
         })
       }
       else {
@@ -213,7 +213,7 @@ export default ({
           r.table(`users`).getAll(lowerCaseEmail, { index: `email`}).limit(1)
             .replace(r.row.without('resetToken'))
             .run(db)
-          
+
           res.json({
             success: true,
           })
