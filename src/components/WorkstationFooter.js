@@ -18,20 +18,22 @@ export default class WorkstationFooter extends Component {
       <div className="workstation-footer">
         <div className="btn-toolbar">
           <div className="btn-group">
-            <div className="btn btn-dark btn-sm">
-              <img src={require('img/pianoroll.gif')} height={14} style={{ verticalAlign: 'sub' }} />
-              <span> Musical Typing </span>
-              <span className="fa fa-search-plus" />
-            </div>
+            <ControllerMIDI />
           </div>
           <div className="btn-group">
-            <ControllerMIDI />
+            <div className="btn btn-narrow btn-link btn-sm link-dark">
+              <span className="fa fa-keyboard-o" />
+              <span> Computer Keyboard </span>
+            </div>
           </div>
           <div className="btn-group pull-right">
             <div className={multitrackClass} onClick={this.toggleMultitrack}>
               <span> Multitrack</span>
             </div>
             <div className={trackClass} onClick={this.toggleTrack}>
+              {/*
+              <img src={require('img/pianoroll.gif')} height={14} style={{ verticalAlign: 'sub' }} />
+              */}
               <span> Track</span>
             </div>
             <div className={rackClass} onClick={this.toggleRack}>
