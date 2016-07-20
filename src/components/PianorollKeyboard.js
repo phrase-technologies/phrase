@@ -2,10 +2,13 @@ import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 
-import { pianorollResizeHeight,
-         pianorollScrollY } from '../reducers/reducePianoroll.js'
+import {
+  pianorollResizeHeight,
+  pianorollScrollY
+} from '../reducers/reducePianoroll.js'
 
-import PianorollKeyboardKey from './PianorollKeyboardKey.js'
+import PianorollKeys from './PianorollKeys.js'
+import diffProps from 'helpers/diffProps'
 
 export class PianorollKeyboard extends Component {
 
@@ -17,6 +20,8 @@ export class PianorollKeyboard extends Component {
     let keybedWidth = keybedHeight / 12.5
 
     let isCompact = keybedWidth < 75
+    let keybedClasses = "pianoroll-keybed"
+        keybedClasses += isCompact ? " compact" : ''
 
     let style = {
       transform: 'translate3d(0,'+(-keybedOffset)+'px,0)',
@@ -26,55 +31,11 @@ export class PianorollKeyboard extends Component {
 
     return (
       <div className="pianoroll-keyboard">
-        <div className="pianoroll-keybed" style={style}>
-          { this.renderKeys(isCompact) }
+        <div className={keybedClasses} style={style}>
+          <PianorollKeys currentTrack={this.props.currentTrack} />
         </div>
       </div>
     )
-  }
-
-  renderKeys(isCompact) {
-    let octave = 8
-    let octaves = []
-    let keys = []
-    for (let key = 88; key > 0; key--) {
-      // Specific sequence of black and white keys
-      let keyClass = 'pianoroll-key'
-          keyClass += (key % 12 in {2:true, 0:true, 10: true, 7: true, 5: true}) ? ' black' : ' white'
-          keyClass += (key % 12 in {2:true,  7:true}) ? ' higher' : ''
-          keyClass += (key % 12 in {10:true, 5:true}) ? ' lower' : ''
-          keyClass += (key % 12 in {6:true}) ? ' thinner' : ''
-          keyClass += isCompact ? ' compact' : ''
-      let keyLabel =  {1:'A', 11:'G', 9:'F', 8:'E', 6:'D', 4:'C', 3:'B'}[ key%12 ]
-          keyLabel = keyLabel ? (keyLabel + octave) : null
-
-      keys.push(
-        <PianorollKeyboardKey
-          key={key}
-          currentTrack={this.props.currentTrack}
-          keyNum={key}
-          keyClass={keyClass}
-          keyLabel={keyLabel}
-        />
-      )
-
-      // Next keys into octave Group
-      if (key % 12 === 4 || key === 1) {
-        // Add Octave Label for full octaves
-        let label = isCompact ? 'C' + octave : ''
-        keys.unshift(<div className="pianoroll-octave-label" key={label}><div>{label}</div></div>)
-        octaves.push(<div className="pianoroll-octave" key={octave}>{keys}</div>)
-        keys = []
-        octave--
-      }
-    }
-    return octaves
-  }
-
-  constructor() {
-    super(...arguments)
-
-    this.handleResize = this.handleResize.bind(this)
   }
 
   componentDidMount() {
@@ -89,21 +50,16 @@ export class PianorollKeyboard extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    let propsToCheck = [
+    return diffProps(nextProps, this.props, [
       'ENGINE',
-      'dispatch',
       'currentTrack',
       'grid',
       'yMin',
       'yMax'
-    ]
-    let changeDetected = propsToCheck.some(prop => {
-      return nextProps[prop] !== this.props[prop]
-    })
-    return changeDetected
+    ])
   }
 
-  handleResize() {
+  handleResize = () => {
     this.props.dispatch(pianorollResizeHeight(this.props.grid.height / this.props.grid.pixelScale - this.props.grid.marginTop))
     this.forceUpdate()
   }

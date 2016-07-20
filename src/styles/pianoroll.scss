@@ -289,6 +289,25 @@ $pianoroll-scroll-vertical: 20px;
   right: 0;
   height: 1047px;
   width: 104.7px;
+
+  &.compact {
+    .pianoroll-key-label {
+      font-size: 9px;
+    }
+
+    &:last-child {
+      .pianoroll-key-label {
+        visibility: hidden;
+      }
+    }
+  }
+}
+.pianoroll-keys-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 $total-keys:  88.00;
 $octave-keys: 12.00;
@@ -388,18 +407,6 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 
   &.thinner {
     height: 1.5 * $key-thickness;     // Certain white keys are sandwiched slightly differently to maintain proportions
-  }
-
-  &.compact {
-    .pianoroll-key-label {
-      font-size: 9px;
-    }
-
-    &:last-child {
-      .pianoroll-key-label {
-        visibility: hidden;
-      }
-    }
   }
 
   &:last-child {
