@@ -39,23 +39,41 @@ export default class PianoSource {
   }
 
   fireNote(keyNum, velocity, time = 0, detune) {
+    // Find nearest sample based on note velocity
     let nearestSample = velocity < 31
       ? 30 : velocity < 51
       ? 50 : velocity < 81
       ? 80 : 120
 
-    let dampen = velocity < 31
-      ? velocity / 30 : velocity < 51
-      ? velocity / 50 : velocity < 81
-      ? velocity / 80 : velocity / 127
-
-    dampen = Math.abs(dampen - 1)
-
     let buffer = this.bufferMap[`${keyNum - 8}-${nearestSample}`]
 
+    // An error has occured! There should always be a buffer.
     if (!buffer) return
 
-    if (!velocity) { // note off
+    // A "note on" message
+    if (velocity) {
+      // Create source + volume for ADSR
+      let source = this.ctx.createBufferSource()
+      let sourceGain = this.ctx.createGain()
+      source.buffer = buffer
+      source.connect(sourceGain)
+      sourceGain.connect(this.outputGain)
+
+      // Reduce gain of chosen sample by velocity
+      let dampen = velocity < 31
+        ? velocity / 30 : velocity < 51
+        ? velocity / 50 : velocity < 81
+        ? velocity / 80 : velocity / 127
+
+      // Invert min / max, such that value approaching 0 is reduction amount
+      sourceGain.gain.value = 1 - Math.abs(dampen - 1)
+
+      // Play sound + add to local sources array
+      source.start()
+      this.activeSources.push({ keyNum, source, sourceGain })
+    }
+
+    else {
       let active = this.activeSources.find(x => x.keyNum === keyNum)
 
       if (active) {
@@ -70,21 +88,6 @@ export default class PianoSource {
         // Dispose of source
         this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
       }
-    }
-    else if (velocity && !active) {
-      // Create source + volume for ADSR
-      let source = this.ctx.createBufferSource()
-      let sourceGain = this.ctx.createGain()
-      source.buffer = buffer
-      source.connect(sourceGain)
-      sourceGain.connect(this.outputGain)
-
-      // Reduce gain of chosen sample by velocity values lower than it's trigger point
-      sourceGain.gain.value = 1 - dampen
-      
-      // Play sound + add to local sources array
-      source.start()
-      this.activeSources.push({ keyNum, source, sourceGain })
     }
   }
 
