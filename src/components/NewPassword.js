@@ -9,7 +9,7 @@ import { modalOpen } from '../reducers/reduceModal.js'
 export class NewPassword extends Component {
   componentWillMount() {
     this.state = {
-      emailError: null,
+      linkError: null,
       passwordError: null,
       confirmPasswordError: null,
       resetToken: this.props.location.query.token,
@@ -51,8 +51,8 @@ export class NewPassword extends Component {
               </p>
             </div>
             <p className="text-danger text-right" style={errorStyle}>
-              {this.state.emailError}
-              {this.state.emailError && <a href="" onClick={this.openForgotPasswordModal}>try again</a>}
+              {this.state.linkError}
+              {this.state.linkError && <a href="" onClick={this.openForgotPasswordModal}>try again</a>}
             </p>
             <LaddaButton
               className="btn btn-block btn-dark" buttonStyle="zoom-in"
@@ -78,7 +78,7 @@ export class NewPassword extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ emailError: null, passwordError: null, confirmPasswordError: null })
+    this.setState({ linkError: null, passwordError: null, confirmPasswordError: null })
     if (nextProps.errorMessage)
       this.setState(nextProps.errorMessage)
   }
