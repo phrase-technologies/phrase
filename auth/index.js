@@ -191,16 +191,10 @@ export default ({
       let users = await cursor.toArray()
       let user = users[0]
 
-      if(!user) {
+      if(!user || user.resetToken !== resetToken) {
         res.json({
           success: false,
-          message: { emailError: `Invalid email, please ` },
-        })
-      }
-      else if (user.resetToken !== resetToken) {
-        res.json({
-          success: false,
-          message: { emailError: `Invalid token, please ` },
+          message: { linkError: `Invalid email, please ` },
         })
       }
       else {
