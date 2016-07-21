@@ -54,7 +54,7 @@ export default ({
         } else if (trimmedUsername.length > 20) {
           res.json({
             success: false,
-            message: { usernameError: `Usernames may be at most 20 characters long.`}
+            message: { usernameError: `Usernames may be at most 20 characters long.`},
           })
         } else {
           let userByUsernameResults = await r
@@ -137,7 +137,10 @@ export default ({
     try {
       let { email } = req.body
       let lowerCaseEmail = email.toLowerCase()
-      let cursor = await r.table(`users`).getAll(lowerCaseEmail, { index: `email` }).limit(1).run(db)
+      let cursor = await r.table(`users`)
+        .getAll(lowerCaseEmail, { index: `email` })
+        .limit(1)
+        .run(db)
       let users = await cursor.toArray()
       let user = users[0]
 
@@ -147,18 +150,25 @@ export default ({
           message: `Email not found.`,
         })
       } else {
-        let token = crypto.randomBytes(20).toString('hex')
+        let token = crypto.randomBytes(20).toString(`hex`)
         while(true) {
-          var cursor = await r.table(`users`).getAll(token, { index: `resetToken` }).limit(1).run(db)
-          var users = await cursor.toArray()
-          var user = users[0]
+          let cursor = await r.table(`users`)
+            .getAll(token, { index: `resetToken` })
+            .limit(1)
+            .run(db)
+          let users = await cursor.toArray()
+          let user = users[0]
           if (user)
-            token = crypto.randomBytes(20).toString('hex')
+            token = crypto.randomBytes(20).toString(`hex`)
           else
             break
         }
 
-        r.table(`users`).getAll(lowerCaseEmail, { index: `email`}).limit(1).update({resetToken: token}).run(db)
+        r.table(`users`)
+          .getAll(lowerCaseEmail, { index: `email`})
+          .limit(1)
+          .update({resetToken: token})
+          .run(db)
 
         // TODO: send password reset email with token link
 
@@ -174,20 +184,23 @@ export default ({
     try {
       let { email, resetToken, password, confirmPassword } = req.body
       let lowerCaseEmail = email.toLowerCase()
-      let cursor = await r.table(`users`).getAll(lowerCaseEmail, { index: `email` }).limit(1).run(db)
+      let cursor = await r.table(`users`)
+        .getAll(lowerCaseEmail, { index: `email` })
+        .limit(1)
+        .run(db)
       let users = await cursor.toArray()
       let user = users[0]
 
       if(!user) {
         res.json({
           success: false,
-          message: { emailError: `Invalid email, please re-follow the link received in the forgot password email` },
+          message: { emailError: `Invalid email, please ` },
         })
       }
       else if (user.resetToken !== resetToken) {
         res.json({
           success: false,
-          message: { emailError: `Invalid token, please re-follow the link received in the forgot password email` },
+          message: { emailError: `Invalid token, please ` },
         })
       }
       else {
@@ -197,13 +210,13 @@ export default ({
         if (!trimmedPassword || !isValidPassword(trimmedPassword)) {
           res.json({
             success: false,
-            message: { passwordError: `Passwords must be at least 6 characters long` }
+            message: { passwordError: `Passwords must be at least 6 characters long` },
           })
         }
         else if (trimmedPassword !== trimmedConfirmPassword) {
           res.json({
             success: false,
-            message: { confirmPasswordError: `Passwords do not match` }
+            message: { confirmPasswordError: `Passwords do not match` },
           })
         }
         else {
@@ -211,7 +224,7 @@ export default ({
             .update({ password: doubleHash(trimmedPassword)})
             .run(db)
           r.table(`users`).getAll(lowerCaseEmail, { index: `email`}).limit(1)
-            .replace(r.row.without('resetToken'))
+            .replace(r.row.without(`resetToken`))
             .run(db)
 
           res.json({
