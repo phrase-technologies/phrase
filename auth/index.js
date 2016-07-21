@@ -147,7 +147,7 @@ export default ({
       if(!user) {
         res.json({
           success: false,
-          message: `Email not found.`,
+          message: { emailError: `Email not found.` },
         })
       } else {
         let token = crypto.randomBytes(20).toString(`hex`)
