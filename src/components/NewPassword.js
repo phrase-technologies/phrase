@@ -52,7 +52,7 @@ export class NewPassword extends Component {
             </div>
             <p className="text-danger text-right" style={errorStyle}>
               {this.state.emailError}
-              {this.state.emailError && <a href={this.openForgotPasswordModal}>try again</a>}
+              {this.state.emailError && <a href="" onClick={this.openForgotPasswordModal}>try again</a>}
             </p>
             <LaddaButton
               className="btn btn-block btn-dark" buttonStyle="zoom-in"
