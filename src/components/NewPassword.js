@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Helmet from "react-helmet"
 import LaddaButton from 'react-ladda'
+import { push } from 'react-router-redux'
 
 import { newPassword } from '../reducers/reduceAuth.js'
 import { modalOpen } from '../reducers/reduceModal.js'
@@ -85,6 +86,7 @@ export class NewPassword extends Component {
 
   openForgotPasswordModal = (e) => {
     e.preventDefault()
+    this.props.dispatch(push(`/`))
     this.props.dispatch(modalOpen({ modalComponent: 'ForgotPasswordModal'  }))
   }
 }

@@ -7,6 +7,12 @@ import { forgotPassword } from '../../reducers/reduceAuth.js'
 import { modalOpen, modalClose } from '../../reducers/reduceModal.js'
 
 export class ForgotPasswordModal extends Component {
+  componentWillMount() {
+    this.state = {
+      emailError: null,
+    }
+  }
+
   render() {
     return (
       <Modal
@@ -25,6 +31,9 @@ export class ForgotPasswordModal extends Component {
                 className="form-control" type="email" autoComplete
                 placeholder="Email" ref={(ref) => this.email = ref}
               />
+              <p className="text-danger text-right">
+                {this.state.emailError}
+              </p>
             </div>
             <LaddaButton
               className="btn btn-block btn-dark" buttonStyle="zoom-in"
@@ -32,9 +41,6 @@ export class ForgotPasswordModal extends Component {
             >
               Reset Password
             </LaddaButton>
-            <p className="text-danger text-center" style={{ marginTop: 5, marginBottom: 0 }}>
-              {this.props.errorMessage}
-            </p>
           </form>
         </Modal.Body>
         <Modal.Footer>
@@ -47,7 +53,7 @@ export class ForgotPasswordModal extends Component {
         </Modal.Footer>
       </Modal>
     )
-  }  
+  }
 
   submit = (e) => {
     e.preventDefault()
@@ -64,6 +70,12 @@ export class ForgotPasswordModal extends Component {
   openLoginModal = (e) => {
     e.preventDefault()
     this.props.dispatch(modalOpen({ modalComponent: 'LoginModal'  }))
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ emailError: null })
+    if (nextProps.errorMessage)
+      this.setState(nextProps.errorMessage)
   }
 }
 

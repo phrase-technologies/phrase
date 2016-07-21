@@ -70,7 +70,7 @@ export let signup = ({ email, username, password }) => {
 }
 
 export let forgotPassword = ({ email }) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST})
 
     forgotPasswordHelper({ email }, response => {
@@ -90,7 +90,7 @@ export let forgotPassword = ({ email }) => {
 }
 
 export let newPassword = ({ email, resetToken, password, confirmPassword }) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST})
 
     newPasswordHelper({ email, resetToken, password, confirmPassword }, response => {
@@ -150,7 +150,7 @@ export default (state = intialState, action) => {
     // ------------------------------------------------------------------------
     // Clear out old auth error messages before launching auth modals
     case modal.OPEN:
-      if (['LoginModal', 'SignupModal'].find(x => x === action.modalComponent)) {
+      if (['LoginModal', 'SignupModal', 'ForgotPasswordModal'].find(x => x === action.modalComponent)) {
         return {
           ...state,
           errorMessage: null,
