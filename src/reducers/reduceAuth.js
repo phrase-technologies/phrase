@@ -75,7 +75,10 @@ export let forgotPassword = ({ email }) => {
 
     forgotPasswordHelper({ email }, response => {
       if (response.success)
-        dispatch(modalOpen({ modalComponent: 'LoginModal'  }))
+        dispatch(modalOpen({
+          modalComponent: 'ForgotPasswordSuccessModal',
+          payload: email,
+      }))
       else {
         dispatch({
           type: auth.LOGIN_FAIL,
@@ -151,6 +154,12 @@ export default (state = intialState, action) => {
         return {
           ...state,
           errorMessage: null,
+        }
+      }
+      else if (action.modalComponent === 'ForgotPasswordSuccessModal') {
+        return {
+          ...state,
+          email: action.payload,
         }
       }
       return state

@@ -4,6 +4,7 @@ import Helmet from "react-helmet"
 import LaddaButton from 'react-ladda'
 
 import { newPassword } from '../reducers/reduceAuth.js'
+import { modalOpen } from '../reducers/reduceModal.js'
 
 export class NewPassword extends Component {
   componentWillMount() {
@@ -51,6 +52,7 @@ export class NewPassword extends Component {
             </div>
             <p className="text-danger text-right" style={errorStyle}>
               {this.state.emailError}
+              {this.state.emailError && <a href={this.openForgotPasswordModal}>try again</a>}
             </p>
             <LaddaButton
               className="btn btn-block btn-dark" buttonStyle="zoom-in"
@@ -76,9 +78,14 @@ export class NewPassword extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState( { emailError: null, passwordError: null, confirmPasswordError: null } )
+    this.setState({ emailError: null, passwordError: null, confirmPasswordError: null })
     if (nextProps.errorMessage)
       this.setState(nextProps.errorMessage)
+  }
+
+  openForgotPasswordModal = (e) => {
+    e.preventDefault()
+    this.props.dispatch(modalOpen({ modalComponent: 'ForgotPasswordModal'  }))
   }
 }
 
