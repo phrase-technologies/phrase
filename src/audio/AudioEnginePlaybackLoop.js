@@ -54,13 +54,14 @@ export function startPlayback(engine, dispatch) {
 
       if (currentCommand) {
         console.log("fireNote", currentCommandTime, engine.ctx.currentTime)
-        fireNote(
+        fireNote({
           engine,
-          currentCommand.trackID,
-          currentCommand.keyNum,
-          currentCommand.velocity,
-          currentCommandTime
-        )
+          trackID: currentCommand.trackID,
+          keyNum: currentCommand.keyNum,
+          velocity: currentCommand.velocity,
+          time: currentCommandTime,
+          disableVisualPreview: true,
+        })
       }
 
       // Iterate to next command
@@ -110,8 +111,13 @@ export function stopPlayback(engine) {
 
   // Kill all active sounds
   _.forOwn(engine.trackModules, (track, trackID) => {
-    for (let keyNum = 1; keyNum <= 88; keyNum++)
-      killNote(engine, trackID, keyNum)
+    for (let keyNum = 1; keyNum <= 128; keyNum++)
+      killNote({
+        engine,
+        trackID,
+        keyNum,
+        disableVisualPreview: true,
+      })
   })
 
   // Cancel the playback setInterval loop

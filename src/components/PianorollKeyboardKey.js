@@ -15,14 +15,8 @@ export class PianorollKeyboardKey extends Component {
     )
   }
 
-  constructor() {
-    super(...arguments)
-    this.mouseDownEvent = this.mouseDownEvent.bind(this)
-    this.mouseUpEvent   = this.mouseUpEvent.bind(this)
-    this.keydown = false
-  }
-
   componentDidMount() {
+    this.keydown = false
     this.container = ReactDOM.findDOMNode(this)
     this.container.addEventListener('mousedown', this.mouseDownEvent)
     document.addEventListener('mouseup',   this.mouseUpEvent)
@@ -33,15 +27,15 @@ export class PianorollKeyboardKey extends Component {
     document.removeEventListener('mouseup',   this.mouseUpEvent)
   }
 
-  mouseDownEvent(e) {
+  mouseDownEvent = (e) => {
     let velocity = 127 * (e.clientX - this.container.getBoundingClientRect().left) / this.container.getBoundingClientRect().width
-    this.props.ENGINE.fireNote(this.props.currentTrack.id, this.props.keyNum, velocity)
+    this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: this.props.keyNum, velocity })
     this.keydown = true
   }
 
-  mouseUpEvent() {
+  mouseUpEvent = () => {
     if (this.keydown) {
-      this.props.ENGINE.killNote(this.props.currentTrack.id, this.props.keyNum)
+      this.props.ENGINE.killNote({ trackID: this.props.currentTrack.id, keyNum: this.props.keyNum })
       this.keydown = false
     }
   }
@@ -53,6 +47,7 @@ PianorollKeyboardKey.propTypes = {
   currentTrack: React.PropTypes.object.isRequired,
   keyNum:       React.PropTypes.number.isRequired,
   keyClass:     React.PropTypes.string.isRequired,
+  keyDown:      React.PropTypes.bool,
   keyLabel:     React.PropTypes.string
 }
 

@@ -307,7 +307,7 @@ export class PianorollWindowControl extends Component {
 
               let note = notes.find(x => x.id === this.lastEvent.noteID)
 
-              ENGINE.fireNote(currentTrack.id, note.keyNum, note.velocity)
+              ENGINE.fireNote({ trackID: currentTrack.id, keyNum: note.keyNum + 8, velocity: note.velocity })
             }
 
             this.lastEvent.action = CHANGE_NOTE_VELOCITY
@@ -441,7 +441,7 @@ export class PianorollWindowControl extends Component {
 
     // Play new key
     keyNum = Math.ceil(keyNum)
-    this.props.ENGINE.fireNote(this.props.currentTrack.id, keyNum, velocity)
+    this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: keyNum + 8, velocity })
     this.lastKeysPlayed = [keyNum]
   }
 
@@ -461,7 +461,7 @@ export class PianorollWindowControl extends Component {
 
     // Play new key
     selectedKeys.forEach(keyNum => {
-      this.props.ENGINE.fireNote(this.props.currentTrack.id, keyNum, 127)
+      this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: keyNum + 8, velocity: 127 })
     })
     this.lastKeysPlayed = selectedKeys
   }
@@ -469,7 +469,7 @@ export class PianorollWindowControl extends Component {
   killPreviewSound() {
     if (this.lastKeysPlayed) {
       this.lastKeysPlayed.forEach(key => {
-        this.props.ENGINE.killNote(this.props.currentTrack.id, key)
+        this.props.ENGINE.killNote({ trackID: this.props.currentTrack.id, keyNum: key + 8 })
       })
     }
     this.lastKeysPlayed = null

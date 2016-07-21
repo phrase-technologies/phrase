@@ -36,6 +36,7 @@ export default function createAudioEngine(STORE) {
   // here as it is easy to grok. Perhaps worth investigating further in the
   // future if immutable techniques are helpful. TODO
   let engine = {
+    STORE,
     ctx: new AudioContext(),
     masterGain: null,
     trackModules: {},
@@ -111,11 +112,11 @@ export default function createAudioEngine(STORE) {
   // Expose the API
   // --------------------------------------------------------------------------
   return {
-    fireNote: (trackID, keyNum, velocity) => {
-      fireNote(engine, trackID, keyNum, velocity)
+    fireNote: ({ trackID, keyNum, velocity, disableVisualPreview }) => {
+      fireNote({ engine, trackID, keyNum, velocity, disableVisualPreview })
     },
-    killNote: (trackID, keyNum) => {
-      killNote(engine, trackID, keyNum)
+    killNote: ({ trackID, keyNum, disableVisualPreview }) => {
+      killNote({ engine, trackID, keyNum, disableVisualPreview })
     },
     getTrackOutputDecibels: (trackID) => {
       return getTrackOutputDecibels(engine, trackID)

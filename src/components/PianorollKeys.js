@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 import PianorollKeyboardKey from './PianorollKeyboardKey.js'
 import diffProps from 'helpers/diffProps'
 
-export default class PianorollKeys extends Component {
+export class PianorollKeys extends Component {
 
   render() {
     let octave = 8
@@ -16,16 +17,18 @@ export default class PianorollKeys extends Component {
           keyClass += (key % 12 in {2:true,  7:true}) ? ' higher' : ''
           keyClass += (key % 12 in {10:true, 5:true}) ? ' lower' : ''
           keyClass += (key % 12 in {6:true}) ? ' thinner' : ''
+          keyClass += this.props.midiKeys[key+8] ? ' active' : ''
       let keyLabel =  {1:'A', 11:'G', 9:'F', 8:'E', 6:'D', 4:'C', 3:'B'}[ key%12 ]
           keyLabel = keyLabel ? (keyLabel + octave) : null
 
       keys.push(
         <PianorollKeyboardKey
-          key={key}
           currentTrack={this.props.currentTrack}
-          keyNum={key}
+          key={key}
+          keyNum={key+8}
           keyClass={keyClass}
           keyLabel={keyLabel}
+          dispatch={this.props.dispatch}
         />
       )
 
@@ -47,7 +50,12 @@ export default class PianorollKeys extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return diffProps(nextProps, this.props, ['currentTrack'])
+    return diffProps(nextProps, this.props, [
+      'currentTrack',
+      'midiKeys',
+    ])
   }
 
 }
+
+export default connect(state => ({ midiKeys: state.midi }))(PianorollKeys)

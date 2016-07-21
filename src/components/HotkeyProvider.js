@@ -73,7 +73,7 @@ class HotkeyProvider extends Component {
     // Musical Typing
     let note = this.getNoteFromKeyCode(e.keyCode)
     if (!e.metaKey && !e.ctrlKey && note) {
-      this.props.ENGINE.fireNote(0, note, 127)
+      this.props.ENGINE.fireNote({ trackID: 0, keyNum: note, velocity: 127 })
       e.preventDefault()
       return
     }
@@ -169,30 +169,30 @@ class HotkeyProvider extends Component {
     if (e.target.tagName === 'BUTTON')
       return
 
-    this.props.ENGINE.killNote(0, this.getNoteFromKeyCode(e.keyCode))
+    this.props.ENGINE.killNote({ trackID: 0, keyNum: this.getNoteFromKeyCode(e.keyCode) })
   }
 
   getNoteFromKeyCode(keyCode) {
     switch(keyCode) {
-      case 65: return 40  // A - Key C of current octave
-      case 83: return 42  // S - Key D of current octave
-      case 68: return 44  // D - Key E of current octave
-      case 70: return 45  // F - Key F of current octave
-      case 71: return 47  // G - Key G of current octave
-      case 72: return 49  // H - Key A of current octave
-      case 74: return 51  // J - Key B of current octave
-      case 75: return 52  // K - Key C of next octave
-      case 76: return 54  // L - Key D of next octave
+      case 65: return 48  // A - Key C of current octave
+      case 83: return 50  // S - Key D of current octave
+      case 68: return 52  // D - Key E of current octave
+      case 70: return 53  // F - Key F of current octave
+      case 71: return 55  // G - Key G of current octave
+      case 72: return 57  // H - Key A of current octave
+      case 74: return 59  // J - Key B of current octave
+      case 75: return 60  // K - Key C of next octave
+      case 76: return 62  // L - Key D of next octave
       case 186:
-      case 59: return 56  // ; - Key E of next octave
-      case 222: return 57 // ' - Key F of next octave
-      case 87: return 41  // W - Key C# of current octave
-      case 69: return 43  // E - Key D# of current octave
-      case 84: return 46  // T - Key F# of current octave
-      case 89: return 48  // Y - Key G# of current octave
-      case 85: return 50  // U - Key A# of current octave
-      case 79: return 53  // O - Key C# of current octave
-      case 80: return 55  // P - Key D# of current octave
+      case 59: return 64  // ; - Key E of next octave
+      case 222:return 65  // ' - Key F of next octave
+      case 87: return 49  // W - Key C# of current octave
+      case 69: return 51  // E - Key D# of current octave
+      case 84: return 54  // T - Key F# of current octave
+      case 89: return 56  // Y - Key G# of current octave
+      case 85: return 58  // U - Key A# of current octave
+      case 79: return 61  // O - Key C# of current octave
+      case 80: return 63  // P - Key D# of current octave
       default: return null
     }
   }

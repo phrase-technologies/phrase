@@ -1,4 +1,4 @@
-import { fireNote } from './AudioEngineMidiTriggers.js'
+import { fireNote } from 'audio/AudioEngineMidiTriggers.js'
 import {
   phraseCreateNote,
   phraseCreateClip,
@@ -43,7 +43,7 @@ export default (engine, STORE) => {
 
     let armedTrack = state.phrase.present.tracks.find(x => x.id === state.phraseMeta.trackSelectionID)
     if (armedTrack && [144, 128].some(x => x === type)) {
-      fireNote(engine, armedTrack.id, key, velocity)
+      fireNote({ engine, trackID: armedTrack.id, keyNum: key, velocity, disableVisualPreview: false })
 
       // Recording
       if (state.transport.recording) {

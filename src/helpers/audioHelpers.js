@@ -9,13 +9,13 @@ const keyFrequency = {} // Set the frequencies for the notes
 // http://cote.cc/blog/logic-studio-9-midi-note-numbers
 // keyNum 60 === C3 === Middle C
 let keyNumOffset = 32 // to offset incorrect keyNum value on client
-for (let i = 1; i <= 88; i++) {
+for (let i = 1; i <= 128; i++) {
   keyFrequency[i] = Math.pow(2, (i-49-keyNumOffset)/12) * 880
 }
 
 export function getFrequencyFromKeyNum(keyNum) {
   // Valid keyNum
-  if (typeof keyNum === 'number' && keyNum >= 1 && keyNum <= 88)
+  if (typeof keyNum === 'number' && keyNum >= 1 && keyNum <= 128)
     return keyFrequency[keyNum]
 
   // If we get to here - something wrong!

@@ -172,3 +172,11 @@ export const clipboard = namespaceActions(
     'PASTE',
   ]
 )
+
+export const midi = namespaceActions(
+  'midi',
+  [
+    'NOTE_ON',
+    'NOTE_OFF',
+  ]
+)
