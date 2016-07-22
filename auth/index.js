@@ -5,6 +5,7 @@ import isValidPassword from '../helpers/isPassword'
 import r from 'rethinkdb'
 import crypto from 'crypto'
 import { secret } from '../config'
+import sendEmail from '../helpers/emailHelper'
 
 let hash = password => crypto.createHmac(`sha256`, secret)
   .update(password)
@@ -157,8 +158,7 @@ export default ({
             .limit(1)
             .run(db)
           let users = await cursor.toArray()
-          let user = users[0]
-          if (user)
+          if (users[0])
             token = crypto.randomBytes(20).toString(`hex`)
           else
             break
@@ -170,7 +170,8 @@ export default ({
           .update({resetToken: token})
           .run(db)
 
-        // TODO: send password reset email with token link
+        let resetLink = `http://localhost:3000/new-password?token=${token}&email=${user.email}`
+        sendEmail(1, `jgnieuwhof@gmail.com`, { RESETLINK: resetLink })
 
         res.json({
           success: true,
