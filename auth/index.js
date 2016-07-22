@@ -171,7 +171,7 @@ export default ({
           .run(db)
 
         let resetLink = `http://localhost:3000/new-password?token=${token}&email=${user.email}`
-        sendEmail(1, `jgnieuwhof@gmail.com`, { RESETLINK: resetLink })
+        sendEmail(1, user.email, { RESETLINK: resetLink })
 
         res.json({
           success: true,
