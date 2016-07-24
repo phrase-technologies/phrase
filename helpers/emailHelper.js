@@ -1,11 +1,12 @@
 import request from 'request'
-import { sendinblueapi, sendinbluekey } from '../config'
+
+import { sendInBlueApi, sendInBlueKey } from '../config'
 
 export default function sendEmail(template, to, attr) {
   request({
-    url: `${sendinblueapi}/${template}`,
+    url: `${sendInBlueApi}/${template}`,
     method: `PUT`,
-    headers: { 'api-key': sendinbluekey },
+    headers: { 'api-key': sendInBlueKey },
     json: true,
     body: { to, attr },
   }, (error) => {

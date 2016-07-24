@@ -1,3 +1,4 @@
+server.config.js
 node_modules
 .DS_Store
 rethinkdb_data
