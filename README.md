@@ -18,7 +18,7 @@ Create a `server.config.js` file in the root folder with the following contents:
 
     export let clientURL = `localhost:3000`
 
-Replace localhost:3000 with the phrase-client URL in your environment.
+Replace `localhost:3000` with the phrase-client URL in your environment.
 
 # Deployment
 
