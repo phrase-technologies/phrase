@@ -14,6 +14,10 @@
     npm install
     npm start
 
+Create a `server.config.js` file in the root folder with the following contents:
+
+    export let clientURL = `localhost:3000`
+
 # Deployment
 
 #### Shell into digital ocean server
