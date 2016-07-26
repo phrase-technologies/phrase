@@ -28,6 +28,8 @@ import { push } from 'react-router-redux'
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
+import { addAPIErrorNotification } from './reduceNotification'
+
 // ============================================================================
 // Phrase Action Creators
 // ============================================================================
@@ -436,7 +438,11 @@ export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated
 export const phraseLoadFromDb = phraseId => {
   return async (dispatch) => {
     dispatch({ type: phrase.LOAD_START })
-    let { loadedPhrase } = await api({ endpoint: `loadOne`, body: { phraseId } })
+    let { loadedPhrase } = await api({
+        endpoint: `loadOne`,
+        body: { phraseId },
+        failCallback: () => { dispatch(addAPIErrorNotification()) },
+    })
     if (loadedPhrase) {
       dispatch({
         type: phrase.LOAD_FINISH,
@@ -467,6 +473,7 @@ export const phraseSave = () => {
         phraseName: state.phraseMeta.phraseName,
         phraseState: state.phrase,
       },
+      failCallback: () => { dispatch(addAPIErrorNotification()) },
     }).then(() => {
       dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
     })

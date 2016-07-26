@@ -2,6 +2,7 @@ import { library } from 'actions/actions'
 import { api } from 'helpers/ajaxHelpers'
 import { push } from 'react-router-redux'
 import { phrase } from '../actions/actions.js'
+import { addAPIErrorNotification } from './reduceNotification'
 
 export const librarySaveNew = () => {
   return async (dispatch, getState) => {
@@ -13,26 +14,33 @@ export const librarySaveNew = () => {
         parentId: state.phraseMeta.parentId,
         phraseState: state.phrase,
         phraseName: state.phraseMeta.phraseName,
-      }
+      },
+      failCallback: () => { dispatch(addAPIErrorNotification()) },
     })
-    dispatch({
-      type: library.SAVE_NEW,
-      payload: {
-        phraseId,
-        authorUsername: getState().auth.user.username,
-        dateCreated: Date.now(),
-        dateModified: Date.now(),
-      }
-    })
-    dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
-    dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+    if (phraseId) {
+      dispatch({
+        type: library.SAVE_NEW,
+        payload: {
+          phraseId,
+          authorUsername: getState().auth.user.username,
+          dateCreated: Date.now(),
+          dateModified: Date.now(),
+        }
+      })
+      dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
+      dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+    }
   }
 }
 
 export const libraryLoadAll = () => {
   return async (dispatch) => {
-    let { phrases } = await api({ endpoint: `load`, })
-    dispatch({ type: library.LOAD_ALL, payload: phrases })
+    let { phrases } = await api({
+      endpoint: `load`,
+      failCallback: () => { dispatch(addAPIErrorNotification()) },
+    })
+    if (phrases)
+      dispatch({ type: library.LOAD_ALL, payload: phrases })
   }
 }
 

@@ -6,6 +6,7 @@ import Header from 'components/Header'
 
 import * as AllModals from 'components/modals'
 import MouseTooltip from 'components/MouseTooltip'
+import ToastNotificationStack from 'components/ToastNotificationStack'
 
 export class App extends Component {
 
@@ -28,6 +29,7 @@ export class App extends Component {
         </div>
         <ActiveModal show={this.props.show} />
         <MouseTooltip />
+        <ToastNotificationStack />
       </div>
     )
   }
