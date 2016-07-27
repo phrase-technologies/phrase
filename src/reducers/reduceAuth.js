@@ -70,7 +70,7 @@ export let signup = ({ email, username, password }) => {
         })
       },
       () => {
-        dispatch(addAPIErrorNotification({ title: `API Error`, message: `Please try again` }))
+        dispatch(addAPIErrorNotification())
         dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }})
       }
     )
