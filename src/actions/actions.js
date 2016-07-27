@@ -93,7 +93,6 @@ export const notification = namespaceActions(
   [
     'ADD',
     'DISMISS',
-    'DISMISSKEY'
   ]
 )
 
