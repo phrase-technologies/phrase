@@ -50,6 +50,12 @@ export function fireNote({ engine, trackID, keyNum, velocity, time, disableVisua
   let trackModule = engine.trackModules[trackID]
   let instrument = trackModule.effectsChain[0]
   instrument.fireNote(keyNum, velocity, time)
-  if (!disableVisualPreview)
-    engine.STORE.dispatch(midiNoteOn({ key: keyNum, velocity }))
+  if (!disableVisualPreview) {
+    engine.STORE.dispatch(midiNoteOn({
+      key: keyNum,
+      velocity,
+      start: velocity && (time || playTimeToBar(engine.ctx.currentTime, engine)),
+      end: !velocity && (time || playTimeToBar(engine.ctx.currentTime, engine)),
+    }))
+  }
 }

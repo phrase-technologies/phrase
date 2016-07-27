@@ -8,6 +8,7 @@ export default class PianoSource {
   constructor(AudioContext, config) {
     this.ctx = AudioContext
     this.outputGain = this.ctx.createGain()
+    this.outputGain.gain.value = 8.0
     this.bufferMap = {}
     this.activeSources = []
 
@@ -35,29 +36,23 @@ export default class PianoSource {
 
   fireNote(keyNum, velocity, time = 0, detune) {
     // TODO: get correct note by velocity range
-    let buffer = this.bufferMap[`${keyNum}-80`]
+    let buffer = this.bufferMap[`${keyNum-8}-80`]
 
     if (!buffer) return
 
-    if (!velocity) {
-      let active = this.activeSources.find(x => x.keyNum === keyNum)
+    let active = this.activeSources.find(x => x.keyNum === keyNum)
+    if (!velocity && active) {
+      // Schedule Release
+      let now = this.ctx.currentTime
+      let amplitude = active.sourceGain.gain
+      amplitude.cancelScheduledValues(now)
+      amplitude.setValueAtTime(amplitude.value, now)
+      amplitude.linearRampToValueAtTime(0, now + 0.35)
 
-      if (active) {
-
-        // Schedule Release
-        let now = this.ctx.currentTime
-        let amplitude = active.sourceGain.gain
-        amplitude.cancelScheduledValues(now)
-        amplitude.setValueAtTime(amplitude.value, now)
-        amplitude.linearRampToValueAtTime(0, now + 0.35)
-
-        // Dispose of source
-        this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
-      }
+      // Dispose of source
+      this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
     }
-
-    else {
-
+    else if (velocity && !active) {
       // Create source + volume for ADSR
       let source = this.ctx.createBufferSource()
       let sourceGain = this.ctx.createGain()

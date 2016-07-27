@@ -1,8 +1,4 @@
 import { fireNote } from 'audio/AudioEngineMidiTriggers.js'
-import {
-  phraseCreateNote,
-  phraseCreateClip,
-} from 'reducers/reducePhrase.js'
 
 // ============================================================================
 // MIDI CONTROLLERS
@@ -16,7 +12,6 @@ export default (engine, STORE) => {
   let midiAccess
   let synchronizationRegistry = {}
   let synchronizationCallback
-  let recordingStack = []
 
   try {
     navigator.requestMIDIAccess().then(response => {
@@ -43,44 +38,13 @@ export default (engine, STORE) => {
 
     let armedTrack = state.phrase.present.tracks.find(x => x.id === state.phraseMeta.trackSelectionID)
     if (armedTrack && [144, 128].some(x => x === type)) {
-      fireNote({ engine, trackID: armedTrack.id, keyNum: key, velocity, disableVisualPreview: false })
-
-      // Recording
-      if (state.transport.recording) {
-        // Start a new note
-        if (velocity) {
-          recordingStack[key] = {
-            velocity,
-            start: engine.playheadPositionBars,
-          }
-          // Create the target clip if this is first note being recorded
-          if (!Number.isInteger(state.transport.targetClipID)) {
-            STORE.dispatch(phraseCreateClip({
-              trackID: state.phraseMeta.trackSelectionID,
-              start: state.transport.playhead,
-              snapStart: true,
-              ignore: true,
-              newRecording: true,
-              recordingTargetClipID: state.phrase.present.clipAutoIncrement,
-            }))
-          }
-        }
-
-        // End the note
-        else {
-          if (recordingStack[key]) {
-            STORE.dispatch(phraseCreateNote({
-              targetClipID: state.transport.targetClipID,
-              key,
-              start: recordingStack[key].start,
-              end: engine.playheadPositionBars,
-              velocity: recordingStack[key].velocity,
-              ignore: true,
-              snapStart: false,
-            }))
-          }
-        }
-      }
+      fireNote({
+        engine,
+        trackID: armedTrack.id,
+        keyNum: key,
+        velocity,
+        disableVisualPreview: false
+      })
     }
   }
 

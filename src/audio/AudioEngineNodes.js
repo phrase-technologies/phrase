@@ -64,6 +64,7 @@ function createTrackModule(engine, track, state) {
 
   // Used for track PAN
   let outputPan = engine.ctx.createPanner()
+      outputPan.setPosition(0,0,1)
       outputPan.connect(outputGain)
 
   // Used for track METER

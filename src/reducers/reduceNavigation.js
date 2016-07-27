@@ -13,7 +13,7 @@ export const layoutConsoleSplit = (ratio) => ({type: layout.CONSOLE_SPLIT, ratio
 // ============================================================================
 let defaultState = {
   consoleEmbedded: false,
-  consoleSplitRatio: null,
+  consoleSplitRatio: 0.0,
   rackOpen: false,
 }
 
