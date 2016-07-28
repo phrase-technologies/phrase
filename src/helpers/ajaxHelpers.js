@@ -19,11 +19,11 @@ export let api = async ({ endpoint, body, failCallback }) => {
     if (response.ok) return response.json()
     else {
       if (failCallback) failCallback()
-      return { null }
+      return {} // Calling functions expect an object
     }
   }
   catch (e) {
     if (failCallback) failCallback()
-    return { null }
+    return {}
   }
 }

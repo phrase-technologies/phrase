@@ -1,13 +1,9 @@
 import u from 'updeep'
-import { notification } from '../actions/actions.js'
+import { notification } from 'actions/actions'
 
 // ============================================================================
 // Notification Action Creators
 // ============================================================================
-
-export let addAPIErrorNotification = () => {
-  return addNotification({ title: `API Error`, message: `Please try again` })
-}
 
 export let addNotification = ({ title, message }) => {
   return (dispatch) => {
@@ -26,6 +22,13 @@ export let addNotification = ({ title, message }) => {
       }
     })
   }
+}
+
+export let addAPIErrorNotification = () => {
+  return addNotification({
+    title: `Connection failure`,
+    message: `please make sure you're still connected to the internet`,
+  })
 }
 
 export let dismissNotification = ({ key }) => {

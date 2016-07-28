@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { NotificationStack } from 'react-notification'
 
-import { dismissNotification } from '../reducers/reduceNotification'
+import { dismissNotification } from 'reducers/reduceNotification'
 
 export default class ToastNotificationStack extends Component {
 
@@ -22,9 +22,4 @@ export default class ToastNotificationStack extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    ...state.notification
-  }
-}
-export default connect(mapStateToProps)(ToastNotificationStack)
+export default connect(state => state.notification)(ToastNotificationStack)
