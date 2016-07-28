@@ -1,8 +1,11 @@
-import { login as loginHelper, signup as signupHelper } from 'helpers/authHelpers'
+import { push } from 'react-router-redux'
+
+import { login as loginHelper, signup as signupHelper, forgotPassword as forgotPasswordHelper, newPassword as newPasswordHelper } from 'helpers/authHelpers'
 import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave } from 'reducers/reducePhrase'
+import { modalOpen } from 'reducers/reduceModal.js'
 
 // ============================================================================
 // Authentication Action Creators
@@ -66,6 +69,52 @@ export let signup = ({ email, username, password }) => {
   }
 }
 
+export let forgotPassword = ({ email }) => {
+  return (dispatch) => {
+    dispatch({ type: auth.LOGIN_REQUEST})
+
+    forgotPasswordHelper({ email }, response => {
+      if (response.success)
+        dispatch(modalOpen({
+          modalComponent: 'ForgotPasswordSuccessModal',
+          payload: email,
+      }))
+      else {
+        dispatch({
+          type: auth.LOGIN_FAIL,
+          payload: { message: response.message },
+        })
+      }
+    })
+  }
+}
+
+export let newPassword = ({ email, resetToken, password, confirmPassword }) => {
+  return (dispatch) => {
+    dispatch({ type: auth.LOGIN_REQUEST})
+
+    newPasswordHelper({ email, resetToken, password, confirmPassword }, response => {
+      if (response.success) {
+        dispatch({
+          type: auth.LOGIN_SUCCESS,
+          payload: {
+            loggedIn: response.success,
+            user: response.user,
+          },
+        })
+
+        dispatch(push(`/`))
+      }
+      else {
+        dispatch({
+          type: auth.LOGIN_FAIL,
+          payload: { message: response.message },
+        })
+      }
+    })
+  }
+}
+
 export let logout = () => {
   return (dispatch) => {
     localStorage.clear()
@@ -101,10 +150,16 @@ export default (state = intialState, action) => {
     // ------------------------------------------------------------------------
     // Clear out old auth error messages before launching auth modals
     case modal.OPEN:
-      if (['LoginModal', 'SignupModal'].find(x => x === action.modalComponent)) {
+      if (['LoginModal', 'SignupModal', 'ForgotPasswordModal'].find(x => x === action.modalComponent)) {
         return {
           ...state,
           errorMessage: null,
+        }
+      }
+      else if (action.modalComponent === 'ForgotPasswordSuccessModal') {
+        return {
+          ...state,
+          email: action.payload,
         }
       }
       return state

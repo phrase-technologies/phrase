@@ -30,3 +30,29 @@ export let login = async (body, callback) =>  {
   }
   else callback({ message })
 }
+
+export let forgotPassword = async (body, callback) => {
+  let response = await fetch(`${API_URL}/forgot-password`, {
+    method: `POST`,
+    headers: { 'Content-Type': `application/json` },
+    body: JSON.stringify(body),
+  })
+
+  let { success, message } = await response.json()
+
+  if (success) callback({success, message})
+  else callback({ message })
+}
+
+export let newPassword = async (body, callback) => {
+  let response = await fetch(`${API_URL}/new-password`, {
+    method: `POST`,
+    headers: { 'Content-Type': `application/json` },
+    body: JSON.stringify(body),
+  })
+
+  let { success, message } = await response.json()
+
+  if (success) login(body, callback)
+  else callback({ message })
+}

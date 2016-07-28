@@ -32,7 +32,7 @@ export class LoginModal extends Component {
                 placeholder="Password" ref={(ref) => this.password = ref}
               />
               <p className="text-right">
-                <a><small>Forgot Password</small></a>
+                <a href="" onClick={this.openForgotPasswordModal}><small>Forgot Password</small></a>
               </p>
             </div>
             <LaddaButton
@@ -70,6 +70,11 @@ export class LoginModal extends Component {
   openSignupModal = (e) => {
     e.preventDefault()
     this.props.dispatch(modalOpen({ modalComponent: 'SignupModal'  }))
+  }
+
+  openForgotPasswordModal = (e) => {
+    e.preventDefault()
+    this.props.dispatch(modalOpen({ modalComponent: 'ForgotPasswordModal' }))
   }
 
   closeModal = () => {
