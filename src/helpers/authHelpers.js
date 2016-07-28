@@ -1,6 +1,6 @@
 import 'whatwg-fetch' // `fetch` polyfill for Safari
 
-export let signup = async (body, callback, failCallback) => {
+export let signup = async ({ body, callback, failCallback }) => {
   try {
     let response = await fetch(`${API_URL}/signup`, {
       method: `POST`,
@@ -11,7 +11,7 @@ export let signup = async (body, callback, failCallback) => {
     if (!response.ok) failCallback()
     else {
       let { success, message } = await response.json()
-      if (success) login(body, callback)
+      if (success) login({ body, callback, failCallback })
       else callback({ success, message })
     }
   }
@@ -20,7 +20,7 @@ export let signup = async (body, callback, failCallback) => {
   }
 }
 
-export let login = async (body, callback, failCallback) =>  {
+export let login = async ({ body, callback, failCallback }) =>  {
   try {
     let response = await fetch(`${API_URL}/api/login`, {
       method: `POST`,

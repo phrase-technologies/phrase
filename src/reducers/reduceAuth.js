@@ -12,8 +12,9 @@ export let login = ({ email, password }) => {
   return (dispatch, getState) => {
     dispatch({ type: auth.LOGIN_REQUEST })
 
-    loginHelper({ email, password },
-      response => {
+    loginHelper({
+      body: { email, password },
+      callback: (response) => {
         if (response.success) {
           dispatch({
             type: auth.LOGIN_SUCCESS,
@@ -36,11 +37,11 @@ export let login = ({ email, password }) => {
           payload: { message: response.message },
         })
       },
-      () => {
+      failCallback: () => {
         dispatch(addAPIErrorNotification())
         dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }})
       }
-    )
+    })
   }
 }
 
@@ -48,8 +49,9 @@ export let signup = ({ email, username, password }) => {
   return (dispatch, getState) => {
     dispatch({ type: auth.LOGIN_REQUEST })
 
-    signupHelper({ email, username, password },
-      response => {
+    signupHelper({
+      body: { email, username, password },
+      callback: (response) => {
         if (response.success) {
           dispatch({
             type: auth.LOGIN_SUCCESS,
@@ -69,11 +71,11 @@ export let signup = ({ email, username, password }) => {
           payload: { message: response.message },
         })
       },
-      () => {
+      failCallback: () => {
         dispatch(addAPIErrorNotification())
         dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }})
       }
-    )
+    })
   }
 }
 
