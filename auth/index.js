@@ -1,9 +1,12 @@
 import jwt from 'jsonwebtoken'
 import isValidEmail from '../helpers/isEmail'
 import isValidUsername from '../helpers/isUsername'
+import isValidPassword from '../helpers/isPassword'
 import r from 'rethinkdb'
 import crypto from 'crypto'
 import { secret } from '../config'
+import { clientURL } from '../server.config'
+import sendEmail from '../helpers/emailHelper'
 
 let hash = password => crypto.createHmac(`sha256`, secret)
   .update(password)
@@ -53,7 +56,7 @@ export default ({
         } else if (trimmedUsername.length > 20) {
           res.json({
             success: false,
-            message: { usernameError: `Usernames may be at most 20 characters long.`}
+            message: { usernameError: `Usernames may be at most 20 characters long.`},
           })
         } else {
           let userByUsernameResults = await r
@@ -68,7 +71,7 @@ export default ({
               success: false,
               message: { usernameError: `Sorry, the username "${username}" is taken.` },
             })
-          } else if (!trimmedPassword || trimmedPassword.length < 6) {
+          } else if (!trimmedPassword || !isValidPassword(trimmedPassword)) {
             res.json({
               success: false,
               message: { passwordError: `Passwords must be at least 6 characters long` },
@@ -129,6 +132,103 @@ export default ({
       }
     }
 
+    catch (err) { console.log(err) }
+  })
+
+  app.post(`/forgot-password`, async (req, res) => {
+    try {
+      let { email } = req.body
+      let lowerCaseEmail = email.toLowerCase()
+      let cursor = await r.table(`users`)
+        .getAll(lowerCaseEmail, { index: `email` })
+        .limit(1)
+        .run(db)
+      let users = await cursor.toArray()
+      let user = users[0]
+
+      if(!user) {
+        res.json({
+          success: false,
+          message: { emailError: `Email not found.` },
+        })
+      } else {
+        let token = crypto.randomBytes(20).toString(`hex`)
+        while(true) {
+          let cursor = await r.table(`users`)
+            .getAll(token, { index: `resetToken` })
+            .limit(1)
+            .run(db)
+          let users = await cursor.toArray()
+          if (users[0])
+            token = crypto.randomBytes(20).toString(`hex`)
+          else
+            break
+        }
+
+        r.table(`users`)
+          .getAll(lowerCaseEmail, { index: `email`})
+          .limit(1)
+          .update({resetToken: token})
+          .run(db)
+
+        let resetLink = `${clientURL}/new-password?token=${token}&email=${user.email}`
+        sendEmail(1, user.email, { USERNAME: user.username, RESETLINK: resetLink })
+
+        res.json({
+          success: true,
+        })
+      }
+    }
+    catch (err) { console.log(err) }
+  })
+
+  app.post(`/new-password`, async (req, res) => {
+    try {
+      let { email, resetToken, password, confirmPassword } = req.body
+      let lowerCaseEmail = email.toLowerCase()
+      let cursor = await r.table(`users`)
+        .getAll(lowerCaseEmail, { index: `email` })
+        .limit(1)
+        .run(db)
+      let users = await cursor.toArray()
+      let user = users[0]
+
+      if(!user || user.resetToken !== resetToken) {
+        res.json({
+          success: false,
+          message: { linkError: `Invalid email, please ` },
+        })
+      }
+      else {
+        let trimmedPassword = password.trim()
+        let trimmedConfirmPassword = confirmPassword.trim()
+
+        if (!trimmedPassword || !isValidPassword(trimmedPassword)) {
+          res.json({
+            success: false,
+            message: { passwordError: `Passwords must be at least 6 characters long` },
+          })
+        }
+        else if (trimmedPassword !== trimmedConfirmPassword) {
+          res.json({
+            success: false,
+            message: { confirmPasswordError: `Passwords do not match` },
+          })
+        }
+        else {
+          r.table(`users`).getAll(lowerCaseEmail, { index: `email`}).limit(1)
+            .update({ password: doubleHash(trimmedPassword)})
+            .run(db)
+          r.table(`users`).getAll(lowerCaseEmail, { index: `email`}).limit(1)
+            .replace(r.row.without(`resetToken`))
+            .run(db)
+
+          res.json({
+            success: true,
+          })
+        }
+      }
+    }
     catch (err) { console.log(err) }
   })
 
