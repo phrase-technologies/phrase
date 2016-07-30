@@ -31,6 +31,14 @@ export let addAPIErrorNotification = () => {
   })
 }
 
+export const catchAndToastException = async ({ dispatch, toCatch, callback }) => {
+  try { await toCatch() }
+  catch(e) {
+    dispatch(addAPIErrorNotification())
+    if (callback) callback()
+  }
+}
+
 export let dismissNotification = ({ key }) => {
   return (dispatch) => {
     dispatch({

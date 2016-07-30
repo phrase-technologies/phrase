@@ -28,7 +28,7 @@ import { push } from 'react-router-redux'
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
-import { addAPIErrorNotification } from './reduceNotification'
+import { catchAndToastException } from 'reducers/reduceNotification'
 
 // ============================================================================
 // Phrase Action Creators
@@ -438,27 +438,26 @@ export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated
 export const phraseLoadFromDb = phraseId => {
   return async (dispatch) => {
     dispatch({ type: phrase.LOAD_START })
-    let { loadedPhrase } = await api({
-        endpoint: `loadOne`,
-        body: { phraseId },
-        failCallback: () => { dispatch(addAPIErrorNotification()) },
-    })
-    if (loadedPhrase) {
-      dispatch({
-        type: phrase.LOAD_FINISH,
-        payload: {
-          parentId: loadedPhrase.parentId,
-          id: phraseId,
-          name: loadedPhrase.phrasename,
-          username: loadedPhrase.username,
-          dateCreated: loadedPhrase.dateCreated,
-          dateModified: loadedPhrase.dateModified,
-          state: loadedPhrase.state,
-        }
+    catchAndToastException({ dispatch, toCatch: async () => {
+      let { loadedPhrase } = await api({
+          endpoint: `loadOne`,
+          body: { phraseId },
       })
-    } else {
-      console.error('phraseLoadFromDb() Failed!')
-    }
+      if (loadedPhrase) {
+        dispatch({
+          type: phrase.LOAD_FINISH,
+          payload: {
+            parentId: loadedPhrase.parentId,
+            id: phraseId,
+            name: loadedPhrase.phrasename,
+            username: loadedPhrase.username,
+            dateCreated: loadedPhrase.dateCreated,
+            dateModified: loadedPhrase.dateModified,
+            state: loadedPhrase.state,
+          }
+        })
+      }
+    }})
   }
 }
 
@@ -466,17 +465,18 @@ export const phraseSave = () => {
   return (dispatch, getState) => {
     let state = getState()
     dispatch({ type: phrase.SAVE_START  })
-    api({
-      endpoint: `update`,
-      body: {
-        phraseId: state.phraseMeta.phraseId,
-        phraseName: state.phraseMeta.phraseName,
-        phraseState: state.phrase,
-      },
-      failCallback: () => { dispatch(addAPIErrorNotification()) },
-    }).then(() => {
-      dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
-    })
+    catchAndToastException({ dispatch, toCatch: async () => {
+      await api({
+        endpoint: `update`,
+        body: {
+          phraseId: state.phraseMeta.phraseId,
+          phraseName: state.phraseMeta.phraseName,
+          phraseState: state.phrase,
+        },
+      }).then(() => {
+        dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+      })
+    }})
   }
 }
 

@@ -2,8 +2,7 @@
 
 import 'whatwg-fetch' // `fetch` polyfill for Safari
 
-export let api = async ({ endpoint, body, failCallback }) => {
-  try {
+export let api = async ({ endpoint, body }) => {
     let response = await fetch(`${API_URL}/api/${endpoint}`, {
       method: `POST`,
       headers: { 'Content-Type': `application/json` },
@@ -17,13 +16,5 @@ export let api = async ({ endpoint, body, failCallback }) => {
     })
 
     if (response.ok) return response.json()
-    else {
-      if (failCallback) failCallback()
-      return {} // Calling functions expect an object
-    }
-  }
-  catch (e) {
-    if (failCallback) failCallback()
-    return {}
-  }
+    throw response.error
 }

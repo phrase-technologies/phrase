@@ -3,7 +3,7 @@ import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave } from 'reducers/reducePhrase'
-import { addAPIErrorNotification } from 'reducers/reduceNotification'
+import { catchAndToastException } from 'reducers/reduceNotification'
 
 // ============================================================================
 // Authentication Action Creators
@@ -12,35 +12,36 @@ export let login = ({ email, password }) => {
   return (dispatch, getState) => {
     dispatch({ type: auth.LOGIN_REQUEST })
 
-    loginHelper({
-      body: { email, password },
-      callback: (response) => {
-        if (response.success) {
-          dispatch({
-            type: auth.LOGIN_SUCCESS,
-            payload: {
-              loggedIn: response.success,
-              user: response.user,
-            },
-          })
+    catchAndToastException({ dispatch,
+      toCatch: async () => {
+        await loginHelper({
+          body: { email, password },
+          callback: (response) => {
+            if (response.success) {
+              dispatch({
+                type: auth.LOGIN_SUCCESS,
+                payload: {
+                  loggedIn: response.success,
+                  user: response.user,
+                },
+              })
 
-          let { phraseId: existingPhrase, pristine } = getState().phraseMeta
-          if (!pristine) {
-            if (existingPhrase)
-              dispatch(phraseSave())
-            else
-              dispatch(librarySaveNew())
+              let { phraseId: existingPhrase, pristine } = getState().phraseMeta
+              if (!pristine) {
+                if (existingPhrase)
+                  dispatch(phraseSave())
+                else
+                  dispatch(librarySaveNew())
+              }
+            }
+            else dispatch({
+              type: auth.LOGIN_FAIL,
+              payload: { message: response.message },
+            })
           }
-        }
-        else dispatch({
-          type: auth.LOGIN_FAIL,
-          payload: { message: response.message },
         })
       },
-      failCallback: () => {
-        dispatch(addAPIErrorNotification())
-        dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }})
-      }
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
     })
   }
 }
@@ -49,32 +50,33 @@ export let signup = ({ email, username, password }) => {
   return (dispatch, getState) => {
     dispatch({ type: auth.LOGIN_REQUEST })
 
-    signupHelper({
-      body: { email, username, password },
-      callback: (response) => {
-        if (response.success) {
-          dispatch({
-            type: auth.LOGIN_SUCCESS,
-            payload: {
-              loggedIn: response.success,
-              user: response.user,
-            },
-          })
+    catchAndToastException({ dispatch,
+      toCatch: async () => {
+        await signupHelper({
+          body: { email, username, password },
+          callback: (response) => {
+            if (response.success) {
+              dispatch({
+                type: auth.LOGIN_SUCCESS,
+                payload: {
+                  loggedIn: response.success,
+                  user: response.user,
+                },
+              })
 
-          let phraseState = getState().phrase
-          if (phraseState.past.length || phraseState.future.length) {
-            dispatch(librarySaveNew())
+              let phraseState = getState().phrase
+              if (phraseState.past.length || phraseState.future.length) {
+                dispatch(librarySaveNew())
+              }
+            }
+            else dispatch({
+              type: auth.LOGIN_FAIL,
+              payload: { message: response.message },
+            })
           }
-        }
-        else dispatch({
-          type: auth.LOGIN_FAIL,
-          payload: { message: response.message },
         })
       },
-      failCallback: () => {
-        dispatch(addAPIErrorNotification())
-        dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }})
-      }
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
     })
   }
 }

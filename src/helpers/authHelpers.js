@@ -1,34 +1,27 @@
 import 'whatwg-fetch' // `fetch` polyfill for Safari
 
-export let signup = async ({ body, callback, failCallback }) => {
-  try {
-    let response = await fetch(`${API_URL}/signup`, {
-      method: `POST`,
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify(body),
-    })
+export let signup = async ({ body, callback }) => {
+  let response = await fetch(`${API_URL}/signup`, {
+    method: `POST`,
+    headers: { 'Content-Type': `application/json` },
+    body: JSON.stringify(body),
+  })
 
-    if (!response.ok) failCallback()
-    else {
-      let { success, message } = await response.json()
-      if (success) login({ body, callback, failCallback })
-      else callback({ success, message })
-    }
+  if (response.ok) {
+    let { success, message } = await response.json()
+    if (success) await login({ body, callback })
+    else callback({ success, message })
   }
-  catch (e) {
-    failCallback()
-  }
+  else throw response.error
 }
 
-export let login = async ({ body, callback, failCallback }) =>  {
-  try {
+export let login = async ({ body, callback }) =>  {
     let response = await fetch(`${API_URL}/api/login`, {
       method: `POST`,
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify(body),
     })
-    if (!response.ok) failCallback()
-    else {
+    if (response.ok)  {
       let { success, message, token, user } = await response.json()
       if (success) {
         localStorage.token = token
@@ -39,8 +32,5 @@ export let login = async ({ body, callback, failCallback }) =>  {
       }
       else callback({ message })
     }
-  }
-  catch (e) {
-    failCallback()
-  }
+    else throw response.error
 }
