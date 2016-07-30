@@ -19,6 +19,7 @@ import reducePianoroll from './reducePianoroll'
 import reduceCursor from './reduceCursor'
 import reduceAuth from './reduceAuth'
 import reduceArrangeTool from './reduceArrangeTool'
+import reduceNotification from './reduceNotification'
 
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
@@ -60,6 +61,7 @@ let reducerSpec = {
   cursor: reduceCursor,
   auth: reduceAuth,
   arrangeTool: reduceArrangeTool,
+  notification: reduceNotification,
 }
 
 export let testReducer = combineReducers(baseReducers)

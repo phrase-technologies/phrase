@@ -88,6 +88,14 @@ export const modal = namespaceActions(
   ]
 )
 
+export const notification = namespaceActions(
+  'notification',
+  [
+    'ADD',
+    'DISMISS',
+  ]
+)
+
 export const mouse = namespaceActions(
   'mouse',
   [
