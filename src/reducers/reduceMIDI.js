@@ -9,6 +9,9 @@ import {
 // ============================================================================
 // MIDI Action Creators
 // ============================================================================
+export const midiNoteOff = ({ key, end }) => {
+  return midiNoteOn({ key, end })
+}
 export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
   return (dispatch, getState) => {
     let state = getState()
@@ -47,9 +50,6 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
       : dispatch({ type: midi.NOTE_OFF, payload: { key } })
   }
 }
-export const midiNoteOff = ({ key, end }) => {
-  return midiNoteOn({ key, end })
-}
 
 // ============================================================================
 // MIDI Reducer
@@ -61,6 +61,10 @@ export default function reduceMIDI(state = defaultState, action) {
   {
     // ------------------------------------------------------------------------
     case midi.NOTE_ON:
+      // Do not re-trigger keys that are already active
+      if (state[action.payload.key])
+        return state
+
       return u({
         [action.payload.key]: {
           velocity: action.payload.velocity,

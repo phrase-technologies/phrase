@@ -43,14 +43,21 @@ for (let i = 1; i <= 88; i++)
 // This triggers can be used to schedule sounds at:
 // a) Specific timestamps relative to the AudioContext (i.e. engine.ctx)
 // b) In real-time, if time is ommitted
-export function killNote({engine, trackID, keyNum, velocity = 0, time = 0, disableVisualPreview = false }) {
-  fireNote({ engine, trackID, keyNum, velocity, time, disableVisualPreview })
+export function killNote({ engine, trackID, keyNum, disableRecording = false }) {
+  fireNote({ engine, trackID, keyNum, disableRecording })
 }
-export function fireNote({ engine, trackID, keyNum, velocity, time, disableVisualPreview = false }) {
+export function fireNote({
+  engine,
+  trackID,
+  keyNum,
+  velocity = 0,
+  time = 0,
+  disableRecording = false,
+}) {
   let trackModule = engine.trackModules[trackID]
   let instrument = trackModule.effectsChain[0]
   instrument.fireNote(keyNum, velocity, time)
-  if (!disableVisualPreview) {
+  if (!disableRecording) {
     engine.STORE.dispatch(midiNoteOn({
       key: keyNum,
       velocity,

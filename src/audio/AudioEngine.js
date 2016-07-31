@@ -112,11 +112,11 @@ export default function createAudioEngine(STORE) {
   // Expose the API
   // --------------------------------------------------------------------------
   return {
-    fireNote: ({ trackID, keyNum, velocity, disableVisualPreview }) => {
-      fireNote({ engine, trackID, keyNum, velocity, disableVisualPreview })
+    fireNote: ({ trackID, keyNum, velocity, disableRecording }) => {
+      fireNote({ engine, trackID, keyNum, velocity, disableRecording })
     },
-    killNote: ({ trackID, keyNum, disableVisualPreview }) => {
-      killNote({ engine, trackID, keyNum, disableVisualPreview })
+    killNote: ({ trackID, keyNum, disableRecording }) => {
+      killNote({ engine, trackID, keyNum, disableRecording })
     },
     getTrackOutputDecibels: (trackID) => {
       return getTrackOutputDecibels(engine, trackID)

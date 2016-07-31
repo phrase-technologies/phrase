@@ -43,7 +43,6 @@ export default (engine, STORE) => {
         trackID: armedTrack.id,
         keyNum: key,
         velocity,
-        disableVisualPreview: false
       })
     }
   }

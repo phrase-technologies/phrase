@@ -245,7 +245,7 @@ export class PianorollWindowControl extends Component {
   }
 
   mouseMoveEvent(e) {
-    let { dispatch, arrangeTool, currentTrack, notes, ENGINE } = this.props
+    let { dispatch, arrangeTool } = this.props
 
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     let key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount
@@ -304,10 +304,6 @@ export class PianorollWindowControl extends Component {
                 targetBar: bar,
                 delta
               }))
-
-              let note = notes.find(x => x.id === this.lastEvent.noteID)
-
-              ENGINE.fireNote({ trackID: currentTrack.id, keyNum: note.keyNum + 8, velocity: note.velocity })
             }
 
             this.lastEvent.action = CHANGE_NOTE_VELOCITY
@@ -441,7 +437,7 @@ export class PianorollWindowControl extends Component {
 
     // Play new key
     keyNum = Math.ceil(keyNum)
-    this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: keyNum + 8, velocity })
+    this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: keyNum + 8, velocity, disableRecording: true })
     this.lastKeysPlayed = [keyNum]
   }
 
@@ -453,23 +449,27 @@ export class PianorollWindowControl extends Component {
       .sort()
       .value()
 
-    // Cancel keys only if there has been a change
+    // Fire actions only if there has been a change
     let addedKeys = _.difference(selectedKeys, this.lastKeysPlayed)
     let lostKeys  = _.difference(this.lastKeysPlayed, selectedKeys)
-    if (addedKeys.length > 0 || lostKeys.length > 0)
+    if (addedKeys.length > 0 || lostKeys.length > 0) {
+      // Cancel previous keys
       this.killPreviewSound()
 
-    // Play new key
-    selectedKeys.forEach(keyNum => {
-      this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: keyNum + 8, velocity: 127 })
-    })
-    this.lastKeysPlayed = selectedKeys
+      // Play new key
+      selectedKeys.forEach(keyNum => {
+        this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: keyNum + 8, velocity: 127, disableRecording: true })
+      })
+
+      // Store the active state
+      this.lastKeysPlayed = selectedKeys
+    }
   }
 
   killPreviewSound() {
     if (this.lastKeysPlayed) {
       this.lastKeysPlayed.forEach(key => {
-        this.props.ENGINE.killNote({ trackID: this.props.currentTrack.id, keyNum: key + 8 })
+        this.props.ENGINE.killNote({ trackID: this.props.currentTrack.id, keyNum: key + 8, disableRecording: true })
       })
     }
     this.lastKeysPlayed = null

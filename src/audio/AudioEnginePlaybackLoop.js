@@ -60,7 +60,7 @@ export function startPlayback(engine, dispatch) {
           keyNum: currentCommand.keyNum + 8,
           velocity: currentCommand.velocity,
           time: currentCommandTime,
-          disableVisualPreview: true,
+          disableRecording: true,
         })
       }
 
@@ -116,7 +116,7 @@ export function stopPlayback(engine) {
         engine,
         trackID,
         keyNum,
-        disableVisualPreview: true,
+        disableRecording: true,
       })
   })
 

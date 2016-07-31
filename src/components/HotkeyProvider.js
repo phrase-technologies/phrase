@@ -169,7 +169,9 @@ class HotkeyProvider extends Component {
     if (e.target.tagName === 'BUTTON')
       return
 
-    this.props.ENGINE.killNote({ trackID: 0, keyNum: this.getNoteFromKeyCode(e.keyCode) })
+    let keyNum = this.getNoteFromKeyCode(e.keyCode)
+    if (Number.isInteger(keyNum))
+      this.props.ENGINE.killNote({ trackID: 0, keyNum })
   }
 
   getNoteFromKeyCode(keyCode) {
