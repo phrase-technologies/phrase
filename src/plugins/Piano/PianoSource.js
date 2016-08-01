@@ -27,6 +27,7 @@ export default class PianoSource {
       return
     }
 
+    // TODO: load fewer samples and detune
     let samples = _.flatMap(
       _.range(0, 88).map(x =>
         [30, 50, 80, 120].map(v => ({
@@ -45,6 +46,8 @@ export default class PianoSource {
             type: samplesActions.LOADED,
             payload: { id: 'Piano', bufferMap: this.bufferMap }
           })
+
+          // TODO: progress bar
           STORE.dispatch(addNotification({
             title: 'Piano samples',
             message: 'have finished loading'
@@ -66,26 +69,20 @@ export default class PianoSource {
     let [ type, key, velocity ] = event.data
 
     // sustain
-    if (type === 176 && velocity) this.sustain = true
-    else if (type === 176 && !velocity) {
+    if (type === 176 && velocity) {
+      this.sustain = true
+    } else if (type === 176 && !velocity) {
       this.sustain = false
 
-      this.activeSources.filter(x => x.removeWhenSustainOff).forEach(active => {
+      this.activeSources
+        .filter(x => x.removeWhenSustainOff)
+        .forEach(source => this.scheduleRelease(source))
 
-        // Schedule Release
-        let now = this.ctx.currentTime
-        let amplitude = active.sourceGain.gain
-        amplitude.cancelScheduledValues(now)
-        amplitude.setValueAtTime(amplitude.value, now)
-        amplitude.linearRampToValueAtTime(0, now + 0.28)
-
-        // Dispose of source
-      })
       this.activeSources = this.activeSources.filter(x => !x.removeWhenSustainOff)
     }
   }
 
-  fireNote(keyNum, velocity, time = 0, detune) {
+  fireNote(keyNum, velocity) {
     // Find nearest sample based on note velocity
     let nearestSample = velocity < 31
       ? 30 : velocity < 51
@@ -121,25 +118,26 @@ export default class PianoSource {
     }
 
     else {
-      let active = this.activeSources.find(x => x.keyNum === keyNum)
+      let source = this.activeSources.find(x => x.keyNum === keyNum)
 
-      if (active && !this.sustain) {
-
-        // Schedule Release
-        let now = this.ctx.currentTime
-        let amplitude = active.sourceGain.gain
-        amplitude.cancelScheduledValues(now)
-        amplitude.setValueAtTime(amplitude.value, now)
-        amplitude.linearRampToValueAtTime(0, now + 0.28)
-
+      if (source && !this.sustain) {
+        this.scheduleRelease(source)
         // Dispose of source
         this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
       }
 
-      else if (active && this.sustain) {
+      else if (source && this.sustain) {
         this.activeSources.forEach(x => x.removeWhenSustainOff = true)
       }
     }
+  }
+
+  scheduleRelease(source) {
+    let now = this.ctx.currentTime
+    let amplitude = source.sourceGain.gain
+    amplitude.cancelScheduledValues(now)
+    amplitude.setValueAtTime(amplitude.value, now)
+    amplitude.linearRampToValueAtTime(0, now + 0.28)
   }
 
 }
