@@ -19,6 +19,34 @@
       "search": [
         "metronome"
       ]
+    },
+    {
+      "uid": "154b81318dfc078a8ea62fd8961ab929",
+      "css": "pianoroll",
+      "code": 59399,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M-225 135.1H-111.1V618.9H-54.3V875H-225V135.1ZM-25.8 874.9H173.5V618.9H116.5V135.1H31.1V618.9H-25.8V874.9ZM201.9 874.9H372.6V135.1H258.8V618.9H201.9V874.9ZM401 874.9H571.8V618.9H514.9V135.1H401V874.9ZM600.3 874.9H799.5V618.9H742.5V135.1H657.1V618.9H600.3V874.9ZM827.9 874.9H1027.1V618.9H970.2V135.1H884.9V618.9H828V874.9ZM1055.5 874.9H1226.3V135.1H1112.4V618.9H1055.5",
+        "width": 1000
+      },
+      "search": [
+        "pianoroll"
+      ]
+    },
+    {
+      "uid": "f5bebecc157959dd0dadb43b3c1c9954",
+      "css": "pianoroll",
+      "code": 59393,
+      "src": "custom_icons",
+      "selected": false,
+      "svg": {
+        "path": "",
+        "width": 1000
+      },
+      "search": [
+        "pianoroll"
+      ]
     }
   ]
 }

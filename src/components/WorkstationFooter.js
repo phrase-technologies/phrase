@@ -1,10 +1,18 @@
 import React, { Component } from 'react'
-import ControllerMIDI from 'components/ControllerMIDI'
+import InputMethodsTour from 'components/InputMethodsTour'
+// import ControllerMIDI from 'components/ControllerMIDI'
 
 import { layout } from 'actions/actions'
 import { layoutConsoleSplit } from 'reducers/reduceNavigation'
 
 export default class WorkstationFooter extends Component {
+
+  constructor() {
+    super()
+    this.state = {
+      openInputMethod: null,
+    }
+  }
 
   render() {
     let multitrackClass = 'btn btn-sm btn-link link-dark btn-glow'
@@ -16,24 +24,51 @@ export default class WorkstationFooter extends Component {
 
     return (
       <div className="workstation-footer">
+        <InputMethodsTour
+          show={this.state.openInputMethod !== null}
+          openInputMethod={this.state.openInputMethod}
+          setOpenInputMethod={this.setOpenInputMethod}
+        />
         <div className="btn-toolbar">
+          <div className="btn-group">
+            <div className="btn btn-narrow btn-link btn-sm link-dark">
+              <span>Input Methods: </span>
+            </div>
+            <div
+              className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
+              onClick={() => this.setOpenInputMethod(0)}
+            >
+              <span className="phrase-icon-pianoroll" style={{ paddingLeft: 6, paddingRight: 6 }} />
+            </div>
+            <div
+              className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
+              onClick={() => this.setOpenInputMethod(1)}
+            >
+              <span className="fa fa-fw fa-keyboard-o" />
+            </div>
+            <div
+              className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
+              onClick={() => this.setOpenInputMethod(2)}
+            >
+              <span className="fa fa-fw fa-mouse-pointer" />
+            </div>
+            <div
+              className="btn btn-narrow btn-link btn-sm link-dark btn-glow"
+              onClick={() => this.setOpenInputMethod(3)}
+            >
+              <span className="fa fa-fw fa-microphone" />
+            </div>
+          </div>
+          {/*
           <div className="btn-group">
             <ControllerMIDI />
           </div>
-          <div className="btn-group">
-            <div className="btn btn-narrow btn-link btn-sm link-dark">
-              <span className="fa fa-keyboard-o" />
-              <span> Computer Keyboard </span>
-            </div>
-          </div>
+          */}
           <div className="btn-group pull-right">
             <div className={multitrackClass} onClick={this.toggleMultitrack}>
               <span> Multitrack</span>
             </div>
             <div className={trackClass} onClick={this.toggleTrack}>
-              {/*
-              <img src={require('img/pianoroll.gif')} height={14} style={{ verticalAlign: 'sub' }} />
-              */}
               <span> Track</span>
             </div>
             <div className={rackClass} onClick={this.toggleRack}>
@@ -43,6 +78,10 @@ export default class WorkstationFooter extends Component {
         </div>
       </div>
     )
+  }
+
+  setOpenInputMethod = (eventKey) => {
+    this.setState({ openInputMethod: eventKey })
   }
 
   isMultitrackActive() {

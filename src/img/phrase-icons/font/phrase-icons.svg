@@ -7,6 +7,8 @@
 <font-face font-family="phrase-icons" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
 <missing-glyph horiz-adv-x="1000" />
 <glyph glyph-name="metronome" unicode="&#xe800;" d="M622 757l44-218 6 11 40 153 6 23-17 83c-4 21-22 35-43 35h-356c-21 0-39-14-43-35l-146-738-32-163c-2-13 1-26 9-36 9-10 21-16 34-16h713c0 0 0 0 0 0 24 0 44 19 44 44 0 4-1 9-2 13l-31 155c0 3 0 6-1 9l-68 342-67-115 39-198h-193l144 250 66 115 20 34 105 104-34 20 55 95c12 21 5 48-16 60-7 4-14 6-22 6-15 0-30-8-38-22l-55-95-37 21-12-47v0l-29-110-29-50-240-381 0 0 0 0h-227l129 651 284 0z" horiz-adv-x="1000" />
+
+<glyph glyph-name="pianoroll" unicode="&#xe807;" d="M-225 715h114v-484h57v-256h-171v740z m199-740h200v256h-57v484h-86v-484h-57v-256z m228 0h171v740h-114v-484h-57v-256z m199 0h171v256h-57v484h-114v-740z m199 0h200v256h-57v484h-86v-484h-57v-256z m228 0h199v256h-57v484h-85v-484h-57v-256z m228 0h170v740h-114v-484h-56" horiz-adv-x="1000" />
 </font>
 </defs>
 </svg>
