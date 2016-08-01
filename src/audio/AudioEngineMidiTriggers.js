@@ -66,3 +66,8 @@ export function fireNote({
     }))
   }
 }
+export function sendMidiEvent({ engine, trackID, event }) {
+  let trackModule = engine.trackModules[trackID]
+  let instrument = trackModule.effectsChain[0]
+  instrument.onMidiEvent(event)
+}

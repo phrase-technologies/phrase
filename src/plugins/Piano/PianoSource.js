@@ -13,6 +13,7 @@ export default class PianoSource {
     this.outputGain.gain.value = 8.0
     this.bufferMap = {}
     this.activeSources = []
+    this.sustain = false
 
     let storeSamples = STORE.getState().samples
 
@@ -46,7 +47,7 @@ export default class PianoSource {
           })
           STORE.dispatch(addNotification({
             title: 'Piano samples',
-            message: 'have finished loading' 
+            message: 'have finished loading'
           }))
         }
       })
@@ -59,6 +60,29 @@ export default class PianoSource {
 
   update(config) {
 
+  }
+
+  onMidiEvent(event) {
+    let [ type, key, velocity ] = event.data
+
+    // sustain
+    if (type === 176 && velocity) this.sustain = true
+    else if (type === 176 && !velocity) {
+      this.sustain = false
+
+      this.activeSources.filter(x => x.removeWhenSustainOff).forEach(active => {
+
+        // Schedule Release
+        let now = this.ctx.currentTime
+        let amplitude = active.sourceGain.gain
+        amplitude.cancelScheduledValues(now)
+        amplitude.setValueAtTime(amplitude.value, now)
+        amplitude.linearRampToValueAtTime(0, now + 0.35)
+
+        // Dispose of source
+      })
+      this.activeSources = this.activeSources.filter(x => !x.removeWhenSustainOff)
+    }
   }
 
   fireNote(keyNum, velocity, time = 0, detune) {
@@ -99,17 +123,21 @@ export default class PianoSource {
     else {
       let active = this.activeSources.find(x => x.keyNum === keyNum)
 
-      if (active) {
+      if (active && !this.sustain) {
 
         // Schedule Release
         let now = this.ctx.currentTime
         let amplitude = active.sourceGain.gain
         amplitude.cancelScheduledValues(now)
         amplitude.setValueAtTime(amplitude.value, now)
-        amplitude.linearRampToValueAtTime(0, now + 0.35)
+        amplitude.linearRampToValueAtTime(0, now + 0.2)
 
         // Dispose of source
         this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
+      }
+
+      else if (active && this.sustain) {
+        this.activeSources.forEach(x => x.removeWhenSustainOff = true)
       }
     }
   }

@@ -1,4 +1,4 @@
-import { fireNote } from 'audio/AudioEngineMidiTriggers.js'
+import { fireNote, sendMidiEvent } from './AudioEngineMidiTriggers.js'
 
 // ============================================================================
 // MIDI CONTROLLERS
@@ -37,6 +37,9 @@ export default (engine, STORE) => {
      */
 
     let armedTrack = state.phrase.present.tracks.find(x => x.id === state.phraseMeta.trackSelectionID)
+    if (armedTrack) {
+      sendMidiEvent({ engine, trackID: armedTrack.id, event })
+    }
     if (armedTrack && [144, 128].some(x => x === type)) {
       let yamahaOffsetCompensation = event.srcElement.manufacturer === "Yamaha" ? 12 : 0
 
