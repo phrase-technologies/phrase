@@ -1,4 +1,4 @@
-import { phraseMidiSelector } from '../selectors/selectorTransport.js'
+import { phraseMidiSelector } from 'selectors/selectorTransport'
 import { midiNoteOn } from 'reducers/reduceMIDI'
 
 import {
@@ -68,6 +68,6 @@ export function fireNote({
 }
 export function sendMidiEvent({ engine, trackID, event }) {
   let trackModule = engine.trackModules[trackID]
-  let instrument = trackModule.effectsChain[0]
-  instrument.onMidiEvent(event)
+  // send MIDI event through entire instrument rack
+  trackModule.effectsChain.forEach(plugin => plugin.onMidiEvent(event))
 }

@@ -1,4 +1,4 @@
-import { fireNote, sendMidiEvent } from './AudioEngineMidiTriggers.js'
+import { fireNote, sendMidiEvent } from 'audio/AudioEngineMidiTriggers'
 
 // ============================================================================
 // MIDI CONTROLLERS

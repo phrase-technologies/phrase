@@ -77,7 +77,7 @@ export default class PianoSource {
         let amplitude = active.sourceGain.gain
         amplitude.cancelScheduledValues(now)
         amplitude.setValueAtTime(amplitude.value, now)
-        amplitude.linearRampToValueAtTime(0, now + 0.35)
+        amplitude.linearRampToValueAtTime(0, now + 0.28)
 
         // Dispose of source
       })
@@ -130,7 +130,7 @@ export default class PianoSource {
         let amplitude = active.sourceGain.gain
         amplitude.cancelScheduledValues(now)
         amplitude.setValueAtTime(amplitude.value, now)
-        amplitude.linearRampToValueAtTime(0, now + 0.2)
+        amplitude.linearRampToValueAtTime(0, now + 0.28)
 
         // Dispose of source
         this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
