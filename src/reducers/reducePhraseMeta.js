@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import u from 'updeep'
 import { objectMergeKeyArrays } from 'helpers/arrayHelpers'
-import { phrase, pianoroll, library } from 'actions/actions'
+import { phrase, pianoroll, library, samples } from 'actions/actions'
 
 // ============================================================================
 // Phrase META Reducer

@@ -19,7 +19,6 @@ import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { Router, useRouterHistory } from 'react-router'
 import { createHistory, useBeforeUnload } from 'history'
-import { phraseCreateTrack } from 'reducers/reducePhrase.js'
 
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import finalReducer from './reducers/reduce.js'
@@ -48,11 +47,8 @@ const persistConfig = {
   ]
 }
 persistStore(STORE, persistConfig, () => {
-  // Setup initial state - 2 tracks by default
   let state = STORE.getState()
   if (!state.phrase || state.phrase.past.length === 0 && state.phrase.present.tracks.length === 0) {
-    STORE.dispatch(phraseCreateTrack())
-    STORE.dispatch(phraseCreateTrack())
     STORE.dispatch(UndoActions.clearHistory())
   }
 })

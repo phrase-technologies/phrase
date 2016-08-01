@@ -8,7 +8,8 @@ const OUTPUT_METER_SIZE = 2048
 // ============================================================================
 // This function abstracts out the creation, routing, updating and removal of
 // Web Audio API Nodes as dictated by changes in the `state`.
-export function updateNodes(engine, state) {
+export function updateNodes(engine, STORE) {
+  let state = STORE.getState()
 
   // Remove tracks as required
   Object.keys(engine.trackModules).forEach(trackID => {
@@ -27,7 +28,7 @@ export function updateNodes(engine, state) {
   allTracks.forEach(track => {
     // Add new tracks
     if (!engine.trackModules[track.id]) {
-      engine.trackModules[track.id] = createTrackModule(engine, track, state)
+      engine.trackModules[track.id] = createTrackModule(engine, track, STORE)
     }
 
     // Update changed tracks
@@ -51,7 +52,8 @@ function destroyTrackModule(trackModule) {
 }
 
 // This function births a new trackModule
-function createTrackModule(engine, track, state) {
+function createTrackModule(engine, track, STORE) {
+  let state = STORE.getState()
   // Used for MUTE / SOLO
   let outputFinal = engine.ctx.createGain()
       outputFinal.gain.value = 1.0
@@ -77,7 +79,9 @@ function createTrackModule(engine, track, state) {
 
   // Instantiate and wire up the plugins in the rack!
   let effectsChain = _.reverse(track.rack.slice()).reduce((rack, plugin) => {
-    let source = new Plugins[plugin.id].Source(engine.ctx, plugin.config, state.phrase.present)
+    let source = new Plugins[plugin.id].Source(
+      engine.ctx, plugin.config, STORE
+    )
 
     if (rack[0]) source.connect(rack[0].getInputNode())
     else source.connect(outputPan)

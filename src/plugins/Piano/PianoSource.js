@@ -1,31 +1,54 @@
 import load from 'audio-loader'
 import _ from 'lodash'
+import { samples as samplesActions } from 'actions/actions'
+import { addNotification } from 'reducers/reduceNotification'
 
 // Piano for now, but this is a basic sampler, and Piano could inherit to
 // implement Piano specific things like dampening or something..
 
 export default class PianoSource {
-  constructor(AudioContext, config) {
+  constructor(AudioContext, config, STORE) {
     this.ctx = AudioContext
     this.outputGain = this.ctx.createGain()
     this.outputGain.gain.value = 8.0
     this.bufferMap = {}
     this.activeSources = []
 
+    let storeSamples = STORE.getState().samples
+
     // TODO: load single soundfont file / chunks
     // https://www.clicktorelease.com/code/typed-array-web-audio/
 
+    let pianoSamples = storeSamples.find(x => x.id === 'Piano')
+    // If Piano instrument has already loaded once, don't fetch the samples again
+    if (pianoSamples) {
+      this.bufferMap = pianoSamples.bufferMap
+      return
+    }
+
     let samples = _.flatMap(
-      _.range(4, 79).map(x =>
+      _.range(0, 88).map(x =>
         [30, 50, 80, 120].map(v => ({
           id: `${x}-${v}`, audio: `${API_URL}/piano/${x}-${v}.mp3`,
         }))
       )
     )
 
+    let samplesLoadedCount = 0
     samples.forEach(sample =>
       load(this.ctx, sample).then(result => {
         this.bufferMap[result.id] = result.audio
+        samplesLoadedCount++
+        if (samplesLoadedCount === samples.length) {
+          STORE.dispatch({
+            type: samplesActions.LOADED,
+            payload: { id: 'Piano', bufferMap: this.bufferMap }
+          })
+          STORE.dispatch(addNotification({
+            title: 'Piano samples',
+            message: 'have finished loading' 
+          }))
+        }
       })
     )
   }

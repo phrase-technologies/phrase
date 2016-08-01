@@ -11,6 +11,14 @@ export const auth = namespaceActions(
   ]
 )
 
+export const samples = namespaceActions(
+  'samples',
+  [
+    'LOADING',
+    'LOADED',
+  ]
+)
+
 export const layout = namespaceActions(
   'layout',
   [

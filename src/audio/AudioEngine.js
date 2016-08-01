@@ -66,7 +66,7 @@ export default function createAudioEngine(STORE) {
     // ---------- Graph Updates ----------
     // Tracks and Effects Chains
     if (state.phrase.present.tracks !== engine.lastState.tracks)
-      updateNodes(engine, state)
+      updateNodes(engine, STORE)
 
     // Notes + Tempo
     if (state.phrase !== engine.lastState.phrase)

@@ -557,7 +557,7 @@ const TRACK_COLORS = [
   '#0C8',
 ]
 
-export const defaultState = reduceCreateTrack(reduceCreateTrack({
+export const defaultState = reduceCreateTrack({
   barCount: 16.00,
   tempo: 120,
   tracks: [],
@@ -568,7 +568,7 @@ export const defaultState = reduceCreateTrack(reduceCreateTrack({
   noteAutoIncrement:  0,
   clipAutoIncrement:  0,
   noteLengthLast: 0.25
-}, {}), {})
+}, {})
 
 export default function reducePhrase(state = defaultState, action) {
   switch (action.type)
