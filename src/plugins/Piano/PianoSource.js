@@ -94,8 +94,24 @@ export default class PianoSource {
     // An error has occured! There should always be a buffer.
     if (!buffer) return
 
-    // A "note on" message
-    if (velocity) {
+    let activeSource = this.activeSources.find(x => x.keyNum === keyNum)
+    if (!velocity && activeSource) {
+
+      if (activeSource && !this.sustain) {
+        this.scheduleRelease(activeSource)
+        // Dispose of source
+        this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
+      }
+      else if (activeSource && this.sustain) {
+        this.activeSources.forEach(x => x.removeWhenSustainOff = true)
+      }
+    }
+    else if (velocity && !activeSource) {
+      // Reduce gain of chosen sample by velocity
+      let dampen = velocity < 31
+        ? velocity / 30 : velocity < 51
+        ? velocity / 50 : velocity < 81
+        ? velocity / 80 : velocity / 127
       // Create source + volume for ADSR
       let source = this.ctx.createBufferSource()
       let sourceGain = this.ctx.createGain()
@@ -103,32 +119,12 @@ export default class PianoSource {
       source.connect(sourceGain)
       sourceGain.connect(this.outputGain)
 
-      // Reduce gain of chosen sample by velocity
-      let dampen = velocity < 31
-        ? velocity / 30 : velocity < 51
-        ? velocity / 50 : velocity < 81
-        ? velocity / 80 : velocity / 127
-
       // Invert min / max, such that value approaching 0 is reduction amount
       sourceGain.gain.value = 1 - Math.abs(dampen - 1)
 
       // Play sound + add to local sources array
       source.start()
       this.activeSources.push({ keyNum, source, sourceGain })
-    }
-
-    else {
-      let source = this.activeSources.find(x => x.keyNum === keyNum)
-
-      if (source && !this.sustain) {
-        this.scheduleRelease(source)
-        // Dispose of source
-        this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
-      }
-
-      else if (source && this.sustain) {
-        this.activeSources.forEach(x => x.removeWhenSustainOff = true)
-      }
     }
   }
 
