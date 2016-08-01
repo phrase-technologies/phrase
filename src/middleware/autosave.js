@@ -5,6 +5,8 @@ let changesDuringPlayback = false
 
 let autosave = store => next => action => {
 
+  let oldState = store.getState()
+  let result = next(action)
 
   // bail early on action namespaces we don't care about:
   let actionNamespace = action.type.split(`/`)[0]
@@ -19,8 +21,6 @@ let autosave = store => next => action => {
       break
   }
 
-  let oldState = store.getState()
-  let result = next(action)
   let newState = store.getState()
 
   // Phrase Changes?
