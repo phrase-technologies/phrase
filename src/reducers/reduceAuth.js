@@ -66,6 +66,7 @@ export let signup = ({ email, username, password }) => {
                   user: response.user,
                 },
               })
+              dispatch(modalOpen({ modalComponent: `SignupConfirmationModal`, payload: email }))
 
               let phraseState = getState().phrase
               if (phraseState.past.length || phraseState.future.length) {
@@ -171,7 +172,7 @@ export default (state = intialState, action) => {
           errorMessage: null,
         }
       }
-      else if (action.modalComponent === 'ForgotPasswordSuccessModal') {
+      else if (['ForgotPasswordSuccessModal', 'SignupConfirmationModal'].find(x => x === action.modalComponent)) {
         return {
           ...state,
           email: action.payload,
