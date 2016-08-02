@@ -38,10 +38,12 @@ export default (engine, STORE) => {
 
     let armedTrack = state.phrase.present.tracks.find(x => x.id === state.phraseMeta.trackSelectionID)
     if (armedTrack && [144, 128].some(x => x === type)) {
+      let yamahaOffsetCompensation = event.srcElement.manufacturer === "Yamaha" ? 12 : 0
+
       fireNote({
         engine,
         trackID: armedTrack.id,
-        keyNum: key - 12,
+        keyNum: key - yamahaOffsetCompensation,
         velocity,
       })
     }
