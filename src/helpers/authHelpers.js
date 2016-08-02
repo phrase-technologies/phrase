@@ -58,8 +58,11 @@ export let newPassword = async (body, callback) => {
     body: JSON.stringify(body),
   })
 
-  let { success, message } = await response.json()
+  if (response.ok) {
+    let { success, message } = await response.json()
 
-  if (success) await login({ body, callback })
-  else callback({ message })
+    if (success) await login({ body, callback })
+    else callback({ message })
+  }
+  else throw response.error
 }
