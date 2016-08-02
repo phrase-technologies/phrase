@@ -6,6 +6,9 @@ import { addNotification } from 'reducers/reduceNotification'
 // Piano for now, but this is a basic sampler, and Piano could inherit to
 // implement Piano specific things like dampening or something..
 
+let distanceBetweenSamples = 6
+let samplesToLoadByKey = _.range(0, 88).filter(x => x % distanceBetweenSamples === 0)
+
 export default class PianoSource {
   constructor(AudioContext, config, STORE) {
     this.ctx = AudioContext
@@ -29,7 +32,7 @@ export default class PianoSource {
 
     // TODO: load fewer samples and detune
     let samples = _.flatMap(
-      _.range(0, 88).map(x =>
+      samplesToLoadByKey.map(x =>
         [30, 50, 80, 120].map(v => ({
           id: `${x}-${v}`, audio: `${API_URL}/piano/${x}-${v}.mp3`,
         }))
@@ -89,7 +92,10 @@ export default class PianoSource {
       ? 50 : velocity < 81
       ? 80 : 120
 
-    let buffer = this.bufferMap[`${keyNum - 8}-${nearestSample}`]
+    // keynum - 2 makes detune go from -200 to 300 at 2 notes per octave
+    let nearestKeyNumIndex = Math.round(((keyNum - 2) / 88) * samplesToLoadByKey.length)
+    let nearestKeyNum = samplesToLoadByKey[nearestKeyNumIndex]
+    let buffer = this.bufferMap[`${nearestKeyNum}-${nearestSample}`]
 
     // An error has occured! There should always be a buffer.
     if (!buffer) return
@@ -115,6 +121,10 @@ export default class PianoSource {
       // Create source + volume for ADSR
       let source = this.ctx.createBufferSource()
       let sourceGain = this.ctx.createGain()
+
+      let detuneAmount = (keyNum - nearestKeyNum) * 100
+      source.detune.value = detuneAmount
+
       source.buffer = buffer
       source.connect(sourceGain)
       sourceGain.connect(this.outputGain)
