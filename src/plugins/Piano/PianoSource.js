@@ -15,7 +15,7 @@ export default class PianoSource {
     // TODO: load single soundfont file / chunks
     // https://www.clicktorelease.com/code/typed-array-web-audio/
 
-    let samples = _.range(4, 79).map(x => ({
+    let samples = _.range(9, 97).map(x => ({
       id: `${x}-80`, audio: `${API_URL}/piano/${x}-80.mp3`
     }))
 
@@ -36,7 +36,7 @@ export default class PianoSource {
 
   fireNote(keyNum, velocity, time = 0, detune) {
     // TODO: get correct note by velocity range
-    let buffer = this.bufferMap[`${keyNum-8}-80`]
+    let buffer = this.bufferMap[`${keyNum}-80`]
 
     if (!buffer) return
 

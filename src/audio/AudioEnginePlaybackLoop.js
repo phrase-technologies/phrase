@@ -57,7 +57,7 @@ export function startPlayback(engine, dispatch) {
         fireNote({
           engine,
           trackID: currentCommand.trackID,
-          keyNum: currentCommand.keyNum + 8,
+          keyNum: currentCommand.keyNum,
           velocity: currentCommand.velocity,
           time: currentCommandTime,
           disableRecording: true,

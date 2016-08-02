@@ -18,7 +18,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
-var provideGridSystem = (ChildComponent) => {
+let provideGridSystem = (ChildComponent) => {
 
   return class extends Component {
 
@@ -37,19 +37,19 @@ var provideGridSystem = (ChildComponent) => {
       this.grid.marginBottom = 0
       this.grid.marginLeft   = 0
       this.grid.marginRight  = 0
-      this.grid.calculateZoomThreshold = this.calculateZoomThreshold.bind(this)
-      this.grid.getBarRange = this.getBarRange.bind(this)
-      this.grid.getKeyRange = this.getKeyRange.bind(this)
-      this.grid.getActiveHeight = this.getActiveHeight.bind(this)
-      this.grid.getActiveWidth = this.getActiveWidth.bind(this)
-      this.grid.keyToYCoord = this.keyToYCoord.bind(this)
-      this.grid.barToXCoord = this.barToXCoord.bind(this)
-      this.grid.percentToKey = this.percentToKey.bind(this)
-      this.grid.percentToBar = this.percentToBar.bind(this)
-      this.grid.getMouseYPercent = this.getMouseYPercent.bind(this)
-      this.grid.getMouseXPercent = this.getMouseXPercent.bind(this)
+      this.grid.calculateZoomThreshold = this.calculateZoomThreshold
+      this.grid.getBarRange = this.getBarRange
+      this.grid.getKeyRange = this.getKeyRange
+      this.grid.getActiveHeight = this.getActiveHeight
+      this.grid.getActiveWidth = this.getActiveWidth
+      this.grid.keyToYCoord = this.keyToYCoord
+      this.grid.barToXCoord = this.barToXCoord
+      this.grid.percentToKey = this.percentToKey
+      this.grid.percentToBar = this.percentToBar
+      this.grid.getMouseYPercent = this.getMouseYPercent
+      this.grid.getMouseXPercent = this.getMouseXPercent
 
-      // This callback 
+      // This callback
       this.grid.didMount = () => {
         if (!this.grid.init) {
           this.grid.init = true
@@ -57,8 +57,6 @@ var provideGridSystem = (ChildComponent) => {
           this.handleResize()
         }
       }
-
-      this.handleResize = this.handleResize.bind(this)
     }
 
     componentDidMount() {
@@ -70,31 +68,30 @@ var provideGridSystem = (ChildComponent) => {
       window.removeEventListener('resize', this.handleResize)
     }
 
-    handleResize() {
+    handleResize = () => {
       this.grid.pixelScale = window.devicePixelRatio || 1
       this.grid.width  = this.grid.container.clientWidth  * this.grid.pixelScale
       this.grid.height = this.grid.container.clientHeight * this.grid.pixelScale
     }
 
     // Grid Calculations
-    getBarRange(){ return this.props.xMax - this.props.xMin }
-    getKeyRange(){ return this.props.yMax - this.props.yMin }
-    getActiveHeight(){ return this.grid.height - this.grid.pixelScale*(this.grid.marginTop  + this.grid.marginBottom) }
-    getActiveWidth (){ return this.grid.width  - this.grid.pixelScale*(this.grid.marginLeft + this.grid.marginRight ) }
-    keyToYCoord(key){ return ( ( key / this.props.keyCount ) - this.props.yMin ) / this.grid.getKeyRange() * this.grid.getActiveHeight() + this.grid.pixelScale*this.grid.marginTop  }
-    barToXCoord(bar){ return ( ( bar / this.props.barCount ) - this.props.xMin ) / this.grid.getBarRange() * this.grid.getActiveWidth()  + this.grid.pixelScale*this.grid.marginLeft }
-    percentToKey(percent){ return Math.ceil( percent * this.props.keyCount ) } // Where percent is between 0.000 and 1.000
-    percentToBar(percent){ return Math.ceil( percent * this.props.barCount ) } // Where percent is between 0.000 and 1.000
-    getMouseYPercent(e){ return this.grid.pixelScale * (e.clientY - this.grid.container.getBoundingClientRect().top  - this.grid.marginTop)  / this.grid.getActiveHeight() }
-    getMouseXPercent(e){ return this.grid.pixelScale * (e.clientX - this.grid.container.getBoundingClientRect().left - this.grid.marginLeft) / this.grid.getActiveWidth()  }
+    getBarRange = () => { return this.props.xMax - this.props.xMin }
+    getKeyRange = () => { return this.props.yMax - this.props.yMin }
+    getActiveHeight = () => { return this.grid.height - this.grid.pixelScale*(this.grid.marginTop  + this.grid.marginBottom) }
+    getActiveWidth = () => { return this.grid.width  - this.grid.pixelScale*(this.grid.marginLeft + this.grid.marginRight)  }
+    keyToYCoord = (key) => { return (((key + 8) / this.props.keyCount) - this.props.yMin) / this.grid.getKeyRange() * this.grid.getActiveHeight() + this.grid.pixelScale*this.grid.marginTop  } // Offset key by 8 due to 1st key = MIDI #9
+    barToXCoord = (bar) => { return (((bar)     / this.props.barCount) - this.props.xMin) / this.grid.getBarRange() * this.grid.getActiveWidth()  + this.grid.pixelScale*this.grid.marginLeft }
+    percentToKey = (percent) => { return Math.ceil(percent * this.props.keyCount) } // Where percent is between 0.000 and 1.000
+    percentToBar = (percent) => { return Math.ceil(percent * this.props.barCount) } // Where percent is between 0.000 and 1.000
+    getMouseYPercent = (e) => { return this.grid.pixelScale * (e.clientY - this.grid.container.getBoundingClientRect().top  - this.grid.marginTop)  / this.grid.getActiveHeight() }
+    getMouseXPercent = (e) => { return this.grid.pixelScale * (e.clientX - this.grid.container.getBoundingClientRect().left - this.grid.marginLeft) / this.grid.getActiveWidth()  }
 
     // Calculate thresholds at which to draw barline thicknesses
-    calculateZoomThreshold() {
-      if( this.props.xMin || this.props.xMax )
-      {
-        var pixelsPerBar = this.grid.getActiveWidth() / (this.props.barCount*this.grid.getBarRange()) / this.grid.pixelScale
+    calculateZoomThreshold = () => {
+      if (this.props.xMin || this.props.xMax) {
+        let pixelsPerBar = this.grid.getActiveWidth() / (this.props.barCount*this.grid.getBarRange()) / this.grid.pixelScale
 
-        var thresholdsWithKeys = [
+        let thresholdsWithKeys = [
           { threshold:   10.0, majorLine: 16.000, middleLine: 4.0000, minorLine: null      },
           { threshold:   20.0, majorLine:  4.000, middleLine: 4.0000, minorLine: 2.0000    },
           { threshold:   40.0, majorLine:  4.000, middleLine: 1.0000, minorLine: null      },
@@ -105,7 +102,7 @@ var provideGridSystem = (ChildComponent) => {
           { threshold: 1280.0, majorLine:  0.250, middleLine: 0.0625, minorLine: 0.03125   }
         ]
 
-        var thresholdsNoKeys = [
+        let thresholdsNoKeys = [
           { threshold:   10.0, majorLine: 16.000, middleLine: 4.0000, minorLine: 1.0000    },
           { threshold:   20.0, majorLine:  4.000, middleLine: 4.0000, minorLine: 1.0000    },
           { threshold:   40.0, majorLine:  4.000, middleLine: 1.0000, minorLine: 0.5000    },
@@ -117,10 +114,10 @@ var provideGridSystem = (ChildComponent) => {
         ]
 
         // Find the first threshold that fits
-        this.grid.lineThresholdsWithKeys = thresholdsWithKeys.find(function(x){
+        this.grid.lineThresholdsWithKeys = thresholdsWithKeys.find((x) => {
           return x.threshold > pixelsPerBar || x.threshold >= 1280 // Always use last one (800) if we get there
         })
-        this.grid.lineThresholdsNoKeys = thresholdsNoKeys.find(function(x){
+        this.grid.lineThresholdsNoKeys = thresholdsNoKeys.find((x) => {
           return x.threshold > pixelsPerBar || x.threshold >= 1280 // Always use last one (800) if we get there
         })
       }

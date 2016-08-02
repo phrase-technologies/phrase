@@ -41,7 +41,7 @@ export default (engine, STORE) => {
       fireNote({
         engine,
         trackID: armedTrack.id,
-        keyNum: key,
+        keyNum: key - 12,
         velocity,
       })
     }

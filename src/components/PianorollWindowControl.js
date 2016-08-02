@@ -108,7 +108,7 @@ export class PianorollWindowControl extends Component {
 
   leftClickEvent(e) {
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
-    let key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount)
+    let key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange()) * this.props.keyCount + 8)
     let foundNote = this.getNoteAtBarKey(bar, key)
 
     if (foundNote) {
@@ -248,7 +248,7 @@ export class PianorollWindowControl extends Component {
     let { dispatch, arrangeTool } = this.props
 
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
-    let key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange())*this.props.keyCount
+    let key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange()) * this.props.keyCount + 8
 
     // Drag Selected Note(s)?
     if (this.lastEvent &&
@@ -437,7 +437,7 @@ export class PianorollWindowControl extends Component {
 
     // Play new key
     keyNum = Math.ceil(keyNum)
-    this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: keyNum + 8, velocity, disableRecording: true })
+    this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum, velocity, disableRecording: true })
     this.lastKeysPlayed = [keyNum]
   }
 
@@ -458,7 +458,7 @@ export class PianorollWindowControl extends Component {
 
       // Play new key
       selectedKeys.forEach(keyNum => {
-        this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: keyNum + 8, velocity: 127, disableRecording: true })
+        this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum, velocity: 127, disableRecording: true })
       })
 
       // Store the active state
@@ -468,8 +468,8 @@ export class PianorollWindowControl extends Component {
 
   killPreviewSound() {
     if (this.lastKeysPlayed) {
-      this.lastKeysPlayed.forEach(key => {
-        this.props.ENGINE.killNote({ trackID: this.props.currentTrack.id, keyNum: key + 8, disableRecording: true })
+      this.lastKeysPlayed.forEach(keyNum => {
+        this.props.ENGINE.killNote({ trackID: this.props.currentTrack.id, keyNum, disableRecording: true })
       })
     }
     this.lastKeysPlayed = null

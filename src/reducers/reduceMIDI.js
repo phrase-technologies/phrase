@@ -23,7 +23,7 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
       if (!velocity) {
         dispatch(phraseCreateNote({
           targetClipID: state.transport.targetClipID,
-          key: key - 8,
+          key,
           start: state.midi[key].start,
           end,
           velocity: state.midi[key].velocity,

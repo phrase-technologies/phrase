@@ -117,10 +117,9 @@ export class PianorollWindowDisplay extends Component {
     // Each edge + black key fills
     let minKey = this.props.grid.percentToKey(yMin)
     let maxKey = this.props.grid.percentToKey(yMax)
-    for (let key = minKey; key - 1 <= maxKey; key++)
-    {
-      let prevEdge = closestHalfPixel(this.props.grid.keyToYCoord(key - 1)) + 1   // Extra pixel to account for stroke width
-      let nextEdge = closestHalfPixel(this.props.grid.keyToYCoord(key))     + 1   // Extra pixel to account for stroke width
+    for (let key = minKey; key - 1 <= maxKey; key++) {
+      let prevEdge = closestHalfPixel(this.props.grid.keyToYCoord(key - 8 - 1)) + 1   // Extra pixel to account for stroke width, offset key by 8 due to 1st key = MIDI #9
+      let nextEdge = closestHalfPixel(this.props.grid.keyToYCoord(key - 8))     + 1   // Extra pixel to account for stroke width, offset key by 8 due to 1st key = MIDI #9
 
       // Stroke the edge between rows
       drawLine(canvasContext, 0, prevEdge, this.props.grid.width, prevEdge, false)
