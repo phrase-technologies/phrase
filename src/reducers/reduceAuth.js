@@ -88,18 +88,23 @@ export let forgotPassword = ({ email }) => {
   return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST})
 
-    forgotPasswordHelper({ email }, response => {
-      if (response.success)
-        dispatch(modalOpen({
-          modalComponent: 'ForgotPasswordSuccessModal',
-          payload: email,
-      }))
-      else {
-        dispatch({
-          type: auth.LOGIN_FAIL,
-          payload: { message: response.message },
+    catchAndToastException({ dispatch,
+      toCatch: async() => {
+        await forgotPasswordHelper({ email }, response => {
+          if (response.success)
+            dispatch(modalOpen({
+              modalComponent: 'ForgotPasswordSuccessModal',
+              payload: email,
+          }))
+          else {
+            dispatch({
+              type: auth.LOGIN_FAIL,
+              payload: { message: response.message },
+            })
+          }
         })
-      }
+      },
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
     })
   }
 }
@@ -108,24 +113,28 @@ export let newPassword = ({ email, resetToken, password, confirmPassword }) => {
   return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST})
 
-    newPasswordHelper({ email, resetToken, password, confirmPassword }, response => {
-      if (response.success) {
-        dispatch({
-          type: auth.LOGIN_SUCCESS,
-          payload: {
-            loggedIn: response.success,
-            user: response.user,
-          },
+    catchAndToastException({ dispatch,
+      toCatch: async () => {
+        await newPasswordHelper({ email, resetToken, password, confirmPassword }, response => {
+          if (response.success) {
+            dispatch({
+              type: auth.LOGIN_SUCCESS,
+              payload: {
+                loggedIn: response.success,
+                user: response.user,
+              },
+            })
+            dispatch(push(`/`))
+          }
+          else {
+            dispatch({
+              type: auth.LOGIN_FAIL,
+              payload: { message: response.message },
+            })
+          }
         })
-
-        dispatch(push(`/`))
-      }
-      else {
-        dispatch({
-          type: auth.LOGIN_FAIL,
-          payload: { message: response.message },
-        })
-      }
+      },
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
     })
   }
 }
