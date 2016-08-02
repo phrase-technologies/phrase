@@ -1,5 +1,4 @@
 import request from 'request'
-
 import { sendInBlueApi, sendInBlueKey } from '../config'
 
 export default function sendEmail(template, to, attr) {
@@ -12,5 +11,6 @@ export default function sendEmail(template, to, attr) {
   }, (error) => {
     if (error)
       console.log(error)
+      // TODO: implement proper email error handling
   })
 }

@@ -14,6 +14,23 @@ let hash = password => crypto.createHmac(`sha256`, secret)
 
 let doubleHash = password => hash(hash(password))
 
+let generateUniqueToken = async ({ index, db }) => {
+  let token = crypto.randomBytes(20).toString(`hex`)
+
+  while(true) {
+    let cursor = await r.table(`users`)
+      .getAll(token, { index })
+      .limit(1)
+      .run(db)
+    let users = await cursor.toArray()
+    if (users[0])
+      token = crypto.randomBytes(20).toString(`hex`)
+    else
+      break
+  }
+  return token
+}
+
 export default ({
   api,
   app,
@@ -152,19 +169,7 @@ export default ({
           message: { emailError: `Email not found.` },
         })
       } else {
-        let token = crypto.randomBytes(20).toString(`hex`)
-        while(true) {
-          let cursor = await r.table(`users`)
-            .getAll(token, { index: `resetToken` })
-            .limit(1)
-            .run(db)
-          let users = await cursor.toArray()
-          if (users[0])
-            token = crypto.randomBytes(20).toString(`hex`)
-          else
-            break
-        }
-
+        let token = await generateUniqueToken({ index: `resetToken`, db })
         r.table(`users`)
           .getAll(lowerCaseEmail, { index: `email`})
           .limit(1)
