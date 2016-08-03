@@ -1,7 +1,9 @@
 import request from 'request'
+
+import { clientURL } from '../server.config'
 import { sendInBlueApi, sendInBlueKey } from '../config'
 
-export default function sendEmail(template, to, attr) {
+function sendEmail(template, to, attr) {
   request({
     url: `${sendInBlueApi}/${template}`,
     method: `PUT`,
@@ -11,6 +13,15 @@ export default function sendEmail(template, to, attr) {
   }, (error) => {
     if (error)
       console.log(error)
-      // TODO: implement proper email error handling
   })
+}
+
+export function sendPasswordResetEmail({ username, email, resetToken }) {
+  let resetLink = `${clientURL}/new-password?token=${resetToken}&email=${email}`
+  sendEmail(1, email, { USERNAME: username, RESETLINK: resetLink })
+}
+
+export function sendWelcomeEmail({ username, email, confirmToken }) {
+  let confirmLink = `${clientURL}/confirm-user?token=${confirmToken}&email=${email}`
+  sendEmail(2, email, { USERNAME: username, CONFIRMLINK: confirmLink })
 }

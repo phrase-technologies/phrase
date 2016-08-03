@@ -5,8 +5,7 @@ import isValidPassword from '../helpers/isPassword'
 import r from 'rethinkdb'
 import crypto from 'crypto'
 import { secret } from '../config'
-import { clientURL } from '../server.config'
-import sendEmail from '../helpers/emailHelper'
+import { sendPasswordResetEmail, sendWelcomeEmail } from '../helpers/emailHelper'
 
 let hash = password => crypto.createHmac(`sha256`, secret)
   .update(password)
@@ -94,11 +93,19 @@ export default ({
               message: { passwordError: `Passwords must be at least 6 characters long` },
             })
           } else {
+            let token = await generateUniqueToken({ index: `confirmToken`, db })
             let user = await r.table(`users`).insert({
               username: trimmedUsername,
               email: lowerCaseEmail,
               password: doubleHash(trimmedPassword),
+              confirmToken: token,
             }).run(db)
+
+            sendWelcomeEmail({
+              username: trimmedUsername,
+              email: lowerCaseEmail,
+              confirmToken: token,
+            })
 
             console.log(`${username} signed up!`)
 
@@ -135,7 +142,13 @@ export default ({
           success: false,
           message: `Bad username or email / password combination.`,
         })
-      } else {
+      } else if (user.confirmToken) {
+        res.json({
+          success: false,
+          message: `Please confirm your email address before logging in.`,
+        })
+      }
+      else {
         let token = jwt.sign(user, app.get(`superSecret`), {
           expiresInMinutes: 1440, // expires in 24 hours
         })
@@ -175,10 +188,7 @@ export default ({
           .limit(1)
           .update({resetToken: token})
           .run(db)
-
-        let resetLink = `${clientURL}/new-password?token=${token}&email=${user.email}`
-        sendEmail(1, user.email, { USERNAME: user.username, RESETLINK: resetLink })
-
+        sendPasswordResetEmail({ username: user.username, email: user.email, resetToken: token })
         res.json({
           success: true,
         })
@@ -232,6 +242,29 @@ export default ({
             success: true,
           })
         }
+      }
+    }
+    catch (err) { console.log(err) }
+  })
+
+  app.post(`/confirm-user`, async (req, res) => {
+    try {
+      let { email, confirmToken } = req.body
+      let lowerCaseEmail = email.toLowerCase()
+      let cursor = await r.table(`users`)
+        .getAll(lowerCaseEmail, { index: `email` })
+        .limit(1)
+        .run(db)
+      let users = await cursor.toArray()
+      let user = users[0]
+
+      if(!user || user.confirmToken !== confirmToken)
+        res.json({ success: false })
+      else {
+        r.table(`users`).getAll(lowerCaseEmail, { index: `email`}).limit(1)
+          .replace(r.row.without(`confirmToken`))
+          .run(db)
+        res.json({ success: true })
       }
     }
     catch (err) { console.log(err) }
