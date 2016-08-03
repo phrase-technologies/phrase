@@ -31,32 +31,35 @@ export default class WorkstationFooter extends Component {
         />
         <div className="btn-toolbar">
           <div className="btn-group">
-            <div className="btn btn-narrow btn-link btn-sm link-dark">
-              <span>Input Methods: </span>
-            </div>
             <div
-              className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
+              className="btn btn-narrow btn-link btn-sm link-dark"
               onClick={() => this.setOpenInputMethod(0)}
             >
-              <span className="phrase-icon-pianoroll" style={{ paddingLeft: 6, paddingRight: 6 }} />
+              <span>Input Methods: </span>
             </div>
             <div
               className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
               onClick={() => this.setOpenInputMethod(1)}
             >
-              <span className="fa fa-fw fa-keyboard-o" />
+              <span className="phrase-icon-pianoroll" />
             </div>
             <div
               className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
               onClick={() => this.setOpenInputMethod(2)}
             >
-              <span className="fa fa-fw fa-mouse-pointer" />
+              <span className="fa fa-keyboard-o" />
+            </div>
+            <div
+              className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
+              onClick={() => this.setOpenInputMethod(3)}
+            >
+              <span className="fa fa-mouse-pointer" />
             </div>
             <div
               className="btn btn-narrow btn-link btn-sm link-dark btn-glow"
-              onClick={() => this.setOpenInputMethod(3)}
+              onClick={() => this.setOpenInputMethod(4)}
             >
-              <span className="fa fa-fw fa-microphone" />
+              <span className="fa fa-microphone" />
             </div>
           </div>
           {/*

@@ -334,7 +334,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 
   z-index: $workstation-footer-z-index;
 }
-.workstation-footer-input-tour {
+.input-tour {
   position: absolute;
   left: 10px;
   bottom: 40px;
@@ -348,27 +348,89 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
 
   color: #FFF;
 
-  h4 {
-    margin-top: 0;
+  .close {
+    color: #555;
+    opacity: 1;
+    text-shadow: none;
+    top: 5px;
+    right: 5px;
+    z-index: 2;
   }
 
   .carousel {
     height: 100%;
+    padding-top: 35px;
 
-    .item {
-      padding: 15px;
+    > .carousel-inner {
+      height: 100%;
+
+      > .item {
+        transition: transform 0.25s ease-in-out;
+        padding: 15px 30px;
+        height: 100%;
+
+        > h4 {
+          margin-top: 0;
+        }
+      }
     }
   }
   .carousel-control {
-    margin-top: 110px;
+    margin-top: 120px;
     width: 30px;
     height: 20px;
     background: none;
     font-size: 16px;
   }
 }
+.input-tour-header {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
 
-.workstation-footer-input-tour-caret {
+  border-bottom: 1px solid transparent;
+  border-radius: 4px;
+  background: #EEE;
+  color: #333;
+  padding: 40px;
+  text-align: center;
+  font-size: 18px;
+
+  transition: padding 0.25s, height 0.25s, font-size 0.25s, border-color 0.25s;
+
+  &.collapsed {
+    border-radius: 4px 4px 0 0;
+    border-color: #222;
+    padding: 10px;
+    height: 38px;
+    font-size: 16px;
+  }
+}
+.input-tour-intro {
+  padding-top: 30px;
+  text-align: center;
+  color: #222;
+  font-size: 36px;
+}
+.input-tour-intro-method {
+  width: 120px;
+  height: 120px;
+  padding: 10px;
+
+  cursor: pointer;
+}
+.input-tour-intro-method-icon {
+  height: 55px;
+  overflow: hidden;
+}
+.input-tour-intro-method-title {
+  margin: 0;
+  font-size: 12px;
+}
+.input-tour-caret {
   position: absolute;
   left: 0px;
   bottom: 0px;
@@ -387,10 +449,18 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   &::after {
     content: '';
     border: 6px solid transparent;
-    border-top-color: hsl(0,0,48);
+    border-top-color: #EEE;
     position: absolute;
     left: 7px;
     bottom: -12px;
+
+    transition: border-color 0.25s;
+  }
+
+  &.dark {
+    &::after {
+      border-top-color: hsl(0,0,48);
+    }
   }
 }
 
