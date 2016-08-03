@@ -9,8 +9,7 @@ export let signup = async ({ body, callback }) => {
 
   if (response.ok) {
     let { success, message } = await response.json()
-    if (success) await login({ body, callback })
-    else callback({ success, message })
+    callback({ success, message })
   }
   else throw response.error
 }
@@ -59,4 +58,18 @@ export let newPassword = async (body, callback) => {
 
   if (success) login(body, callback)
   else callback({ message })
+}
+
+export let confirmUser = async (body, callback) => {
+  let response = await fetch(`${API_URL}/confirm-user`, {
+    method: `POST`,
+    headers: { 'Content-Type': `application/json` },
+    body: JSON.stringify(body),
+  })
+
+  if (response.ok) {
+    let { success } = await response.json()
+    callback({ success })
+  }
+  else throw response.error
 }

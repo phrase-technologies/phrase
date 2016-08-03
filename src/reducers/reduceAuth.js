@@ -1,6 +1,12 @@
 import { push } from 'react-router-redux'
 
-import { login as loginHelper, signup as signupHelper, forgotPassword as forgotPasswordHelper, newPassword as newPasswordHelper } from 'helpers/authHelpers'
+import {
+  login as loginHelper,
+  signup as signupHelper,
+  forgotPassword as forgotPasswordHelper,
+  newPassword as newPasswordHelper,
+  confirmUser as confirmUserHelper
+} from 'helpers/authHelpers'
 import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
 import { librarySaveNew } from 'reducers/reduceLibrary'
@@ -59,13 +65,6 @@ export let signup = ({ email, username, password }) => {
           body: { email, username, password },
           callback: (response) => {
             if (response.success) {
-              dispatch({
-                type: auth.LOGIN_SUCCESS,
-                payload: {
-                  loggedIn: response.success,
-                  user: response.user,
-                },
-              })
               dispatch(modalOpen({ modalComponent: `SignupConfirmationModal`, payload: email }))
 
               let phraseState = getState().phrase
@@ -131,6 +130,22 @@ export let newPassword = ({ email, resetToken, password, confirmPassword }) => {
   }
 }
 
+export let confirmUser = ({ email, confirmToken }) => {
+  return (dispatch) => {
+    catchAndToastException({ dispatch,
+      toCatch: async () => {
+        await confirmUserHelper({ email, confirmToken }, async response => {
+          if (response.success) {
+            dispatch(push('/phrase/new'))
+            dispatch(modalOpen({ modalComponent: 'ConfirmSuccessModal' }))
+          }
+          else dispatch({ type: auth.USER_CONFIRM_FAIL })
+        })
+      },
+    })
+  }
+}
+
 export let logout = () => {
   return (dispatch) => {
     localStorage.clear()
@@ -158,6 +173,7 @@ let intialState = {
     username: localStorage.username,
   },
   errorMessage: null,
+  showConfirmUserError: false,
 }
 
 export default (state = intialState, action) => {
@@ -212,6 +228,13 @@ export default (state = intialState, action) => {
         ...state,
         errorMessage: action.payload.message,
         requestingAuth: false,
+      }
+
+    // ------------------------------------------------------------------------
+    case auth.USER_CONFIRM_FAIL:
+      return {
+        ...state,
+        showConfirmUserError: true,
       }
 
     // ------------------------------------------------------------------------

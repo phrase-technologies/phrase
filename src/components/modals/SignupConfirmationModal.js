@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 
-import { modalClose } from 'reducers/reduceModal.js'
+import { modalClose } from 'reducers/reduceModal'
 
 export class SignupConfirmationModal extends Component {
   render() {
