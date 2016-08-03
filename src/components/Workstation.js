@@ -125,6 +125,12 @@ export class Workstation extends Component {
                   </div>
                 </div>
               </div>
+              { this.props.samples[0] &&
+                this.props.samples[0].samplesLoaded < this.props.samples[0].totalSamples &&
+                <div className="workstation-samples-progress">
+                  {this.props.samples[0].samplesLoaded} / {this.props.samples[0].totalSamples}
+                </div>
+              }
             </div>
 
           </MouseEventProvider>
@@ -230,7 +236,8 @@ export class Workstation extends Component {
       'consoleEmbedded',
       'consoleSplitRatio',
       'rackOpen',
-      'selectedTrack'
+      'selectedTrack',
+      'samples'
     ]
 
     return propsToCheck.some(prop => nextProps[prop] !== this.props[prop])
@@ -253,6 +260,7 @@ function mapStateToProps(state) {
     consoleEmbedded:   state.navigation.consoleEmbedded,
     consoleSplitRatio: state.navigation.consoleSplitRatio,
     rackOpen: state.navigation.rackOpen,
+    samples: state.samples,
     selectedTrack,
   }
 }

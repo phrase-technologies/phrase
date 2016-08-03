@@ -1,7 +1,6 @@
 import load from 'audio-loader'
 import _ from 'lodash'
 import { samples as samplesActions } from 'actions/actions'
-import { addNotification } from 'reducers/reduceNotification'
 
 // Piano for now, but this is a basic sampler, and Piano could inherit to
 // implement Piano specific things like dampening or something..
@@ -30,6 +29,15 @@ export default class PianoSource {
       return
     }
 
+    STORE.dispatch({
+      type: samplesActions.LOADING,
+      payload: {
+        id: 'Piano',
+        totalSamples: samplesToLoadByKey.length * 4,
+        samplesLoaded: 0,
+      }
+    })
+
     // TODO: load fewer samples and detune
     let samples = _.flatMap(
       samplesToLoadByKey.map(x =>
@@ -44,18 +52,13 @@ export default class PianoSource {
       load(this.ctx, sample).then(result => {
         this.bufferMap[result.id] = result.audio
         samplesLoadedCount++
-        if (samplesLoadedCount === samples.length) {
-          STORE.dispatch({
-            type: samplesActions.LOADED,
-            payload: { id: 'Piano', bufferMap: this.bufferMap }
-          })
-
-          // TODO: progress bar
-          STORE.dispatch(addNotification({
-            title: 'Piano samples',
-            message: 'have finished loading'
-          }))
-        }
+        STORE.dispatch({
+          type: samplesActions.LOADING,
+          payload: {
+            id: 'Piano',
+            samplesLoaded: samplesLoadedCount,
+          }
+        })
       })
     )
   }
@@ -102,10 +105,8 @@ export default class PianoSource {
 
     let activeSource = this.activeSources.find(x => x.keyNum === keyNum)
     if (!velocity && activeSource) {
-
       if (activeSource && !this.sustain) {
         this.scheduleRelease(activeSource)
-        // Dispose of source
         this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
       }
       else if (activeSource && this.sustain) {
@@ -113,29 +114,38 @@ export default class PianoSource {
       }
     }
     else if (velocity && !activeSource) {
-      // Reduce gain of chosen sample by velocity
-      let dampen = velocity < 31
-        ? velocity / 30 : velocity < 51
-        ? velocity / 50 : velocity < 81
-        ? velocity / 80 : velocity / 127
-      // Create source + volume for ADSR
-      let source = this.ctx.createBufferSource()
-      let sourceGain = this.ctx.createGain()
-
-      let detuneAmount = (keyNum - nearestKeyNum) * 100
-      source.detune.value = detuneAmount
-
-      source.buffer = buffer
-      source.connect(sourceGain)
-      sourceGain.connect(this.outputGain)
-
-      // Invert min / max, such that value approaching 0 is reduction amount
-      sourceGain.gain.value = 1 - Math.abs(dampen - 1)
-
-      // Play sound + add to local sources array
-      source.start()
-      this.activeSources.push({ keyNum, source, sourceGain })
+      this.triggerSound({ buffer, keyNum, velocity, nearestKeyNum })
     }
+    else if (velocity && activeSource && this.sustain) {
+      this.scheduleRelease(activeSource)
+      this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
+      this.triggerSound({ buffer, keyNum, velocity, nearestKeyNum })
+    }
+  }
+
+  triggerSound({ buffer, keyNum, velocity, nearestKeyNum }) {
+    // Reduce gain of chosen sample by velocity
+    let dampen = velocity < 31
+      ? velocity / 30 : velocity < 51
+      ? velocity / 50 : velocity < 81
+      ? velocity / 80 : velocity / 127
+    // Create source + volume for ADSR
+    let source = this.ctx.createBufferSource()
+    let sourceGain = this.ctx.createGain()
+
+    let detuneAmount = (keyNum - nearestKeyNum) * 100
+    source.detune.value = detuneAmount
+
+    source.buffer = buffer
+    source.connect(sourceGain)
+    sourceGain.connect(this.outputGain)
+
+    // Invert min / max, such that value approaching 0 is reduction amount
+    sourceGain.gain.value = 1 - Math.abs(dampen - 1)
+
+    // Play sound + add to local sources array
+    source.start()
+    this.activeSources.push({ keyNum, source, sourceGain })
   }
 
   scheduleRelease(source) {

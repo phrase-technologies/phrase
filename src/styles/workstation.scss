@@ -335,6 +335,18 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   z-index: $workstation-footer-z-index;
 }
 
+.workstation-samples-progress {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2;
+  background: #252525;
+  padding: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
 // ============================================================================
 // Effects Chain sidebar
 // ============================================================================
