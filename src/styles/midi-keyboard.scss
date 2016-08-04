@@ -1,0 +1,205 @@
+// ----------------------------------------------------------------------------
+// Keyboard
+// ----------------------------------------------------------------------------
+.midi-controller-keybed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+$total-keys:  88.00;
+$octave-keys: 12.00;
+$octave-thickness: percentage($octave-keys/$total-keys) - 0.0001; // Compensate for rounding errors that cause border overflow
+$key-thickness: percentage(1/$octave-keys) - 0.01;               // Compensate for rounding errors that cause border overflow
+.midi-controller-key {
+  float: right;
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  cursor: pointer;
+  border-right: 0px;
+  width: $key-thickness;
+  height: 100%;
+
+  &.white {
+    border: 1px solid #000;
+    border-right: 0;
+    background: #CCC;
+    background-image: linear-gradient(180deg, #BBB 20%, #EEE 21%, #AAA 100%);
+    width: 1.75*$key-thickness;   // Make white keys thicker
+
+    display: flex;
+    padding-bottom: 2px;
+    .midi-controller-key-label {
+      visibility: hidden;
+      font-size: 6px;
+      color: #000;
+      align-self: flex-end;
+      text-align: center;
+      width: 100%;
+    }
+
+    &.active {
+      background: #A99;
+      background-image: linear-gradient(180deg, #988 16%, #CBB 17%, #988 100%);
+      box-shadow: inset 0 1px 3px 2px #544;
+    }
+  }
+  &.black {
+    position: relative;
+    border-radius: 0 0 1px 1px;
+    border: 1px solid #222;
+    background: #222;
+    z-index: 1;  // Above the white keys
+    width: $key-thickness;    // ...try to cut a pixel off of black keys to prevent asymmetry
+    height: 69%;
+
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      right: 0;
+      bottom: 8%;
+      left: 0;
+      top: 0;
+      border-radius: 0 0 20% 20%;
+      background: #555;
+    }
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 100%;
+      left: -2px;
+      right: -1px;
+      height: 50%;
+
+      background-image: linear-gradient(top, rgba(0,0,0,0.25) 0%, transparent 50%);
+    }
+
+    // Overlap the adjacent white keys (different amounts depending on where they are on the scale)
+    margin: 0px -0.5*$key-thickness 0px -0.5*$key-thickness;
+    &.higher {
+      margin: 0px -0.80*$key-thickness 0px -0.20*$key-thickness;
+    }
+    &.lower {
+      margin: 0px -0.35*$key-thickness 0px -0.65*$key-thickness;
+    }
+
+    &.active {
+      border-color: #200;
+      border-bottom-width: 1px;
+      background: #200;
+
+      &:after {
+        left: 10%;
+        background: #544;
+        box-shadow: inset 0 1px 3px 2px #200;
+      }
+    }
+  }
+
+  &.thinner {
+    width: 1.5 * $key-thickness;     // Certain white keys are sandwiched slightly differently to maintain proportions
+  }
+
+  &:last-child {
+    > .midi-controller-key-label {
+      visibility: visible;
+    }
+  }
+}
+.midi-controller-octave {
+  position: relative;
+  float: right;
+  width: $octave-thickness;
+  height: 100%;
+
+  &:first-child {
+    width: percentage(1.0625/$total-keys);
+
+    .midi-controller-octave-label {
+      display: none;
+    }
+
+    .midi-controller-key {
+      width: 100%;
+      border-radius: 0 3px 3px 0;
+      border-right: 1px solid #000;
+
+      .midi-controller-key-label {
+        display: none;
+      }
+    }
+  }
+
+  &:nth-child(2) {
+    .midi-controller-octave-label {
+      border-right: 1px solid #000;
+    }
+  }
+
+  &:last-child {
+    width: percentage(2.9/$total-keys);
+
+    .midi-controller-octave-label {
+      display: none;
+    }
+
+    .midi-controller-key {
+      &.white {
+        width: percentage(1.75*(1/3));
+      }
+      &.black {
+        width: percentage(1/3);
+        margin: 0 percentage(-0.5*(1/3));
+      }
+      &:last-child {
+        width: percentage(1.250 * (1/3));
+        border-radius: 3px 0 0 3px;
+        border-bottom: 1px solid #000;
+
+        .midi-controller-key-label {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &:hover {
+    .midi-controller-key-label {
+      visibility: visible !important;
+    }
+    .midi-controller-key {
+      &.black {
+        &:before {
+          display: none;
+        }
+      }
+    }
+  }
+}
+.midi-controller-octave-label {
+  position: absolute;
+  bottom: 100%;
+  left: 0px;
+  right: 0px;
+  height: 16px;
+  background: #AAA;
+
+  border: 1px solid #000;
+  border-bottom: 0;
+  border-right: 0;
+
+  font-size: 8px;
+  color: #000;
+  display: flex;
+  > * {
+    align-self: flex-end;
+    width: 100%;
+    padding-left: 3px;
+    padding-bottom: 2px;
+    text-align: left;
+  }
+}

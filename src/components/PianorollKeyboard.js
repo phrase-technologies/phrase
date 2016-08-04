@@ -32,7 +32,7 @@ export class PianorollKeyboard extends Component {
     return (
       <div className="pianoroll-keyboard">
         <div className={keybedClasses} style={style}>
-          <PianorollKeys currentTrack={this.props.currentTrack} />
+          <PianorollKeys />
         </div>
       </div>
     )
@@ -52,7 +52,6 @@ export class PianorollKeyboard extends Component {
   shouldComponentUpdate(nextProps) {
     return diffProps(nextProps, this.props, [
       'ENGINE',
-      'currentTrack',
       'grid',
       'yMin',
       'yMax'
@@ -67,7 +66,6 @@ export class PianorollKeyboard extends Component {
 
 PianorollKeyboard.propTypes = {
   dispatch:     React.PropTypes.func.isRequired,
-  currentTrack: React.PropTypes.object,
   grid:         React.PropTypes.object.isRequired,  // via provideGridSystem & provideGridScroll
   yMin:         React.PropTypes.number.isRequired,
   yMax:         React.PropTypes.number.isRequired

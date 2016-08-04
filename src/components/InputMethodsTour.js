@@ -1,5 +1,7 @@
 import React from 'react'
 import { Carousel } from 'react-bootstrap'
+import ControllerMidiConnectivity from 'components/ControllerMidiConnectivity'
+import PianorollKeys from './PianorollKeys.js'
 
 export default (props) => {
 
@@ -7,7 +9,7 @@ export default (props) => {
     return null
   }
 
-  let caretPosition = props.openInputMethod ? 75 + 25 * props.openInputMethod : 40
+  let caretPosition = props.openInputMethod ? 82 + 32 * props.openInputMethod : 42
   let caretClasses = 'input-tour-caret' + (props.openInputMethod ? ' dark' : '')
 
   let introArray = [
@@ -29,7 +31,7 @@ export default (props) => {
     {
       key: 4,
       iconClass: "fa fa-fw fa-microphone",
-      title: <span>Microphone <br/> / Line-in</span>,
+      title: "Microphone / Line-in",
     },
   ]
 
@@ -58,7 +60,7 @@ export default (props) => {
                         <span className={method.iconClass} />
                       </div>
                       <h4 className="input-tour-intro-method-title">
-                        { method.title }
+                        { method.key + '. ' + method.title }
                       </h4>
                     </div>
                   </div>
@@ -68,34 +70,26 @@ export default (props) => {
           </div>
         </Carousel.Item>
         <Carousel.Item>
-          <h4 className="text-center">
-            <span>1. </span>
-            <span className="phrase-icon-pianoroll" />
-            <span> External MIDI Controller</span>
-          </h4>
-          <div>
+          <h4 className="text-center">1. External MIDI Controller</h4>
+          <p className="text-center">
+            Simply plug your MIDI controller in and we'll
+            automatically detect it.
+          </p>
+          <div className="input-tour-midi-piano">
+            <PianorollKeys midiController={true} />
           </div>
+          <p className="text-center">
+            <ControllerMidiConnectivity />
+          </p>
         </Carousel.Item>
         <Carousel.Item>
-          <h4 className="text-center">
-            <span>2. </span>
-            <span className="fa fa-keyboard-o" />
-            <span> Musical Typing via Computer Keyboard</span>
-          </h4>
+          <h4 className="text-center">2. Musical Typing via Computer Keyboard</h4>
         </Carousel.Item>
         <Carousel.Item>
-          <h4 className="text-center">
-            <span>3. </span>
-            <span className="fa fa-mouse-pointer" />
-            <span> Mouse Tools</span>
-          </h4>
+          <h4 className="text-center">3. Mouse Tools</h4>
         </Carousel.Item>
         <Carousel.Item>
-          <h4 className="text-center">
-            <span>4. </span>
-            <span className="fa fa-microphone" />
-            <span> Microphone / Line-in</span>
-          </h4>
+          <h4 className="text-center">4. Microphone / Line-in</h4>
           <p className="text-center" style={{ paddingTop: 40 }}>
             Coming Soon!
           </p>

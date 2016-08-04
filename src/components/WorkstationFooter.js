@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import InputMethodsTour from 'components/InputMethodsTour'
-// import ControllerMIDI from 'components/ControllerMIDI'
+import ControllerMidiConnectivity from 'components/ControllerMidiConnectivity'
 
 import { layout } from 'actions/actions'
 import { layoutConsoleSplit } from 'reducers/reduceNavigation'
@@ -32,41 +32,37 @@ export default class WorkstationFooter extends Component {
         <div className="btn-toolbar">
           <div className="btn-group">
             <div
-              className="btn btn-narrow btn-link btn-sm link-dark"
+              className="btn btn-link btn-sm link-dark"
               onClick={() => this.setOpenInputMethod(0)}
             >
               <span>Input Methods: </span>
             </div>
             <div
-              className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
+              className="btn btn-link btn-sm link-dark btn-glow active"
               onClick={() => this.setOpenInputMethod(1)}
             >
               <span className="phrase-icon-pianoroll" />
+              <ControllerMidiConnectivity iconOnly={true} />
             </div>
             <div
-              className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
+              className="btn btn-link btn-sm link-dark btn-glow active"
               onClick={() => this.setOpenInputMethod(2)}
             >
               <span className="fa fa-keyboard-o" />
             </div>
             <div
-              className="btn btn-narrow btn-link btn-sm link-dark btn-glow active"
+              className="btn btn-link btn-sm link-dark btn-glow active"
               onClick={() => this.setOpenInputMethod(3)}
             >
               <span className="fa fa-mouse-pointer" />
             </div>
             <div
-              className="btn btn-narrow btn-link btn-sm link-dark btn-glow"
+              className="btn btn-link btn-sm link-dark btn-glow"
               onClick={() => this.setOpenInputMethod(4)}
             >
               <span className="fa fa-microphone" />
             </div>
           </div>
-          {/*
-          <div className="btn-group">
-            <ControllerMIDI />
-          </div>
-          */}
           <div className="btn-group pull-right">
             <div className={multitrackClass} onClick={this.toggleMultitrack}>
               <span> Multitrack</span>

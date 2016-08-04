@@ -96,7 +96,7 @@ export default class Pianoroll extends Component {
         </div>
         <div className="pianoroll-chunk">
         </div>
-        <PianorollKeyboard {...dispatchProp} {...keyboardProps} currentTrack={this.props.currentTrack} />
+        <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
         <PianorollTimelineDisplay {...dispatchProp} {...timelineProps} clips={this.props.clips} />
         <PianorollTimelineControl {...dispatchProp} {...timelineProps} clips={this.props.clips} />
         <PianorollWindowDisplay {...this.props} />

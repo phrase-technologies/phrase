@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import withAudioEngine from '../audio/AudioEngineConnect.js'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 
-export class ControllerMIDI extends Component {
+export class ControllerMidiConnectivity extends Component {
 
   constructor() {
     super()
@@ -16,6 +16,30 @@ export class ControllerMIDI extends Component {
         signalClasses += this.state.controllers.length
           ? " signal-green"
           : " signal-red"
+
+    if (this.props.iconOnly) {
+      return (
+        <span
+          className={signalClasses}
+          style={{ marginLeft: -5, marginBottom: -6, marginRight: -6 }}
+        />
+      )
+    }
+
+    if ("DUMMY EXPRESSION TO DISABLE DROPDOWN") {
+      return (
+        <span>
+          <span className={signalClasses} />
+          <span style={{ paddingLeft: 4 }}>
+            {
+              this.state.controllers.length
+                ? `Connected to ${this.state.controllers.length} MIDI ports`
+                : "No MIDI Controller detected"
+            }
+          </span>
+        </span>
+      )
+    }
 
     return (
       <Dropdown id="workstation-footer-midi-controllers" dropup className="dropdown-dark">
@@ -72,4 +96,4 @@ export class ControllerMIDI extends Component {
 
 }
 
-export default withAudioEngine(ControllerMIDI)
+export default withAudioEngine(ControllerMidiConnectivity)

@@ -463,6 +463,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
     }
   }
 }
+<<<<<<< HEAD
 
 .workstation-samples-progress {
   position: fixed;
@@ -474,6 +475,12 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   text-transform: uppercase;
   font-weight: bold;
   border-radius: 5px;
+}
+
+.input-tour-midi-piano {
+  position: relative;
+  margin: 30px 15px 20px;
+  height: 50px;
 }
 
 // ============================================================================
