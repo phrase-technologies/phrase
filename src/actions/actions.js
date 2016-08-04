@@ -197,5 +197,7 @@ export const midi = namespaceActions(
     'NOTE_ON',
     'NOTE_OFF',
     'CONNECTION_SYNC',
+    'INCREMENT_OCTAVE',
+    'DECREMENT_OCTAVE',
   ]
 )

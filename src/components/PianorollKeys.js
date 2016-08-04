@@ -29,7 +29,6 @@ export class PianorollKeys extends Component {
           keyClass={keyClass}
           keyLabel={keyLabel}
           midiController={this.props.midiController}
-          dispatch={this.props.dispatch}
         />
       )
 

@@ -53,6 +53,8 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
   }
 }
 export const midiConnectionSync = ({ numPorts, manufacturers }) => ({ type: midi.CONNECTION_SYNC, payload: { numPorts, manufacturers }})
+export const midiIncrementOctave = () => ({ type: midi.INCREMENT_OCTAVE })
+export const midiDecrementOctave = () => ({ type: midi.DECREMENT_OCTAVE })
 
 export const midiEvent = ({ bar, type, key, velocity }) => {
   return (dispatch, getState) => {
@@ -77,6 +79,7 @@ export const defaultState = {
   keys: Array(128).fill(null),
   numPorts: 0,
   manufacturers: [],
+  currentOctave: 4,
 }
 
 export default function reduceMIDI(state = defaultState, action) {
@@ -107,10 +110,21 @@ export default function reduceMIDI(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case midi.CONNECTION_SYNC:
-     console.log(state)
       return u({
         numPorts: action.payload.numPorts,
         manufacturers: action.payload.manufacturers,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case midi.INCREMENT_OCTAVE:
+      return u({
+        currentOctave: Math.min(8, state.currentOctave + 1),
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case midi.DECREMENT_OCTAVE:
+      return u({
+        currentOctave: Math.max(1, state.currentOctave - 1),
       }, state)
 
     // ------------------------------------------------------------------------

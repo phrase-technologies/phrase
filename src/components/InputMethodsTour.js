@@ -1,7 +1,8 @@
 import React from 'react'
 import { Carousel } from 'react-bootstrap'
 import ControllerMidiConnectivity from 'components/ControllerMidiConnectivity'
-import PianorollKeys from './PianorollKeys.js'
+import PianorollKeys from 'components/PianorollKeys.js'
+import MusicalTyping from 'components/MusicalTyping.js'
 
 export default (props) => {
 
@@ -84,6 +85,7 @@ export default (props) => {
         </Carousel.Item>
         <Carousel.Item>
           <h4 className="text-center">2. Musical Typing via Computer Keyboard</h4>
+          <MusicalTyping />
         </Carousel.Item>
         <Carousel.Item>
           <h4 className="text-center">3. Mouse Tools</h4>

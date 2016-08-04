@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
+import { layout } from 'actions/actions'
+import { midiIncrementOctave, midiDecrementOctave } from 'reducers/reduceMIDI'
 import { modalClose } from 'reducers/reduceModal'
 import connectEngine from '../audio/AudioEngineConnect.js'
 import {
@@ -71,6 +74,16 @@ class HotkeyProvider extends Component {
 
     // ----------------------------------------------------------------------
     // Musical Typing
+    // ----------------------------------------------------------------------
+    // Musical Typing Settings (do this before to avoid conflicts with CMD+Z for undo)
+    switch(e.keyCode) {
+      case 90:   // Z - decrement current octave
+        dispatch(midiDecrementOctave())
+        break
+      case 88:   // X - increment current octave
+        dispatch(midiIncrementOctave())
+        break
+    }
     let note = this.getNoteFromKeyCode(e.keyCode)
     if (!e.metaKey && !e.ctrlKey && note) {
       this.props.ENGINE.fireNote({ trackID: 0, keyNum: note, velocity: 127 })
@@ -179,38 +192,39 @@ class HotkeyProvider extends Component {
   }
 
   getNoteFromKeyCode(keyCode) {
+    let note = 12 * this.props.currentOctave
     switch(keyCode) {
-      case 65: return 48  // A - Key C of current octave
-      case 83: return 50  // S - Key D of current octave
-      case 68: return 52  // D - Key E of current octave
-      case 70: return 53  // F - Key F of current octave
-      case 71: return 55  // G - Key G of current octave
-      case 72: return 57  // H - Key A of current octave
-      case 74: return 59  // J - Key B of current octave
-      case 75: return 60  // K - Key C of next octave
-      case 76: return 62  // L - Key D of next octave
+      case 65: note +=  0; break  // A - Key C of current octave
+      case 83: note +=  2; break  // S - Key D of current octave
+      case 68: note +=  4; break  // D - Key E of current octave
+      case 70: note +=  5; break  // F - Key F of current octave
+      case 71: note +=  7; break  // G - Key G of current octave
+      case 72: note +=  9; break  // H - Key A of current octave
+      case 74: note += 11; break  // J - Key B of current octave
+      case 75: note += 12; break  // K - Key C of next octave
+      case 76: note += 14; break  // L - Key D of next octave
       case 186:
-      case 59: return 64  // ; - Key E of next octave
-      case 222:return 65  // ' - Key F of next octave
-      case 87: return 49  // W - Key C# of current octave
-      case 69: return 51  // E - Key D# of current octave
-      case 84: return 54  // T - Key F# of current octave
-      case 89: return 56  // Y - Key G# of current octave
-      case 85: return 58  // U - Key A# of current octave
-      case 79: return 61  // O - Key C# of current octave
-      case 80: return 63  // P - Key D# of current octave
+      case 59: note += 16; break  // ; - Key E of next octave
+      case 222:note += 17; break  // ' - Key F of next octave
+      case 87: note +=  1; break  // W - Key C# of current octave
+      case 69: note +=  3; break  // E - Key D# of current octave
+      case 84: note +=  6; break  // T - Key F# of current octave
+      case 89: note +=  8; break  // Y - Key G# of current octave
+      case 85: note += 10; break  // U - Key A# of current octave
+      case 79: note += 13; break  // O - Key C# of current octave
+      case 80: note += 15; break  // P - Key D# of current octave
       default: return null
     }
+    return note
   }
 
 }
 
-HotkeyProvider.contextTypes = {
-  router: React.PropTypes.object.isRequired
+function mapStateToProps(state) {
+  return {
+    ...state.modal,
+    currentOctave: state.midi.currentOctave,
+  }
 }
 
-HotkeyProvider.propTypes = {
-  dispatch: React.PropTypes.func.isRequired
-}
-
-export default connectEngine(connect(state => state.modal)(HotkeyProvider))
+export default withRouter(connectEngine(connect(mapStateToProps)(HotkeyProvider)))

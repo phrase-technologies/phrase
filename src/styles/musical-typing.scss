@@ -1,0 +1,104 @@
+// ----------------------------------------------------------------------------
+// Musical Typing - Computer Keyboard
+// ----------------------------------------------------------------------------
+.musical-typing {
+  position: relative;
+  width: 500px;
+  margin: 10px auto;
+}
+
+.musical-typing-key {
+  position: absolute;
+  display: inline-block;
+  width: 8.8%;
+  height: 45px;
+
+  border-radius: 6px;
+  text-align: center;
+}
+.musical-typing-key-label {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+
+  border-radius: 3px;
+  padding-top: 6px;
+
+  &.active,
+  &:active {
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background-image: linear-gradient(0deg, hsla(0,0,20,0.25) 0%, hsla(0,0,0,0.50) 100%);
+  }
+}
+.musical-typing-key-white {
+  top: 56px;
+
+  border-top: 8px solid #888;
+  border-left: 8px solid #666;
+  border-right: 8px solid #666;
+  border-bottom: 12px solid #444;
+  background: #DDD;
+  color: #000;
+
+  > .musical-typing-key-label {
+    background-color: #DDD;
+  }
+}
+.musical-typing-key-black {
+  top: 10px;
+  border-top: 8px solid #444;
+  border-left: 8px solid #333;
+  border-right: 8px solid #333;
+  border-bottom: 12px solid #111;
+  background: #555;
+  color: #FFF;
+
+  > .musical-typing-key-label {
+    background-color: #555;
+  }
+}
+.musical-typing-key-aqua {
+  top: 102px;
+  border-top: 8px solid hsl(180, 100%, 35%);
+  border-left: 8px solid hsl(180, 100%, 30%);
+  border-right: 8px solid hsl(180, 100%, 30%);
+  border-bottom: 12px solid hsl(180, 100%, 20%);
+  background: hsl(180, 100%, 43%);
+  color: #000;
+
+  > .musical-typing-key-label {
+    background-color: hsl(180, 100%, 43%);
+  }
+}
+.musical-typing-key-a     { left:  0.0%; }
+.musical-typing-key-w     { left:  4.5%; }
+.musical-typing-key-s     { left:  9.0%; }
+.musical-typing-key-e     { left: 13.5%; }
+.musical-typing-key-d     { left: 18.5%; }
+.musical-typing-key-f     { left: 27.5%; }
+.musical-typing-key-t     { left: 31.5%; }
+.musical-typing-key-g     { left: 36.0%; }
+.musical-typing-key-y     { left: 40.5%; }
+.musical-typing-key-h     { left: 45.0%; }
+.musical-typing-key-u     { left: 49.5%; }
+.musical-typing-key-j     { left: 54.0%; }
+.musical-typing-key-k     { left: 63.0%; }
+.musical-typing-key-o     { left: 67.5%; }
+.musical-typing-key-l     { left: 72.0%; }
+.musical-typing-key-p     { left: 76.5%; }
+.musical-typing-key-colon { left: 81.0%; }
+.musical-typing-key-quote { left: 90.0%; }
+.musical-typing-key-z     { left:  4.5%; }
+.musical-typing-key-x     { left: 13.5%; }
+
+.musical-typing-octave {
+  position: absolute;
+  left: -55px;
+  top: 115px;
+  color: hsl(180, 100%, 43%);
+}
