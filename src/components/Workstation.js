@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import Helmet from "react-helmet"
 
+import diffProps from 'helpers/diffProps'
 import { phrase } from 'actions/actions'
 
 import {
@@ -220,7 +221,7 @@ export class Workstation extends Component {
       setTimeout(() => window.dispatchEvent(new Event('resize')), 0) // Some lifecycle methods are missed on the first event propogation due to race conditions
     }
 
-    let propsToCheck = [
+    return diffProps(nextProps, this.props, [
       'loading',
       'autosaving',
       'pristine',
@@ -234,9 +235,7 @@ export class Workstation extends Component {
       'rackOpen',
       'selectedTrack',
       'samples'
-    ]
-
-    return propsToCheck.some(prop => nextProps[prop] !== this.props[prop])
+    ])
   }
 }
 

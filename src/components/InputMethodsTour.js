@@ -90,14 +90,17 @@ export default (props) => {
         </Carousel.Item>
         <Carousel.Item>
           <h4 className="text-center">4. Microphone / Line-in</h4>
-          <p className="text-center" style={{ paddingTop: 40 }}>
-            Coming Soon!
+          <p className="text-center" style={{ paddingTop: 30 }}>
+            <strong>
+              Coming Soon
+            </strong>
+            <span> - we'll let you know when we launch this feature!</span>
           </p>
           <form>
             <div className="input-group" style={{ width: 300, margin: 'auto' }}>
-              <input type="text" className="form-control" placeholder="Email" />
+              <input type="text" className="form-control form-control-dark" placeholder="Email" defaultValue={localStorage.email} />
               <span className="input-group-btn">
-                <button className="btn btn-default" type="button">Get Notified!</button>
+                <button className="btn btn-dark" type="button">Get Notified!</button>
               </span>
             </div>
           </form>

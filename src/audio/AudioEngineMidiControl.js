@@ -1,4 +1,6 @@
-import { fireNote, sendMidiEvent } from 'audio/AudioEngineMidiTriggers'
+import _ from 'lodash'
+import { fireNote, sendMidiEvent } from 'audio/AudioEngineMidiTriggers.js'
+import { midiConnectionSync } from 'reducers/reduceMIDI'
 
 // ============================================================================
 // MIDI CONTROLLERS
@@ -10,8 +12,6 @@ import { fireNote, sendMidiEvent } from 'audio/AudioEngineMidiTriggers'
 export default (engine, STORE) => {
 
   let midiAccess
-  let synchronizationRegistry = {}
-  let synchronizationCallback
 
   try {
     navigator.requestMIDIAccess().then(response => {
@@ -62,28 +62,16 @@ export default (engine, STORE) => {
   }
 
   function onstatechange({ port }) {
-    if (port.connection === "closed" || !synchronizationRegistry[port.id]) {
+    if (port.connection === "closed") {
       port.onmidimessage = onMIDIMessage
     }
-    synchronize()
-  }
-
-  function synchronize() {
-    if (synchronizationCallback && midiAccess) {
-      let controllers = []
-      midiAccess.inputs.forEach(entry => controllers.push(entry))
-      synchronizationCallback(controllers)
-    }
-  }
-
-  return {
-    registerSynchronizationCallback: (callback) => {
-      synchronizationCallback = callback
-      synchronize()
-    },
-    destroySynchronizationCallback: () => {
-      synchronizationCallback = undefined
-    },
+    let numPorts = 0
+    let manufacturers = []
+    midiAccess.inputs.forEach(entry => {
+      numPorts++
+      manufacturers = _.union(manufacturers, [entry.manufacturer])
+    })
+    STORE.dispatch(midiConnectionSync({ numPorts, manufacturers }))
   }
 
 }

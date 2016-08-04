@@ -26,9 +26,9 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
         dispatch(phraseCreateNote({
           targetClipID: state.transport.targetClipID,
           key,
-          start: state.midi[key].start,
+          start: state.midi.keys[key].start,
           end,
-          velocity: state.midi[key].velocity,
+          velocity: state.midi.keys[key].velocity,
           ignore: true,
           snapStart: false,
         }))
@@ -52,6 +52,7 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
       : dispatch({ type: midi.NOTE_OFF, payload: { key } })
   }
 }
+export const midiConnectionSync = ({ numPorts, manufacturers }) => ({ type: midi.CONNECTION_SYNC, payload: { numPorts, manufacturers }})
 
 export const midiEvent = ({ bar, type, key, velocity }) => {
   return (dispatch, getState) => {
@@ -72,7 +73,11 @@ export const midiEvent = ({ bar, type, key, velocity }) => {
 // ============================================================================
 // MIDI Reducer
 // ============================================================================
-export const defaultState = Array(128).fill(null)
+export const defaultState = {
+  keys: Array(128).fill(null),
+  numPorts: 0,
+  manufacturers: [],
+}
 
 export default function reduceMIDI(state = defaultState, action) {
   switch (action.type)
@@ -80,20 +85,32 @@ export default function reduceMIDI(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case midi.NOTE_ON:
       // Do not re-trigger keys that are already active
-      if (state[action.payload.key])
+      if (state.keys[action.payload.key])
         return state
 
       return u({
-        [action.payload.key]: {
-          velocity: action.payload.velocity,
-          start: action.payload.start,
-        }
+        keys: {
+          [action.payload.key]: {
+            velocity: action.payload.velocity,
+            start: action.payload.start,
+          },
+        },
       }, state)
 
     // ------------------------------------------------------------------------
     case midi.NOTE_OFF:
       return u({
-        [action.payload.key]: null,
+        keys: {
+          [action.payload.key]: null,
+        },
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case midi.CONNECTION_SYNC:
+     console.log(state)
+      return u({
+        numPorts: action.payload.numPorts,
+        manufacturers: action.payload.manufacturers,
       }, state)
 
     // ------------------------------------------------------------------------

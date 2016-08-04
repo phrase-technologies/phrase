@@ -71,9 +71,9 @@ $key-thickness: percentage(1/$octave-keys) - 0.01;               // Compensate f
       display: block;
       position: absolute;
       top: 100%;
-      left: -2px;
+      left: -1px;
       right: -1px;
-      height: 50%;
+      height: 30%;
 
       background-image: linear-gradient(top, rgba(0,0,0,0.25) 0%, transparent 50%);
     }

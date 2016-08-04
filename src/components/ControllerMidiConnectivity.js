@@ -1,19 +1,13 @@
 import React, { Component } from 'react'
-import withAudioEngine from '../audio/AudioEngineConnect.js'
+import { connect } from 'react-redux'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
+import diffProps from 'helpers/diffProps'
 
 export class ControllerMidiConnectivity extends Component {
 
-  constructor() {
-    super()
-    this.state = {
-      controllers: [],
-    }
-  }
-
   render() {
     let signalClasses = "signal"
-        signalClasses += this.state.controllers.length
+        signalClasses += this.props.numPorts
           ? " signal-green"
           : " signal-red"
 
@@ -32,8 +26,8 @@ export class ControllerMidiConnectivity extends Component {
           <span className={signalClasses} />
           <span style={{ paddingLeft: 4 }}>
             {
-              this.state.controllers.length
-                ? `Connected to ${this.state.controllers.length} MIDI ports`
+              this.props.numPorts
+                ? `Connected to ${this.props.manufacturers.join(', ')} (${this.props.numPorts} ports)`
                 : "No MIDI Controller detected"
             }
           </span>
@@ -56,13 +50,13 @@ export class ControllerMidiConnectivity extends Component {
   }
 
   renderDropdownMenu() {
-    if (this.state.controllers.length) {
-      return this.state.controllers.map((controller, i) => {
+    if (this.props.numPorts) {
+      return this.props.manufacturers.map((manufacturer, i) => {
         return (
           <li key={i}>
             <a>
               <span className="fa fa-check text-success" />
-              <span>{` ${controller.manufacturer} - ${controller.name}`}</span>
+              <span> {manufacturer}</span>
             </a>
           </li>
         )
@@ -78,22 +72,18 @@ export class ControllerMidiConnectivity extends Component {
     )
   }
 
-  refreshConnections = (controllers) => {
-    this.setState({ controllers })
-  }
-
-  componentWillMount() {
-    this.props.ENGINE.midiControl.registerSynchronizationCallback(this.refreshConnections)
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextState !== this.state
-  }
-
-  componentWillUnmount() {
-    this.props.ENGINE.midiControl.destroySynchronizationCallback()
+  shouldComponentUpdate(nextProps) {
+    return diffProps(nextProps, this.props, [
+      'numPorts',
+      'manufacturers'
+    ])
   }
 
 }
 
-export default withAudioEngine(ControllerMidiConnectivity)
+function mapStateToProps(state) {
+  return {
+    ...state.midi
+  }
+}
+export default connect(mapStateToProps)(ControllerMidiConnectivity)

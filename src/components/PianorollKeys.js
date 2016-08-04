@@ -65,7 +65,7 @@ export class PianorollKeys extends Component {
 
 function mapStateToProps(state) {
   return {
-    midiKeys: state.midi,
+    midiKeys: state.midi.keys,
     currentTrackID: state.pianoroll.currentTrack,
   }
 }
