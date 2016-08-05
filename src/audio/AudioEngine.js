@@ -12,7 +12,7 @@ import {
   startPlayback,
   stopPlayback,
 } from './AudioEnginePlaybackLoop.js'
-import linkMIDIControllers from './AudioEngineMidiControl.js'
+import initializeMIDIControllers from './AudioEngineMidiControl.js'
 
 let AudioContext = window.AudioContext || window.webkitAudioContext || false
 
@@ -101,7 +101,7 @@ export default function createAudioEngine(STORE) {
   // --------------------------------------------------------------------------
   // MIDI Controller driven behaviour
   // --------------------------------------------------------------------------
-  let midiControl = linkMIDIControllers(engine, STORE)
+  initializeMIDIControllers(engine, STORE)
 
   // --------------------------------------------------------------------------
   // Metronome
@@ -121,7 +121,6 @@ export default function createAudioEngine(STORE) {
     getTrackOutputDecibels: (trackID) => {
       return getTrackOutputDecibels(engine, trackID)
     },
-    midiControl,
     destroy: () => {
       engine.unsubscribeStoreChanges()
       engine.ctx.close()

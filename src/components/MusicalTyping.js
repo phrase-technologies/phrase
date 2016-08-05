@@ -3,6 +3,10 @@ import { connect } from 'react-redux'
 
 import MusicalTypingKey from 'components/MusicalTypingKey'
 import diffProps from 'helpers/diffProps'
+import {
+  midiIncrementOctave,
+  midiDecrementOctave,
+} from 'reducers/reduceMIDI'
 
 export class MusicalTyping extends Component {
 
@@ -29,8 +33,9 @@ export class MusicalTyping extends Component {
         <MusicalTypingKey keyInitial="P" color="black" keyNum={currentBase + 15} active={this.props.midiKeys[currentBase + 15]} currentTrackID={this.props.currentTrackID} />
         <MusicalTypingKey keyInitial=";" color="white" keyNum={currentBase + 16} active={this.props.midiKeys[currentBase + 16]} currentTrackID={this.props.currentTrackID} />
         <MusicalTypingKey keyInitial="'" color="white" keyNum={currentBase + 17} active={this.props.midiKeys[currentBase + 17]} currentTrackID={this.props.currentTrackID} />
-        <MusicalTypingKey keyInitial="Z" color="aqua"  active={false} />
-        <MusicalTypingKey keyInitial="X" color="aqua"  active={false} />
+        <MusicalTypingKey keyInitial="Z" color="aqua"  active={false} mouseDownHandler={() => this.props.dispatch(midiDecrementOctave())} symbol="−" />
+        <MusicalTypingKey keyInitial="X" color="aqua"  active={false} mouseDownHandler={() => this.props.dispatch(midiIncrementOctave())} symbol="+" />
+        <MusicalTypingKey keyInitial="Shift" color="orange" active={false} mouseDownHandler={() => true} mouseUpHandler={() => true} symbol="Sustain" />
         <div className="musical-typing-octave">Octave: C{this.props.currentOctave}</div>
       </div>
     )

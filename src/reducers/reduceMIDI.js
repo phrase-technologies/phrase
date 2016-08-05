@@ -119,12 +119,14 @@ export default function reduceMIDI(state = defaultState, action) {
     case midi.INCREMENT_OCTAVE:
       return u({
         currentOctave: Math.min(8, state.currentOctave + 1),
+        keys: defaultState.keys,
       }, state)
 
     // ------------------------------------------------------------------------
     case midi.DECREMENT_OCTAVE:
       return u({
-        currentOctave: Math.max(1, state.currentOctave - 1),
+        currentOctave: Math.max(0, state.currentOctave - 1),
+        keys: defaultState.keys,
       }, state)
 
     // ------------------------------------------------------------------------

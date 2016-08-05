@@ -14,7 +14,23 @@
   height: 45px;
 
   border-radius: 6px;
-  text-align: center;
+  text-align: left;
+
+  cursor: pointer;
+
+  &.active,
+  &:active {
+    > .musical-typing-key-label {
+      top: -2px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      background-image: linear-gradient(0deg, hsla(0,0,20,0.25) 0%, hsla(0,0,0,0.50) 100%);
+    }
+    > .musical-typing-key-symbol {
+      top: -2px;
+    }
+  }
 }
 .musical-typing-key-label {
   position: absolute;
@@ -24,39 +40,35 @@
   bottom: -3px;
 
   border-radius: 3px;
-  padding-top: 6px;
-
-  &.active,
-  &:active {
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    background-image: linear-gradient(0deg, hsla(0,0,20,0.25) 0%, hsla(0,0,0,0.50) 100%);
-  }
+  padding-left: 4px;
+  padding-top: 15px;
+  color: #888;
+  font-size: 12px;
 }
 .musical-typing-key-white {
-  top: 56px;
+  top: 26px;
+  height: 75px;
 
   border-top: 8px solid #888;
   border-left: 8px solid #666;
   border-right: 8px solid #666;
   border-bottom: 12px solid #444;
   background: #DDD;
-  color: #000;
 
   > .musical-typing-key-label {
     background-color: #DDD;
+    padding-top: 45px;
   }
 }
 .musical-typing-key-black {
   top: 10px;
+  z-index: 2;
+
   border-top: 8px solid #444;
   border-left: 8px solid #333;
   border-right: 8px solid #333;
   border-bottom: 12px solid #111;
   background: #555;
-  color: #FFF;
 
   > .musical-typing-key-label {
     background-color: #555;
@@ -69,10 +81,24 @@
   border-right: 8px solid hsl(180, 100%, 30%);
   border-bottom: 12px solid hsl(180, 100%, 20%);
   background: hsl(180, 100%, 43%);
-  color: #000;
 
   > .musical-typing-key-label {
     background-color: hsl(180, 100%, 43%);
+    color: hsl(180, 100%, 25%);
+  }
+}
+.musical-typing-key-orange {
+  top: 102px;
+  border-top: 8px solid hsl(35, 50%, 45%);
+  border-left: 8px solid hsl(35, 50%, 40%);
+  border-right: 8px solid hsl(35, 50%, 40%);
+  border-bottom: 12px solid hsl(35, 50%, 30%);
+  background: hsl(35, 50%, 60%);
+  width: 17.6%;
+
+  > .musical-typing-key-label {
+    background-color: hsl(35, 50%, 60%);
+    color: hsl(35, 50%, 25%);
   }
 }
 .musical-typing-key-a     { left:  0.0%; }
@@ -95,7 +121,18 @@
 .musical-typing-key-quote { left: 90.0%; }
 .musical-typing-key-z     { left:  4.5%; }
 .musical-typing-key-x     { left: 13.5%; }
-
+.musical-typing-key-orange{ left: 92.5%; }
+.musical-typing-key-symbol {
+  position: absolute;
+  top: -3px;
+  right: 0px;
+  height: 8px;
+  font-weight: bold;
+  font-size: 12px;
+  color: #000;
+  text-align: right;
+  pointer-events: none;
+}
 .musical-typing-octave {
   position: absolute;
   left: -55px;

@@ -1,10 +1,13 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
 import { layout } from 'actions/actions'
-import { midiIncrementOctave, midiDecrementOctave } from 'reducers/reduceMIDI'
+import {
+  midiIncrementOctave,
+  midiDecrementOctave,
+} from 'reducers/reduceMIDI'
 import { modalClose } from 'reducers/reduceModal'
 import connectEngine from '../audio/AudioEngineConnect.js'
 import {
