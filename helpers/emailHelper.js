@@ -23,5 +23,5 @@ export function sendPasswordResetEmail({ username, email, resetToken }) {
 
 export function sendWelcomeEmail({ username, email, confirmToken }) {
   let confirmLink = `${clientURL}/confirm-user?token=${confirmToken}&email=${email}`
-  sendEmail(2, email, { USERNAME: username, CONFIRMLINK: confirmLink })
+  sendEmail(2, email, { USERNAME: username, CONFIRMLINK: confirmLink, CONFIRMTOKEN: confirmToken })
 }
