@@ -181,6 +181,8 @@ $key-thickness: percentage(1/$octave-keys) - 0.01;               // Compensate f
   }
 }
 .midi-controller-octave-label {
+  visibility: hidden;;
+
   position: absolute;
   bottom: 100%;
   left: 0px;

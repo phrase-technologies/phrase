@@ -81,6 +81,9 @@ export default class WorkstationFooter extends Component {
 
   setOpenInputMethod = (eventKey) => {
     this.setState({ openInputMethod: eventKey })
+
+    // Avoid the carousel controls remaining focused, which prevents hotkeys from working
+    setTimeout(() => document.activeElement.blur(), 0)
   }
 
   isMultitrackActive() {
