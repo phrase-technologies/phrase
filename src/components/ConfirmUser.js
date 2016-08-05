@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import Helmet from "react-helmet"
 import { connect } from 'react-redux'
+
 import { confirmUser } from 'reducers/reduceAuth'
+import { modalOpen } from 'reducers/reduceModal'
 
 export class ConfirmUser extends Component {
   componentWillMount() {
@@ -11,20 +13,36 @@ export class ConfirmUser extends Component {
     }))
   }
 
-  render = () => {
-    let errorBody = (
-      <div className="confirm-user">
-        <Helmet title={`Failed to Confirm - Phrase.fm`} />
+  render = () => (
+    <div>
+      {this.props.showError &&
+        <div className="confirm-user">
+          <Helmet title={`Failed to Confirm - Phrase.fm`} />
+          <div className="page-header">
+            <h4 className="text-center">Looks like that link was invalid!</h4>
+          </div>
+          <div className="container text-center">
+            <p>Please&nbsp;
+              <a href='' onClick={this.openConfirmRetryModal}>
+                <strong>click here</strong>
+              </a>
+              &nbsp;to try again
+            </p>
+          </div>
+        </div>
+      }
+
+      {!this.props.showError &&
         <div className="page-header">
-          <h4 className="text-center">Looks like that link was invalid!</h4>
+          <h4 className="text-center">Loading....</h4>
         </div>
-        <div className="container text-center">
-          <p>TODO: Add functionality of what user is supposed to do!</p>
-        </div>
-      </div>
-    )
-    if (this.props.showError) return errorBody
-    return <div></div>
+      }
+    </div>
+  )
+
+  openConfirmRetryModal = (e) => {
+    e.preventDefault()
+    this.props.dispatch(modalOpen({ modalComponent: `ConfirmRetryModal` }))
   }
 }
 

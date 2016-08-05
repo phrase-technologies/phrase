@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import LaddaButton from 'react-ladda'
 
-import { manualConfirmUser } from 'reducers/reduceAuth'
+import { retryConfirmUser } from 'reducers/reduceAuth'
 import { modalOpen, modalClose } from 'reducers/reduceModal'
 
-export class SignupConfirmationModal extends Component {
+export class ConfirmRetryModal extends Component {
   render() {
     return (
       <Modal
@@ -17,14 +17,13 @@ export class SignupConfirmationModal extends Component {
         <Modal.Body>
           <button type="button" className="close" onClick={this.closeModal}>&times;</button>
           <div className="form-group">
-            <h4 className="text-center">Thank you for signing up!</h4>
+            <h4 className="text-center">Didnt get the email?</h4>
           </div>
-          <p>We sent a confirmation email to <strong>{this.props.email}</strong>, please enter your confirmation code below</p>
           <form onSubmit={this.submit} noValidate>
             <div className="form-group" style={{marginBottom: 10}}>
               <input
-                className="form-control" type="confirmToken" autoComplete
-                placeholder="Confirmation Code" ref={(ref) => this.confirmToken = ref}
+                className="form-control" type="email" autoComplete
+                placeholder="Email" ref={(ref) => this.email = ref}
               />
               <p className="text-danger text-center">
                 {this.props.errorMessage}
@@ -34,37 +33,29 @@ export class SignupConfirmationModal extends Component {
               className="btn btn-block btn-dark" buttonStyle="zoom-in"
               loading={this.props.requestingAuth} type="submit"
             >
-              Confirm
+              Reset Password
             </LaddaButton>
           </form>
         </Modal.Body>
-        <Modal.Footer>
-          <p className="text-center">
-            <span>Didnt get the email? </span>
-            <a href="" onClick={this.resendConfirmationEmail}>
-              <strong>Try Again</strong>
-            </a>
-          </p>
-        </Modal.Footer>
       </Modal>
     )
   }
 
   submit = (e) => {
     e.preventDefault()
-    this.props.dispatch(manualConfirmUser({
-      email: this.props.email,
-      confirmToken: this.confirmToken.value,
+
+    this.props.dispatch(retryConfirmUser({
+      email: this.email.value,
     }))
+  }
+
+  openLoginModal = (e) => {
+    e.preventDefault()
+    this.props.dispatch(modalOpen({ modalComponent: `LoginModal` }))
   }
 
   closeModal = () => {
     this.props.dispatch(modalClose())
-  }
-
-  resendConfirmationEmail = (e) => {
-    e.preventDefault()
-    this.props.dispatch(modalOpen({ modalComponent: `ConfirmRetryModal` }))
   }
 }
 
@@ -74,4 +65,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(SignupConfirmationModal)
+export default connect(mapStateToProps)(ConfirmRetryModal)

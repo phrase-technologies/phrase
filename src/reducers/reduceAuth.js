@@ -5,7 +5,8 @@ import {
   signup as signupHelper,
   forgotPassword as forgotPasswordHelper,
   newPassword as newPasswordHelper,
-  confirmUser as confirmUserHelper
+  confirmUser as confirmUserHelper,
+  retryConfirmUser as retryConfirmUserHelper,
 } from 'helpers/authHelpers'
 import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
@@ -45,7 +46,7 @@ export let login = ({ email, password }) => {
             }
             else dispatch({
               type: auth.LOGIN_FAIL,
-              payload: { message: response.message },
+              payload: { message: response.message, confirmFail: response.confirmFail },
             })
           }
         })
@@ -136,12 +137,72 @@ export let confirmUser = ({ email, confirmToken }) => {
       toCatch: async () => {
         await confirmUserHelper({ email, confirmToken }, async response => {
           if (response.success) {
+            dispatch({
+              type: auth.LOGIN_SUCCESS,
+              payload: {
+                loggedIn: response.success,
+                user: response.user,
+              },
+            })
             dispatch(push('/phrase/new'))
             dispatch(modalOpen({ modalComponent: 'ConfirmSuccessModal' }))
           }
           else dispatch({ type: auth.USER_CONFIRM_FAIL })
         })
       },
+    })
+  }
+}
+
+export let manualConfirmUser = ({ email, confirmToken }) => {
+  return (dispatch) => {
+    dispatch({ type: auth.LOGIN_REQUEST })
+    catchAndToastException({ dispatch,
+      toCatch: async() => {
+        await confirmUserHelper({ email, confirmToken }, async response => {
+          if (response.success) {
+            dispatch({
+              type: auth.LOGIN_SUCCESS,
+              payload: {
+                loggedIn: response.success,
+                user: response.user,
+              },
+            })
+            dispatch(push('/phrase/new'))
+            dispatch(modalOpen({ modalComponent: 'ConfirmSuccessModal' }))
+          }
+          else dispatch({
+            type: auth.LOGIN_FAIL,
+            payload: { message: response.message },
+          })
+        })
+      },
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
+    })
+  }
+}
+
+export let retryConfirmUser = ({ email }) => {
+  return (dispatch, getState) => {
+    dispatch({ type: auth.LOGIN_REQUEST})
+    catchAndToastException({ dispatch,
+      toCatch: async () => {
+        await retryConfirmUserHelper({ email }, async response => {
+          if (response.success) {
+            dispatch(modalOpen({ modalComponent: `SignupConfirmationModal`, payload: email }))
+
+            let phraseState = getState().phrase
+            if (phraseState.past.length || phraseState.future.length) {
+              dispatch(librarySaveNew())
+            }
+          }
+          else dispatch({
+            type: auth.LOGIN_FAIL,
+            payload: { message: response.message },
+          })
+        })
+      },
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
     })
   }
 }
@@ -182,15 +243,17 @@ export default (state = intialState, action) => {
     // ------------------------------------------------------------------------
     // Clear out old auth error messages before launching auth modals
     case modal.OPEN:
-      if (['LoginModal', 'SignupModal', 'ForgotPasswordModal'].find(x => x === action.modalComponent)) {
+      if (['LoginModal', 'SignupModal', 'ForgotPasswordModal', 'ConfirmRetryModal'].find(x => x === action.modalComponent)) {
         return {
           ...state,
           errorMessage: null,
+          confirmFail: false,
         }
       }
       else if (['ForgotPasswordSuccessModal', 'SignupConfirmationModal'].find(x => x === action.modalComponent)) {
         return {
           ...state,
+          errorMessage: null,
           email: action.payload,
         }
       }
@@ -227,6 +290,7 @@ export default (state = intialState, action) => {
       return {
         ...state,
         errorMessage: action.payload.message,
+        confirmFail: action.payload.confirmFail,
         requestingAuth: false,
       }
 

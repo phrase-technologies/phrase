@@ -21,7 +21,7 @@ export let login = async ({ body, callback }) =>  {
       body: JSON.stringify(body),
     })
     if (response.ok)  {
-      let { success, message, token, user } = await response.json()
+      let { success, message, token, user, confirmFail } = await response.json()
       if (success) {
         localStorage.token = token
         localStorage.userId = user.id
@@ -29,7 +29,7 @@ export let login = async ({ body, callback }) =>  {
         localStorage.username = user.username
         callback({ success, message, user })
       }
-      else callback({ message })
+      else callback({ message, confirmFail })
     }
     else throw response.error
 }
@@ -68,8 +68,24 @@ export let confirmUser = async (body, callback) => {
   })
 
   if (response.ok) {
-    let { success } = await response.json()
-    callback({ success })
+    let { success, token, user, message } = await response.json()
+    if (success) callback({ success, token, user })
+    else callback({ message })
+  }
+  else throw response.error
+}
+
+export let retryConfirmUser = async (body, callback) => {
+  let response = await fetch(`${API_URL}/retry-confirm-user`, {
+    method: `POST`,
+    headers: { 'Content-Type': `application/json` },
+    body: JSON.stringify(body),
+  })
+
+  if (response.ok) {
+    let { success, message } = await response.json()
+    if (success) callback({ success })
+    else callback({ message })
   }
   else throw response.error
 }

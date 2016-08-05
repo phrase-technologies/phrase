@@ -18,15 +18,6 @@ export class ConfirmSuccessModal extends Component {
             <h4 className="text-center">You are all set, enjoy!</h4>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <p className="text-center">
-            <span>Please click </span>
-            <a href="" onClick={this.openLoginModal}>
-              <strong>here </strong>
-            </a>
-            <span> to login</span>
-          </p>
-        </Modal.Footer>
       </Modal>
     )
   }
