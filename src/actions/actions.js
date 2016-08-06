@@ -55,6 +55,7 @@ export const phrase = namespaceActions(
     'CREATE_CLIP',
     'DELETE_CLIP',
     'CONSOLIDATE_CLIP',
+    'CREATE_MIDI_EVENT',
     'CREATE_NOTE',
     'SELECT_TRACK',
     'SELECT_CLIP',

@@ -73,6 +73,14 @@ export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ign
   }
 }
 
+export const phraseCreateMidiEvent = ({
+  trackID, clipID, bar, type, key, velocity, ignore
+}) => ({
+  type: phrase.CREATE_MIDI_EVENT,
+  payload: { trackID, clipID, bar, type, key, velocity },
+  ignore
+})
+
 export const phraseCreateNote = ({
   targetClipID, trackID, key, start, end, velocity, ignore, snapStart = true
 }) => {
@@ -563,6 +571,7 @@ export const defaultState = reduceCreateTrack({
   tracks: [],
   clips: [],
   notes: [],
+  midiEvents: [],
   trackAutoIncrement: 0,
   colorAutoIncrement: 0,
   noteAutoIncrement:  0,
@@ -639,6 +648,17 @@ export default function reducePhrase(state = defaultState, action) {
         state,
         action
       )
+
+    // ------------------------------------------------------------------------
+    case phrase.CREATE_MIDI_EVENT:
+      console.log('>>> midievent', action.payload)
+      return {
+        ...state,
+        midiEvents: [
+          ...state.midiEvents,
+          action.payload,
+        ]
+      }
 
     // ------------------------------------------------------------------------
     case phrase.CREATE_NOTE:

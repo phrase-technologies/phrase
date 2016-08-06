@@ -75,9 +75,8 @@ export default class PianoSource {
 
   }
 
-  onMidiEvent(event) {
-    let [ type, key, velocity ] = event.data
-
+  onMidiEvent({ type, key, velocity }) {
+    console.log('>>>tye', type)
     // sustain
     if (type === 176 && velocity) {
       this.sustain = true

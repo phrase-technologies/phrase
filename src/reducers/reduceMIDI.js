@@ -4,6 +4,7 @@ import { midi } from 'actions/actions'
 import {
   phraseCreateNote,
   phraseCreateClip,
+  phraseCreateMidiEvent,
 } from 'reducers/reducePhrase.js'
 
 // ============================================================================
@@ -49,6 +50,22 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
     velocity
       ? dispatch({ type: midi.NOTE_ON, payload: { key, start, velocity } })
       : dispatch({ type: midi.NOTE_OFF, payload: { key } })
+  }
+}
+
+export const midiEvent = ({ bar, type, key, velocity }) => {
+  return (dispatch, getState) => {
+    let state = getState()
+
+    // Record the activity if recording
+    if (state.transport.recording) {
+      dispatch(phraseCreateMidiEvent({
+        trackID: state.phraseMeta.trackSelectionID,
+        clipID: state.transport.targetClipID,
+        ignore: true,
+        bar, type, key, velocity,
+      }))
+    }
   }
 }
 

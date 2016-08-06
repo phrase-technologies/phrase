@@ -5,8 +5,11 @@ import {
   transportStop
 } from '../reducers/reduceTransport.js'
 
-import { fireNote,
-         killNote } from './AudioEngineMidiTriggers.js'
+import {
+  fireNote,
+  killNote,
+  sendMidiEvent,
+} from './AudioEngineMidiTriggers.js'
 
 import {
   BEATS_PER_BAR,
@@ -28,6 +31,8 @@ import {
 export function startPlayback(engine, dispatch) {
 
   console.log('startPlayback()', engine.ctx.currentTime)
+
+  console.log('>>>', engine)
 
   // Keep track of when playback began
   engine.isPlaying = true
@@ -52,7 +57,7 @@ export function startPlayback(engine, dispatch) {
       if (engine.iCommand < 0 || engine.iCommand >= engine.midiCommands.length)
         break
 
-      if (currentCommand) {
+      if (currentCommand && [`addNoteOn`, `addNoteOff`].some(t => currentCommand.type === t)) {
         console.log("fireNote", currentCommandTime, engine.ctx.currentTime)
         fireNote({
           engine,
@@ -60,6 +65,16 @@ export function startPlayback(engine, dispatch) {
           keyNum: currentCommand.keyNum,
           velocity: currentCommand.velocity,
           time: currentCommandTime,
+          disableRecording: true,
+        })
+      }
+      else if (currentCommand) {
+        sendMidiEvent({
+          engine,
+          trackID: currentCommand.trackID,
+          type: currentCommand.type,
+          key: currentCommand.key,
+          velocity: currentCommand.velocity,
           disableRecording: true,
         })
       }

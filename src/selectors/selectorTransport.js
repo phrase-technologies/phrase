@@ -2,8 +2,10 @@ import { createSelector } from 'reselect'
 import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
 import { loopedNoteSelector } from './selectorPianoroll.js'
 
-const clipsSelector  = (state) => (state.phrase.present.clips)
-const notesSelector  = (state) => (state.phrase.present.notes)
+const clipsSelector = (state) => (state.phrase.present.clips)
+const notesSelector = (state) => (state.phrase.present.notes)
+const midiEventsSelector = (state) => (state.phrase.present.midiEvents)
+
 const noteMidiSelector = createLargeCacheSelector(
   note => note,
   (note) => {
@@ -22,10 +24,12 @@ const noteMidiSelector = createLargeCacheSelector(
     return [startCommand, endCommand]
   }
 )
+
 export const phraseMidiSelector = createSelector(
   clipsSelector,
   notesSelector,
-  (clips, notes) => {
+  midiEventsSelector,
+  (clips, notes, midiEvents) => {
     // Render a copy of each note for each loop iteration of it's respective clip
     let allLoopedNotes = (notes || [])
       .reduce((allLoopedNotes, note) => {
@@ -36,8 +40,9 @@ export const phraseMidiSelector = createSelector(
     // Convert each note into a start and stop MIDI command
     let midiCommands = (allLoopedNotes || [])
       .reduce((midiCommands, note) => {
-        return [...midiCommands, ...noteMidiSelector(note)]
+        return [...midiCommands, ...noteMidiSelector(note) ]
       }, [])
+      .concat(midiEvents)
       .sort((a, b) => a.bar - b.bar)
 
     return midiCommands

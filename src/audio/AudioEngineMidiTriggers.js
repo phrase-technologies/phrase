@@ -1,5 +1,5 @@
 import { phraseMidiSelector } from 'selectors/selectorTransport'
-import { midiNoteOn } from 'reducers/reduceMIDI'
+import { midiNoteOn, midiEvent } from 'reducers/reduceMIDI'
 
 import {
   BEATS_PER_BAR,
@@ -72,17 +72,23 @@ export function fireNote({
 export function sendMidiEvent({
   engine,
   trackID,
-  event,
+  type,
+  key,
+  velocity,
   disableRecording = false,
 }) {
   let trackModule = engine.trackModules[trackID]
   // send MIDI event through entire instrument rack
-  trackModule.effectsChain.forEach(plugin => plugin.onMidiEvent(event))
+  trackModule.effectsChain.forEach(plugin => plugin.onMidiEvent({
+    type, key, velocity,
+  }))
 
-  // if (!disableRecording) {
-  //   engine.STORE.dispatch(midiEvent({
-  //     start: playTimeToBar(engine.ctx.currentTime, engine),
-  //     event,
-  //   }))
-  // }
+  if (!disableRecording) {
+    engine.STORE.dispatch(midiEvent({
+      bar: playTimeToBar(engine.ctx.currentTime, engine),
+      type,
+      key,
+      velocity,
+    }))
+  }
 }
