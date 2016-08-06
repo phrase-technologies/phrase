@@ -6,7 +6,12 @@ import { samples as samplesActions } from 'actions/actions'
 // implement Piano specific things like dampening or something..
 
 let distanceBetweenSamples = 6
-let samplesToLoadByKey = _.range(0, 88).filter(x => x % distanceBetweenSamples === 0)
+let middleCOffset = 9
+let numberOfKeys = 88
+
+let samplesToLoadByKey =
+  _.range(middleCOffset, middleCOffset + numberOfKeys)
+  .filter(x => x % distanceBetweenSamples === 0)
 
 export default class PianoSource {
   constructor(AudioContext, config, STORE) {
@@ -95,8 +100,10 @@ export default class PianoSource {
       ? 50 : velocity < 81
       ? 80 : 120
 
-    // keynum - 2 makes detune go from -200 to 300 at 2 notes per octave
-    let nearestKeyNumIndex = Math.round(((keyNum - 2) / 88) * samplesToLoadByKey.length)
+    // keynum - 13 makes detune go from -200 to 300 at 2 notes per octave
+    let nearestKeyNumIndex =
+      Math.round(((keyNum - 13) / numberOfKeys) * samplesToLoadByKey.length)
+
     let nearestKeyNum = samplesToLoadByKey[nearestKeyNumIndex]
     let buffer = this.bufferMap[`${nearestKeyNum}-${nearestSample}`]
 

@@ -1,5 +1,5 @@
 import { phraseMidiSelector } from 'selectors/selectorTransport'
-import { midiNoteOn, midiEvent } from 'reducers/reduceMIDI'
+import { midiNoteOn } from 'reducers/reduceMIDI'
 
 import {
   BEATS_PER_BAR,
@@ -79,10 +79,10 @@ export function sendMidiEvent({
   // send MIDI event through entire instrument rack
   trackModule.effectsChain.forEach(plugin => plugin.onMidiEvent(event))
 
-  if (!disableRecording) {
-    engine.STORE.dispatch(midiEvent({
-      start: playTimeToBar(engine.ctx.currentTime, engine),
-      event,
-    }))
-  }
+  // if (!disableRecording) {
+  //   engine.STORE.dispatch(midiEvent({
+  //     start: playTimeToBar(engine.ctx.currentTime, engine),
+  //     event,
+  //   }))
+  // }
 }
