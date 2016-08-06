@@ -12,6 +12,7 @@ import {
 export const midiNoteOff = ({ key, end }) => {
   return midiNoteOn({ key, end })
 }
+
 export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
   return (dispatch, getState) => {
     let state = getState()

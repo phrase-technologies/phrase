@@ -1,5 +1,5 @@
 import { phraseMidiSelector } from 'selectors/selectorTransport'
-import { midiNoteOn } from 'reducers/reduceMIDI'
+import { midiNoteOn, midiEvent } from 'reducers/reduceMIDI'
 
 import {
   BEATS_PER_BAR,
@@ -31,7 +31,6 @@ export function updateMidiCommands(engine, state) {
 
 }
 
-
 // TODO REFACTOR AS VIRTUAL AUDIO GRAPH STYLE
 let keyFrequency = [] // Set the frequencies for the notes
 for (let i = 1; i <= 88; i++)
@@ -46,6 +45,7 @@ for (let i = 1; i <= 88; i++)
 export function killNote({ engine, trackID, keyNum, disableRecording = false }) {
   fireNote({ engine, trackID, keyNum, disableRecording })
 }
+
 export function fireNote({
   engine,
   trackID,
@@ -56,7 +56,9 @@ export function fireNote({
 }) {
   let trackModule = engine.trackModules[trackID]
   let instrument = trackModule.effectsChain[0]
+
   instrument.fireNote(keyNum, velocity, time)
+
   if (!disableRecording) {
     engine.STORE.dispatch(midiNoteOn({
       key: keyNum,
@@ -66,8 +68,21 @@ export function fireNote({
     }))
   }
 }
-export function sendMidiEvent({ engine, trackID, event }) {
+
+export function sendMidiEvent({
+  engine,
+  trackID,
+  event,
+  disableRecording = false,
+}) {
   let trackModule = engine.trackModules[trackID]
   // send MIDI event through entire instrument rack
   trackModule.effectsChain.forEach(plugin => plugin.onMidiEvent(event))
+
+  if (!disableRecording) {
+    engine.STORE.dispatch(midiEvent({
+      start: playTimeToBar(engine.ctx.currentTime, engine),
+      event,
+    }))
+  }
 }
