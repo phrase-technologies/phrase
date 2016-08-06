@@ -43,7 +43,6 @@ export default class PianoSource {
       }
     })
 
-    // TODO: load fewer samples and detune
     let samples = _.flatMap(
       samplesToLoadByKey.map(x =>
         [30, 50, 80, 120].map(v => ({
@@ -112,18 +111,22 @@ export default class PianoSource {
 
     let activeSource = this.activeSources.find(x => x.keyNum === keyNum)
     if (!velocity && activeSource) {
-      if (activeSource && !this.sustain) {
+      if (!this.sustain) {
+        // No sustain and no velocity, schedule its release
         this.scheduleRelease(activeSource)
         this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
       }
-      else if (activeSource && this.sustain) {
+      else {
+        // Note off, but sustain is down. Schedule release when pedal lifts
         this.activeSources.forEach(x => x.removeWhenSustainOff = true)
       }
     }
     else if (velocity && !activeSource) {
+      // Regular note on event
       this.triggerSound({ buffer, keyNum, velocity, nearestKeyNum })
     }
     else if (velocity && activeSource && this.sustain) {
+      // Note event, but key is currently sustained. Release it and refire right away
       this.scheduleRelease(activeSource)
       this.activeSources = this.activeSources.filter(x => x.keyNum !== keyNum)
       this.triggerSound({ buffer, keyNum, velocity, nearestKeyNum })
