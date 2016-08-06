@@ -1,8 +1,8 @@
 import React from 'react'
 import { Carousel } from 'react-bootstrap'
-import ControllerMidiConnectivity from 'components/ControllerMidiConnectivity'
-import PianorollKeys from 'components/PianorollKeys.js'
-import MusicalTyping from 'components/MusicalTyping.js'
+
+import ExternalMidiController from 'components/ExternalMidiController'
+import MusicalTyping from 'components/MusicalTyping'
 
 export default (props) => {
 
@@ -72,16 +72,7 @@ export default (props) => {
         </Carousel.Item>
         <Carousel.Item>
           <h4 className="text-center">1. External MIDI Controller</h4>
-          <p className="text-center">
-            Simply plug your MIDI controller in and we'll
-            automatically detect it.
-          </p>
-          <div className="input-tour-midi-piano">
-            <PianorollKeys midiController={true} />
-          </div>
-          <p className="text-center">
-            <ControllerMidiConnectivity />
-          </p>
+          <ExternalMidiController />
         </Carousel.Item>
         <Carousel.Item>
           <h4 className="text-center">2. Musical Typing via Computer Keyboard</h4>
@@ -89,6 +80,42 @@ export default (props) => {
         </Carousel.Item>
         <Carousel.Item>
           <h4 className="text-center">3. Mouse Tools</h4>
+          <div className="mouse-tools">
+            <img
+              src={require('../img/pianoroll-drag-and-drop.png')}
+              width={150} className="mouse-tools-graphic"
+            />
+            <div className="mouse-tools-item">
+              <span className="mouse-tools-icon">
+                <span className="fa fa-fw fa-mouse-pointer" />
+              </span>
+              1. <strong>Selection</strong> - drag and drop to select and adjust notes
+            </div>
+            <div className="mouse-tools-item">
+              <span className="mouse-tools-icon">
+                <span className="fa fa-fw fa-pencil" />
+              </span>
+              2. <strong>Pencil</strong> - click anywhere to create new notes
+            </div>
+            <div className="mouse-tools-item">
+              <span className="mouse-tools-icon">
+                <span className="fa fa-fw fa-eraser" />
+              </span>
+              3. <strong>Eraser</strong> - click any note to delete it
+            </div>
+            <div className="mouse-tools-item">
+              <span className="mouse-tools-icon">
+                <span className="fa fa-fw fa-scissors fa-rotate-270" />
+              </span>
+              4. <strong>Slice</strong> - click any note to separate it into two
+            </div>
+            <div className="mouse-tools-item">
+              <span className="mouse-tools-icon">
+                <span style={{ padding: "0 5px 0 4px" }}>V</span>
+              </span>
+              5. <strong>Velocity</strong> - click and drag any note to adjust its velocity
+            </div>
+          </div>
         </Carousel.Item>
         <Carousel.Item>
           <h4 className="text-center">4. Microphone / Line-in</h4>

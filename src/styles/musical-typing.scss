@@ -15,6 +15,7 @@
 
   border-radius: 6px;
   text-align: left;
+  box-shadow: 0 0 3px #000;
 
   cursor: pointer;
 
@@ -49,10 +50,10 @@
   top: 26px;
   height: 75px;
 
-  border-top: 8px solid #888;
-  border-left: 8px solid #666;
-  border-right: 8px solid #666;
-  border-bottom: 12px solid #444;
+  border-top: 8px solid #CCC;
+  border-left: 8px solid #AAA;
+  border-right: 8px solid #AAA;
+  border-bottom: 12px solid #888;
   background: #DDD;
 
   > .musical-typing-key-label {
@@ -64,7 +65,7 @@
   top: 10px;
   z-index: 2;
 
-  border-top: 8px solid #444;
+  border-top: 8px solid #888;
   border-left: 8px solid #333;
   border-right: 8px solid #333;
   border-bottom: 12px solid #111;
@@ -105,8 +106,8 @@
 .musical-typing-key-w     { left:  4.5%; }
 .musical-typing-key-s     { left:  9.0%; }
 .musical-typing-key-e     { left: 13.5%; }
-.musical-typing-key-d     { left: 18.5%; }
-.musical-typing-key-f     { left: 27.5%; }
+.musical-typing-key-d     { left: 18.0%; }
+.musical-typing-key-f     { left: 27.0%; }
 .musical-typing-key-t     { left: 31.5%; }
 .musical-typing-key-g     { left: 36.0%; }
 .musical-typing-key-y     { left: 40.5%; }

@@ -1,6 +1,10 @@
 import _ from 'lodash'
+
 import { fireNote, sendMidiEvent } from 'audio/AudioEngineMidiTriggers.js'
-import { midiConnectionSync } from 'reducers/reduceMIDI'
+import {
+  midiConnectionSync,
+  midiFlagUnavailable,
+} from 'reducers/reduceMIDI'
 
 // ============================================================================
 // MIDI CONTROLLERS
@@ -22,6 +26,7 @@ export default (engine, STORE) => {
       }
     })
   } catch (e) {
+    STORE.dispatch(midiFlagUnavailable())
     console.error(e)
   }
 

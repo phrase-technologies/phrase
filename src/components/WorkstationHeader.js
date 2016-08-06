@@ -232,7 +232,7 @@ export class WorkstationHeader extends Component {
             className={ `btn btn-dark btn-narrow ${arrangeTool === `scissors` ? `active` : ``}` }
             onClick={() => dispatch(arrangeToolSelect(`scissors`))} {...makeButtonUnfocusable}
           >
-            <span className="fa fa-fw fa-scissors fa-rotate-90" />
+            <span className="fa fa-fw fa-scissors fa-rotate-270" />
           </button>
         </OverlayTrigger>
         <OverlayTrigger placement="top" overlay={VelocityTooltip} delayShow={250}>

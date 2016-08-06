@@ -199,5 +199,6 @@ export const midi = namespaceActions(
     'CONNECTION_SYNC',
     'INCREMENT_OCTAVE',
     'DECREMENT_OCTAVE',
+    'CONNECTION_UNAVAILABLE',
   ]
 )

@@ -365,7 +365,7 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
       height: 100%;
 
       > .item {
-        transition: transform 0.25s ease-in-out;
+        transition: transform 0.25s ease-in-out, left 0.25s ease-in-out;
         padding: 15px 30px;
         height: 100%;
 
@@ -463,7 +463,6 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
     }
   }
 }
-<<<<<<< HEAD
 
 .workstation-samples-progress {
   position: fixed;

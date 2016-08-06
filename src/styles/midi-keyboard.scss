@@ -1,6 +1,14 @@
 // ----------------------------------------------------------------------------
 // MIDI Keyboard
 // ----------------------------------------------------------------------------
+.midi-controller {
+
+}
+.midi-controller-piano {
+  position: relative;
+  margin: 20px 15px 20px;
+  height: 50px;
+}
 .midi-controller-keybed {
   position: absolute;
   top: 0;

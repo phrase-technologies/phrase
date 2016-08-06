@@ -1,0 +1,32 @@
+// ============================================================================
+// Mouse Tools Tour
+// ============================================================================
+.mouse-tools {
+  position: relative;
+  padding-left: 175px;
+  padding-top: 5px;
+}
+.mouse-tools-graphic {
+  position: absolute;
+  top: 0;
+  left: 10px;
+
+  border: 1px solid #000;
+  border-radius: 50%;
+}
+.mouse-tools-item {
+  padding-bottom: 10px;
+}
+.mouse-tools-icon {
+  margin-right: 8px;
+
+  border: 1px solid #000;
+  border-radius: 50%;
+  padding: 3px 2px;
+  background: #333;
+  text-shadow:
+    -0.5px -0.5px 0px #000,
+     0.5px  0.5px 0px #000,
+     0.5px -0.5px 0px #000,
+    -0.5px  0.5px 0px #000;
+}
