@@ -63,6 +63,7 @@ export default class WorkstationFooter extends Component {
               <span className="fa fa-microphone" />
             </div>
           </div>
+          {/* // TEMPORARILY DISABLE UNTIL WE LAUNCH MULTITRACK (TODO)
           <div className="btn-group pull-right">
             <div className={multitrackClass} onClick={this.toggleMultitrack}>
               <span> Multitrack</span>
@@ -74,6 +75,7 @@ export default class WorkstationFooter extends Component {
               <span> Effects Rack</span>
             </div>
           </div>
+          */}
         </div>
       </div>
     )

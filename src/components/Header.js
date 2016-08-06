@@ -39,7 +39,9 @@ let Header = ({
     <div className={headerClasses}>
       <div className={containerClasses}>
         <div className="btn-toolbar pull-left">
+          {/* // TEMPORARILY DISABLE UNTIL WE LAUNCH LIBRARY (TODO)
           <HeaderSearch theme={theme} />
+          */}
           <div className="btn-group">
             <a
               className={buttonClasses}

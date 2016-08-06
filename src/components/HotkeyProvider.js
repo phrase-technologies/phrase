@@ -160,18 +160,22 @@ class HotkeyProvider extends Component {
       case 51:  // 3 - Eraser tool
         dispatch(arrangeToolSelect(`eraser`))
         break
-      case 52:  // 4 - Slice tool
-        dispatch(arrangeToolSelect(`scissors`))
-        break
-      case 53:  // 5 - Velocity tool
+      // TEMPORARILY DISABLE UNTIL WE FIX SLICE (TODO)
+      // case 52:  // 4 - Slice tool
+      //   dispatch(arrangeToolSelect(`scissors`))
+      //   break
+      // case 53:  // 5 - Velocity tool // TEMPORARILY CHANGE from 5 to 4 UNTIL WE FIX SLICE (TODO)
+      case 52:  // 4 - Velocity tool
         dispatch(arrangeToolSelect(`velocity`))
         break
       // ----------------------------------------------------------------------
       // Layout
+      /* // TEMPORARILY DISABLE UNTIL WE LAUNCH RACKS (TODO)
       case 9:   // Tab - toggle arrange / rack view
         dispatch({ type: layout.TOGGLE_RACK })
         e.preventDefault()
         break
+      */
     }
   }
 

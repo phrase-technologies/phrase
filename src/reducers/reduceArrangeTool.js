@@ -2,7 +2,7 @@ import { arrangeTool } from 'actions/actions'
 
 export let arrangeToolSelect = tool => ({ type: arrangeTool.SELECT, payload: tool })
 
-let defaultState = `pointer`
+let defaultState = `pencil`
 
 export default function reduceArrangeTool(state = defaultState, action) {
   switch (action.type) {

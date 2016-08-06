@@ -17,12 +17,14 @@ export let UserNavigation = (props) => {
         <Link className={buttonClasses} to="/about" activeClassName="header-nav-active">
           About
         </Link>
+        {/*
         <Link className={buttonClasses} to="/developers" activeClassName="header-nav-active">
           Developers
         </Link>
         <Link className={buttonClasses} to="/contact" activeClassName="header-nav-active">
           Contact
         </Link>
+        */}
         { notificationButton({ loggedIn: props.loggedIn }) }
       </div>
       {

@@ -74,8 +74,9 @@ export default class Pianoroll extends Component {
     return (
       <div className="pianoroll">
         <div className="pianoroll-settings" style={settingsStyle}>
-          <div className="pianoroll-sound-name">{this.props.currentTrack.name}</div>
+          <div className="pianoroll-sound-name">{"Grand Piano" || this.props.currentTrack.name}</div>
           <div className="pianoroll-sound-thumbnail" style={thumbnailStyle} />
+          {/*
           <div className="pianoroll-sound-menu btn-group-vertical">
             <div
               className="btn btn-xs btn-bright"
@@ -93,6 +94,7 @@ export default class Pianoroll extends Component {
               <span> Edit</span>
             </div>
           </div>
+          */}
         </div>
         <div className="pianoroll-chunk">
         </div>

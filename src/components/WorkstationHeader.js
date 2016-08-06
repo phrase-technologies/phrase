@@ -198,8 +198,9 @@ export class WorkstationHeader extends Component {
     let DefaultTooltip = <Tooltip id="tooltip-default-tool">Selection Tool (1)</Tooltip>
     let PencilTooltip = <Tooltip id="tooltip-pencil-tool">Pencil Tool (2)</Tooltip>
     let EraserTooltip = <Tooltip id="tooltip-eraser-tool">Eraser Tool (3)</Tooltip>
-    let SliceTooltip = <Tooltip id="tooltip-slice-tool">Slice Tool (4)</Tooltip>
-    let VelocityTooltip = <Tooltip id="tooltip-velocity-tool">Velocity Tool (5)</Tooltip>
+    // TEMPORARILY DISABLE UNTIL WE FIX SLICE (TODO)
+    // let SliceTooltip = <Tooltip id="tooltip-slice-tool">Slice Tool (4)</Tooltip>
+    let VelocityTooltip = <Tooltip id="tooltip-velocity-tool">Velocity Tool (4)</Tooltip>// TEMPORARILY CHANGE from 5 to 4 UNTIL WE FIX SLICE (TODO)
 
     return (
       <div className="btn-group">
@@ -227,6 +228,7 @@ export class WorkstationHeader extends Component {
             <span className="fa fa-fw fa-eraser" />
           </button>
         </OverlayTrigger>
+        {/* // TEMPORARILY DISABLE UNTIL WE FIX SLICE (TODO)
         <OverlayTrigger placement="top" overlay={SliceTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `scissors` ? `active` : ``}` }
@@ -235,10 +237,11 @@ export class WorkstationHeader extends Component {
             <span className="fa fa-fw fa-scissors fa-rotate-270" />
           </button>
         </OverlayTrigger>
+        */}
         <OverlayTrigger placement="top" overlay={VelocityTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `velocity` ? `active` : ``}` }
-            onClick={() => dispatch(arrangeToolSelect(`velocity`))}
+            onClick={() => dispatch(arrangeToolSelect(`velocity`))} {...makeButtonUnfocusable}
           >
             <span style={{ padding: `0 0.45rem` }}>V</span>
           </button>
