@@ -170,7 +170,9 @@ export class WorkstationHeader extends Component {
           <Dropdown.Menu>
             {
               quantizerDivisions.map((item, i) => {
-                return <MenuItem eventKey={item.val} key={i}>{item.label}</MenuItem>
+                if (item.val)
+                  return <MenuItem eventKey={item.val} key={i}>{item.label}</MenuItem>
+                return <MenuItem divider />
               })
             }
           </Dropdown.Menu>
