@@ -49,6 +49,7 @@ let baseReducers = {
   phrase: rehydratePhrase(undoable(reducePhrase, undoOptions)),
   phraseMeta: reducePhraseMeta,
   pianoroll: reducePianoroll,
+  quantizer: reduceQuantizer,
 }
 
 let reducerSpec = {
@@ -65,7 +66,6 @@ let reducerSpec = {
   arrangeTool: reduceArrangeTool,
   notification: reduceNotification,
   midi: reduceMIDI,
-  quantizer: reduceQuantizer,
 }
 
 export let testReducer = combineReducers(baseReducers)

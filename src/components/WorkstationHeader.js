@@ -15,7 +15,9 @@ import {
   phraseRephrase,
   phraseQuantizeSelection,
 } from 'reducers/reducePhrase'
-import { changeQuantizeDivision } from 'reducers/reduceQuantizer'
+import {
+  changeQuantizeDivision,
+  quantizerDivisions } from 'reducers/reduceQuantizer'
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 import { exportToMidi } from 'actions/actionsMidi'
 import isSafari from 'helpers/isSafari'
@@ -161,14 +163,14 @@ export class WorkstationHeader extends Component {
                 {...makeButtonUnfocusable}
                 style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
               >
-                <span>{this.props.quantizeDivision}</span>
+                <span>{quantizerDivisions.find((item) => item.val === this.props.quantizeDivision).label}</span>
               </button>
             </OverlayTrigger>
           </a>
           <Dropdown.Menu>
             {
-              [`1/1`, `1/2`, `1/4`, `1/16`, `1/64`].map((division, i) => {
-                return <MenuItem eventKey={division} key={i}>{division}</MenuItem>
+              quantizerDivisions.map((item, i) => {
+                return <MenuItem eventKey={item.val} key={i}>{item.label}</MenuItem>
               })
             }
           </Dropdown.Menu>
