@@ -154,7 +154,7 @@ export class WorkstationHeader extends Component {
       <div className="btn-group" style={{ right: 10 }}>
         <Dropdown
           onToggle={isOpen => this.setState({ quantizeDropdownIsOpen: isOpen })}
-          onSelect={this.changeQuantizationDivision}
+          onSelect={(e, division) => { this.props.dispatch(changeQuantizeDivision(division)) }}
           id="workstation-quantize-division" className="dropdown-dark">
           <a className="dropdown-toggle" bsRole="toggle">
             <OverlayTrigger placement="top" overlay={QuantizeDivision} delayShow={250}>
@@ -185,10 +185,6 @@ export class WorkstationHeader extends Component {
         </OverlayTrigger>
       </div>
     )
-  }
-
-  changeQuantizationDivision = (e, division) => {
-    this.props.dispatch(changeQuantizeDivision(division))
   }
 
   renderEditTool() {
