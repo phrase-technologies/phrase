@@ -78,7 +78,7 @@ async function bootstrap () {
     app.use(bodyParser.urlencoded({ limit: `50mb`, extended: true }))
 
     // Add intentional latency to all responses to simulate real life
-    if (!process.env.PRODUCTION)  // TODO use a real flag here
+    if (process.env.NODE_ENV !== `production`)
       app.use((req, res, next) => { setTimeout(next, 640) })
 
     app.use(`/api`, router({ app, db, io }))

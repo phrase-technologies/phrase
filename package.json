@@ -2,7 +2,8 @@
   "name": "phrase-api",
   "version": "0.1.0",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "start-prod": "NODE_ENV=production nodemon index.js"
   },
   "dependencies": {
     "babel-register": "^6.7.2",
