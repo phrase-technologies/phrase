@@ -30,7 +30,7 @@ let generateUniqueToken = async ({ index, db }) => {
 
 let generateAPIToken = async (user, app) => {
   return await jwt.sign(user, app.get(`superSecret`), {
-    expiresInMinutes: 1440, // expires in 24 hours
+    expiresIn: `365d`, // expires in a year
   })
 }
 
@@ -131,7 +131,7 @@ export default ({
     try {
       let lowerCaseUnameEmail = email.toLowerCase()
       let cursor = await r.table(`users`).getAll(lowerCaseUnameEmail, { index: `email` }).limit(1)
-        .union(r.table(`users`).getAll(lowerCaseUnameEmail, {index: `usernameLC`}).limit(1))
+        .union(r.table(`users`).getAll(lowerCaseUnameEmail, { index: `usernameLC` }).limit(1))
         .run(db)
       let users = await cursor.toArray()
       let user = users[0]
@@ -318,7 +318,7 @@ export default ({
     if (token) {
       jwt.verify(token, app.get(`superSecret`), (err, decoded) => {
         if (err) {
-          return res.json({ success: false, message: `Failed to authenticate token.` })
+          return res.status(403).json({ message: `Failed to authenticate token.` })
         }
 
         req.decoded = decoded
