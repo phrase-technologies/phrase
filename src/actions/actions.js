@@ -71,6 +71,13 @@ export const phrase = namespaceActions(
   ]
 )
 
+export const quantizer = namespaceActions(
+  `quantizer`,
+  [
+    'CHANGE_DIVISION',
+  ]
+)
+
 export const library = namespaceActions(
   `library`,
   [

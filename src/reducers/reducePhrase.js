@@ -416,6 +416,11 @@ export const phraseDropNoteVelocity = () => {
   }
 }
 
+export const phraseQuantizeSelection = () => {
+  return () => {
+    console.log(`TODO: implement quantization of selected notes`)
+  }
+}
 
 export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated, dateModified, state }) => {
   return (dispatch) => {

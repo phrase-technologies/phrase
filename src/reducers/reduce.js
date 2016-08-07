@@ -21,6 +21,7 @@ import reduceAuth from './reduceAuth'
 import reduceArrangeTool from './reduceArrangeTool'
 import reduceNotification from './reduceNotification'
 import reduceMIDI from './reduceMIDI'
+import reduceQuantizer from './reduceQuantizer'
 
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
@@ -64,6 +65,7 @@ let reducerSpec = {
   arrangeTool: reduceArrangeTool,
   notification: reduceNotification,
   midi: reduceMIDI,
+  quantizer: reduceQuantizer,
 }
 
 export let testReducer = combineReducers(baseReducers)
