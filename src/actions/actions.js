@@ -24,7 +24,8 @@ export const layout = namespaceActions(
   [
     'CONSOLE_EMBED',
     'CONSOLE_SPLIT',
-    'TOGGLE_RACK'
+    'TOGGLE_RACK',
+    'SET_INPUT_METHODS_TOUR',
   ]
 )
 

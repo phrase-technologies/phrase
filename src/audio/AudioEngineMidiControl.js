@@ -1,6 +1,8 @@
 import _ from 'lodash'
 
 import { fireNote, sendMidiEvent } from 'audio/AudioEngineMidiTriggers.js'
+import { layout } from 'actions/actions'
+
 import {
   midiConnectionSync,
   midiFlagUnavailable,
@@ -24,10 +26,26 @@ export default (engine, STORE) => {
       for (let entry of midiAccess.inputs) {
         entry[1].onmidimessage = onMIDIMessage
       }
+
+      // First time visitor? Show input methods tour, show correct page based on connections
+      if (!localStorage.returningVisitor) {
+        let targetTourPage = (midiAccess && midiAccess.inputs.size)
+          ? 1 // External MIDI Controllers already detected? show MIDI Controller page
+          : 0 // No controllers detected? Show generic input methods page.
+        STORE.dispatch({ type: layout.SET_INPUT_METHODS_TOUR, openInputMethod: targetTourPage })
+        localStorage.setItem("returningVisitor", true)
+      }
     })
   } catch (e) {
+    // Exception means no Web MIDI support
     STORE.dispatch(midiFlagUnavailable())
     console.error(e)
+
+    // No MIDI support? Show generic input methods page to first time visitors
+    if (!localStorage.returningVisitor) {
+      STORE.dispatch({ type: layout.SET_INPUT_METHODS_TOUR, openInputMethod: 0 })
+      localStorage.setItem("returningVisitor", true)
+    }
   }
 
   let onMIDIMessage = (event) => {

@@ -39,7 +39,7 @@ export default (props) => {
   return (
     <div className="input-tour">
       <h3 className={`input-tour-header ${props.openInputMethod ? 'collapsed' : ''}`}>
-        Four ways to create your Phrase:
+        Four ways to create with Phrase:
         <button className="close" onClick={() => props.setOpenInputMethod(null)}>
           &times;
         </button>
@@ -85,6 +85,9 @@ export default (props) => {
               src={require('../img/pianoroll-drag-and-drop.png')}
               width={150} className="mouse-tools-graphic"
             />
+            <p>
+              Select from the various mouse tools in the top right hand corner.
+            </p>
             <div className="mouse-tools-item">
               <span className="mouse-tools-icon">
                 <span className="fa fa-fw fa-mouse-pointer" />
@@ -103,17 +106,19 @@ export default (props) => {
               </span>
               3. <strong>Eraser</strong> - click any note to delete it
             </div>
+            {/* // TEMPORARILY DISABLE UNTIL WE FIX SLICE (TODO)
             <div className="mouse-tools-item">
               <span className="mouse-tools-icon">
                 <span className="fa fa-fw fa-scissors fa-rotate-270" />
               </span>
               4. <strong>Slice</strong> - click any note to separate it into two
             </div>
+            */}
             <div className="mouse-tools-item">
               <span className="mouse-tools-icon">
                 <span style={{ padding: "0 5px 0 4px" }}>V</span>
               </span>
-              5. <strong>Velocity</strong> - click and drag any note to adjust its velocity
+              4. <strong>Velocity</strong> - click and drag any note to adjust its velocity
             </div>
           </div>
         </Carousel.Item>

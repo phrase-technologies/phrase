@@ -1,3 +1,6 @@
+// ============================================================================
+// Links
+// ============================================================================
 a,
 .nav,
 .pagination,
@@ -19,6 +22,9 @@ a,
   text-decoration: none !important;
 }
 
+// ============================================================================
+// Buttons
+// ============================================================================
 .btn {
   outline: none !important;
 
@@ -226,6 +232,10 @@ a,
   -webkit-font-smoothing: auto;
 }
 
+// ============================================================================
+// Special Buttons / Accessories
+// ============================================================================
+// Modal Close Button
 .close {
   position: absolute;
   top: 10px;
@@ -237,6 +247,7 @@ a,
   padding-bottom: 2px;
 }
 
+// Notification Count
 .notification-count {
   position: relative;
   top: -0.75em;
@@ -252,6 +263,7 @@ a,
   box-shadow: 0 0 0px 2px #333;
 }
 
+// LED-Style Connectivity Indicator
 .signal {
   display: inline-block;
   width: 11px;
@@ -277,4 +289,52 @@ a,
   background-image:
     radial-gradient(circle at 50% 35%, #FFF 0%, transparent 50%),
     radial-gradient(circle at 50% 50%, #F00 50%, #000 100%);
+}
+
+// Tour Indicator
+.hint-ring {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+
+  pointer-events: none;
+
+  .hint-ring-a,
+  .hint-ring-b,
+  .hint-ring-c,
+  .hint-ring-d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 38px;
+    width: 38px;
+
+    border: 3px solid hsl(180, 100%, 50%);
+    border-radius: 100%;
+    animation-name: hint-ring-throb;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+  }
+  .hint-ring-a { animation-delay: 1000ms; }
+  .hint-ring-b { animation-delay:  200ms; }
+  .hint-ring-c { animation-delay:  400ms; }
+  .hint-ring-d { animation-delay:  600ms; }
+}
+
+@keyframes hint-ring-throb {
+  0% {
+    transform: scale(0.4, 0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.0, 1.0);
+    opacity: 0;
+  }
 }

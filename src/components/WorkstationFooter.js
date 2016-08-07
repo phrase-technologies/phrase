@@ -7,13 +7,6 @@ import { layoutConsoleSplit } from 'reducers/reduceNavigation'
 
 export default class WorkstationFooter extends Component {
 
-  constructor() {
-    super()
-    this.state = {
-      openInputMethod: null,
-    }
-  }
-
   render() {
     let multitrackClass = 'btn btn-sm btn-link link-dark btn-glow'
         multitrackClass += this.isMultitrackActive() ? ' active' : ''
@@ -25,8 +18,8 @@ export default class WorkstationFooter extends Component {
     return (
       <div className="workstation-footer">
         <InputMethodsTour
-          show={this.state.openInputMethod !== null}
-          openInputMethod={this.state.openInputMethod}
+          show={this.props.openInputMethod !== null}
+          openInputMethod={this.props.openInputMethod}
           setOpenInputMethod={this.setOpenInputMethod}
         />
         <div className="btn-toolbar">
@@ -82,7 +75,7 @@ export default class WorkstationFooter extends Component {
   }
 
   setOpenInputMethod = (eventKey) => {
-    this.setState({ openInputMethod: eventKey })
+    this.props.dispatch({ type: layout.SET_INPUT_METHODS_TOUR, openInputMethod: eventKey })
 
     // Avoid the carousel controls remaining focused, which prevents hotkeys from working
     setTimeout(() => document.activeElement.blur(), 0)

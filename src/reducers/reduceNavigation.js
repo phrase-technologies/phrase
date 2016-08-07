@@ -15,6 +15,7 @@ let defaultState = {
   consoleEmbedded: false,
   consoleSplitRatio: 0.0,
   rackOpen: false,
+  inputMethodsTour: null, // null = tour closed, 0 = tour intro, 1 = external midi, 2 = musical typing, etc.
 }
 
 export default function reducerNavigation(state = defaultState, action) {
@@ -56,17 +57,29 @@ export default function reducerNavigation(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
+    /*
+    // This is useful when we have multitrack views, and we want the user to
+    // see the default layout upon loading a new phrase. Be careful though - it
+    // can easily overwrite initialization stuff that we want to keep, like the
+    // inputMethodsTour (showing midi connections successful upon first time visitor arriving!)
     case phrase.NEW_PHRASE:
     case phrase.LOAD_START:
-      return defaultState
+      return u({
+        inputMethodsTour: state.inputMethodsTour,
+      }, defaultState)
+    */
 
     // ------------------------------------------------------------------------
-
     case layout.TOGGLE_RACK:
-      return {
-        ...state,
+      return u({
         rackOpen: !state.rackOpen
-      }
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case layout.SET_INPUT_METHODS_TOUR:
+      return u({
+        inputMethodsTour: action.openInputMethod
+      }, state)
 
     // ------------------------------------------------------------------------
     default:

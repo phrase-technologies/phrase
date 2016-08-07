@@ -91,6 +91,7 @@ export class Workstation extends Component {
       consoleSplitRatio: this.props.consoleSplitRatio,
       focusedTrack: this.props.focusedTrack,
       rackOpen: this.props.rackOpen,
+      openInputMethod: this.props.inputMethodsTour,
     }
 
     return (
@@ -234,7 +235,8 @@ export class Workstation extends Component {
       'consoleSplitRatio',
       'rackOpen',
       'selectedTrack',
-      'samples'
+      'samples',
+      'inputMethodsTour',
     ])
   }
 }
@@ -256,6 +258,7 @@ function mapStateToProps(state) {
     consoleSplitRatio: state.navigation.consoleSplitRatio,
     rackOpen: state.navigation.rackOpen,
     samples: state.samples,
+    inputMethodsTour: state.navigation.inputMethodsTour,
     selectedTrack,
   }
 }

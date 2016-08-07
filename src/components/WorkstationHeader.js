@@ -8,6 +8,7 @@ import WorkstationHeaderAuthor from './WorkstationHeaderAuthor'
 import WorkstationHeaderStorage from './WorkstationHeaderStorage'
 import WorkstationHeaderShare from './WorkstationHeaderShare'
 import TransportControls from './TransportControls'
+import HintRing from 'components/HintRing'
 
 import {
   phraseLoginReminder,
@@ -72,6 +73,7 @@ export class WorkstationHeader extends Component {
         </div>
         <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 15 }}>
           { this.renderQuantizeTool() }
+          <HintRing show={this.props.inputMethodsTour === 3} />
           { this.renderEditTool() }
         </div>
       </div>
@@ -276,6 +278,7 @@ function mapStateToProps(state) {
     rephraseReminder: state.phraseMeta.rephraseReminder,
     arrangeTool: state.arrangeTool,
     quantizeDivision: state.quantizer.division,
+    inputMethodsTour: state.navigation.inputMethodsTour,
   }
 }
 

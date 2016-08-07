@@ -12,8 +12,11 @@ export class ExternalMidiController extends Component {
       return (
         <div className="midi-controller">
           <p className="text-center">
-            Simply plug your MIDI controller in and we'll
-            automatically detect it.
+            {
+              this.props.numPorts
+                ? "Good news - we've automatically detected your MIDI controller!"
+                : "Simply plug your MIDI controller in and we'll automatically detect it."
+            }
           </p>
           <div className="midi-controller-piano">
             <PianorollKeys midiController={true} />
@@ -48,6 +51,7 @@ export class ExternalMidiController extends Component {
   shouldComponentUpdate(nextProps) {
     return diffProps(nextProps, this.props, [
       'connectionAvailable',
+      'numPorts',
     ])
   }
 
@@ -56,6 +60,7 @@ export class ExternalMidiController extends Component {
 function mapStateToProps(state) {
   return {
     connectionAvailable: state.midi.connectionAvailable,
+    numPorts: state.midi.numPorts,
   }
 }
 
