@@ -8,6 +8,7 @@ import UserProfile from 'components/UserProfile.js'
 import About from 'components/About.js'
 import NewPassword from 'components/NewPassword.js'
 import Error404 from 'components/Error404.js'
+import ConfirmUser from 'components/ConfirmUser'
 
 export default (
   <Route path="/" component={App}>
@@ -21,6 +22,7 @@ export default (
     <Route path="/about" component={About} />
     <Route path="/developers" component={About} />
     <Route path="/new-password" component={NewPassword} />
+    <Route path="/confirm-user" component={ConfirmUser} />
     <Route path="*" component={Error404} />
   </Route>
 )

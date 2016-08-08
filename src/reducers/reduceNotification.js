@@ -34,6 +34,7 @@ export let addAPIErrorNotification = () => {
 export const catchAndToastException = async ({ dispatch, toCatch, callback }) => {
   try { await toCatch() }
   catch(e) {
+    console.log(e)
     dispatch(addAPIErrorNotification())
     if (callback) callback()
   }

@@ -1,6 +1,13 @@
 import { push } from 'react-router-redux'
 
-import { login as loginHelper, signup as signupHelper, forgotPassword as forgotPasswordHelper, newPassword as newPasswordHelper } from 'helpers/authHelpers'
+import {
+  login as loginHelper,
+  signup as signupHelper,
+  forgotPassword as forgotPasswordHelper,
+  newPassword as newPasswordHelper,
+  confirmUser as confirmUserHelper,
+  retryConfirmUser as retryConfirmUserHelper,
+} from 'helpers/authHelpers'
 import { modal } from '../actions/actions.js'
 import { auth } from '../actions/actions.js'
 import { librarySaveNew } from 'reducers/reduceLibrary'
@@ -39,7 +46,7 @@ export let login = ({ email, password }) => {
             }
             else dispatch({
               type: auth.LOGIN_FAIL,
-              payload: { message: response.message },
+              payload: { message: response.message, confirmFail: response.confirmFail },
             })
           }
         })
@@ -58,24 +65,16 @@ export let signup = ({ email, username, password }) => {
         await signupHelper({
           body: { email, username, password },
           callback: (response) => {
-            if (response.success) {
+            if (response.success)
+              dispatch(modalOpen({
+                modalComponent: `SignupConfirmationModal`,
+                payload: email,
+              }))
+            else
               dispatch({
-                type: auth.LOGIN_SUCCESS,
-                payload: {
-                  loggedIn: response.success,
-                  user: response.user,
-                },
+                type: auth.LOGIN_FAIL,
+                payload: { message: response.message },
               })
-
-              let phraseState = getState().phrase
-              if (phraseState.past.length || phraseState.future.length) {
-                dispatch(librarySaveNew())
-              }
-            }
-            else dispatch({
-              type: auth.LOGIN_FAIL,
-              payload: { message: response.message },
-            })
           }
         })
       },
@@ -130,6 +129,82 @@ export let newPassword = ({ email, resetToken, password, confirmPassword }) => {
   }
 }
 
+export let confirmUser = ({ email, confirmToken }) => {
+  return (dispatch) => {
+    catchAndToastException({ dispatch,
+      toCatch: async () => {
+        await confirmUserHelper({ email, confirmToken }, async response => {
+          if (response.success) {
+            dispatch({
+              type: auth.LOGIN_SUCCESS,
+              payload: {
+                loggedIn: response.success,
+                user: response.user,
+              },
+            })
+            dispatch(push('/phrase/new'))
+            dispatch(modalOpen({ modalComponent: 'ConfirmSuccessModal' }))
+          }
+          else dispatch({ type: auth.USER_CONFIRM_FAIL })
+        })
+      },
+    })
+  }
+}
+
+export let manualConfirmUser = ({ email, confirmToken }) => {
+  return (dispatch) => {
+    dispatch({ type: auth.LOGIN_REQUEST })
+    catchAndToastException({ dispatch,
+      toCatch: async() => {
+        await confirmUserHelper({ email, confirmToken }, async response => {
+          if (response.success) {
+            dispatch({
+              type: auth.LOGIN_SUCCESS,
+              payload: {
+                loggedIn: response.success,
+                user: response.user,
+              },
+            })
+            dispatch(push('/phrase/new'))
+            dispatch(modalOpen({ modalComponent: 'ConfirmSuccessModal' }))
+          }
+          else dispatch({
+            type: auth.LOGIN_FAIL,
+            payload: { message: response.message },
+          })
+        })
+      },
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
+    })
+  }
+}
+
+export let retryConfirmUser = ({ email }) => {
+  return (dispatch, getState) => {
+    dispatch({ type: auth.LOGIN_REQUEST})
+    catchAndToastException({ dispatch,
+      toCatch: async () => {
+        await retryConfirmUserHelper({ email }, async response => {
+          if (response.success) {
+            dispatch(modalOpen({ modalComponent: `SignupConfirmationModal`, payload: email }))
+
+            let phraseState = getState().phrase
+            if (phraseState.past.length || phraseState.future.length) {
+              dispatch(librarySaveNew())
+            }
+          }
+          else dispatch({
+            type: auth.LOGIN_FAIL,
+            payload: { message: response.message },
+          })
+        })
+      },
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
+    })
+  }
+}
+
 export let logout = () => {
   return (dispatch) => {
     localStorage.clear()
@@ -157,6 +232,7 @@ let intialState = {
     username: localStorage.username,
   },
   errorMessage: null,
+  showConfirmUserError: false,
 }
 
 export default (state = intialState, action) => {
@@ -169,12 +245,15 @@ export default (state = intialState, action) => {
         return {
           ...state,
           errorMessage: null,
+          confirmFail: false,
         }
       }
-      else if (action.modalComponent === 'ForgotPasswordSuccessModal') {
+      else if (['ForgotPasswordSuccessModal', 'SignupConfirmationModal', 'ConfirmRetryModal'].find(x => x === action.modalComponent)) {
         return {
           ...state,
+          errorMessage: null,
           email: action.payload,
+          requestingAuth: false,
         }
       }
       return state
@@ -210,7 +289,15 @@ export default (state = intialState, action) => {
       return {
         ...state,
         errorMessage: action.payload.message,
+        confirmFail: action.payload.confirmFail,
         requestingAuth: false,
+      }
+
+    // ------------------------------------------------------------------------
+    case auth.USER_CONFIRM_FAIL:
+      return {
+        ...state,
+        showConfirmUserError: true,
       }
 
     // ------------------------------------------------------------------------

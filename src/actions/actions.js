@@ -7,6 +7,7 @@ export const auth = namespaceActions(
     'LOGIN_SUCCESS',
     'LOGIN_FAIL',
     'LOGOUT',
+    'USER_CONFIRM_FAIL'
   ]
 )
 
