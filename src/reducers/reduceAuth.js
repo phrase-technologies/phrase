@@ -65,18 +65,16 @@ export let signup = ({ email, username, password }) => {
         await signupHelper({
           body: { email, username, password },
           callback: (response) => {
-            if (response.success) {
-              dispatch(modalOpen({ modalComponent: `SignupConfirmationModal`, payload: email }))
-
-              let phraseState = getState().phrase
-              if (phraseState.past.length || phraseState.future.length) {
-                dispatch(librarySaveNew())
-              }
-            }
-            else dispatch({
-              type: auth.LOGIN_FAIL,
-              payload: { message: response.message },
-            })
+            if (response.success)
+              dispatch(modalOpen({
+                modalComponent: `SignupConfirmationModal`,
+                payload: email,
+              }))
+            else
+              dispatch({
+                type: auth.LOGIN_FAIL,
+                payload: { message: response.message },
+              })
           }
         })
       },
@@ -243,18 +241,19 @@ export default (state = intialState, action) => {
     // ------------------------------------------------------------------------
     // Clear out old auth error messages before launching auth modals
     case modal.OPEN:
-      if (['LoginModal', 'SignupModal', 'ForgotPasswordModal', 'ConfirmRetryModal'].find(x => x === action.modalComponent)) {
+      if (['LoginModal', 'SignupModal', 'ForgotPasswordModal'].find(x => x === action.modalComponent)) {
         return {
           ...state,
           errorMessage: null,
           confirmFail: false,
         }
       }
-      else if (['ForgotPasswordSuccessModal', 'SignupConfirmationModal'].find(x => x === action.modalComponent)) {
+      else if (['ForgotPasswordSuccessModal', 'SignupConfirmationModal', 'ConfirmRetryModal'].find(x => x === action.modalComponent)) {
         return {
           ...state,
           errorMessage: null,
           email: action.payload,
+          requestingAuth: false,
         }
       }
       return state

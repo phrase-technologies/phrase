@@ -42,7 +42,10 @@ export class ConfirmUser extends Component {
 
   openConfirmRetryModal = (e) => {
     e.preventDefault()
-    this.props.dispatch(modalOpen({ modalComponent: `ConfirmRetryModal` }))
+    this.props.dispatch(modalOpen({
+      modalComponent: `ConfirmRetryModal`,
+      payload: this.props.location.query.email,
+    }))
   }
 }
 

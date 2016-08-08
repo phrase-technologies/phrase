@@ -15,7 +15,7 @@ export class ConfirmSuccessModal extends Component {
         <Modal.Body>
           <button type="button" className="close" onClick={this.closeModal}>&times;</button>
           <div>
-            <h4 className="text-center">You are all set, enjoy!</h4>
+            <h4 className="text-center">You're all set, enjoy!</h4>
           </div>
         </Modal.Body>
       </Modal>

@@ -19,7 +19,12 @@ export class SignupConfirmationModal extends Component {
           <div className="form-group">
             <h4 className="text-center">Thank you for signing up!</h4>
           </div>
-          <p>We sent a confirmation email to <strong>{this.props.email}</strong>, please enter your confirmation code below</p>
+          <p>
+            <span>We sent a confirmation code to
+              {this.props.email ? <strong> {this.props.email}</strong> : ` your email address`}.&nbsp;
+            </span>
+            Please enter the confirmation code below
+          </p>
           <form onSubmit={this.submit} noValidate>
             <div className="form-group" style={{marginBottom: 10}}>
               <input
@@ -40,7 +45,7 @@ export class SignupConfirmationModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <p className="text-center">
-            <span>Didnt get the email? </span>
+            <span>Didn't get the email? </span>
             <a href="" onClick={this.resendConfirmationEmail}>
               <strong>Try Again</strong>
             </a>
@@ -64,7 +69,7 @@ export class SignupConfirmationModal extends Component {
 
   resendConfirmationEmail = (e) => {
     e.preventDefault()
-    this.props.dispatch(modalOpen({ modalComponent: `ConfirmRetryModal` }))
+    this.props.dispatch(modalOpen({ modalComponent: `ConfirmRetryModal`, payload: this.props.email }))
   }
 }
 
