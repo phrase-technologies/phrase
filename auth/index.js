@@ -5,14 +5,34 @@ import isValidPassword from '../helpers/isPassword'
 import r from 'rethinkdb'
 import crypto from 'crypto'
 import { secret } from '../config'
-import { clientURL } from '../server.config'
-import sendEmail from '../helpers/emailHelper'
+import { sendPasswordResetEmail, sendWelcomeEmail } from '../helpers/emailHelper'
 
 let hash = password => crypto.createHmac(`sha256`, secret)
   .update(password)
   .digest(`hex`)
 
 let doubleHash = password => hash(hash(password))
+
+let generateUniqueToken = async ({ index, db }) => {
+  let nBytes = 3
+  let token = crypto.randomBytes(nBytes).toString(`hex`).toUpperCase()
+  while(true) {
+    let cursor = await r.table(`users`)
+      .getAll(token, { index })
+      .limit(1)
+      .run(db)
+    let users = await cursor.toArray()
+    if (users[0]) token = crypto.randomBytes(nBytes).toString(`hex`).toUpperCase()
+    else break
+  }
+  return token
+}
+
+let generateAPIToken = async (user, app) => {
+  return await jwt.sign(user, app.get(`superSecret`), {
+    expiresInMinutes: 1440, // expires in 24 hours
+  })
+}
 
 export default ({
   api,
@@ -77,11 +97,19 @@ export default ({
               message: { passwordError: `Passwords must be at least 6 characters long` },
             })
           } else {
+            let token = await generateUniqueToken({ index: `confirmToken`, db })
             let user = await r.table(`users`).insert({
               username: trimmedUsername,
               email: lowerCaseEmail,
               password: doubleHash(trimmedPassword),
+              confirmToken: token,
             }).run(db)
+
+            sendWelcomeEmail({
+              username: trimmedUsername,
+              email: lowerCaseEmail,
+              confirmToken: token,
+            })
 
             console.log(`${username} signed up!`)
 
@@ -118,11 +146,15 @@ export default ({
           success: false,
           message: `Bad username or email / password combination.`,
         })
-      } else {
-        let token = jwt.sign(user, app.get(`superSecret`), {
-          expiresInMinutes: 1440, // expires in 24 hours
+      } else if (user.confirmToken) {
+        res.json({
+          success: false,
+          confirmFail: true,
+          message: `Email address not yet confirmed, please `,
         })
-
+      }
+      else {
+        let token = await generateAPIToken(user, app)
         res.json({
           success: true,
           message: `Enjoy your token!`,
@@ -152,28 +184,13 @@ export default ({
           message: { emailError: `Email not found.` },
         })
       } else {
-        let token = crypto.randomBytes(20).toString(`hex`)
-        while(true) {
-          let cursor = await r.table(`users`)
-            .getAll(token, { index: `resetToken` })
-            .limit(1)
-            .run(db)
-          let users = await cursor.toArray()
-          if (users[0])
-            token = crypto.randomBytes(20).toString(`hex`)
-          else
-            break
-        }
-
+        let token = await generateUniqueToken({ index: `resetToken`, db })
         r.table(`users`)
           .getAll(lowerCaseEmail, { index: `email`})
           .limit(1)
           .update({resetToken: token})
           .run(db)
-
-        let resetLink = `${clientURL}/new-password?token=${token}&email=${user.email}`
-        sendEmail(1, user.email, { USERNAME: user.username, RESETLINK: resetLink })
-
+        sendPasswordResetEmail({ username: user.username, email: user.email, resetToken: token })
         res.json({
           success: true,
         })
@@ -227,6 +244,68 @@ export default ({
             success: true,
           })
         }
+      }
+    }
+    catch (err) { console.log(err) }
+  })
+
+  app.post(`/confirm-user`, async (req, res) => {
+    try {
+      let { email, confirmToken } = req.body
+      let lowerCaseEmail = email.toLowerCase()
+      let cursor = await r.table(`users`)
+        .getAll(lowerCaseEmail, { index: `email` })
+        .limit(1)
+        .run(db)
+      let users = await cursor.toArray()
+      let user = users[0]
+
+      if(!user || user.confirmToken !== confirmToken)
+        res.json({ success: false, message: `Invalid code, please try again` })
+      else {
+        r.table(`users`).getAll(lowerCaseEmail, { index: `email`}).limit(1)
+          .replace(r.row.without(`confirmToken`))
+          .run(db)
+        let token = await generateAPIToken(user, app)
+        res.json({
+          success: true,
+          token,
+          user,
+        })
+      }
+    }
+    catch (err) { console.log(err) }
+  })
+
+  app.post(`/retry-confirm-user`, async (req, res) => {
+    try {
+      let { email } = req.body
+      let lowerCaseEmail = email.toLowerCase()
+      let cursor = await r.table(`users`)
+        .getAll(lowerCaseEmail, { index: `email` })
+        .limit(1)
+        .run(db)
+      let users = await cursor.toArray()
+      let user = users[0]
+
+      if(!user)
+        res.json({
+          success: false,
+          message: `Email not found, please try again`,
+        })
+      else {
+        let token = await generateUniqueToken({ index: `confirmToken`, db })
+        r.table(`users`)
+          .getAll(lowerCaseEmail, { index: `email`})
+          .limit(1)
+          .update({confirmToken: token})
+          .run(db)
+        sendWelcomeEmail({
+          username: user.username,
+          email: user.email,
+          confirmToken: token,
+        })
+        res.json({ success: true })
       }
     }
     catch (err) { console.log(err) }
