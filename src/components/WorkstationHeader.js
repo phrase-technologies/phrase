@@ -165,7 +165,7 @@ export class WorkstationHeader extends Component {
         <Dropdown
           id="workstation-quantize-division" className="dropdown-dark" pullRight
           onToggle={isOpen => this.setState({ quantizeDropdownIsOpen: isOpen })}
-          onSelect={(e, division) => {this.props.dispatch(changeQuantizeDivision(division))}}>
+          onSelect={this.selectQuantizeDivision}>
           <button
             className={ `dropdown-toggle btn btn-dark btn-narrow ${QuantizeDivisionDropdownActive}` }
             bsRole="toggle" {...makeButtonUnfocusable}>
@@ -185,6 +185,13 @@ export class WorkstationHeader extends Component {
         </Dropdown>
       </div>
     )
+  }
+
+  selectQuantizeDivision = (e, division) => {
+    let self = document.getElementById('workstation-quantize-division')
+    self.focus()
+    self.blur() // Fix issue where quantize arrow stays focused when it shouldn't be
+    this.props.dispatch(changeQuantizeDivision(division))
   }
 
   renderEditTool() {
