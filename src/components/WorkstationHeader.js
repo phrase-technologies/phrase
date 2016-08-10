@@ -152,39 +152,37 @@ export class WorkstationHeader extends Component {
 
     return (
       <div className="btn-group" style={{ right: 10 }}>
+        <OverlayTrigger placement="top" overlay={QuantizeTooltip} delayShow={250}>
+          <button
+            className={ `btn btn-dark btn-narrow` }
+            onClick={() => dispatch(phraseQuantizeSelection())} {...makeButtonUnfocusable}>
+            <span>Q</span>
+          </button>
+        </OverlayTrigger>
+        <div className={ `btn btn-dark btn-narrow` } style={{ pointerEvents: `none` }}>
+          <span>{quantizerDivisions.find((item) => item.val === this.props.quantizeDivision).label}</span>
+        </div>
         <Dropdown
+          id="workstation-quantize-division" className="dropdown-dark" pullRight
           onToggle={isOpen => this.setState({ quantizeDropdownIsOpen: isOpen })}
-          onSelect={(e, division) => { this.props.dispatch(changeQuantizeDivision(division)) }}
-          id="workstation-quantize-division" className="dropdown-dark">
-          <a className="dropdown-toggle" bsRole="toggle">
+          onSelect={(e, division) => {this.props.dispatch(changeQuantizeDivision(division))}}>
+          <button
+            className={ `dropdown-toggle btn btn-dark btn-narrow ${QuantizeDivisionDropdownActive}` }
+            bsRole="toggle" {...makeButtonUnfocusable}>
             <OverlayTrigger placement="top" overlay={QuantizeDivision} delayShow={250}>
-              <button
-                className={ `btn btn-dark btn-narrow ${QuantizeDivisionDropdownActive}` }
-                {...makeButtonUnfocusable}
-                style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
-              >
-                <span>{quantizerDivisions.find((item) => item.val === this.props.quantizeDivision).label}</span>
-              </button>
+              <span className="fa">&#9660;</span>
             </OverlayTrigger>
-          </a>
+          </button>
           <Dropdown.Menu>
             {
               quantizerDivisions.map((item, i) => {
                 if (item.val)
                   return <MenuItem eventKey={item.val} key={i}>{item.label}</MenuItem>
-                return <MenuItem divider />
+                return <MenuItem divider key={i}/>
               })
             }
           </Dropdown.Menu>
         </Dropdown>
-        <OverlayTrigger placement="top" overlay={QuantizeTooltip} delayShow={250}>
-          <button
-            className={ `btn btn-dark btn-narrow` }
-            onClick={() => dispatch(phraseQuantizeSelection())} {...makeButtonUnfocusable}
-          >
-            <span className="fa fa-fw">Q</span>
-          </button>
-        </OverlayTrigger>
       </div>
     )
   }
