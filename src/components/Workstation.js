@@ -17,6 +17,7 @@ import { layoutConsoleSplit } from 'reducers/reduceNavigation'
 import CursorProvider from 'components/CursorProvider.js'
 import HotkeyProvider from 'components/HotkeyProvider.js'
 import MouseEventProvider from 'components/MouseEventProvider'
+import SamplesProgress from 'components/SamplesProgress'
 
 import WorkstationHeader from './WorkstationHeader'
 import WorkstationSplit from './WorkstationSplit'
@@ -125,12 +126,7 @@ export class Workstation extends Component {
                   </div>
                 </div>
               </div>
-              { this.props.samples[0] &&
-                this.props.samples[0].samplesLoaded < this.props.samples[0].totalSamples &&
-                <div className="workstation-samples-progress">
-                  {this.props.samples[0].samplesLoaded} / {this.props.samples[0].totalSamples}
-                </div>
-              }
+              <SamplesProgress samples={this.props.samples}/>
             </div>
 
           </MouseEventProvider>
