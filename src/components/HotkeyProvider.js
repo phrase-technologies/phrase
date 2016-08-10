@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
-import { layout } from 'actions/actions'
 import {
   midiIncrementOctave,
   midiDecrementOctave,
@@ -50,7 +49,7 @@ class HotkeyProvider extends Component {
   }
 
   handleKeyDown = (e) => {
-    let { dispatch, show: modalShowing } = this.props
+    let { dispatch, show: modalShowing, ENGINE } = this.props
 
     if (modalShowing) {
       if (e.keyCode === 27) { // 'escape' - close modals
@@ -80,6 +79,9 @@ class HotkeyProvider extends Component {
     // ----------------------------------------------------------------------
     // Musical Typing Settings (do this before to avoid conflicts with CMD+Z for undo)
     switch(e.keyCode) {
+      case 16: // shift - sustain on
+        ENGINE.sendMidiEvent({ trackID: 0, key: 0, type: 176, velocity: 127 })
+        break
       case 90:   // Z - decrement current octave
         dispatch(midiDecrementOctave())
         break
@@ -89,7 +91,7 @@ class HotkeyProvider extends Component {
     }
     let note = this.getNoteFromKeyCode(e.keyCode)
     if (!e.metaKey && !e.ctrlKey && note) {
-      this.props.ENGINE.fireNote({ trackID: 0, keyNum: note, velocity: 127 })
+      ENGINE.fireNote({ trackID: 0, keyNum: note, velocity: 127 })
       e.preventDefault()
       return
     }
@@ -192,6 +194,12 @@ class HotkeyProvider extends Component {
       return
     if (e.target.tagName === 'BUTTON')
       return
+
+    switch(e.keyCode) {
+      case 16: // shift - sustain off
+        this.props. ENGINE.sendMidiEvent({ trackID: 0, key: 0, type: 176, velocity: 0 })
+        break
+    }
 
     let keyNum = this.getNoteFromKeyCode(e.keyCode)
     if (Number.isInteger(keyNum))

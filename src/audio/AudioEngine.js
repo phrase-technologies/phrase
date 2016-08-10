@@ -2,17 +2,18 @@ import {
   updateNodes,
   createMetronome,
   getTrackOutputDecibels
-} from './AudioEngineNodes.js'
+} from './AudioEngineNodes'
 import {
   fireNote,
   killNote,
+  sendMidiEvent,
   updateMidiCommands
-} from './AudioEngineMidiTriggers.js'
+} from './AudioEngineMidiTriggers'
 import {
   startPlayback,
   stopPlayback,
-} from './AudioEnginePlaybackLoop.js'
-import initializeMIDIControllers from './AudioEngineMidiControl.js'
+} from './AudioEnginePlaybackLoop'
+import initializeMIDIControllers from './AudioEngineMidiControl'
 
 let AudioContext = window.AudioContext || window.webkitAudioContext || false
 
@@ -117,6 +118,9 @@ export default function createAudioEngine(STORE) {
     },
     killNote: ({ trackID, keyNum, disableRecording }) => {
       killNote({ engine, trackID, keyNum, disableRecording })
+    },
+    sendMidiEvent: ({ trackID, key, type, velocity, disableRecording }) => {
+      sendMidiEvent({ engine, trackID, key, type, velocity, disableRecording })
     },
     getTrackOutputDecibels: (trackID) => {
       return getTrackOutputDecibels(engine, trackID)
