@@ -73,7 +73,9 @@ export class WorkstationHeader extends Component {
         </div>
         <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 15 }}>
           { this.renderQuantizeTool() }
-          <HintRing show={this.props.inputMethodsTour === 3} />
+          <div className="btn-group">
+            <HintRing show={this.props.inputMethodsTour === 3} />
+          </div>
           { this.renderEditTool() }
         </div>
       </div>
@@ -156,14 +158,13 @@ export class WorkstationHeader extends Component {
       <div className="btn-group" style={{ right: 10 }}>
         <OverlayTrigger placement="top" overlay={QuantizeTooltip} delayShow={250}>
           <button
-            className={ `btn btn-dark btn-narrow` }
-            onClick={() => dispatch(phraseQuantizeSelection())} {...makeButtonUnfocusable}>
-            <span>Q</span>
+            className="btn btn-dark"
+            onClick={() => dispatch(phraseQuantizeSelection())} {...makeButtonUnfocusable}
+          >
+            <span>Q </span>
+            <span>{quantizerDivisions.find((item) => item.val === this.props.quantizeDivision).label}</span>
           </button>
         </OverlayTrigger>
-        <div className={ `btn btn-dark btn-narrow` } style={{ pointerEvents: `none` }}>
-          <span>{quantizerDivisions.find((item) => item.val === this.props.quantizeDivision).label}</span>
-        </div>
         <Dropdown
           id="workstation-quantize-division" className="dropdown-dark" pullRight
           onToggle={isOpen => this.setState({ quantizeDropdownIsOpen: isOpen })}
@@ -172,7 +173,7 @@ export class WorkstationHeader extends Component {
             className={ `dropdown-toggle btn btn-dark btn-narrow ${QuantizeDivisionDropdownActive}` }
             bsRole="toggle" {...makeButtonUnfocusable}>
             <OverlayTrigger placement="top" overlay={QuantizeDivision} delayShow={250}>
-              <span className="fa">&#9660;</span>
+              <span className="caret" />
             </OverlayTrigger>
           </button>
           <Dropdown.Menu>
@@ -189,7 +190,7 @@ export class WorkstationHeader extends Component {
     )
   }
 
-  selectQuantizeDivision = (e, division) => {
+  selectQuantizeDivision = (division, e) => {
     e.target.focus()
     e.target.blur()
     this.props.dispatch(changeQuantizeDivision(division))
