@@ -188,9 +188,8 @@ export class WorkstationHeader extends Component {
   }
 
   selectQuantizeDivision = (e, division) => {
-    let self = document.getElementById('workstation-quantize-division')
-    self.focus()
-    self.blur() // Fix issue where quantize arrow stays focused when it shouldn't be
+    e.target.focus()
+    e.target.blur()
     this.props.dispatch(changeQuantizeDivision(division))
   }
 
