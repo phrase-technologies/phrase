@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Tooltip, OverlayTrigger, MenuItem } from 'react-bootstrap'
+import Dropdown from 'react-bootstrap/lib/Dropdown'
 
 import WorkstationHeaderTitle from './WorkstationHeaderTitle'
 import WorkstationHeaderAuthor from './WorkstationHeaderAuthor'
@@ -12,20 +13,30 @@ import {
   phraseLoginReminder,
   phraseRephraseReminder,
   phraseRephrase,
+  phraseQuantizeSelection,
 } from 'reducers/reducePhrase'
+import {
+  changeQuantizeDivision,
+  quantizerDivisions } from 'reducers/reduceQuantizer'
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 import { exportToMidi } from 'actions/actionsMidi'
 import isSafari from 'helpers/isSafari'
 import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 
 export class WorkstationHeader extends Component {
+  constructor() {
+    super()
+    this.state = {
+      quantizeDropdownIsOpen: false,
+    }
+  }
 
   render() {
     let containerClasses = "container container-maximize"
         containerClasses += isSafari() ? ' container-safari-fix' : ''
 
     return (
-      <div className="workstation-header">
+      <div className="workstation-header" style={{ zIndex: 500 }}>
         <div className={containerClasses} style={{ position: 'relative' }}>
           <div className="btn-toolbar" style={{ position: 'absolute', top: 3, left: 0 }}>
             <div className="btn-group">
@@ -60,6 +71,7 @@ export class WorkstationHeader extends Component {
           <TransportControls style={{ display: 'inline-block' }} />
         </div>
         <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 15 }}>
+          { this.renderQuantizeTool() }
           { this.renderEditTool() }
         </div>
       </div>
@@ -130,6 +142,55 @@ export class WorkstationHeader extends Component {
         </div>
       </div>
     ) : null
+  }
+
+  renderQuantizeTool() {
+    let { dispatch } = this.props
+    let QuantizeDivision = <Tooltip id="tooltip-quantize-division">Quantize Division</Tooltip>
+    let QuantizeTooltip = <Tooltip id="tooltip-quantize-tool">Quantize Tool (Q)</Tooltip>
+    let QuantizeDivisionDropdownActive = this.state.quantizeDropdownIsOpen ? `active` : ``
+
+    return (
+      <div className="btn-group" style={{ right: 10 }}>
+        <OverlayTrigger placement="top" overlay={QuantizeTooltip} delayShow={250}>
+          <button
+            className={ `btn btn-dark btn-narrow` }
+            onClick={() => dispatch(phraseQuantizeSelection())} {...makeButtonUnfocusable}>
+            <span>Q</span>
+          </button>
+        </OverlayTrigger>
+        <div className={ `btn btn-dark btn-narrow` } style={{ pointerEvents: `none` }}>
+          <span>{quantizerDivisions.find((item) => item.val === this.props.quantizeDivision).label}</span>
+        </div>
+        <Dropdown
+          id="workstation-quantize-division" className="dropdown-dark" pullRight
+          onToggle={isOpen => this.setState({ quantizeDropdownIsOpen: isOpen })}
+          onSelect={this.selectQuantizeDivision}>
+          <button
+            className={ `dropdown-toggle btn btn-dark btn-narrow ${QuantizeDivisionDropdownActive}` }
+            bsRole="toggle" {...makeButtonUnfocusable}>
+            <OverlayTrigger placement="top" overlay={QuantizeDivision} delayShow={250}>
+              <span className="fa">&#9660;</span>
+            </OverlayTrigger>
+          </button>
+          <Dropdown.Menu>
+            {
+              quantizerDivisions.map((item, i) => {
+                if (item.val)
+                  return <MenuItem eventKey={item.val} key={i}>{item.label}</MenuItem>
+                return <MenuItem divider key={i}/>
+              })
+            }
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+    )
+  }
+
+  selectQuantizeDivision = (e, division) => {
+    e.target.focus()
+    e.target.blur()
+    this.props.dispatch(changeQuantizeDivision(division))
   }
 
   renderEditTool() {
@@ -211,6 +272,7 @@ function mapStateToProps(state) {
     loginReminder: state.phraseMeta.loginReminder,
     rephraseReminder: state.phraseMeta.rephraseReminder,
     arrangeTool: state.arrangeTool,
+    quantizeDivision: state.quantizer.division,
   }
 }
 

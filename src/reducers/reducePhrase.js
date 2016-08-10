@@ -424,6 +424,30 @@ export const phraseDropNoteVelocity = () => {
   }
 }
 
+export const phraseQuantizeSelection = () => {
+  return (dispatch, getState) => {
+    let {
+      phrase: {
+        present: { notes },
+      },
+      phraseMeta: {
+        selectionType,
+        noteSelectionIDs,
+      },
+      quantizer: {
+        division,
+      }
+    } = getState()
+    if (selectionType == 'notes')
+      dispatch({
+        type: phrase.QUANTIZE_SELECTION,
+        payload: {
+          noteIDs: Object.keys(noteSelectionIDs),
+          division,
+        },
+      })
+  }
+}
 
 export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated, dateModified, state }) => {
   return (dispatch) => {
@@ -890,6 +914,28 @@ export default function reducePhrase(state = defaultState, action) {
           }
         })
       }
+
+      // ------------------------------------------------------------------------
+
+      case phrase.QUANTIZE_SELECTION:
+        let { noteIDs, division } = action.payload
+        return {
+          ...state,
+          notes: state.notes.map(note => {
+            let start = note.start
+            let end = note.end
+            let length = note.end - note.start
+            if (noteIDs.find(noteID => { return noteID == note.id })) {
+              start = Math.round(note.start / division) * division
+              end = start + length
+            }
+            return {
+              ...note,
+              start,
+              end,
+            }
+          })
+        }
 
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:

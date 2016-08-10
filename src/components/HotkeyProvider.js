@@ -14,7 +14,7 @@ import {
   transportMetronome,
 } from 'reducers/reduceTransport'
 
-import { phraseDeleteSelection } from 'reducers/reducePhrase'
+import { phraseDeleteSelection, phraseQuantizeSelection } from 'reducers/reducePhrase'
 
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 
@@ -127,6 +127,10 @@ class HotkeyProvider extends Component {
       case 8:   // Backspace - Delete Selection
       case 46:  // Delete
         dispatch(phraseDeleteSelection())
+        e.preventDefault()
+        break
+      case 81: // Quantize
+        dispatch(phraseQuantizeSelection())
         e.preventDefault()
         break
       // ----------------------------------------------------------------------

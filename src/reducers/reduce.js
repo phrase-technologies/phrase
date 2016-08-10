@@ -22,6 +22,7 @@ import reduceArrangeTool from './reduceArrangeTool'
 import reduceNotification from './reduceNotification'
 import reduceMIDI from './reduceMIDI'
 import reduceSamples from './reduceSamples'
+import reduceQuantizer from './reduceQuantizer'
 
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
@@ -49,6 +50,7 @@ let baseReducers = {
   phrase: rehydratePhrase(undoable(reducePhrase, undoOptions)),
   phraseMeta: reducePhraseMeta,
   pianoroll: reducePianoroll,
+  quantizer: reduceQuantizer,
 }
 
 let reducerSpec = {
