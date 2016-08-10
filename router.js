@@ -18,7 +18,7 @@ export default ({ app, db }) => {
       let phrases = await cursor.toArray()
       res.json({ phrases })
     } catch (error) {
-      console.log(`/load:`, chalk.magenta(err))
+      console.log(`/load:`, chalk.magenta(error))
       res.json({ error })
     }
   })
@@ -36,7 +36,7 @@ export default ({ app, db }) => {
       ))
 
     } catch (error) {
-      console.log(`/loadOne:`, chalk.magenta(err))
+      console.log(`/loadOne:`, chalk.magenta(error))
       res.json({ error })
     }
   })
