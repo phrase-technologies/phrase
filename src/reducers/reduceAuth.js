@@ -36,7 +36,7 @@ export let login = ({ email, password }) => {
                 },
               })
 
-              let { phraseId: existingPhrase, pristine } = getState().phraseMeta
+              let { existingPhrase, pristine } = getState().phraseMeta
               if (!pristine) {
                 if (existingPhrase)
                   dispatch(phraseSave())
@@ -57,7 +57,7 @@ export let login = ({ email, password }) => {
 }
 
 export let signup = ({ email, username, password }) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST })
 
     catchAndToastException({ dispatch,
@@ -162,7 +162,7 @@ export let confirmUser = ({ email, confirmToken }) => {
 }
 
 export let manualConfirmUser = ({ email, confirmToken }) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({ type: auth.LOGIN_REQUEST })
     catchAndToastException({ dispatch,
       toCatch: async() => {
@@ -175,7 +175,13 @@ export let manualConfirmUser = ({ email, confirmToken }) => {
                 user: response.user,
               },
             })
-            dispatch(push('/phrase/new'))
+            let { existingPhrase, pristine } = getState().phraseMeta
+            if (!pristine) {
+              if (existingPhrase)
+                dispatch(phraseSave())
+              else
+                dispatch(librarySaveNew())
+            }
             dispatch(modalOpen({ modalComponent: 'ConfirmSuccessModal' }))
           }
           else dispatch({

@@ -1,5 +1,12 @@
 import 'whatwg-fetch' // `fetch` polyfill for Safari
 
+function setUserLocalStorage({ token, user }) {
+  localStorage.token = token
+  localStorage.userId = user.id
+  localStorage.email = user.email
+  localStorage.username = user.username
+}
+
 export let signup = async ({ body, callback }) => {
   let response = await fetch(`${API_URL}/signup`, {
     method: `POST`,
@@ -23,10 +30,7 @@ export let login = async ({ body, callback }) =>  {
     if (response.ok)  {
       let { success, message, token, user, confirmFail } = await response.json()
       if (success) {
-        localStorage.token = token
-        localStorage.userId = user.id
-        localStorage.email = user.email
-        localStorage.username = user.username
+        setUserLocalStorage({ token, user })
         callback({ success, message, user })
       }
       else callback({ message, confirmFail })
@@ -74,7 +78,10 @@ export let confirmUser = async (body, callback) => {
 
   if (response.ok) {
     let { success, token, user, message } = await response.json()
-    if (success) callback({ success, token, user })
+    if (success) {
+      setUserLocalStorage({ token, user })
+      callback({ success, token, user })
+    }
     else callback({ message })
   }
   else throw response.error
