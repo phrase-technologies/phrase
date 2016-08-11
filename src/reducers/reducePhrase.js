@@ -147,6 +147,25 @@ export const phraseSelectNote = ({ noteID, loopIteration, union }) => ({
   payload: { noteID, loopIteration, union }
 })
 
+export const phraseSelectAll = () => {
+  return (dispatch, getState) => {
+    let {
+      phrase: {
+        present: {
+          notes
+        }
+      },
+      pianoroll: {
+        currentTrack: currentTrackId,
+      },
+    } = getState()
+    dispatch({
+      type: phrase.SELECT_ALL,
+      payload: { notes, currentTrackId },
+    })
+  }
+}
+
 export const phraseDeleteSelection = () => {
   // We need to know the selection - use a thunk to access other state branches
   return (dispatch, getState) => {

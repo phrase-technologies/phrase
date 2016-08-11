@@ -21,7 +21,11 @@ import {
   transportMetronome,
 } from 'reducers/reduceTransport'
 
-import { phraseDeleteSelection, phraseQuantizeSelection } from 'reducers/reducePhrase'
+import {
+  phraseDeleteSelection,
+  phraseQuantizeSelection,
+  phraseSelectAll,
+} from 'reducers/reducePhrase'
 
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 
@@ -151,6 +155,12 @@ class HotkeyProvider extends Component {
       case 81: // Quantize
         dispatch(phraseQuantizeSelection())
         e.preventDefault()
+        break
+      case 65: // Select all
+        if (e.metaKey || e.ctrlKey) {
+          dispatch(phraseSelectAll())
+          e.preventDefault()
+        }
         break
       // ----------------------------------------------------------------------
       // Mouse Tools

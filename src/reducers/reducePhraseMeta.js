@@ -142,6 +142,19 @@ export default function reducePhraseMeta(state = defaultState, action) {
       return result
 
     // ------------------------------------------------------------------------
+    case phrase.SELECT_ALL:
+      let noteSelectionIDs = action.payload.notes.reduce((obj, note) => {
+        if (note.trackID === action.payload.currentTrackId)
+          obj[note.id] = [0]
+        return obj
+      }, {})
+      return {
+        ...state,
+        noteSelectionIDs,
+        selectionType: `notes`,
+      }
+
+    // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
       if (action.payload.selectionType === "tracks") {
         // When a track is delete, automatically select an adjacent track
