@@ -61,6 +61,7 @@ export const phrase = namespaceActions(
     'SELECT_TRACK',
     'SELECT_CLIP',
     'SELECT_NOTE',
+    'SELECT_ALL',
     'DELETE_SELECTION',
     'DELETE_NOTE',
     'DRAG_CLIP_SELECTION',
