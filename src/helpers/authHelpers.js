@@ -74,7 +74,13 @@ export let confirmUser = async (body, callback) => {
 
   if (response.ok) {
     let { success, token, user, message } = await response.json()
-    if (success) callback({ success, token, user })
+    if (success) {
+      localStorage.token = token
+      localStorage.userId = user.id
+      localStorage.email = user.email
+      localStorage.username = user.username
+      callback({ success, token, user })
+    }
     else callback({ message })
   }
   else throw response.error
