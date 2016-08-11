@@ -41,6 +41,19 @@ export default ({ app, db }) => {
     }
   })
 
+  api.post(`/rephrase-email`, async (req, res) => {
+    let { authorUsername, username, phraseId } = req.body
+    try {
+      console.log(`send rephrase email:`)
+      console.log(`author: ${authorUsername}`)
+      console.log(`newAuthor: ${username}`)
+      console.log(`newPhraseId: ${phraseId}`)
+    } catch (error) {
+      console.log(`/rephrase-email`, chalk.magenta(error))
+      res.json({ error })
+    }
+  })
+
   auth({ app, api, db })
 
   /*
