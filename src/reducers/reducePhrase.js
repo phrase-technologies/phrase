@@ -427,9 +427,6 @@ export const phraseDropNoteVelocity = () => {
 export const phraseQuantizeSelection = () => {
   return (dispatch, getState) => {
     let {
-      phrase: {
-        present: { notes },
-      },
       phraseMeta: {
         selectionType,
         noteSelectionIDs,
@@ -438,7 +435,7 @@ export const phraseQuantizeSelection = () => {
         division,
       }
     } = getState()
-    if (selectionType == 'notes')
+    if (selectionType === 'notes')
       dispatch({
         type: phrase.QUANTIZE_SELECTION,
         payload: {
@@ -550,10 +547,23 @@ export const phraseRephrase = () => {
       let loggedIn = username && username !== 'undefined'
       if (loggedIn) {
         dispatch(librarySaveNew())
+        if (authorUsername !== username) setTimeout(() => {
+          let phraseId = getState().phraseMeta.phraseId
+          catchAndToastException({dispatch, toCatch: async () => {
+            await api({
+              endpoint: `rephrase-email`,
+              body: { authorUsername, username, phraseId },
+            })
+          }})
+        }, 1000)
       }
       else {
         dispatch(push(`/phrase/new`))
         dispatch({ type: phrase.NEW_PHRASE_LOADED })
+        dispatch({
+          type: phrase.REPHRASE_EMAIL,
+          payload: { shouldSend: true },
+        })
       }
     }, 250)
   }
@@ -925,7 +935,7 @@ export default function reducePhrase(state = defaultState, action) {
             let start = note.start
             let end = note.end
             let length = note.end - note.start
-            if (noteIDs.find(noteID => { return noteID == note.id })) {
+            if (noteIDs.find(noteID => { return noteID === note.id })) {
               start = Math.round(note.start / division) * division
               end = start + length
             }
