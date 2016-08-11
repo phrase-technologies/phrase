@@ -78,6 +78,7 @@ export const phrase = namespaceActions(
     'REPHRASE',
     'LOGIN_REMINDER',
     'REPHRASE_REMINDER',
+    'REPHRASE_EMAIL',
     'PRISTINE',
     'QUANTIZE_SELECTION',
   ]

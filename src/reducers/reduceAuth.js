@@ -8,8 +8,8 @@ import {
   confirmUser as confirmUserHelper,
   retryConfirmUser as retryConfirmUserHelper,
 } from 'helpers/authHelpers'
-import { modal } from '../actions/actions.js'
-import { auth } from '../actions/actions.js'
+import { api } from 'helpers/ajaxHelpers'
+import { modal, auth, phrase } from '../actions/actions'
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave } from 'reducers/reducePhrase'
 import { modalOpen } from 'reducers/reduceModal.js'
@@ -36,12 +36,29 @@ export let login = ({ email, password }) => {
                 },
               })
 
-              let { phraseId: existingPhrase, pristine } = getState().phraseMeta
+              let { existingPhrase, pristine, rephraseEmail } = getState().phraseMeta
               if (!pristine) {
                 if (existingPhrase)
                   dispatch(phraseSave())
                 else
                   dispatch(librarySaveNew())
+              }
+              if (rephraseEmail) {
+                setTimeout(() => {
+                  catchAndToastException({dispatch, toCatch: async () => {
+                    await api({
+                      endpoint: `rephrase-email`,
+                      body: {
+                        username: response.user.username,
+                        phraseId: getState().phraseMeta.phraseId,
+                      },
+                    })
+                  }})
+                }, 1000)
+                dispatch({
+                  type: phrase.REPHRASE_EMAIL,
+                  payload: { shouldSend: false },
+                })
               }
             }
             else dispatch({
