@@ -36,7 +36,7 @@ export let login = ({ email, password }) => {
                 },
               })
 
-              let { existingPhrase, pristine } = getState().phraseMeta
+              let { phraseId: existingPhrase, pristine } = getState().phraseMeta
               if (!pristine) {
                 if (existingPhrase)
                   dispatch(phraseSave())
@@ -175,7 +175,7 @@ export let manualConfirmUser = ({ email, confirmToken }) => {
                 user: response.user,
               },
             })
-            let { existingPhrase, pristine } = getState().phraseMeta
+            let { phraseId: existingPhrase, pristine } = getState().phraseMeta
             if (!pristine) {
               if (existingPhrase)
                 dispatch(phraseSave())
