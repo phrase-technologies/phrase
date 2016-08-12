@@ -79,14 +79,7 @@ export let confirmUser = async (body, callback) => {
   if (response.ok) {
     let { success, token, user, message } = await response.json()
     if (success) {
-<<<<<<< HEAD
       setUserLocalStorage({ token, user })
-=======
-      localStorage.token = token
-      localStorage.userId = user.id
-      localStorage.email = user.email
-      localStorage.username = user.username
->>>>>>> ea79f2c... Refactored common login code, removed unnecessary save logic in retryConfirm handler
       callback({ success, token, user })
     }
     else callback({ message })
