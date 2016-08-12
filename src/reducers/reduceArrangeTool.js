@@ -1,6 +1,14 @@
 import { arrangeTool } from 'actions/actions'
+import { tryAnalyticsEvent } from 'helpers/tryAnalytics'
 
-export let arrangeToolSelect = tool => ({ type: arrangeTool.SELECT, payload: tool })
+export let arrangeToolSelect = tool => {
+  tryAnalyticsEvent({
+    eventName: "Changed Mouse Tool",
+    location: "PIANOROLL",
+    selectedTool: tool.toUpperCase(),
+  })
+  return { type: arrangeTool.SELECT, payload: tool }
+}
 
 let defaultState = `pencil`
 

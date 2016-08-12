@@ -14,6 +14,7 @@ import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave } from 'reducers/reducePhrase'
 import { modalOpen } from 'reducers/reduceModal.js'
 import { catchAndToastException } from 'reducers/reduceNotification'
+import { tryAnalyticsEvent } from 'helpers/tryAnalytics'
 
 function handleLogin({ dispatch, getState, response }) {
   dispatch({
@@ -44,6 +45,7 @@ export let login = ({ email, password }) => {
           body: { email, password },
           callback: (response) => {
             if (response.success) {
+              tryAnalyticsEvent({ eventName: "Logged In" })
               handleLogin({ dispatch, getState, response })
             }
             else dispatch({
@@ -146,6 +148,7 @@ export let confirmUser = ({ email, confirmToken }) => {
       toCatch: async () => {
         await confirmUserHelper({ email, confirmToken }, async response => {
           if (response.success) {
+            tryAnalyticsEvent({ eventName: "Signed Up" })
             dispatch({
               type: auth.LOGIN_SUCCESS,
               payload: {
@@ -170,6 +173,7 @@ export let manualConfirmUser = ({ email, confirmToken }) => {
       toCatch: async() => {
         await confirmUserHelper({ email, confirmToken }, async response => {
           if (response.success) {
+            tryAnalyticsEvent({ eventName: "Signed Up" })
             handleLogin({ dispatch, getState, response })
             dispatch(modalOpen({ modalComponent: 'ConfirmSuccessModal' }))
           }

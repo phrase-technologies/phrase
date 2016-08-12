@@ -90,6 +90,13 @@ else {
     let root = document.createElement(`div`)
     document.body.appendChild(root)
 
+    HISTORY.listen(location => {
+      // Ignore duplicates
+      if (location.action !== "REPLACE") {
+        analytics.page()
+      }
+    })
+
     ReactDOM.render(
       <StoreProvider store={STORE}>
         <EngineProvider engine={ENGINE}>
@@ -103,4 +110,5 @@ else {
       root
     )
   }
+
 }
