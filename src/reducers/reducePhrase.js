@@ -552,7 +552,7 @@ export const phraseRephrase = () => {
           catchAndToastException({dispatch, toCatch: async () => {
             await api({
               endpoint: `rephrase-email`,
-              body: { authorUsername, username, phraseId },
+              body: { username, phraseId },
             })
           }})
         }, 1000)

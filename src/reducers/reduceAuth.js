@@ -15,6 +15,41 @@ import { phraseSave } from 'reducers/reducePhrase'
 import { modalOpen } from 'reducers/reduceModal.js'
 import { catchAndToastException } from 'reducers/reduceNotification'
 
+function handleLogin({ dispatch, getState, response }) {
+  dispatch({
+    type: auth.LOGIN_SUCCESS,
+    payload: {
+      loggedIn: response.success,
+      user: response.user,
+    },
+  })
+  let { phraseId: existingPhrase, pristine, rephraseEmail } = getState().phraseMeta
+  if (!pristine) {
+    if (existingPhrase)
+      dispatch(phraseSave())
+    else
+      dispatch(librarySaveNew())
+  }
+
+  if (rephraseEmail) {
+    // Wait a second to let the new phrase load
+    setTimeout(() => {
+      catchAndToastException({dispatch, toCatch: async () => {
+        await api({
+          endpoint: `rephrase-email`,
+          body: {
+            username: response.user.username,
+            phraseId: getState().phraseMeta.phraseId
+          },
+        })
+      }})
+    }, 1000)
+    dispatch({
+      type: phrase.REPHRASE_EMAIL,
+      payload: { shouldSend: false },
+    })
+  }
+}
 // ============================================================================
 // Authentication Action Creators
 // ============================================================================
@@ -28,38 +63,7 @@ export let login = ({ email, password }) => {
           body: { email, password },
           callback: (response) => {
             if (response.success) {
-              dispatch({
-                type: auth.LOGIN_SUCCESS,
-                payload: {
-                  loggedIn: response.success,
-                  user: response.user,
-                },
-              })
-
-              let { existingPhrase, pristine, rephraseEmail } = getState().phraseMeta
-              if (!pristine) {
-                if (existingPhrase)
-                  dispatch(phraseSave())
-                else
-                  dispatch(librarySaveNew())
-              }
-              if (rephraseEmail) {
-                setTimeout(() => {
-                  catchAndToastException({dispatch, toCatch: async () => {
-                    await api({
-                      endpoint: `rephrase-email`,
-                      body: {
-                        username: response.user.username,
-                        phraseId: getState().phraseMeta.phraseId,
-                      },
-                    })
-                  }})
-                }, 1000)
-                dispatch({
-                  type: phrase.REPHRASE_EMAIL,
-                  payload: { shouldSend: false },
-                })
-              }
+              handleLogin({ dispatch, getState, response })
             }
             else dispatch({
               type: auth.LOGIN_FAIL,
@@ -185,20 +189,7 @@ export let manualConfirmUser = ({ email, confirmToken }) => {
       toCatch: async() => {
         await confirmUserHelper({ email, confirmToken }, async response => {
           if (response.success) {
-            dispatch({
-              type: auth.LOGIN_SUCCESS,
-              payload: {
-                loggedIn: response.success,
-                user: response.user,
-              },
-            })
-            let { phraseId: existingPhrase, pristine } = getState().phraseMeta
-            if (!pristine) {
-              if (existingPhrase)
-                dispatch(phraseSave())
-              else
-                dispatch(librarySaveNew())
-            }
+            handleLogin({ dispatch, getState, response })
             dispatch(modalOpen({ modalComponent: 'ConfirmSuccessModal' }))
           }
           else dispatch({
@@ -213,19 +204,16 @@ export let manualConfirmUser = ({ email, confirmToken }) => {
 }
 
 export let retryConfirmUser = ({ email }) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST})
     catchAndToastException({ dispatch,
       toCatch: async () => {
         await retryConfirmUserHelper({ email }, async response => {
-          if (response.success) {
-            dispatch(modalOpen({ modalComponent: `SignupConfirmationModal`, payload: email }))
-
-            let phraseState = getState().phrase
-            if (phraseState.past.length || phraseState.future.length) {
-              dispatch(librarySaveNew())
-            }
-          }
+          if (response.success) dispatch(
+            modalOpen({
+              modalComponent: `SignupConfirmationModal`,
+              payload: email,
+            }))
           else dispatch({
             type: auth.LOGIN_FAIL,
             payload: { message: response.message },
