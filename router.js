@@ -2,6 +2,7 @@ import express from 'express'
 import chalk from 'chalk'
 import r from 'rethinkdb'
 import auth from './auth'
+import { sendRephraseEmail } from './helpers/emailHelper'
 
 export default ({ app, db }) => {
 
@@ -42,12 +43,19 @@ export default ({ app, db }) => {
   })
 
   api.post(`/rephrase-email`, async (req, res) => {
-    let { authorUsername, username, phraseId } = req.body
+    let { username, phraseId } = req.body
     try {
-      console.log(`send rephrase email:`)
-      console.log(`author: ${authorUsername}`)
-      console.log(`newAuthor: ${username}`)
-      console.log(`newPhraseId: ${phraseId}`)
+      let parentPhraseId = await r.table(`phrases`).get(phraseId).getField(`parentId`).run(db)
+      let authorUserId = await r.table(`phrases`).get(parentPhraseId).getField(`userId`).run(db)
+      let user = await r.table(`users`).get(authorUserId).run(db)
+      if (user.username !== username)
+        sendRephraseEmail({
+          email: user.email,
+          authorUsername: user.username,
+          username,
+          phraseId,
+        })
+      res.json({ success: true })
     } catch (error) {
       console.log(`/rephrase-email`, chalk.magenta(error))
       res.json({ error })
