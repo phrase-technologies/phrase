@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Header from 'components/Header'
 import AuthenticationWall from 'components/AuthenticationWall'
 
-export let App = ({ dispatch, routes, params, children }) => {
+export let App = ({ dispatch, routes, params, children, location }) => {
 
   let loggedIn = localStorage.userId && localStorage.userId !== 'undefined'
   let showHeader = routes[2].path
@@ -13,8 +13,12 @@ export let App = ({ dispatch, routes, params, children }) => {
   let headerTheme = true ? 'solid' : 'clear'
 
   if (!loggedIn) {
+    let authenticationWallProps = {
+      dispatch,
+      inviteCode: location.query.inviteCode,
+    }
     return (
-      <AuthenticationWall dispatch={dispatch} />
+      <AuthenticationWall {...authenticationWallProps} />
     )
   }
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 
 import { modalOpen } from 'reducers/reduceModal'
 
-export default ({ dispatch }) => {
+export default ({ dispatch, inviteCode }) => {
 
   return (
     <div className="authentication-wall">
@@ -26,10 +26,14 @@ export default ({ dispatch }) => {
 
         <ul className="authentication-wall-actions list-group">
           <a className="list-group-item" onClick={() => dispatch(modalOpen({ modalComponent: 'SignupModal' }))}>
-            I have an invite code
+            {
+              inviteCode
+                ? <span>Use invite code <strong>{inviteCode}</strong></span>
+                : "I have an invite code"
+            }
           </a>
           <a className="list-group-item" onClick={() => dispatch(modalOpen({ modalComponent: 'LoginModal' }))}>
-            Login to existing account
+            Login to an existing account
           </a>
         </ul>
 
