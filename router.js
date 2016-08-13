@@ -42,26 +42,6 @@ export default ({ app, db }) => {
     }
   })
 
-  api.post(`/rephrase-email`, async (req, res) => {
-    let { username, phraseId } = req.body
-    try {
-      let parentPhraseId = await r.table(`phrases`).get(phraseId).getField(`parentId`).run(db)
-      let authorUserId = await r.table(`phrases`).get(parentPhraseId).getField(`userId`).run(db)
-      let user = await r.table(`users`).get(authorUserId).run(db)
-      if (user.username !== username)
-        sendRephraseEmail({
-          email: user.email,
-          authorUsername: user.username,
-          username,
-          phraseId,
-        })
-      res.json({ success: true })
-    } catch (error) {
-      console.log(`/rephrase-email`, chalk.magenta(error))
-      res.json({ error })
-    }
-  })
-
   auth({ app, api, db })
 
   /*
@@ -80,6 +60,20 @@ export default ({ app, db }) => {
         phrasename: phraseName,
         userId,
       }).run(db)
+
+      if (parentId) { // Send rephrase email
+        let authorUserId = await r.table(`phrases`).get(parentPhraseId).getField(`userId`).run(db)
+        let author = await r.table(`users`).get(authorUserId).run(db)
+        if (author.id !== userId) {
+          let user = await r.table(`users`).get(userId).run(db)
+          sendRephraseEmail({
+            email: author.email,
+            authorUsername: author.username,
+            username: user.username,
+            phraseId: request.generated_keys[0],
+          })
+        }
+      }
 
       console.log(chalk.cyan(
         `Phrase ${result.generated_keys[0]} added!`
