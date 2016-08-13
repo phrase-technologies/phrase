@@ -23,6 +23,11 @@ import { phraseDeleteSelection, phraseQuantizeSelection } from 'reducers/reduceP
 
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 
+export function isModifierOn(e) {
+  if (navigator.platform.indexOf('Mac') > -1)
+    return e.metaKey
+  return e.ctrlKey
+}
 
 // ============================================================================
 // Hotkey Provider
@@ -100,16 +105,16 @@ class HotkeyProvider extends Component {
       // ----------------------------------------------------------------------
       // Undo History
       case 90:  // CTRL/CMD+Z - Undo last action
-        if (e.metaKey && e.shiftKey) {
+        if (isModifierOn(e) && e.shiftKey) {
           dispatch(UndoActions.redo())
           e.preventDefault()
-        } else if (e.metaKey) {
+        } else if (isModifierOn(e)) {
           dispatch(UndoActions.undo())
           e.preventDefault()
         }
         break
       case 89:  // CTRL/CMD+Y - Redo last action
-        if (e.metaKey) {
+        if (isModifierOn(e)) {
           dispatch(UndoActions.redo())
           e.preventDefault()
         }

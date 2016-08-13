@@ -3,6 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { librarySearch } from 'reducers/reduceLibrary'
+import { isModifierOn } from 'components/HotkeyProvider'
 
 export class HeaderSearch extends Component {
 
@@ -47,7 +48,7 @@ export class HeaderSearch extends Component {
     switch(e.keyCode) {
       // CMD/CTRL+F - Search
       case 70:
-        if (e.metaKey || e.ctrlKey) {
+        if (isModifierOn(e)) {
           this.inputField.focus()
           e.preventDefault()
         }

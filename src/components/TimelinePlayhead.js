@@ -7,6 +7,7 @@ import React, { Component } from 'react'
 
 import { transportMovePlayhead } from 'reducers/reduceTransport'
 import { cursorResizeX, cursorClear } from 'actions/actionsCursor'
+import { isModifierOn } from 'components/HotkeyProvider'
 
 export default class TimelinePlayhead extends Component {
 
@@ -58,7 +59,7 @@ export default class TimelinePlayhead extends Component {
       let offsetPixels = e.clientX - this.dragCursorStart
       let offsetBar = offsetPixels / this.container.clientWidth * windowBars
       let newPlayheadBar = this.dragPlayheadStart + offsetBar
-      this.props.dispatch(transportMovePlayhead(newPlayheadBar, !e.metaKey))
+      this.props.dispatch(transportMovePlayhead(newPlayheadBar, !isModifierOn(e)))
     }
   }
 
@@ -71,7 +72,7 @@ export default class TimelinePlayhead extends Component {
     e.preventDefault()
 
     // Ignore CTRL or META key pressed (reserved for zoom, etc.)
-    if (e.ctrlKey || e.metaKey)
+    if (isModifierOn(e))
       return
 
     // Scroll otherwise - snap the scroll to either X or Y direction, feels too jumpy when dual XY scrolling

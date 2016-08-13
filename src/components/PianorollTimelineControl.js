@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
+import { isModifierOn } from 'components/HotkeyProvider'
 
 import { pianorollScrollX,
          pianorollMoveCursor,
@@ -204,7 +205,7 @@ export class PianorollTimelineControl extends Component {
       if (this.props.arrangeTool === `pencil`) {
         this.props.dispatch(phraseCreateClip({ trackID: this.props.currentTrack.id, start: bar }))
       } else {
-        this.props.dispatch(transportMovePlayhead(bar, !e.metaKey))
+        this.props.dispatch(transportMovePlayhead(bar, !isModifierOn(e)))
       }
 
       return
@@ -232,7 +233,7 @@ export class PianorollTimelineControl extends Component {
         offsetEnd,
         offsetLooped: this.lastEvent.looped,
         offsetTrack: 0,
-        offsetSnap: !e.metaKey,
+        offsetSnap: !isModifierOn(e),
         offsetCopy: e.altKey,
       }))
       this.lastEvent.action = DRAG_CLIP

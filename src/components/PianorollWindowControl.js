@@ -5,6 +5,7 @@ import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 import connectEngine from '../audio/AudioEngineConnect'
 import engineShape   from '../audio/AudioEnginePropTypes'
+import { isModifierOn } from 'components/HotkeyProvider'
 
 import _ from 'lodash'
 
@@ -237,7 +238,7 @@ export class PianorollWindowControl extends Component {
       if (this.props.arrangeTool === `pencil`) {
         this.props.dispatch(phraseCreateNote({ trackID: this.props.currentTrack.id, start: bar, key }))
       } else {
-        this.props.dispatch(transportMovePlayhead(bar, !e.metaKey))
+        this.props.dispatch(transportMovePlayhead(bar, !isModifierOn(e)))
       }
 
       return
@@ -288,7 +289,7 @@ export class PianorollWindowControl extends Component {
               offsetStart,
               offsetEnd,
               offsetKey,
-              offsetSnap: !e.metaKey,
+              offsetSnap: !isModifierOn(e),
               offsetCopy: e.altKey,
             }))
 

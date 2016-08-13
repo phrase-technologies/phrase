@@ -11,6 +11,7 @@
 import React, { Component } from 'react'
 
 import { cursor } from 'actions/actions'
+import { isModifierOn } from 'components/HotkeyProvider'
 import { shiftInterval } from '../helpers/intervalHelpers.js'
 
 let provideGridScroll = function(
@@ -51,7 +52,7 @@ let provideGridScroll = function(
       // e.stopPropagation(); propogation is needed for vertical scrolling on the mixer
 
       // Zoom when CTRL or META key pressed
-      if (e.ctrlKey || e.metaKey)
+      if (isModifierOn(e))
         this.handleZoom(e)
 
       // Scroll otherwise - snap the scroll to either X or Y direction, feels too jumpy when dual XY scrolling

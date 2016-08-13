@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import ReactDOM from 'react-dom'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
+import { isModifierOn } from 'components/HotkeyProvider'
 
 import {
   mixerScrollX,
@@ -233,7 +234,7 @@ export class MixerWindowControl extends Component {
       if (this.props.arrangeTool === `pencil`) {
         this.props.dispatch(phraseCreateClip({ trackID, start: bar }))
       } else {
-        this.props.dispatch(transportMovePlayhead(bar, !e.metaKey))
+        this.props.dispatch(transportMovePlayhead(bar, !isModifierOn(e)))
       }
 
       return
@@ -265,7 +266,7 @@ export class MixerWindowControl extends Component {
         offsetEnd,
         offsetLooped: this.lastEvent.looped,
         offsetTrack,
-        offsetSnap: !e.metaKey,
+        offsetSnap: !isModifierOn(e),
         offsetCopy: e.altKey,
       }))
       this.lastEvent.action = DRAG_CLIP

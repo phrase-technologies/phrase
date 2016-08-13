@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
+import { isModifierOn } from 'components/HotkeyProvider'
 
 import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js'
@@ -111,7 +112,7 @@ export class MixerTimeline extends Component {
 
   mouseDownEvent = (e) => {
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
-    this.props.dispatch(transportMovePlayhead(bar, !e.metaKey))
+    this.props.dispatch(transportMovePlayhead(bar, !isModifierOn(e)))
   }
 
 }
