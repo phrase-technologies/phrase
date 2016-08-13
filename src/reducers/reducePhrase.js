@@ -547,23 +547,10 @@ export const phraseRephrase = () => {
       let loggedIn = username && username !== 'undefined'
       if (loggedIn) {
         dispatch(librarySaveNew())
-        if (authorUsername !== username) setTimeout(() => {
-          let phraseId = getState().phraseMeta.phraseId
-          catchAndToastException({dispatch, toCatch: async () => {
-            await api({
-              endpoint: `rephrase-email`,
-              body: { username, phraseId },
-            })
-          }})
-        }, 1000)
       }
       else {
         dispatch(push(`/phrase/new`))
         dispatch({ type: phrase.NEW_PHRASE_LOADED })
-        dispatch({
-          type: phrase.REPHRASE_EMAIL,
-          payload: { shouldSend: true },
-        })
       }
     }, 250)
   }

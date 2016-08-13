@@ -27,7 +27,6 @@ export const defaultState = {
   dateCreated: null,
   dateModified: null,
   loginReminder: false,
-  rephraseEmail: false,
   rephraseReminder: false,
   selectionType: null,  // Can be "tracks", "clips", or "notes"
   trackSelectionID: 0,
@@ -350,12 +349,6 @@ export default function reducePhraseMeta(state = defaultState, action) {
     case phrase.REPHRASE_REMINDER:
       return u({
         rephraseReminder: action.payload.show,
-      }, state)
-
-    // ------------------------------------------------------------------------
-    case phrase.REPHRASE_EMAIL:
-      return u({
-        rephraseEmail: action.payload.shouldSend,
       }, state)
 
     // ------------------------------------------------------------------------

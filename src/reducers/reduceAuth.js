@@ -23,31 +23,12 @@ function handleLogin({ dispatch, getState, response }) {
       user: response.user,
     },
   })
-  let { phraseId: existingPhrase, pristine, rephraseEmail } = getState().phraseMeta
+  let { phraseId: existingPhrase, pristine } = getState().phraseMeta
   if (!pristine) {
     if (existingPhrase)
       dispatch(phraseSave())
     else
       dispatch(librarySaveNew())
-  }
-
-  if (rephraseEmail) {
-    // Wait a second to let the new phrase load
-    setTimeout(() => {
-      catchAndToastException({dispatch, toCatch: async () => {
-        await api({
-          endpoint: `rephrase-email`,
-          body: {
-            username: response.user.username,
-            phraseId: getState().phraseMeta.phraseId
-          },
-        })
-      }})
-    }, 1000)
-    dispatch({
-      type: phrase.REPHRASE_EMAIL,
-      payload: { shouldSend: false },
-    })
   }
 }
 // ============================================================================
