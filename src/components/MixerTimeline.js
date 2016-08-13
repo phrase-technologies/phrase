@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
-import { isModifierOn } from 'helpers/hotkeyHelpers'
+import { isModifierOn } from 'helpers/compatibilityHelpers'
 
 import { closestHalfPixel,
          drawLine } from '../helpers/canvasHelpers.js'

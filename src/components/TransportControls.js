@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import TransportTempo from './TransportTempo'
 import TransportButton from './TransportButton'
 
-import { isMacintosh } from 'helpers/hotkeyHelpers'
+import { isMacintosh } from 'helpers/compatibilityHelpers'
 
 import {
   transportPlayToggle,

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
-import { isModifierOn } from 'helpers/hotkeyHelpers'
+import { isModifierOn } from 'helpers/compatibilityHelpers'
 
 import {
   midiIncrementOctave,

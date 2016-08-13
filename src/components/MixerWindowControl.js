@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import ReactDOM from 'react-dom'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
-import { isModifierOn } from 'helpers/hotkeyHelpers'
+import { isModifierOn } from 'helpers/compatibilityHelpers'
 
 import {
   mixerScrollX,

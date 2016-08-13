@@ -25,6 +25,8 @@ import finalReducer from './reducers/reduce.js'
 import { ActionCreators as UndoActions } from 'redux-undo'
 import { persistStore } from 'redux-persist'
 
+import { isIE } from 'helpers/compatibilityHelpers'
+
 const browserHistory = useBeforeUnload(useRouterHistory(createHistory))()
 
 import autosave from 'middleware/autosave'
@@ -55,34 +57,50 @@ persistStore(STORE, persistConfig, () => {
 
 const HISTORY = syncHistoryWithStore(browserHistory, STORE)
 
-// ============================================================================
-// Setup Audio Engine god object
-// ============================================================================
 import createAudioEngine from 'audio/AudioEngine.js'
-const ENGINE = createAudioEngine(STORE)
-
-// ============================================================================
-// APPLICATION ENTRY POINT
-// ============================================================================
 import Routes from 'components/Routes.js'
+import ErrorBrowserNotSupported from 'components/ErrorBrowserNotSupported'
 
-// window.onload - Require all assets to be loaded before rendering.
-// This is only necessary because we are using Google Font API in font.scss.
-// Possibly stick to websafe fonts, or roll the font into WebPack? TODO
-window.onload = () => {
-  let root = document.createElement(`div`)
-  document.body.appendChild(root)
+if (isIE()) {
+  window.onload = () => {
+    let root = document.createElement('div')
+    document.body.appendChild(root)
 
-  ReactDOM.render(
-    <StoreProvider store={STORE}>
-      <EngineProvider engine={ENGINE}>
+    ReactDOM.render(
+      <ErrorBrowserNotSupported />,
+      root
+    )
+  }
+}
+else {
 
-        <Router history={HISTORY}>
-          {Routes}
-        </Router>
+  // ============================================================================
+  // Setup Audio Engine god object
+  // ============================================================================
+  const ENGINE = createAudioEngine(STORE)
 
-      </EngineProvider>
-    </StoreProvider>,
-    root
-  )
+  // ============================================================================
+  // APPLICATION ENTRY POINT
+  // ============================================================================
+
+  // window.onload - Require all assets to be loaded before rendering.
+  // This is only necessary because we are using Google Font API in font.scss.
+  // Possibly stick to websafe fonts, or roll the font into WebPack? TODO
+  window.onload = () => {
+    let root = document.createElement(`div`)
+    document.body.appendChild(root)
+
+    ReactDOM.render(
+      <StoreProvider store={STORE}>
+        <EngineProvider engine={ENGINE}>
+
+          <Router history={HISTORY}>
+            {Routes}
+          </Router>
+
+        </EngineProvider>
+      </StoreProvider>,
+      root
+    )
+  }
 }

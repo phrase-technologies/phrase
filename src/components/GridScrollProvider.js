@@ -11,7 +11,7 @@
 import React, { Component } from 'react'
 
 import { cursor } from 'actions/actions'
-import { isModifierOn } from 'helpers/hotkeyHelpers'
+import { isModifierOn } from 'helpers/compatibilityHelpers'
 import { shiftInterval } from '../helpers/intervalHelpers.js'
 
 let provideGridScroll = function(

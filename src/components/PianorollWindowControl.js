@@ -5,7 +5,7 @@ import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
 import connectEngine from '../audio/AudioEngineConnect'
 import engineShape   from '../audio/AudioEnginePropTypes'
-import { isModifierOn } from 'helpers/hotkeyHelpers'
+import { isModifierOn } from 'helpers/compatibilityHelpers'
 
 import _ from 'lodash'
 
