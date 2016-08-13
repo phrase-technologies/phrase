@@ -62,7 +62,7 @@ export default ({ app, db }) => {
       }).run(db)
 
       if (parentId) { // Send rephrase email
-        let authorUserId = await r.table(`phrases`).get(parentPhraseId).getField(`userId`).run(db)
+        let authorUserId = await r.table(`phrases`).get(parentId).getField(`userId`).run(db)
         let author = await r.table(`users`).get(authorUserId).run(db)
         if (author.id !== userId) {
           let user = await r.table(`users`).get(userId).run(db)
@@ -70,7 +70,7 @@ export default ({ app, db }) => {
             email: author.email,
             authorUsername: author.username,
             username: user.username,
-            phraseId: request.generated_keys[0],
+            phraseId: result.generated_keys[0],
           })
         }
       }
