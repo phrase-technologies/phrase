@@ -338,3 +338,22 @@ a,
     opacity: 0;
   }
 }
+
+// Talkus.io button customization
+#talkus-button {
+  border: 0 !important;
+  border-radius: 4px 4px 0 0 !important;
+  width: 140px !important;
+  height: 30px !important;
+  right: 10px !important;
+  bottom: 0px !important;
+  background-position: 6px 6px !important;
+  background-size: 18px 18px !important;
+
+  &::before {
+    content: 'Ask us anything!';
+    display: block;
+    margin-top: 5px;
+    margin-left: 28px;
+  }
+}
