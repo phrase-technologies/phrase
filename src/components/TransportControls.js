@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import TransportTempo from './TransportTempo'
 import TransportButton from './TransportButton'
 
+import { isMacintosh } from 'helpers/hotkeyHelpers'
+
 import {
   transportPlayToggle,
   transportRewindPlayhead,
@@ -16,8 +18,9 @@ import {
 
 let TransportControls = (props) => {
   let { dispatch, playing, playhead, recording, countIn, metronome } = props
+  let enterLabel = isMacintosh() ? `Return` : `Enter`
   let stopType = !playhead || playing ? "stop" : "step-backward"
-  let stopTooltip = !playhead || playing ? "Stop Playback (Enter)" : "Return to beginning (Enter)"
+  let stopTooltip = !playhead || playing ? `Stop Playback (${enterLabel})` : `Return to beginning (${enterLabel})`
   let playTooltip = playing ? "Pause (Space)" : "Play (Space)"
 
   return (

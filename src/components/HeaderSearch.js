@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { librarySearch } from 'reducers/reduceLibrary'
-import { isModifierOn } from 'components/HotkeyProvider'
+import { isModifierOn } from 'helpers/hotkeyHelpers'
 
 export class HeaderSearch extends Component {
 

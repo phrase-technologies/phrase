@@ -7,7 +7,7 @@ import React, { Component } from 'react'
 
 import { transportMovePlayhead } from 'reducers/reduceTransport'
 import { cursorResizeX, cursorClear } from 'actions/actionsCursor'
-import { isModifierOn } from 'components/HotkeyProvider'
+import { isModifierOn } from 'helpers/hotkeyHelpers'
 
 export default class TimelinePlayhead extends Component {
 

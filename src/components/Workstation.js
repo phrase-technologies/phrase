@@ -16,7 +16,7 @@ import {
 import { layoutConsoleSplit } from 'reducers/reduceNavigation'
 
 import CursorProvider from 'components/CursorProvider.js'
-import HotkeyProvider from 'components/HotkeyProvider.js'
+import HotkeyProvider from 'components/HotkeyProvider'
 import MouseEventProvider from 'components/MouseEventProvider'
 import SamplesProgress from 'components/SamplesProgress'
 

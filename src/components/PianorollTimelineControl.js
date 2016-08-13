@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import provideGridSystem from './GridSystemProvider'
 import provideGridScroll from './GridScrollProvider'
-import { isModifierOn } from 'components/HotkeyProvider'
+import { isModifierOn } from 'helpers/hotkeyHelpers'
 
 import { pianorollScrollX,
          pianorollMoveCursor,

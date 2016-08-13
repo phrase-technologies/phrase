@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
+import { isModifierOn } from 'helpers/hotkeyHelpers'
+
 import {
   midiIncrementOctave,
   midiDecrementOctave,
@@ -22,12 +24,6 @@ import {
 import { phraseDeleteSelection, phraseQuantizeSelection } from 'reducers/reducePhrase'
 
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
-
-export function isModifierOn(e) {
-  if (navigator.platform.indexOf('Mac') > -1)
-    return e.metaKey
-  return e.ctrlKey
-}
 
 // ============================================================================
 // Hotkey Provider
