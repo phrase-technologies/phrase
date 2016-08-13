@@ -1,43 +1,39 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import Helmet from "react-helmet"
 
 import Header from 'components/Header'
+import AuthenticationWall from 'components/AuthenticationWall'
 
-import * as AllModals from 'components/modals'
-import MouseTooltip from 'components/MouseTooltip'
-import ToastNotificationStack from 'components/ToastNotificationStack'
+export let App = ({ dispatch, routes, params, children }) => {
 
-export class App extends Component {
+  let loggedIn = localStorage.userId && localStorage.userId !== 'undefined'
+  let showHeader = routes[2].path
+  let bodyStyle = showHeader ? {} : { top: 0 }
+  let maximize = routes[2].maximize
+  let headerTheme = true ? 'solid' : 'clear'
 
-  render() {
-    let maximize = this.props.routes[1].maximize
-    let ActiveModal = this.props.activeModal ? AllModals[this.props.activeModal] : 'div'
-    let headerTheme = true ? 'solid' : 'clear'
-    let faviconConfig = [{
-      rel: "icon",
-      href: require('../img/favicon.ico'),
-      type: "img/ico",
-    }]
-
+  if (!loggedIn) {
     return (
-      <div>
-        <Helmet link={faviconConfig} />
-        <Header theme={headerTheme} params={this.props.params} maximize={maximize}/>
-        <div className="body">
-          { this.props.children }
-        </div>
-        <ActiveModal show={this.props.show} />
-        <MouseTooltip />
-        <ToastNotificationStack />
-      </div>
+      <AuthenticationWall dispatch={dispatch} />
     )
   }
+
+  return (
+    <div>
+      <Header theme={headerTheme} params={params} maximize={maximize} show={showHeader} />
+      <div className="body" style={bodyStyle}>
+        { children }
+      </div>
+    </div>
+  )
+
 }
 
 function mapStateToProps(state) {
   return {
-    ...state.modal
+    ...state.modal,
+    ...state.auth,
   }
 }
+
 export default connect(mapStateToProps)(App)

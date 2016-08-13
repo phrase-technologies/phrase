@@ -1,0 +1,49 @@
+// ============================================================================
+// Authentication Wall (You must login to view this page)
+// ============================================================================
+.authentication-wall {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  color: #FFF;
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+
+  background: #333;
+  background-image: url(img/producer-using-phrase.jpg);
+  background-size: cover;
+  background-position: center;
+
+  a {
+    color: hsl(180,100%,50%);
+  }
+}
+.authentication-wall-notice {
+  font-weight: bold;
+  font-size: 24px;
+}
+.authentication-wall-actions {
+  max-width: 270px;
+  margin: 30px auto 0;
+  background: none;
+  border-color: hsl(180,100%,50%);
+
+  > .list-group-item {
+    border-color: hsl(180,100%,50%);
+    background: hsla(180,100%,50%,0.1);
+    color: hsl(180,100%,50%) !important;
+    transition: background 0.25s;
+
+    &:hover {
+      background: hsla(180,100%,50%,0.2);
+    }
+  }
+}
+.authentication-wall-logo {
+  margin: 60px 0 10px;
+  width: 120px;
+}

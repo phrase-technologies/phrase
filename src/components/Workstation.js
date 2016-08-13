@@ -32,6 +32,10 @@ export class Workstation extends Component {
   componentDidMount() {
     let { dispatch, params, loading } = this.props
 
+    // Put the page into "app-mode" to prevent inertia scroll
+    document.documentElement.style.overflow = "hidden"
+    document.body.style.overflow = "hidden"
+
     // Load existing phrase from URL param
     if (params.phraseId && loading !== phrase.REPHRASE)
       dispatch(phraseLoadFromDb(params.phraseId))
@@ -135,6 +139,12 @@ export class Workstation extends Component {
         </HotkeyProvider>
       </CursorProvider>
     )
+  }
+
+  componentWillUnmount() {
+    // Take the page back out of "app-mode"
+    document.documentElement.style.overflow = "auto"
+    document.body.style.overflow = "auto"
   }
 
   componentWillReceiveProps(nextProps) {

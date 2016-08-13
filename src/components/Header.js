@@ -26,6 +26,10 @@ let Header = ({
   params,
   ...props,
 }) => {
+  if (!props.show) {
+    return null
+  }
+
   let theme = 'solid' || props.theme
   let headerClasses = "header"
       headerClasses += (theme === 'solid') ? ' header-solid' : ''
