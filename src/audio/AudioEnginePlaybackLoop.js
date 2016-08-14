@@ -32,8 +32,6 @@ export function startPlayback(engine, dispatch) {
 
   console.log('startPlayback()', engine.ctx.currentTime)
 
-  console.log('>>>', engine)
-
   // Keep track of when playback began
   engine.isPlaying = true
   engine.isRecording = engine.lastState.transport.recording
@@ -43,12 +41,16 @@ export function startPlayback(engine, dispatch) {
   // Setup first iteration
   engine.metronomeTickCount = engine.lastState.transport.recording && engine.lastState.transport.countIn ? -4 : 0
   engine.metronomeNextTick = Math.ceil(engine.lastState.transport.playhead * 4) * 0.25
-  engine.iCommand = 0
+
+  // Find first command ahead of playhead + sheduling offset
+  engine.iCommand = engine.midiCommands.findIndex(x =>
+    x.bar >= engine.lastState.transport.playhead + 0.05
+  )
+
   let currentCommand = engine.midiCommands[engine.iCommand]
   let currentCommandTime = currentCommand ? barToPlayTime(currentCommand.bar, engine) : null
 
-  // BEGIN!!!
-  engine.scheduleLooper = setInterval(() => {
+  const playBackLoop = () => {
 
     // Schedule up to the next few milliseconds worth of notes
     while (currentCommandTime <= engine.ctx.currentTime + 0.10) {
@@ -58,7 +60,6 @@ export function startPlayback(engine, dispatch) {
         break
 
       if (currentCommand && [`addNoteOn`, `addNoteOff`].some(t => currentCommand.type === t)) {
-        console.log("fireNote", currentCommandTime, engine.ctx.currentTime)
         fireNote({
           engine,
           trackID: currentCommand.trackID,
@@ -110,7 +111,11 @@ export function startPlayback(engine, dispatch) {
     if (engine.playheadPositionBars >= engine.lastState.phrase.present.barCount)
       dispatch(transportStop())
 
-  }, 5)
+  }
+
+  // BEGIN!!!
+  playBackLoop()
+  engine.scheduleLooper = setInterval(playBackLoop, 5)
 
 }
 

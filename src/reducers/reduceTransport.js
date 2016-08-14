@@ -108,6 +108,9 @@ export default function reduceTransport(state = defaultState, action) {
         playing: !state.playing,
         recording: false,
         targetClipID: null,
+        // this offsets the lag of scheduling the note that is at the same
+        // position as the playhead
+        playhead: !state.playing ? state.playhead - 0.05 : state.playhead
       }, state)
 
     // ------------------------------------------------------------------------
