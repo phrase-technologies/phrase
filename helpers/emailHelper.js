@@ -16,6 +16,15 @@ function sendEmail(template, to, attr) {
   })
 }
 
+export function sendRephraseEmail({ email, authorUsername, username, phraseId }) {
+  let newPhraseLink = `${clientURL}/phrase/${username}/${phraseId}`
+  sendEmail(4, email, {
+    AUTHOR_USERNAME: authorUsername,
+    USERNAME: username,
+    PHRASE_LINK: newPhraseLink,
+  })
+}
+
 export function sendPasswordResetEmail({ username, email, resetToken }) {
   let resetLink = `${clientURL}/new-password?token=${resetToken}&email=${email}`
   sendEmail(1, email, { USERNAME: username, RESETLINK: resetLink })
