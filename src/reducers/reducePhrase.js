@@ -446,9 +446,6 @@ export const phraseDropNoteVelocity = () => {
 export const phraseQuantizeSelection = () => {
   return (dispatch, getState) => {
     let {
-      phrase: {
-        present: { notes },
-      },
       phraseMeta: {
         selectionType,
         noteSelectionIDs,
@@ -457,7 +454,7 @@ export const phraseQuantizeSelection = () => {
         division,
       }
     } = getState()
-    if (selectionType == 'notes')
+    if (selectionType === 'notes')
       dispatch({
         type: phrase.QUANTIZE_SELECTION,
         payload: {

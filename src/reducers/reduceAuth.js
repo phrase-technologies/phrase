@@ -8,13 +8,29 @@ import {
   confirmUser as confirmUserHelper,
   retryConfirmUser as retryConfirmUserHelper,
 } from 'helpers/authHelpers'
-import { modal } from '../actions/actions.js'
-import { auth } from '../actions/actions.js'
+import { api } from 'helpers/ajaxHelpers'
+import { modal, auth, phrase } from '../actions/actions'
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave } from 'reducers/reducePhrase'
 import { modalOpen } from 'reducers/reduceModal.js'
 import { catchAndToastException } from 'reducers/reduceNotification'
 
+function handleLogin({ dispatch, getState, response }) {
+  dispatch({
+    type: auth.LOGIN_SUCCESS,
+    payload: {
+      loggedIn: response.success,
+      user: response.user,
+    },
+  })
+  let { phraseId: existingPhrase, pristine } = getState().phraseMeta
+  if (!pristine) {
+    if (existingPhrase)
+      dispatch(phraseSave())
+    else
+      dispatch(librarySaveNew())
+  }
+}
 // ============================================================================
 // Authentication Action Creators
 // ============================================================================
@@ -28,21 +44,7 @@ export let login = ({ email, password }) => {
           body: { email, password },
           callback: (response) => {
             if (response.success) {
-              dispatch({
-                type: auth.LOGIN_SUCCESS,
-                payload: {
-                  loggedIn: response.success,
-                  user: response.user,
-                },
-              })
-
-              let { phraseId: existingPhrase, pristine } = getState().phraseMeta
-              if (!pristine) {
-                if (existingPhrase)
-                  dispatch(phraseSave())
-                else
-                  dispatch(librarySaveNew())
-              }
+              handleLogin({ dispatch, getState, response })
             }
             else dispatch({
               type: auth.LOGIN_FAIL,
@@ -168,20 +170,7 @@ export let manualConfirmUser = ({ email, confirmToken }) => {
       toCatch: async() => {
         await confirmUserHelper({ email, confirmToken }, async response => {
           if (response.success) {
-            dispatch({
-              type: auth.LOGIN_SUCCESS,
-              payload: {
-                loggedIn: response.success,
-                user: response.user,
-              },
-            })
-            let { phraseId: existingPhrase, pristine } = getState().phraseMeta
-            if (!pristine) {
-              if (existingPhrase)
-                dispatch(phraseSave())
-              else
-                dispatch(librarySaveNew())
-            }
+            handleLogin({ dispatch, getState, response })
             dispatch(modalOpen({ modalComponent: 'ConfirmSuccessModal' }))
           }
           else dispatch({
@@ -196,19 +185,16 @@ export let manualConfirmUser = ({ email, confirmToken }) => {
 }
 
 export let retryConfirmUser = ({ email }) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST})
     catchAndToastException({ dispatch,
       toCatch: async () => {
         await retryConfirmUserHelper({ email }, async response => {
-          if (response.success) {
-            dispatch(modalOpen({ modalComponent: `SignupConfirmationModal`, payload: email }))
-
-            let phraseState = getState().phrase
-            if (phraseState.past.length || phraseState.future.length) {
-              dispatch(librarySaveNew())
-            }
-          }
+          if (response.success) dispatch(
+            modalOpen({
+              modalComponent: `SignupConfirmationModal`,
+              payload: email,
+            }))
           else dispatch({
             type: auth.LOGIN_FAIL,
             payload: { message: response.message },
