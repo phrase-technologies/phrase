@@ -157,7 +157,7 @@ class HotkeyProvider extends Component {
         e.preventDefault()
         break
       case 65: // Select all
-        if (e.metaKey || e.ctrlKey) {
+        if (isModifierOn(e)) {
           dispatch(phraseSelectAll())
           e.preventDefault()
         }
