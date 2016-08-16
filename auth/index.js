@@ -5,7 +5,12 @@ import isValidPassword from '../helpers/isPassword'
 import r from 'rethinkdb'
 import crypto from 'crypto'
 import { secret } from '../config'
-import { sendPasswordResetEmail, sendWelcomeEmail } from '../helpers/emailHelper'
+import {
+  sendPasswordResetEmail,
+  sendWelcomeEmail,
+  createEmailContact,
+  addToMicrophoneLineInList,
+} from '../helpers/emailHelper'
 
 let hash = password => crypto.createHmac(`sha256`, secret)
   .update(password)
@@ -106,12 +111,12 @@ export default ({
             }).run(db)
 
             sendWelcomeEmail({
-              username: trimmedUsername,
               email: lowerCaseEmail,
+              username: trimmedUsername,
               confirmToken: token,
             })
 
-            console.log(`${username} signed up!`)
+            console.log(`${trimmedUsername} signed up!`)
 
             res.json({ success: true, user })
           }
@@ -266,6 +271,11 @@ export default ({
         r.table(`users`).getAll(lowerCaseEmail, { index: `email`}).limit(1)
           .replace(r.row.without(`confirmToken`))
           .run(db)
+        createEmailContact({
+          email: user.email,
+          username: user.username,
+          userId: user.id,
+        })
         let token = await generateAPIToken(user, app)
         res.json({
           success: true,
@@ -305,6 +315,28 @@ export default ({
           email: user.email,
           confirmToken: token,
         })
+        res.json({ success: true })
+      }
+    }
+    catch (err) { console.log(err) }
+  })
+
+  api.post(`/signup-mic-list`, async (req, res) => {
+    try {
+      let { email } = req.body
+      if (!isValidEmail(email))
+        res.json({ success: false })
+      else {
+        let cursor = await r.table(`users`)
+          .getAll(email.toLowerCase(), { index: `email` })
+          .limit(1)
+          .run(db)
+        let users = await cursor.toArray()
+        let user = users[0]
+
+        if (!user) await createEmailContact({ email })
+        addToMicrophoneLineInList({ email })
+
         res.json({ success: true })
       }
     }
