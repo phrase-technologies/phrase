@@ -5,8 +5,8 @@ import LaddaButton from 'react-ladda'
 
 import isAValidEmail from 'helpers/isEmail'
 import isValidUsername from 'helpers/isUsername'
-import { signup } from '../../reducers/reduceAuth.js'
-import { modalOpen, modalClose } from '../../reducers/reduceModal.js'
+import { signup } from 'reducers/reduceAuth'
+import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class SignupModal extends Component {
   constructor() {
@@ -180,7 +180,7 @@ export class SignupModal extends Component {
 
   openLoginModal = (e) => {
     e.preventDefault()
-    this.props.dispatch(modalOpen({ modalComponent: 'LoginModal'  }))
+    this.props.dispatch(modalOpen({ modalComponent: 'LoginModal' }))
   }
 
   closeModal = () => {

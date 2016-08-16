@@ -513,18 +513,18 @@ export const phraseSave = () => {
   return (dispatch, getState) => {
     let state = getState()
     dispatch({ type: phrase.SAVE_START  })
-    catchAndToastException({ dispatch, toCatch: async () => {
-      await api({
+    catchAndToastException({
+      dispatch,
+      toCatch: () => api({
         endpoint: `update`,
         body: {
           phraseId: state.phraseMeta.phraseId,
           phraseName: state.phraseMeta.phraseName,
           phraseState: state.phrase,
         },
-      }).then(() => {
-        dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
-      })
-    }})
+      }),
+      callback: () => dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+    })
   }
 }
 

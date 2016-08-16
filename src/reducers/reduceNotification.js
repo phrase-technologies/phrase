@@ -1,5 +1,7 @@
 import u from 'updeep'
 import { notification } from 'actions/actions'
+import { modalOpen } from 'reducers/reduceModal'
+import { logout } from 'reducers/reduceAuth'
 
 // ============================================================================
 // Notification Action Creators
@@ -27,15 +29,28 @@ export let addNotification = ({ title, message }) => {
 export let addAPIErrorNotification = () => {
   return addNotification({
     title: `Connection failure`,
-    message: `please make sure you're still connected to the internet`,
+    message: `Please make sure you're still connected to the internet`,
+  })
+}
+
+export let addForbiddenErrorNotification = () => {
+  return addNotification({
+    title: `Token expired`,
+    message: `Please log back in to continue making awesome music!`,
   })
 }
 
 export const catchAndToastException = async ({ dispatch, toCatch, callback }) => {
-  try { await toCatch() }
+  try {
+    await toCatch()
+    if (callback) callback()
+  }
   catch(e) {
-    console.log(e)
-    dispatch(addAPIErrorNotification())
+    if (e === 403) {
+      dispatch(addForbiddenErrorNotification())
+      dispatch(modalOpen({ modalComponent: 'LoginModal' }))
+      dispatch(logout())
+    } else dispatch(addAPIErrorNotification())
     if (callback) callback()
   }
 }
