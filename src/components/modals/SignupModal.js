@@ -132,6 +132,7 @@ export class SignupModal extends Component {
   inviteCodeBlur = () => {
     this.setState({ inviteCodePristine: false }, () => {
       this.inviteCodeValidate()
+      this.signup()
     })
   }
   inviteCodeValidate = () => {
