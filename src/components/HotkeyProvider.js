@@ -122,7 +122,7 @@ class HotkeyProvider extends Component {
       // ----------------------------------------------------------------------
       // Transport Controls
       case 82:  // R - Record
-        dispatch(transportRecord())
+        if (!isModifierOn(e)) dispatch(transportRecord())
         break
       case 32:  // Space - Toggle Playback
         dispatch(transportPlayToggle())
