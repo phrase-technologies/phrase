@@ -32,6 +32,10 @@ Replace `localhost:3000` with the phrase-client URL in your environment.
     cd phrase-api && git pull origin develop
     cd ../phrase-client && git pull origin develop
 
+### Database Migrations
+
+    npm run migrate -- scripts/migrations/2016....
+
 #### Running panes/servers
 
     tmux attach

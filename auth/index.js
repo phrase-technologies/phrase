@@ -41,11 +41,38 @@ export default ({
 }) => {
   app.post(`/signup`, async (req, res) => {
 
-    let { email, username, password } = req.body
+    let { inviteCode, email, username, password } = req.body
 
+    let trimmedInviteCode = inviteCode.trim()
     let trimmedEmail = email.trim()
     let trimmedUsername = username.trim()
     let trimmedPassword = password.trim()
+
+    // Validate Invite Code
+    if (!inviteCode) {
+      res.json({ message: { inviteCodeError: `Invite Code is required.` } })
+    }
+
+    try {
+      let inviteCodeResults = await r
+        .table(`inviteCodes`)
+        .getAll(trimmedInviteCode, { index: `code` })
+        .limit(1)
+        .run(db)
+      let foundInviteCode = await inviteCodeResults.toArray()
+      if (!foundInviteCode[0]) {
+        res.json({ message: { inviteCodeError: `Invalid Code.` } })
+        return
+      } else if (foundInviteCode[0].used) {
+        res.json({ message: { inviteCodeError: `Expired or Used Code.` } })
+        return
+      }
+    }
+    catch (err) {
+      console.log(err)
+      res.json({ inviteCodeError: `Database Error.` })
+      return
+    }
 
     if (!trimmedEmail || !isValidEmail(trimmedEmail)) {
       res.json({
@@ -104,6 +131,11 @@ export default ({
               password: doubleHash(trimmedPassword),
               confirmToken: token,
             }).run(db)
+            r.table(`inviteCodes`)
+              .getAll(trimmedInviteCode, { index: `code` })
+              .limit(1)
+              .update({used: true})
+              .run(db)
 
             sendWelcomeEmail({
               username: trimmedUsername,
