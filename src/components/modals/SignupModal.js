@@ -67,7 +67,7 @@ export class SignupModal extends Component {
                 <input
                   className="form-control" type="text"
                   placeholder="Invite Code" ref={(ref) => this.inviteCode = ref}
-                  onBlur={this.inviteCodeBlur} defaultValue={this.props.inviteCode}
+                  onBlur={this.inviteCodeBlur} onKeyUp={this.inviteCodeValidate} defaultValue={this.props.inviteCode}
                 />
               </div>
               <p className="text-danger text-right" style={errorStyle}>
