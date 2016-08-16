@@ -130,7 +130,20 @@ export class SignupModal extends Component {
   }
 
   inviteCodeBlur = () => {
-    this.setState({ inviteCodePristine: false })
+    this.setState({ inviteCodePristine: false }, () => {
+      this.inviteCodeValidate()
+    })
+  }
+  inviteCodeValidate = () => {
+    if (this.state.inviteCodePristine)
+      return
+
+    if (!this.inviteCode.value) {
+      this.setState({ inviteCodeError: "Invite Code is required." })
+      return false
+    }
+    this.setState({ inviteCodeError: null })
+    return true
   }
   emailBlur = () => {
     this.setState({ emailPristine: false }, () => {
@@ -143,7 +156,7 @@ export class SignupModal extends Component {
       return
 
     if (!this.email.value || !isAValidEmail(this.email.value)) {
-      this.setState({ emailError: "Invalid email" })
+      this.setState({ emailError: "Invalid email." })
       return false
     }
     this.setState({ emailError: null })
@@ -161,13 +174,13 @@ export class SignupModal extends Component {
 
     let trimmedUsername = this.username.value.trim()
     if (trimmedUsername.length < 3) {
-      this.setState({ usernameError: "Usernames must be at least 3 characters long" })
+      this.setState({ usernameError: "Usernames must be at least 3 characters long." })
       return false
     } else if (trimmedUsername.length > 21) {
-      this.setState({ usernameError: "Usernames may be at most 21 characters long" })
+      this.setState({ usernameError: "Usernames may be at most 21 characters long." })
       return false
     } else if (!isValidUsername(trimmedUsername)) {
-      this.setState({ usernameError: "Usernames may only contain letters, numbers, and underscores" })
+      this.setState({ usernameError: "Usernames may only contain letters, numbers, and underscores." })
       return false
     }
 

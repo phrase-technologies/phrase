@@ -60,14 +60,14 @@ export let login = ({ email, password }) => {
   }
 }
 
-export let signup = ({ email, username, password }) => {
+export let signup = ({ inviteCode, email, username, password }) => {
   return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST })
 
     catchAndToastException({ dispatch,
       toCatch: async () => {
         await signupHelper({
-          body: { email, username, password },
+          body: { inviteCode, email, username, password },
           callback: (response) => {
             if (response.success)
               dispatch(modalOpen({
