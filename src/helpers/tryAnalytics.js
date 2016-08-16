@@ -1,14 +1,34 @@
+export const tryAnalyticsPage = () => {
+  try {
+    if (window.analytics) {
+      window.analytics.page()
+    }
+  }
+  catch(e) {
+    console.log(e)
+  }
+}
 export const tryAnalyticsEvent = ({ eventName, ...payload }) => {
-  if (analytics) {
-    analytics.track(eventName, payload)
+  try {
+    if (window.analytics) {
+      window.analytics.track(eventName, payload)
+    }
+  }
+  catch(e) {
+    console.log(e)
   }
 }
 export const tryAnalyticsIdentify = ({ userId, username, email }) => {
-  if (analytics) {
-    analytics.identify(userId, {
-      name: username,
-      email,
-    })
+  try {
+    if (window.analytics) {
+      window.analytics.identify(userId, {
+        name: username,
+        email,
+      })
+    }
+  }
+  catch(e) {
+    console.log(e)
   }
 }
 export default {

@@ -26,6 +26,7 @@ import { ActionCreators as UndoActions } from 'redux-undo'
 import { persistStore } from 'redux-persist'
 
 import { isIE } from 'helpers/compatibilityHelpers'
+import { tryAnalyticsPage } from 'helpers/tryAnalytics'
 
 const browserHistory = useBeforeUnload(useRouterHistory(createHistory))()
 
@@ -93,7 +94,7 @@ else {
     HISTORY.listen(location => {
       // Ignore duplicates
       if (location.action !== "REPLACE") {
-        analytics.page()
+        tryAnalyticsPage()
       }
     })
 
