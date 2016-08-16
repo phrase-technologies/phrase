@@ -142,7 +142,13 @@ export default class PianoSource {
     let sourceGain = this.ctx.createGain()
 
     let detuneAmount = (keyNum - nearestKeyNum) * 100
-    source.detune.value = detuneAmount
+
+    try { // detune is readonly in safari
+      source.detune.value = detuneAmount
+    } catch (e) {
+      // 1 octave higher (12 keys) is double the playback rate, so 2^(x/12) works
+      source.playbackRate.value = Math.pow(2, (detuneAmount / 100) / 12)
+    }
 
     source.buffer = buffer
     source.connect(sourceGain)
