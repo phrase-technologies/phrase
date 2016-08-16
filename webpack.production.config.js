@@ -13,7 +13,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Phrase.fm'
+      title: 'Phrase.fm',
+      template: 'src/index.html',
     }),
     new webpack.DefinePlugin({
       API_URL: process.env.API_URL,
