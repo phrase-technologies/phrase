@@ -14,7 +14,16 @@ class MouseEventProvider extends Component {
     window.addEventListener('mouseup', () => {
       // pointer should unlock on any mouseup Event
       document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock
-      document.exitPointerLock()
+      if (document.exitPointerLock) {
+        document.exitPointerLock()
+      }
+    })
+
+    window.addEventListener('mousedown', event => {
+      this.props.dispatch({
+        type: mouse.DOWN,
+        payload: event,
+      })
     })
   }
 

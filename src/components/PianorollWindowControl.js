@@ -181,7 +181,9 @@ export class PianorollWindowControl extends Component {
           if (this.props.arrangeTool === `velocity`) {
             this.dragging = true
             e.target.requestPointerLock = e.target.requestPointerLock || e.target.mozRequestPointerLock
-            e.target.requestPointerLock()
+            if (e.target.requestPointerLock) {
+              e.target.requestPointerLock()
+            }
           }
 
           break

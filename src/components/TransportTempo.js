@@ -51,13 +51,18 @@ class TransportTempo extends Component {
     e.preventDefault()
     e.target.select()
     e.target.requestPointerLock = e.target.requestPointerLock || e.target.mozRequestPointerLock
-    e.target.requestPointerLock()
+    if (e.target.requestPointerLock) {
+      e.target.requestPointerLock()
+    }
   }
 
   handleMouseMove = (e) => {
     if (this.dragging) {
       let deltaX = e.movementX || e.mozMovementX || 0
       let deltaY = e.movementY || e.mozMovementY || 0
+      if (e.target.requestPointerLock) {
+        console.log('>>>', 'i gots it')
+      }
       e.target.value = this.validateTempo(parseInt(e.target.value) + deltaX - deltaY)
       this.setState({ tempo: parseInt(e.target.value) })
     }
@@ -66,7 +71,9 @@ class TransportTempo extends Component {
   handleMouseUp = (e) => {
     this.dragging = false
     document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock
-    document.exitPointerLock()
+    if (document.exitPointerLock) {
+      document.exitPointerLock()
+    }
     this.props.dispatch(phraseSetTempo(e.target.value))
     e.target.select()
   }
@@ -98,7 +105,8 @@ class TransportTempo extends Component {
 
 function mapStateToProps(state) {
   return {
-    tempo:   state.phrase.present.tempo,
+    tempo: state.phrase.present.tempo,
+    mouse: state.phrase.mouse,
   }
 }
 
