@@ -20,7 +20,7 @@ export default class InputMethodsTour extends Component {
       body: { email }
     })
     let message = ``
-    if (!response.success) message = "Invalid email, please try again"
+    if (!response.success) message = `Invalid email, please try again`
     this.setState({
       signupMic: {
         success: response.success,
