@@ -22,7 +22,7 @@ export default () => {
 
         <div className="section-landing row">
           <div className="col-sm-12 section-landing-header">
-            <img className="section-landing-header-logo" src="./img/phrase-logo-white-text-2015-12-09.png" />
+            <img className="section-landing-header-logo" src={require('../img/phrase-logo-white-text-2015-12-09.png')} />
           </div>
           <div className="col-sm-6 section-landing-treatment">
             <div className="section-landing-flex">
@@ -47,7 +47,7 @@ export default () => {
           <span className="scroll-indicator caret"></span>
           <div className="col-sm-6 section-landing-visual">
             <div className="section-landing-flex">
-              <img className="section-landing-image" src="./img/macbook-phrase.png" />
+              <img className="section-landing-image" src={require('../img/macbook-phrase.png')} />
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@ export default () => {
           <div className="col-sm-6">
             <div className="section-features-image-right" style={{ justifyContent: 'flex-end', textAlign: 'right' }}>
               <div className="section-features-flex">
-                <img className="section-features-image" src="./img/pianoroll.png" />
+                <img className="section-features-image" src={require('../img/pianoroll.png')} />
               </div>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default () => {
                 </p>
                 <p className="section-features-text" style={{ marginBottom: 30 }}>
                   <a className="btn btn-default" href="https://www.google.com/chrome/browser/" target="_blank">
-                    <img src="./img/google-chrome.png" style={{ width: 50, margin: '-20px 5px -20px -5px' }} />
+                    <img src={require('../img/google-chrome.png')} style={{ width: 50, margin: '-20px 5px -20px -5px' }} />
                     Download Chrome
                   </a>
                 </p>
@@ -105,7 +105,7 @@ export default () => {
           <div className="col-sm-6 col-sm-pull-6">
             <div className="section-features-image-right" style={{ justifyContent: 'flex-end', textAlign: 'left' }}>
               <div className="section-features-flex">
-                <img className="section-features-image" src="/img/input-methods.jpg" />
+                <img className="section-features-image" src={require('../img/input-methods.jpg')} />
               </div>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default () => {
           <div className="col-sm-4">
             <div className="section-features-image-centre" style={{ justifyContent: 'center', textAlign: 'center' }}>
               <div className="section-features-flex" style={{ width: '90%', margin: '20px auto 0' }}>
-                <img className="section-features-image" src="/img/cloud-collaboration.jpg" />
+                <img className="section-features-image" src={require('../img/cloud-collaboration.jpg')} />
               </div>
             </div>
           </div>
@@ -169,7 +169,7 @@ export default () => {
           <div className="col-sm-6 col-sm-pull-6">
             <div className="section-features-image-right" style={{ justifyContent: 'flex-end', textAlign: 'left' }}>
               <div className="section-features-flex" style={{ width: '90%', margin: '0 auto' }}>
-                <img className="section-features-image" src="/img/grand-piano.jpg" />
+                <img className="section-features-image" src={require('../img/grand-piano.jpg')} />
               </div>
             </div>
           </div>

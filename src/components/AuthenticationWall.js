@@ -31,7 +31,7 @@ export class AuthenticationWall extends Component {
 
           <div className="authentication-wall-footer">
             <Link to="/">
-              <img className="authentication-wall-logo" src="/img/phrase-logo-white-text-2015-12-09.png" />
+              <img className="authentication-wall-logo" src={require('../img/phrase-logo-white-text-2015-12-09.png')} />
             </Link>
             <p>
               <Link to="/">Click here</Link>
