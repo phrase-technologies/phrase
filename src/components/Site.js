@@ -8,7 +8,9 @@ import ToastNotificationStack from 'components/ToastNotificationStack'
 
 export let Site = ({ activeModal, children, show }) => {
 
+  let loggedIn = localStorage.userId && localStorage.userId !== 'undefined'
   let ActiveModal = activeModal ? AllModals[activeModal] : 'div'
+  let finalShow = show && loggedIn || (show && !['LoginModal', 'SignupModal'].includes(activeModal))
   let faviconConfig = [{
     rel: "icon",
     href: require('../img/favicon.ico'),
@@ -21,7 +23,7 @@ export let Site = ({ activeModal, children, show }) => {
       <div>
         { children }
       </div>
-      <ActiveModal show={show} />
+      <ActiveModal show={finalShow} />
       <MouseTooltip />
       <ToastNotificationStack />
     </div>

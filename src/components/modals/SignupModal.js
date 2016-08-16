@@ -9,9 +9,12 @@ import { signup } from 'reducers/reduceAuth'
 import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class SignupModal extends Component {
+
   constructor() {
     super()
     this.state = {
+      inviteCodeError: null,
+      inviteCodePristine: true,
       emailError: null,
       emailPristine: true,
       usernameError: null,
@@ -22,6 +25,8 @@ export class SignupModal extends Component {
   }
 
   render() {
+    let inviteCodeGroupClass = 'form-group'
+        inviteCodeGroupClass += !this.state.inviteCodePristine && this.state.inviteCodeError ? ' has-error' : ''
     let emailGroupClass = 'form-group'
         emailGroupClass += !this.state.emailPristine && this.state.emailError ? ' has-error' : ''
     let usernameGroupClass = 'form-group'
@@ -30,18 +35,45 @@ export class SignupModal extends Component {
         passwordGroupClass += !this.state.passwordPristine && this.state.passwordError ? ' has-error' : ''
     let errorStyle = { fontSize: 12, marginTop: 3, lineHeight: 1 }
 
+    let ModalComponent
+    let modalProps
+    if (this.props.embedded) {
+      ModalComponent = 'div'
+      modalProps = {
+        className: 'modal-content',
+      }
+    } else {
+      ModalComponent = Modal
+      modalProps = {
+        bsSize: "small",
+        show: this.props.show,
+        onHide: this.closeModal,
+      }
+    }
+
     return (
-      <Modal
-        bsSize="small"
-        show={this.props.show}
-        onHide={this.closeModal}
-      >
+      <ModalComponent {...modalProps}>
         <Modal.Body>
-          <button type="button" className="close" onClick={this.closeModal}>&times;</button>
+          { !this.props.embedded && <button type="button" className="close" onClick={this.closeModal}>&times;</button> }
           <div className="form-group">
             <h4 className="text-center">Create an Account.</h4>
           </div>
           <form onSubmit={this.signup} noValidate>
+            <div className={inviteCodeGroupClass} style={{marginBottom: 10}}>
+              <div className="input-group">
+                <span className="input-group-addon">
+                  Invite Code
+                </span>
+                <input
+                  className="form-control" type="text"
+                  placeholder="Invite Code" ref={(ref) => this.inviteCode = ref}
+                  onBlur={this.inviteCodeBlur} defaultValue={this.props.inviteCode}
+                />
+              </div>
+              <p className="text-danger text-right" style={errorStyle}>
+                {this.state.inviteCodeError}
+              </p>
+            </div>
             <div className={emailGroupClass} style={{marginBottom: 10}}>
               <input
                 className="form-control" type="email"
@@ -88,7 +120,7 @@ export class SignupModal extends Component {
             </a>
           </p>
         </Modal.Footer>
-      </Modal>
+      </ModalComponent>
     )
   }
 
@@ -97,6 +129,9 @@ export class SignupModal extends Component {
       this.setState(nextProps.errorMessage)
   }
 
+  inviteCodeBlur = () => {
+    this.setState({ inviteCodePristine: false })
+  }
   emailBlur = () => {
     this.setState({ emailPristine: false }, () => {
       this.emailValidate()
@@ -166,12 +201,14 @@ export class SignupModal extends Component {
     e ? e.preventDefault() : null
 
     this.setState({
+      inviteCodePristine: false,
       emailPristine: false,
       usernamePristine: false,
       passwordPristine: false,
     })
 
     this.props.dispatch(signup({
+      inviteCode: this.inviteCode.value,
       email: this.email.value,
       username: this.username.value,
       password: this.password.value,

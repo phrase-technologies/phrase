@@ -9,38 +9,31 @@
   justify-content: center;
   text-align: center;
 
-  color: #FFF;
-  font-family: Roboto, sans-serif;
-  font-weight: 300;
-
   background: #333;
   background-image: url(img/producer-using-phrase.jpg);
   background-size: cover;
   background-position: center;
 
-  a {
-    color: hsl(180,100%,50%);
-  }
+  padding: 30px 10px;
 }
 .authentication-wall-notice {
+  color: #FFF;
+  font-family: Roboto, sans-serif;
   font-weight: bold;
   font-size: 24px;
+  margin-bottom: 20px;
 }
-.authentication-wall-actions {
-  max-width: 270px;
-  margin: 30px auto 0;
-  background: none;
-  border-color: hsl(180,100%,50%);
+.authentication-wall-modal {
+  width: 300px;
+  margin: auto;
+}
+.authentication-wall-footer {
+  color: #FFF;
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
 
-  > .list-group-item {
-    border-color: hsl(180,100%,50%);
-    background: hsla(180,100%,50%,0.1);
-    color: hsl(180,100%,50%) !important;
-    transition: background 0.25s;
-
-    &:hover {
-      background: hsla(180,100%,50%,0.2);
-    }
+  a {
+    color: hsl(180,100%,50%);
   }
 }
 .authentication-wall-logo {

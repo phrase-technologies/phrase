@@ -7,15 +7,27 @@ import { login } from '../../reducers/reduceAuth.js'
 import { modalOpen, modalClose } from '../../reducers/reduceModal.js'
 
 export class LoginModal extends Component {
+
   render() {
+    let ModalComponent
+    let modalProps
+    if (this.props.embedded) {
+      ModalComponent = 'div'
+      modalProps = {
+        className: 'modal-content',
+      }
+    } else {
+      ModalComponent = Modal
+      modalProps = {
+        bsSize: "small",
+        show: this.props.show,
+        onHide: this.closeModal,
+      }
+    }
     return (
-      <Modal
-        bsSize="small"
-        show={this.props.show}
-        onHide={this.closeModal}
-      >
+      <ModalComponent {...modalProps}>
         <Modal.Body>
-          <button type="button" className="close" onClick={this.closeModal}>&times;</button>
+          { !this.props.embedded && <button type="button" className="close" onClick={this.closeModal}>&times;</button> }
           <div className="form-group">
             <h4 className="text-center">Have an account?</h4>
           </div>
@@ -55,7 +67,7 @@ export class LoginModal extends Component {
             </a>
           </p>
         </Modal.Footer>
-      </Modal>
+      </ModalComponent>
     )
   }
 
@@ -89,6 +101,7 @@ export class LoginModal extends Component {
   closeModal = () => {
     this.props.dispatch(modalClose())
   }
+
 }
 
 function mapStateToProps(state) {
