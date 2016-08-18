@@ -92,10 +92,14 @@ export class LoginModal extends Component {
 
   openSignupConfirmationModal = (e) => {
     e.preventDefault()
-    this.props.dispatch(modalOpen({
-      modalComponent: 'SignupConfirmationModal',
-      payload: this.email.value.indexOf('@') > -1 ? this.email.value : null
-    }))
+    let email = this.email.value.indexOf('@') > -1 ? this.email.value : null
+    if (email)
+      this.props.dispatch(modalOpen({
+        modalComponent: 'SignupConfirmationModal',
+        payload: email,
+      }))
+    else
+      this.props.dispatch(modalOpen({ modalComponent: 'ConfirmRetryModal' }))
   }
 
   closeModal = () => {
