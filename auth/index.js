@@ -35,7 +35,7 @@ let generateUniqueToken = async ({ index, db }) => {
 
 let generateAPIToken = async (user, app) => {
   return await jwt.sign(user, app.get(`superSecret`), {
-    expiresInMinutes: 1440, // expires in 24 hours
+    expiresIn: `365d`, // expires in a year
   })
 }
 
@@ -46,11 +46,38 @@ export default ({
 }) => {
   app.post(`/signup`, async (req, res) => {
 
-    let { email, username, password } = req.body
+    let { inviteCode, email, username, password } = req.body
 
+    let trimmedInviteCode = inviteCode.trim()
     let trimmedEmail = email.trim()
     let trimmedUsername = username.trim()
     let trimmedPassword = password.trim()
+
+    // Validate Invite Code
+    if (!inviteCode) {
+      res.json({ message: { inviteCodeError: `Invite Code is required.` } })
+    }
+
+    try {
+      let inviteCodeResults = await r
+        .table(`inviteCodes`)
+        .getAll(trimmedInviteCode, { index: `code` })
+        .limit(1)
+        .run(db)
+      let foundInviteCode = await inviteCodeResults.toArray()
+      if (!foundInviteCode[0]) {
+        res.json({ message: { inviteCodeError: `Invalid Code.` } })
+        return
+      } else if (foundInviteCode[0].used) {
+        res.json({ message: { inviteCodeError: `Expired or Used Code.` } })
+        return
+      }
+    }
+    catch (err) {
+      console.log(err)
+      res.json({ inviteCodeError: `Database Error.` })
+      return
+    }
 
     if (!trimmedEmail || !isValidEmail(trimmedEmail)) {
       res.json({
@@ -109,6 +136,11 @@ export default ({
               password: doubleHash(trimmedPassword),
               confirmToken: token,
             }).run(db)
+            r.table(`inviteCodes`)
+              .getAll(trimmedInviteCode, { index: `code` })
+              .limit(1)
+              .update({used: true})
+              .run(db)
 
             sendWelcomeEmail({
               email: lowerCaseEmail,
@@ -136,7 +168,7 @@ export default ({
     try {
       let lowerCaseUnameEmail = email.toLowerCase()
       let cursor = await r.table(`users`).getAll(lowerCaseUnameEmail, { index: `email` }).limit(1)
-        .union(r.table(`users`).getAll(lowerCaseUnameEmail, {index: `usernameLC`}).limit(1))
+        .union(r.table(`users`).getAll(lowerCaseUnameEmail, { index: `usernameLC` }).limit(1))
         .run(db)
       let users = await cursor.toArray()
       let user = users[0]
@@ -350,7 +382,7 @@ export default ({
     if (token) {
       jwt.verify(token, app.get(`superSecret`), (err, decoded) => {
         if (err) {
-          return res.json({ success: false, message: `Failed to authenticate token.` })
+          return res.status(403).json({ message: `Failed to authenticate token.` })
         }
 
         req.decoded = decoded
