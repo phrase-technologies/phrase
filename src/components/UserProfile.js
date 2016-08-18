@@ -1,73 +1,68 @@
 import React, { Component } from 'react'
-import Helmet from "react-helmet"
-
-import _ from 'lodash'
+import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
 import Numeral from 'numeral'
 
-import PhraseCard from 'components/PhraseCard.js'
+import { api } from 'helpers/ajaxHelpers'
+import { catchAndToastException } from 'reducers/reduceNotification'
+import LibraryPhrases from 'components/LibraryPhrases'
+
 import deadmau5Image from '../img/user/deadmau5.jpg'
 
 export class UserProfile extends Component {
+
+  state = {
+    phrases: [],
+  }
+
+  componentDidMount() {
+    let { dispatch } = this.props
+    catchAndToastException({ dispatch, toCatch: async() => {
+      let { phrases } = await api({
+        endpoint: `loadUserPhrases`,
+        body: { userId: localStorage.userId },
+      })
+      if (phrases) this.setState({ phrases })
+    }})
+  }
+
   render() {
     // Fetch based on this.props.routeParams.userId
     let user = {
-      username: "deadmau5",
+      username: localStorage.username,
       image: deadmau5Image,
       followers: 28751,
       verified: true,
     }
 
+    let userProfileDetails = (
+      <div>
+        <div className="user-profile-pic">
+          <img src={user.image} />
+          { this.renderVerified({ user }) }
+        </div>
+        <button className="btn btn-bright btn-light-bg user-profile-action">
+          <span>Follow</span>
+          { this.renderFollowerCount({ user }) }
+        </button>
+      </div>
+    )
+
     return (
       <div className="user-profile">
         <Helmet title={`${user.username} - Phrase.fm`} />
-        <div className="user-profile-header page-header">
+        <div className="user-profile-header page-header library-header">
           <div className="container">
-            <div className="user-profile-pic">
-              <img src={user.image} />
-              { this.renderVerified({ user }) }
-            </div>
-            <h1 className="user-profile-username">{user.username}</h1>
-            <button className="btn btn-bright btn-light-bg user-profile-action">
-              <span>Follow</span>
-              { this.renderFollowerCount({ user }) }
-            </button>
+            <h1>
+              <a>{user.username}</a>
+              &nbsp;
+              <span className="fa fa-fw fa-caret-right" />
+              All Phrases
+            </h1>
           </div>
         </div>
-        <div className="container">
-
-          <ul className="stories">
-
-            {
-              <PhraseCard
-                phrase={phrase}
-                active={active}
-                plays={125}
-                likes={2}
-                comments={1}
-                key={phrase.id}
-              />
-              /*
-              stories.map((story, i) => {
-                return (
-                  <PhraseCard
-                    userPhoto={story.user.userPhoto}
-                    username={story.user.username}
-                    action={story.action}
-                    timestamp={story.timestamp}
-                    trackCover={story.item.trackCover}
-                    trackName={story.item.trackName}
-                    contributors={story.item.contributors}
-                    plays={story.item.plays}
-                    likes={story.item.likes}
-                    comments={story.item.comments}
-                    key={i}
-                  />
-                )
-              })
-              */
-            }
-          </ul>
-
+        <div className="library">
+          <LibraryPhrases phrases={this.state.phrases} />
         </div>
       </div>
     )
@@ -93,9 +88,9 @@ export class UserProfile extends Component {
   }
 }
 
-export default UserProfile
+export default connect(null)(UserProfile)
 
-
+/*
 function getById(id){
   return (element) => {
     return element.id === id
@@ -345,3 +340,4 @@ let stories = [
     item:         tracks.find(getById(10))
   }
 ]
+*/
