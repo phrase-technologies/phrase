@@ -183,6 +183,8 @@ export class PianorollWindowControl extends Component {
             e.target.requestPointerLock = e.target.requestPointerLock || e.target.mozRequestPointerLock
             if (e.target.requestPointerLock) {
               e.target.requestPointerLock()
+            } else {
+              this.pointerLockFallback = true
             }
           }
 
@@ -300,17 +302,31 @@ export class PianorollWindowControl extends Component {
             return
 
           case `velocity`:
-            let delta = e.movementY || e.mozMovementY || 0
-            if (this.lastEvent.delta !== delta) {
+            if (!this.pointerLockFallback) {
+              let delta = e.movementY || e.mozMovementY || 0
+              if (this.lastEvent.delta !== delta) {
+                dispatch(phraseDragNoteVelocity({
+                  noteID: this.lastEvent.noteID,
+                  targetBar: bar,
+                  delta
+                }))
+              }
+
+              this.lastEvent.delta = delta
+            } else {
+              let offsetY = this.props.mouse.y - this.props.mouse.downY
+              let increasing = (this.lastEvent.offsetY || offsetY) > offsetY
+
               dispatch(phraseDragNoteVelocity({
                 noteID: this.lastEvent.noteID,
                 targetBar: bar,
-                delta
+                delta: increasing ? -1 : 1
               }))
+
+              this.lastEvent.offsetY = offsetY
             }
 
             this.lastEvent.action = CHANGE_NOTE_VELOCITY
-            this.lastEvent.delta = delta
             return
         }
     }
@@ -516,7 +532,8 @@ PianorollWindowControl.propTypes = {
 
 export default
 connect(state => ({
-  arrangeTool: state.arrangeTool
+  arrangeTool: state.arrangeTool,
+  mouse: state.mouse,
 }))(
   connectEngine(
     provideGridSystem(
