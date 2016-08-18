@@ -45,12 +45,15 @@ let autosave = store => next => action => {
 
     // If you're logged in and make an edit to a new phrase, save it right away
     else if (!existingPhrase && loggedIn) {
-      store.dispatch(librarySaveNew())
+      if (newState.phraseMeta.saving)
+        changesDuringPlayback = true
+      else
+        store.dispatch(librarySaveNew())
     }
   }
 
-  // Save changes that were queued up during playback
-  else if(!newState.transport.playing && changesDuringPlayback) {
+  // Save changes that were queued up during playback, or queued up while a new phrase was saving
+  else if(!newState.phraseMeta.saving && !newState.transport.playing && changesDuringPlayback) {
     changesDuringPlayback = false
     store.dispatch(phraseSave())
   }
