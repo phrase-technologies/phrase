@@ -24,6 +24,21 @@ export default ({ app, db }) => {
     }
   })
 
+  api.post(`/loadUserPhrases`, async (req, res) => {
+    try {
+      let { userId } = req.body
+      let cursor = await r
+        .table(`phrases`)
+        .getAll(userId, { index: `userId` })
+        .run(db)
+      let phrases = await cursor.toArray()
+      res.json({ phrases })
+    } catch (error) {
+      console.log(`/loadUserPhrases:`, chalk.magenta(error))
+      res.json({ error })
+    }
+  })
+
   api.post(`/loadOne`, async (req, res) => {
     let { phraseId } = req.body
     try {
