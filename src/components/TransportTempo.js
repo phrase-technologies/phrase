@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { phraseSetTempo } from 'reducers/reducePhrase.js'
+import { phraseSetTempo } from 'reducers/reducePhrase'
 
 export const MIN_TEMPO = 20
 export const MAX_TEMPO = 9001
@@ -20,11 +20,11 @@ class TransportTempo extends Component {
       <div className="btn-group">
         <div className="transport-tempo-container">
           <input className="form-control form-control-glow transport-tempo"
-            type="number" min={MIN_TEMPO} max={MAX_TEMPO} step={1} value={this.state.tempo}
+            type="number" min={MIN_TEMPO} max={MAX_TEMPO} step={1}
+            value={this.state.tempo}
             onChange={this.handleChange}
             onKeyDown={this.handleKeyDown}
             onMouseDown={this.handleMouseDown}
-            onMouseUp={this.handleMouseUp}
             onBlur={this.handleBlur}
             tabIndex={-1}
           />
@@ -34,16 +34,14 @@ class TransportTempo extends Component {
     )
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ tempo: nextProps.tempo })
-  }
-
   componentDidMount() {
     document.addEventListener('mousemove', this.handleMouseMove)
+    document.addEventListener('mouseup', this.handleMouseUp)
   }
 
   componentWillUnmount() {
     document.removeEventListener('mousemove', this.handleMouseMove)
+    document.removeEventListener('mouseup', this.handleMouseUp)
   }
 
   handleMouseDown = (e) => {
@@ -53,18 +51,22 @@ class TransportTempo extends Component {
     e.target.requestPointerLock = e.target.requestPointerLock || e.target.mozRequestPointerLock
     if (e.target.requestPointerLock) {
       e.target.requestPointerLock()
+    } else {
+      this.pointerLockFallback = true
+      this.lastValue = this.state.tempo
     }
   }
 
   handleMouseMove = (e) => {
-    if (this.dragging) {
+    if (this.dragging && !this.pointerLockFallback) {
       let deltaX = e.movementX || e.mozMovementX || 0
       let deltaY = e.movementY || e.mozMovementY || 0
-      if (e.target.requestPointerLock) {
-        console.log('>>>', 'i gots it')
-      }
       e.target.value = this.validateTempo(parseInt(e.target.value) + deltaX - deltaY)
       this.setState({ tempo: parseInt(e.target.value) })
+    } else if (this.dragging && this.pointerLockFallback) {
+      let offsetY = this.props.mouse.y - this.props.mouse.downY
+      let tempo = this.validateTempo(Math.round(this.lastValue - offsetY))
+      this.setState({ tempo })
     }
   }
 
@@ -74,8 +76,8 @@ class TransportTempo extends Component {
     if (document.exitPointerLock) {
       document.exitPointerLock()
     }
-    this.props.dispatch(phraseSetTempo(e.target.value))
-    e.target.select()
+    this.props.dispatch(phraseSetTempo(this.state.tempo))
+    if (e.target.select) e.target.select()
   }
 
   handleChange = (e) => {
@@ -106,7 +108,7 @@ class TransportTempo extends Component {
 function mapStateToProps(state) {
   return {
     tempo: state.phrase.present.tempo,
-    mouse: state.phrase.mouse,
+    mouse: state.mouse,
   }
 }
 
