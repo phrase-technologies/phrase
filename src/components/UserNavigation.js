@@ -78,6 +78,7 @@ let loggedIn = ({ user, dispatch }) => {
       </a>
       <Dropdown.Menu>
         <MenuItem onClick={() => dispatch(push(`/user/${user.username}`))}>Profile</MenuItem>
+        <MenuItem divider/>
         <MenuItem onClick={() => dispatch(logout())}>Log out</MenuItem>
       </Dropdown.Menu>
     </Dropdown>
