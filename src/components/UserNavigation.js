@@ -1,7 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { MenuItem } from 'react-bootstrap'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 import { Link } from 'react-router'
+import { push } from 'react-router-redux'
 
 import { modalOpen } from 'reducers/reduceModal'
 import { logout } from 'reducers/reduceAuth'
@@ -67,7 +69,6 @@ let notLoggedIn = ({ dispatch }) => {
 }
 
 let loggedIn = ({ user, dispatch }) => {
-  let userProfileUri = `/user/${user.username}`
 
   return (
     <Dropdown id="header-user-navigation-dropdown" pullRight className="dropdown-arrow" style={{ marginTop: 7 }}>
@@ -76,17 +77,8 @@ let loggedIn = ({ user, dispatch }) => {
         <span className="header-user-name">{user.username || user.email} <span className="caret" /></span>
       </a>
       <Dropdown.Menu>
-        <li>
-          <Link to={userProfileUri} activeClassName="header-nav-active">
-            Profile
-          </Link>
-        </li>
-        <li role="separator" className="divider"></li>
-        <li>
-          <a onClick={ () => dispatch(logout()) }>
-            Log out
-          </a>
-        </li>
+        <MenuItem onClick={() => dispatch(push(`/user/${user.username}`))}>Profile</MenuItem>
+        <MenuItem onClick={() => dispatch(logout())}>Log out</MenuItem>
       </Dropdown.Menu>
     </Dropdown>
   )
