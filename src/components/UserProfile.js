@@ -10,7 +10,7 @@ import LibraryPhrases from 'components/LibraryPhrases'
 export class UserProfile extends Component {
 
   state = {
-    phrases: [],
+    phrases: null,
   }
 
   loadUserPhrases() {
