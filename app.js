@@ -34,6 +34,7 @@ async function bootstrap () {
       await r.table(`users`).indexCreate(`confirmToken`).run(db)
       await r.tableCreate(`phrases`).run(db)
       await r.table(`phrases`).indexCreate(`phrasename`).run(db)
+      await r.table(`phrases`).indexCreate(`userId`).run(db)
 
       console.log(chalk.cyan(
         `Database setup complete!`
