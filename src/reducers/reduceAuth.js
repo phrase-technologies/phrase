@@ -1,3 +1,4 @@
+import u from 'updeep'
 import { push } from 'react-router-redux'
 
 import {
@@ -8,8 +9,7 @@ import {
   confirmUser as confirmUserHelper,
   retryConfirmUser as retryConfirmUserHelper,
 } from 'helpers/authHelpers'
-import { api } from 'helpers/ajaxHelpers'
-import { modal, auth, phrase } from '../actions/actions'
+import { modal, auth } from '../actions/actions'
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave } from 'reducers/reducePhrase'
 import { modalOpen } from 'reducers/reduceModal.js'
@@ -55,7 +55,6 @@ export let login = ({ email, password }) => {
           }
         })
       },
-      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
     })
   }
 }
@@ -107,7 +106,6 @@ export let forgotPassword = ({ email }) => {
           }
         })
       },
-      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
     })
   }
 }
@@ -247,39 +245,40 @@ export default (state = intialState, action) => {
     // Clear out old auth error messages before launching auth modals
     case modal.OPEN:
       if (['LoginModal', 'SignupModal', 'ForgotPasswordModal'].find(x => x === action.modalComponent)) {
-        return {
-          ...state,
+        return u({
           errorMessage: null,
           confirmFail: false,
-        }
+        }, state)
       }
       else if (['ForgotPasswordSuccessModal', 'SignupConfirmationModal', 'ConfirmRetryModal'].find(x => x === action.modalComponent)) {
-        return {
-          ...state,
+        return u({
           errorMessage: null,
           email: action.payload,
           requestingAuth: false,
-        }
+        }, state)
       }
       return state
 
+    case modal.CLOSE:
+      return u({
+        errorMessage: null,
+      }, state)
+
     // ------------------------------------------------------------------------
     case auth.LOGIN_REQUEST:
-      return {
-        ...state,
+      return u({
         requestingAuth: true,
         errorMessage: null,
-      }
+      }, state)
 
     // ------------------------------------------------------------------------
     case auth.LOGIN_SUCCESS:
-      return {
-        ...state,
+      return u({
         loggedIn: action.payload.loggedIn,
         user: action.payload.user,
         requestingAuth: false,
         errorMessage: null,
-      }
+      }, state)
 
     // ------------------------------------------------------------------------
     case auth.LOGOUT:
@@ -291,19 +290,17 @@ export default (state = intialState, action) => {
 
     // ------------------------------------------------------------------------
     case auth.LOGIN_FAIL:
-      return {
-        ...state,
+      return u({
         errorMessage: action.payload.message,
         confirmFail: action.payload.confirmFail,
         requestingAuth: false,
-      }
+      }, state)
 
     // ------------------------------------------------------------------------
     case auth.USER_CONFIRM_FAIL:
-      return {
-        ...state,
+      return u({
         showConfirmUserError: true,
-      }
+      }, state)
 
     // ------------------------------------------------------------------------
     default:

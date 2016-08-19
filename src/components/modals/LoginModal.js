@@ -54,8 +54,8 @@ export class LoginModal extends Component {
               Log in
             </LaddaButton>
             <p className="text-danger text-center" style={{ marginTop: 5, marginBottom: 0 }}>
-              {this.props.errorMessage}
-              {this.props.confirmFail && <a href="" onClick={this.openSignupConfirmationModal}>confirm here</a>}
+              { this.props.errorMessage }
+              { this.props.confirmFail && <a href="" onClick={this.openSignupConfirmationModal}>confirm here</a> }
             </p>
           </form>
         </Modal.Body>
@@ -69,6 +69,10 @@ export class LoginModal extends Component {
         </Modal.Footer>
       </ModalComponent>
     )
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return !nextProps.activeModal || nextProps.activeModal === 'LoginModal'
   }
 
   login = (e) => {
@@ -110,7 +114,8 @@ export class LoginModal extends Component {
 
 function mapStateToProps(state) {
   return {
-    ...state.auth
+    activeModal: state.modal.activeModal,
+    ...state.auth,
   }
 }
 

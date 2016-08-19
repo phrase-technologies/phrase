@@ -40,7 +40,8 @@ export default function reduceModals(state = defaultState, action) {
     case modal.CLOSE:
     case auth.LOGIN_SUCCESS: // Close modals after successful login
       return u({
-        show: false
+        show: false,
+        activeModal: null,
       }, state)
 
     // ------------------------------------------------------------------------
