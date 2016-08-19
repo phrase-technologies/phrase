@@ -30,6 +30,9 @@ export default ({ app, db }) => {
       let cursor = await r
         .table(`phrases`)
         .getAll(userId, { index: `userId` })
+        .eqJoin(`userId`, r.table(`users`))
+        .without({right: [`id`, `password`, `email`]})
+        .zip()
         .run(db)
       let phrases = await cursor.toArray()
       res.json({ phrases })
