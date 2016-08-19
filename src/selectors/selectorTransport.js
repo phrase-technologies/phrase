@@ -42,7 +42,7 @@ export const phraseMidiSelector = createSelector(
       .reduce((midiCommands, note) => {
         return [...midiCommands, ...noteMidiSelector(note) ]
       }, [])
-      .concat(midiEvents)
+      .concat(midiEvents || [])
       .sort((a, b) => a.bar - b.bar)
 
     return midiCommands
