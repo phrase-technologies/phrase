@@ -314,16 +314,30 @@ export class PianorollWindowControl extends Component {
 
               this.lastEvent.delta = delta
             } else {
+              let note = this.props.notes.find(x => x.id === this.lastEvent.noteID)
+
+              let transientNote = (this.lastEvent.transientNotes || []).find(x =>
+                x.id === note.id
+              )
+
+              if (!transientNote) {
+                this.lastEvent.transientNotes = [
+                  ...(this.lastEvent.transientNotes || []),
+                  note
+                ]
+              }
+
               let offsetY = this.props.mouse.y - this.props.mouse.downY
-              let increasing = (this.lastEvent.offsetY || offsetY) > offsetY
+
+              let nextVelocity = transientNote
+                ? transientNote.velocity - offsetY
+                : note.velocity - offsetY
 
               dispatch(phraseDragNoteVelocity({
                 noteID: this.lastEvent.noteID,
                 targetBar: bar,
-                delta: increasing ? -1 : 1
+                nextVelocity
               }))
-
-              this.lastEvent.offsetY = offsetY
             }
 
             this.lastEvent.action = CHANGE_NOTE_VELOCITY

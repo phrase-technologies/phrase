@@ -395,20 +395,23 @@ export const phraseSliceNote = ({ bar, trackID, noteID, snap = 8 }) => {
   }
 }
 
-export const phraseDragNoteVelocity = ({ noteID, targetBar, delta }) => {
+export const phraseDragNoteVelocity = ({ noteID, targetBar, delta, nextVelocity }) => {
   return (dispatch, getState) => {
     let state = getState()
     let currentNotes = currentNotesSelector(state)
     let selectedNotes = currentNotes.filter(x => x.selected)
     let noteToChange = selectedNotes.find(x => x.id === noteID)
 
-    let velocity =
-      Math.max(1, Math.min(noteToChange.velocity - delta, 127))
+    let velocity = nextVelocity
+      ? Math.max(1, Math.min(nextVelocity, 127))
+      : Math.max(1, Math.min(noteToChange.velocity - delta, 127))
 
     let velocities =
       selectedNotes.map(note => ({
         id: note.id,
-        velocity: Math.max(1, Math.min(note.velocity - delta, 127))
+        velocity: nextVelocity
+          ? Math.max(1, Math.min(nextVelocity, 127))
+          : Math.max(1, Math.min(note.velocity - delta, 127))
       }))
 
     dispatch({
