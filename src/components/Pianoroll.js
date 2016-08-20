@@ -7,7 +7,6 @@ import {
   pianorollScrollY,
 } from '../reducers/reducePianoroll.js'
 import { getDarkenedColor } from '../helpers/trackHelpers.js'
-import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 
 import PianorollTimelineDisplay from './PianorollTimelineDisplay.js'
 import PianorollTimelineControl from './PianorollTimelineControl.js'

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import u from 'updeep'
 import { objectMergeKeyArrays } from 'helpers/arrayHelpers'
-import { phrase, pianoroll, library, samples } from 'actions/actions'
+import { phrase, pianoroll, library } from 'actions/actions'
 
 // ============================================================================
 // Phrase META Reducer
@@ -29,7 +29,7 @@ export const defaultState = {
   loginReminder: false,
   rephraseReminder: false,
   selectionType: null,  // Can be "tracks", "clips", or "notes"
-  trackSelectionID: 0,
+  trackSelectionID: null,
   trackSelectionGrippedID: null,
   trackSelectionOffsetTrack: null,
   clipSelectionIDs: [],
@@ -55,7 +55,6 @@ export default function reducePhraseMeta(state = defaultState, action) {
   switch (action.type)
   {
     // ------------------------------------------------------------------------
-
     case library.SAVE_NEW:
       return u({
         saving: "DO_NOT_RELOAD",

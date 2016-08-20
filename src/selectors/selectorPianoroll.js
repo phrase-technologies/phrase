@@ -119,7 +119,7 @@ export const noteSelectionOffsetValidated = createSelector(
   }
 )
 const currentTrackSelector = (state) => {
-  return state.phrase.present.tracks.find(track => track.id === state.pianoroll.currentTrack)
+  return state.phrase.present.tracks.find(track => track.id === state.pianoroll.currentTrack) || state.phrase.present.tracks[0]
 }
 const currentClipsSelector = createSelector(
   clipsSelector,
