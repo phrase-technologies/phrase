@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import provideGridSystem from './GridSystemProvider.js'
-import provideTween from './TweenProvider.js'
+import provideGridSystem from './GridSystemProvider'
+import provideTween from './TweenProvider'
+import { getNoteMap } from 'helpers/notes'
 
 import {
   closestHalfPixel,
@@ -204,9 +205,10 @@ export class PianorollWindowDisplay extends Component {
         return
 
       let label
-      if (keyboardHeight > 1275*this.props.grid.pixelScale) {
-        let keyLetter = {1:'A',2:'A#',3:'B',4:'C',5:'C#',6:'D',7:'D#',8:'E',9:'F',10:'F#',11:'G',0:'G#'}[note.keyNum % 12]
-        label = keyLetter + Math.floor((note.keyNum+8)/12)
+      if (keyboardHeight > 1275 * this.props.grid.pixelScale) {
+        let noteMap = getNoteMap()
+        let keyLetter = noteMap[note.keyNum % 12]
+        label = `${keyLetter}${Math.floor(note.keyNum / 12)}`
       }
 
       let color = desaturateFromVelocity(currentTrack.color, note.velocity)
