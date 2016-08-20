@@ -115,7 +115,7 @@ export class SignupModal extends Component {
         <Modal.Footer>
           <p className="text-center">
             <span>Already have an account? </span>
-            <a href="" onClick={this.openLoginModal}>
+            <a href="" onClick={this.openLoginModal} onMouseDown={this.openLoginModal}>
               <strong>Log in</strong>
             </a>
           </p>
@@ -229,6 +229,8 @@ export class SignupModal extends Component {
     }))
   }
 
+  // Attach this to onMouseDown (in addition to onClick) to take
+  // precedence over validaiton onBlur handlers
   openLoginModal = (e) => {
     e.preventDefault()
     this.props.dispatch(modalOpen({ modalComponent: 'LoginModal' }))
