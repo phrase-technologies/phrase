@@ -19,6 +19,7 @@ import CursorProvider from 'components/CursorProvider.js'
 import HotkeyProvider from 'components/HotkeyProvider'
 import MouseEventProvider from 'components/MouseEventProvider'
 import SamplesProgress from 'components/SamplesProgress'
+import withSocket from 'components/withSocket'
 
 import WorkstationHeader from './WorkstationHeader'
 import WorkstationSplit from './WorkstationSplit'
@@ -30,19 +31,22 @@ import Rack from './Rack'
 export class Workstation extends Component {
 
   componentDidMount() {
-    let { dispatch, params, loading } = this.props
+    let { dispatch, params, loading, socket } = this.props
 
     // Put the page into "app-mode" to prevent inertia scroll
     document.documentElement.style.overflow = "hidden"
     document.body.style.overflow = "hidden"
 
     // Load existing phrase from URL param
-    if (params.phraseId && loading !== phrase.REPHRASE)
+    if (params.phraseId && loading !== phrase.REPHRASE) {
       dispatch(phraseLoadFromDb(params.phraseId))
+      socket.emit(`client::joinRoom`, params.phraseId)
+    }
 
     // Load brand new phrase
-    else if (loading !== phrase.REPHRASE)
+    else if (loading !== phrase.REPHRASE) {
       this.props.dispatch(phraseNewPhrase())
+    }
 
     // Set Leave Hook ("You have unsaved changes!")
     this.props.router.setRouteLeaveHook(this.props.route, this.leaveHook)
@@ -273,4 +277,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(Workstation))
+export default withSocket(withRouter(connect(mapStateToProps)(Workstation)))

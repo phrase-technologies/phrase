@@ -14,7 +14,8 @@ import ReactDOM from 'react-dom'
 // Create the STORE + HISTORY god objects
 // ============================================================================
 import { Provider as StoreProvider } from 'react-redux'
-import EngineProvider from 'audio/AudioEngineProvider.js'
+import EngineProvider from 'audio/AudioEngineProvider'
+import SocketProvider from 'components/SocketProvider'
 import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { Router, useRouterHistory } from 'react-router'
@@ -55,6 +56,10 @@ persistStore(STORE, persistConfig, () => {
     STORE.dispatch(UndoActions.clearHistory())
   }
 })
+
+// Socket stuff!
+import io from 'socket.io-client'
+const SOCKET = io(API_URL)
 
 const HISTORY = syncHistoryWithStore(browserHistory, STORE)
 
@@ -101,11 +106,13 @@ else {
     ReactDOM.render(
       <StoreProvider store={STORE}>
         <EngineProvider engine={ENGINE}>
+          <SocketProvider socket={SOCKET}>
 
-          <Router history={HISTORY}>
-            {Routes}
-          </Router>
+            <Router history={HISTORY}>
+              {Routes}
+            </Router>
 
+          </SocketProvider>
         </EngineProvider>
       </StoreProvider>,
       root

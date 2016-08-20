@@ -81,6 +81,7 @@
     "redux-thunk": "^2.0.1",
     "redux-undo": "^1.0.0-beta7",
     "reselect": "^2.2.1",
+    "socket.io-client": "^1.4.8",
     "updeep": "^0.16.0",
     "whatwg-fetch": "^1.0.0"
   }

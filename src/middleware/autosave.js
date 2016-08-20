@@ -11,11 +11,14 @@ let autosave = store => next => action => {
   // bail early on action namespaces we don't care about:
   let actionNamespace = action.type.split(`/`)[0]
 
+  if (action.ignoreAutosave) return result
+
   switch (actionNamespace) {
     case `pianoroll`:
     case `mixer`:
     case `cursor`:
     case `transport`:
+    case `mouse`:
       return result
     default:
       break
