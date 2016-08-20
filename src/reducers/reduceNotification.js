@@ -50,7 +50,7 @@ export const catchAndToastException = async ({ dispatch, toCatch, callback }) =>
       dispatch(addForbiddenErrorNotification())
       dispatch(modalOpen({ modalComponent: 'LoginModal' }))
       dispatch(logout())
-    } else dispatch(addNotification({ title: "API Error", message: e.message }))
+    } else dispatch(addNotification({ title: "Error", message: e.message }))
     if (callback) callback()
   }
 }
