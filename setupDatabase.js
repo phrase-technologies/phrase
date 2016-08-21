@@ -18,6 +18,7 @@ export default async db => {
   await r.table(`users`).indexCreate(`email`).run(db)
   await r.table(`users`).indexCreate(`resetToken`).run(db)
   await r.table(`users`).indexCreate(`confirmToken`).run(db)
+
   await r.tableCreate(`phrases`).run(db)
   await r.table(`phrases`).indexCreate(`phrasename`).run(db)
   await r.table(`phrases`).indexCreate(`userId`).run(db)
@@ -25,7 +26,7 @@ export default async db => {
   await r.tableCreate(`inviteCodes`).run(db)
   await r.table(`inviteCodes`).indexCreate(`userId`).run(db)
   await r.table(`inviteCodes`).indexCreate(`code`).run(db)
-  await r.table(`inviteCodes`).indexWait(`code`).run(db)
+
   for(let i = 0; i < 1000; i++) {
     let token = await generateUniqueToken({ db })
     await r.table(`inviteCodes`).insert({
