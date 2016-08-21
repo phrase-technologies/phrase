@@ -33,9 +33,13 @@ const browserHistory = useBeforeUnload(useRouterHistory(createHistory))()
 
 import autosave from 'middleware/autosave'
 
+// Socket stuff!
+import io from 'socket.io-client'
+const SOCKET = io(API_URL)
+
 const finalCreateStore = compose(
   applyMiddleware(
-    thunk,
+    thunk.withExtraArgument({ socket: SOCKET }),
     routerMiddleware(browserHistory),
     autosave,
   ),
@@ -56,10 +60,6 @@ persistStore(STORE, persistConfig, () => {
     STORE.dispatch(UndoActions.clearHistory())
   }
 })
-
-// Socket stuff!
-import io from 'socket.io-client'
-const SOCKET = io(API_URL)
 
 const HISTORY = syncHistoryWithStore(browserHistory, STORE)
 

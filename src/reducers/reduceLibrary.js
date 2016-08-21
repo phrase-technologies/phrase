@@ -5,7 +5,7 @@ import { phrase } from '../actions/actions.js'
 import { catchAndToastException } from './reduceNotification'
 
 export const librarySaveNew = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch, getState, { socket }) => {
     dispatch({ type: phrase.SAVE_START })
     let state = getState()
     catchAndToastException({ dispatch, toCatch: async () => {
@@ -29,6 +29,7 @@ export const librarySaveNew = () => {
         })
         dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
         dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+        socket.emit(`client::joinRoom`, phraseId)
       }
     }})
   }
