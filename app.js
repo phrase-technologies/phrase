@@ -10,6 +10,7 @@ import socketIO from 'socket.io'
 import { Server } from 'http'
 import router from './router'
 import setupDatabase from './setupDatabase'
+import setupSocketConnection from './setupSocketConnection'
 
 async function bootstrap () {
   try {
@@ -27,28 +28,7 @@ async function bootstrap () {
     let http = Server(app)
     let io = socketIO(http)
 
-    io.on(`connection`, async socket => {
-
-      try { await r.table(`connections`).insert({ id: socket.id }).run(db) }
-      catch (e) { console.log(chalk.white(e)) }
-
-      let count = await r.table(`connections`).count().run(db)
-
-      console.log(chalk.yellow(
-        `⚡ New connection! Number of open connections: ${count}`
-      ))
-
-      socket.on(`disconnect`, async () => {
-        try { await r.table(`connections`).get(socket.id).delete().run(db) }
-        catch (e) { console.log(chalk.magenta(e)) }
-
-        let count = await r.table(`connections`).count().run(db)
-
-        console.log(chalk.magenta(
-          `⚡ Disconnection! Number of open connections: ${count}`
-        ))
-      })
-    })
+    setupSocketConnection({ io, db })
 
     let port = process.env.PORT || 5000
 
