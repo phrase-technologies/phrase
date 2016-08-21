@@ -15,6 +15,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Phrase.fm',
       template: 'src/index.html',
+      inject: false,
     }),
     new webpack.DefinePlugin({
       API_URL: process.env.API_URL,
