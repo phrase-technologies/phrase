@@ -41,6 +41,7 @@
 @mixin cursor-scissors()      { cursor: url(img/cursor-scissors.png)       3 6, ew-resize !important; }
 @mixin cursor-eraser()      { cursor: url(img/cursor-eraser.png)       3 3, ew-resize !important; }
 @mixin cursor-pencil()      { cursor: url(img/cursor-pencil.png)       3 0, ew-resize !important; }
+@mixin cursor-velocity()    { cursor: url(img/cursor-velocity.png)     3 0, ew-resize !important; }
 .cursor-left            * { @include cursor-left();   }
 .cursor-right           * { @include cursor-right();  }
 .cursor-top             * { @include cursor-top();    }
@@ -53,6 +54,7 @@
 .cursor-scissors        * { @include cursor-scissors();   }
 .cursor-eraser          * { @include cursor-eraser();   }
 .cursor-pencil          * { @include cursor-pencil();   }
+.cursor-velocity        * { @include cursor-velocity();   }
 
 
 // ----------------------------------------------------------------------------

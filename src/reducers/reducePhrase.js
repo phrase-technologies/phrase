@@ -622,7 +622,7 @@ export const defaultState = reduceCreateTrack({
   colorAutoIncrement: 0,
   noteAutoIncrement:  0,
   clipAutoIncrement:  0,
-  noteLengthLast: 0.25
+  noteLengthLast: 0.25,
 }, {})
 
 export default function reducePhrase(state = defaultState, action) {
@@ -921,7 +921,6 @@ export default function reducePhrase(state = defaultState, action) {
     }
 
     // ------------------------------------------------------------------------
-
     case phrase.CHANGE_NOTE_VELOCITY:
       let { currentNotes } = action.payload
 
@@ -937,27 +936,26 @@ export default function reducePhrase(state = defaultState, action) {
         })
       }
 
-      // ------------------------------------------------------------------------
-
-      case phrase.QUANTIZE_SELECTION:
-        let { noteIDs, division } = action.payload
-        return {
-          ...state,
-          notes: state.notes.map(note => {
-            let start = note.start
-            let end = note.end
-            let length = note.end - note.start
-            if (noteIDs.find(noteID => { return noteID == note.id })) {
-              start = Math.round(note.start / division) * division
-              end = start + length
-            }
-            return {
-              ...note,
-              start,
-              end,
-            }
-          })
-        }
+    // ------------------------------------------------------------------------
+    case phrase.QUANTIZE_SELECTION:
+      let { noteIDs, division } = action.payload
+      return {
+        ...state,
+        notes: state.notes.map(note => {
+          let start = note.start
+          let end = note.end
+          let length = note.end - note.start
+          if (noteIDs.find(noteID => { return noteID == note.id })) {
+            start = Math.round(note.start / division) * division
+            end = start + length
+          }
+          return {
+            ...note,
+            start,
+            end,
+          }
+        })
+      }
 
     // ------------------------------------------------------------------------
     case phrase.NEW_PHRASE:

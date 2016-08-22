@@ -93,7 +93,7 @@ export class Workstation extends Component {
       )
     }
 
-    let minimizeMixer = this.props.consoleSplitRatio < 0.2 && this.props.focusedTrack !== null
+    let minimizeMixer = true//this.props.consoleSplitRatio < 0.2 && this.props.focusedTrack !== null
     let minimizeClipEditor = this.props.consoleSplitRatio > 0.8 || this.props.focusedTrack === null
     let footerProps = {
       dispatch: this.props.dispatch,
@@ -118,7 +118,9 @@ export class Workstation extends Component {
                       <div className="workstation-mixer" style={this.getMixerSplit()}>
                         <Mixer minimized={minimizeMixer} maximize={() => this.setConsoleSplit(0.5)} />
                       </div>
+                      {/*
                       <WorkstationSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.setConsoleSplit} />
+                      */}
                       <div className="workstation-clip" style={this.getClipSplit()}>
                         <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
                       </div>
@@ -270,7 +272,7 @@ function mapStateToProps(state) {
     currentUsername: state.auth.user.username,
     focusedTrack: state.pianoroll.currentTrack,
     consoleEmbedded:   state.navigation.consoleEmbedded,
-    consoleSplitRatio: state.navigation.consoleSplitRatio,
+    consoleSplitRatio: 0,//state.navigation.consoleSplitRatio,
     rackOpen: state.navigation.rackOpen,
     samples: state.samples,
     inputMethodsTour: state.navigation.inputMethodsTour,

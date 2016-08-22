@@ -65,7 +65,9 @@ export default function reduceCursor(state = defaultState, action) {
     case cursor.SCISSORS:               return u({[action.priority]: 'scissors'       }, state)
 
     case cursor.CHANGE:
-      return { [action.priority]: action.payload.icon }
+      return u({
+        [action.priority]: action.payload.icon
+      }, state)
 
     case cursor.DROP:
     case cursor.CLEAR:

@@ -84,18 +84,17 @@ export class PianorollTimelineControl extends Component {
   }
 
   leftClickEvent(e) {
-    let bar
     let foundClip
+    let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     let top = e.clientY - this.container.getBoundingClientRect().top
     if (top >= 25) {
-      bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
       foundClip = _.findLast(this.props.clips, clip => clip.start <= bar && clip.end > bar)
     }
 
     if (foundClip) {
       this.clipEvent(e, bar, foundClip)
     } else {
-      this.emptyAreaEvent(e, bar)
+      this.emptyAreaEvent(e, bar, top >= 25)
     }
   }
 
@@ -116,6 +115,7 @@ export class PianorollTimelineControl extends Component {
     // First Click - Start Selection
     if (!this.lastEvent) {
       switch (this.props.arrangeTool) {
+        case 'velocity':
         case 'pointer':
           this.lastEvent = {
             action: SELECT_CLIP,
@@ -179,36 +179,41 @@ export class PianorollTimelineControl extends Component {
     }
   }
 
-  emptyAreaEvent(e, bar) {
-    // Second Click - Empty Area
-    if (this.lastEvent &&
-        this.lastEvent.action === CLICK_EMPTY_AREA) {
-      // Double click - Create Clip
-      if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
-        this.props.dispatch(phraseCreateClip({ trackID: this.props.currentTrack.id, start: bar }))
+  emptyAreaEvent(e, bar, isClipRegion) {
+    if (isClipRegion) {
+      // Second Click - Empty Area
+      if (this.lastEvent &&
+          this.lastEvent.action === CLICK_EMPTY_AREA) {
+        // Double click - Create Clip
+        if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
+          this.props.dispatch(phraseCreateClip({ trackID: this.props.currentTrack.id, start: bar }))
+          this.lastEvent = null
+          return
+        // Too slow, treat as new first click
+        }
+
         this.lastEvent = null
+      }
+
+      // First Click
+      if (!this.lastEvent) {
+        this.lastEvent = {
+          action: SELECT_EMPTY_AREA,
+          bar,
+          time: Date.now()
+        }
+
+        switch(this.props.arrangeTool) {
+          case 'pencil':
+            this.props.dispatch(phraseCreateClip({ trackID: this.props.currentTrack.id, start: bar }))
+          default:
+            this.props.dispatch(transportMovePlayhead(bar, !isModifierOn(e)))
+        }
+
         return
-      // Too slow, treat as new first click
       }
-
-      this.lastEvent = null
-    }
-
-    // First Click
-    if (!this.lastEvent) {
-      this.lastEvent = {
-        action: SELECT_EMPTY_AREA,
-        bar,
-        time: Date.now()
-      }
-
-      if (this.props.arrangeTool === `pencil`) {
-        this.props.dispatch(phraseCreateClip({ trackID: this.props.currentTrack.id, start: bar }))
-      } else {
-        this.props.dispatch(transportMovePlayhead(bar, !isModifierOn(e)))
-      }
-
-      return
+    } else {
+      this.props.dispatch(transportMovePlayhead(bar, !isModifierOn(e)))
     }
   }
 
@@ -279,10 +284,11 @@ export class PianorollTimelineControl extends Component {
       }
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else {
-      if (arrangeTool === `pencil`) {
+      if (arrangeTool === `pointer`) {
+        dispatch(cursorClear('implicit'))
+      } else {
         dispatch(cursorChange({ icon: arrangeTool, priority: `implicit` }))
       }
-      else dispatch(cursorClear('implicit'))
     }
   }
 
