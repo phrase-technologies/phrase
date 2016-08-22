@@ -8,30 +8,34 @@ export const librarySaveNew = () => {
   return async (dispatch, getState, { socket }) => {
     dispatch({ type: phrase.SAVE_START })
     let state = getState()
-    catchAndToastException({ dispatch, toCatch: async () => {
-      let { phraseId } = await api({
-        endpoint: `save`,
-        body: {
-          parentId: state.phraseMeta.parentId,
-          phraseState: state.phrase,
-          phraseName: state.phraseMeta.phraseName,
-        },
-      })
-      if (phraseId) {
-        dispatch({
-          type: library.SAVE_NEW,
-          payload: {
-            phraseId,
-            authorUsername: getState().auth.user.username,
-            dateCreated: Date.now(),
-            dateModified: Date.now(),
-          }
+    catchAndToastException({
+      dispatch,
+      toCatch: async () => {
+        let { phraseId } = await api({
+          endpoint: `save`,
+          body: {
+            parentId: state.phraseMeta.parentId,
+            phraseState: state.phrase,
+            phraseName: state.phraseMeta.phraseName,
+          },
         })
-        dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
-        dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
-        socket.emit(`client::joinRoom`, { phraseId })
-      }
-    }})
+        if (phraseId) {
+          dispatch({
+            type: library.SAVE_NEW,
+            payload: {
+              phraseId,
+              authorUsername: getState().auth.user.username,
+              dateCreated: Date.now(),
+              dateModified: Date.now(),
+            }
+          })
+          dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
+          dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
+          socket.emit(`client::joinRoom`, { phraseId })
+        }
+      },
+      callback: () => dispatch({ type: phrase.SAVE_FAIL })
+    })
   }
 }
 
