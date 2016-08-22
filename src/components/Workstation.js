@@ -31,7 +31,8 @@ import Rack from './Rack'
 export class Workstation extends Component {
 
   componentDidMount() {
-    let { dispatch, params, loading, socket } = this.props
+    let { dispatch, params, loading, socket, route, router } = this.props
+    let { phraseId } = params
 
     // Put the page into "app-mode" to prevent inertia scroll
     document.documentElement.style.overflow = "hidden"
@@ -39,17 +40,17 @@ export class Workstation extends Component {
 
     // Load existing phrase from URL param
     if (params.phraseId && loading !== phrase.REPHRASE) {
-      dispatch(phraseLoadFromDb(params.phraseId))
-      socket.emit(`client::joinRoom`, params.phraseId)
+      dispatch(phraseLoadFromDb(phraseId))
+      socket.emit(`client::joinRoom`, { phraseId })
     }
 
     // Load brand new phrase
     else if (loading !== phrase.REPHRASE) {
-      this.props.dispatch(phraseNewPhrase())
+      dispatch(phraseNewPhrase())
     }
 
     // Set Leave Hook ("You have unsaved changes!")
-    this.props.router.setRouteLeaveHook(this.props.route, this.leaveHook)
+    router.setRouteLeaveHook(route, this.leaveHook)
   }
 
   render() {

@@ -29,7 +29,7 @@ export const librarySaveNew = () => {
         })
         dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
         dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
-        socket.emit(`client::joinRoom`, phraseId)
+        socket.emit(`client::joinRoom`, { phraseId })
       }
     }})
   }
