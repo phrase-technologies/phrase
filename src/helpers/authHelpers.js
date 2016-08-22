@@ -1,6 +1,6 @@
 import 'whatwg-fetch' // `fetch` polyfill for Safari
 
-import phraseFetch from 'helpers/ajaxHelpers'
+import { phraseFetch } from 'helpers/ajaxHelpers'
 
 function setUserLocalStorage({ token, user }) {
   localStorage.token = token
@@ -20,7 +20,7 @@ export let signup = async ({ body, callback }) => {
 
 export let login = async ({ body, callback }) =>  {
     let response = await phraseFetch({
-      endpoint: `/api/login`,
+      endpoint: `api/login`,
       body,
     })
     let { success, message, token, user, confirmFail } = await response
@@ -33,7 +33,7 @@ export let login = async ({ body, callback }) =>  {
 
 export let forgotPassword = async (body, callback) => {
   let response = await phraseFetch({
-    endpoint: `/forgot-password`,
+    endpoint: `forgot-password`,
     body,
   })
   let { success, message } = await response
@@ -43,7 +43,7 @@ export let forgotPassword = async (body, callback) => {
 
 export let newPassword = async (body, callback) => {
   let response = await phraseFetch({
-    endpoint: `/new-password`,
+    endpoint: `new-password`,
     body,
   })
   let { success, message } = await response
@@ -53,7 +53,7 @@ export let newPassword = async (body, callback) => {
 
 export let confirmUser = async (body, callback) => {
   let response = await phraseFetch({
-    endpoint: `/confirm-user`,
+    endpoint: `confirm-user`,
     body,
   })
   let { success, token, user, message } = await response
@@ -66,7 +66,7 @@ export let confirmUser = async (body, callback) => {
 
 export let retryConfirmUser = async (body, callback) => {
   let response = await phraseFetch({
-    endpoint: `/retry-confirm-user`,
+    endpoint: `retry-confirm-user`,
     body,
   })
   let { success, message } = await response
