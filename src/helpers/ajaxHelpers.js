@@ -5,7 +5,7 @@ import 'whatwg-fetch' // `fetch` polyfill for Safari
 export let api = async ({ endpoint, body }) => {
   let response
   try {
-    response = await fetch(`${API_URL}/api4/${endpoint}`, {
+    response = await fetch(`${API_URL}/api/${endpoint}`, {
       method: `POST`,
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
