@@ -1,5 +1,7 @@
 import 'whatwg-fetch' // `fetch` polyfill for Safari
 
+import phraseFetch from 'helpers/ajaxHelpers'
+
 function setUserLocalStorage({ token, user }) {
   localStorage.token = token
   localStorage.userId = user.id
@@ -8,96 +10,66 @@ function setUserLocalStorage({ token, user }) {
 }
 
 export let signup = async ({ body, callback }) => {
-  let response = await fetch(`${API_URL}/signup`, {
-    method: `POST`,
-    headers: { 'Content-Type': `application/json` },
-    body: JSON.stringify(body),
+  let response = await phraseFetch({
+    endpoint: `signup`,
+    body,
   })
-
-  if (response.ok) {
-    let { success, message } = await response.json()
-    callback({ success, message })
-  }
-  else throw response.error
+  let { success, message } = await response
+  callback({ success, message })
 }
 
 export let login = async ({ body, callback }) =>  {
-    let response = await fetch(`${API_URL}/api/login`, {
-      method: `POST`,
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify(body),
+    let response = await phraseFetch({
+      endpoint: `/api/login`,
+      body,
     })
-    if (response.ok)  {
-      let { success, message, token, user, confirmFail } = await response.json()
-      if (success) {
-        setUserLocalStorage({ token, user })
-        callback({ success, message, user })
-      }
-      else callback({ message, confirmFail })
+    let { success, message, token, user, confirmFail } = await response
+    if (success) {
+      setUserLocalStorage({ token, user })
+      callback({ success, message, user })
     }
-    else throw response.error
+    else callback({ message, confirmFail })
 }
 
 export let forgotPassword = async (body, callback) => {
-  let response = await fetch(`${API_URL}/forgot-password`, {
-    method: `POST`,
-    headers: { 'Content-Type': `application/json` },
-    body: JSON.stringify(body),
+  let response = await phraseFetch({
+    endpoint: `/forgot-password`,
+    body,
   })
-
-  if (response.ok) {
-    let { success, message } = await response.json()
-
-    if (success) callback({success, message})
-    else callback({ message })
-  }
-  else throw response.error
+  let { success, message } = await response
+  if (success) callback({success, message})
+  else callback({ message })
 }
 
 export let newPassword = async (body, callback) => {
-  let response = await fetch(`${API_URL}/new-password`, {
-    method: `POST`,
-    headers: { 'Content-Type': `application/json` },
-    body: JSON.stringify(body),
+  let response = await phraseFetch({
+    endpoint: `/new-password`,
+    body,
   })
-
-  if (response.ok) {
-    let { success, message } = await response.json()
-    if (success) await login({ body, callback })
-    else callback({ message })
-  }
-  else throw response.error
+  let { success, message } = await response
+  if (success) await login({ body, callback })
+  else callback({ message })
 }
 
 export let confirmUser = async (body, callback) => {
-  let response = await fetch(`${API_URL}/confirm-user`, {
-    method: `POST`,
-    headers: { 'Content-Type': `application/json` },
-    body: JSON.stringify(body),
+  let response = await phraseFetch({
+    endpoint: `/confirm-user`,
+    body,
   })
-
-  if (response.ok) {
-    let { success, token, user, message } = await response.json()
-    if (success) {
-      setUserLocalStorage({ token, user })
-      callback({ success, token, user })
-    }
-    else callback({ message })
+  let { success, token, user, message } = await response
+  if (success) {
+    setUserLocalStorage({ token, user })
+    callback({ success, token, user })
   }
-  else throw response.error
+  else callback({ message })
 }
 
 export let retryConfirmUser = async (body, callback) => {
-  let response = await fetch(`${API_URL}/retry-confirm-user`, {
-    method: `POST`,
-    headers: { 'Content-Type': `application/json` },
-    body: JSON.stringify(body),
+  let response = await phraseFetch({
+    endpoint: `/retry-confirm-user`,
+    body,
   })
-
-  if (response.ok) {
-    let { success, message } = await response.json()
-    if (success) callback({ success })
-    else callback({ message })
-  }
-  else throw response.error
+  let { success, message } = await response
+  if (success) callback({ success })
+  else callback({ message })
 }
