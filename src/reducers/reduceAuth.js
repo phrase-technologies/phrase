@@ -55,6 +55,7 @@ export let login = ({ email, password }) => {
           }
         })
       },
+      callback: () => dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}),
     })
   }
 }
@@ -82,7 +83,7 @@ export let signup = ({ inviteCode, email, username, password }) => {
           }
         })
       },
-      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
+      callback: () => dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}),
     })
   }
 }
@@ -107,6 +108,7 @@ export let forgotPassword = ({ email }) => {
           }
         })
       },
+      callback: () => dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}),
     })
   }
 }
@@ -161,6 +163,7 @@ export let confirmUser = ({ email, confirmToken }) => {
           else dispatch({ type: auth.USER_CONFIRM_FAIL })
         })
       },
+      callback: () => dispatch({ type: auth.USER_CONFIRM_FAIL }),
     })
   }
 }
