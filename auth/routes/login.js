@@ -30,12 +30,6 @@ export default ({ api, app, db }) => {
           success: false,
           message: `Bad username or email / password combination.`,
         })
-      } else if (user.confirmToken) {
-        res.json({
-          success: false,
-          confirmFail: true,
-          message: `Email address not yet confirmed, please `,
-        })
       }
       else {
         let token = await generateAPIToken(user, app)
