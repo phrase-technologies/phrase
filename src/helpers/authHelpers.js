@@ -14,7 +14,7 @@ export let signup = async ({ body, callback }) => {
     endpoint: `signup`,
     body,
   })
-  let { success, message } = await response
+  let { success, message } = response
   callback({ success, message })
 }
 
@@ -23,7 +23,7 @@ export let login = async ({ body, callback }) =>  {
       endpoint: `api/login`,
       body,
     })
-    let { success, message, token, user, confirmFail } = await response
+    let { success, message, token, user, confirmFail } = response
     if (success) {
       setUserLocalStorage({ token, user })
       callback({ success, message, user })
@@ -36,7 +36,7 @@ export let forgotPassword = async (body, callback) => {
     endpoint: `forgot-password`,
     body,
   })
-  let { success, message } = await response
+  let { success, message } = response
   if (success) callback({success, message})
   else callback({ message })
 }
@@ -46,7 +46,7 @@ export let newPassword = async (body, callback) => {
     endpoint: `new-password`,
     body,
   })
-  let { success, message } = await response
+  let { success, message } = response
   if (success) await login({ body, callback })
   else callback({ message })
 }
@@ -56,7 +56,7 @@ export let confirmUser = async (body, callback) => {
     endpoint: `confirm-user`,
     body,
   })
-  let { success, token, user, message } = await response
+  let { success, token, user, message } = response
   if (success) {
     setUserLocalStorage({ token, user })
     callback({ success, token, user })
@@ -69,7 +69,7 @@ export let retryConfirmUser = async (body, callback) => {
     endpoint: `retry-confirm-user`,
     body,
   })
-  let { success, message } = await response
+  let { success, message } = response
   if (success) callback({ success })
   else callback({ message })
 }
