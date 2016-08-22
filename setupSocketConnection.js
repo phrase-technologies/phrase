@@ -13,7 +13,7 @@ export default ({ io, db }) => {
       `⚡ New connection! Number of open connections: ${count}`
     ))
 
-    socket.on(`client::joinRoom`, phraseId => {
+    socket.on(`client::joinRoom`, ({ phraseId }) => {
       socket.join(phraseId)
 
       console.log(chalk.yellow(
