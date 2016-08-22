@@ -5,7 +5,7 @@ import 'whatwg-fetch' // `fetch` polyfill for Safari
 export let api = async ({ endpoint, body }) => {
   let response
   try {
-    response = await fetch(`${API_URL}/api/${endpoint}`, {
+    response = await fetch(`${API_URL}/api4/${endpoint}`, {
       method: `POST`,
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
@@ -17,9 +17,9 @@ export let api = async ({ endpoint, body }) => {
       }),
     })
   } catch (e) {
-    throw 504 // Request failed / Timeout
+    throw { status: 504, statusText: "Connection failure" } // Request failed / Timeout
   }
 
   if (response.ok) return response.json()
-  throw response.status
+  throw response
 }
