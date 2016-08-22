@@ -74,6 +74,7 @@ export const phrase = namespaceActions(
     'LOAD_FINISH',
     'SAVE_START',
     'SAVE_FINISH',
+    'SAVE_FAIL',
     'NEW_PHRASE',
     'NEW_PHRASE_LOADED',
     'REPHRASE',

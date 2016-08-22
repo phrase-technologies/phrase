@@ -99,6 +99,14 @@ export default function reducePhraseMeta(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
+    case phrase.SAVE_FAIL:
+      return u({
+        loading: false,
+        saving: false,
+        pristine: false,
+      }, state)
+
+    // ------------------------------------------------------------------------
     case phrase.RENAME:
       return u({
         phraseName: action.name,
