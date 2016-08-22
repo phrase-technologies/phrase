@@ -106,6 +106,7 @@ export default ({ app, db }) => {
               email: lowerCaseEmail,
               password: doubleHash(trimmedPassword),
               confirmToken: token,
+              dateCreated: new Date(),
             }).run(db)
 
             r.table(`inviteCodes`)
