@@ -26,38 +26,33 @@ export let addNotification = ({ title, message }) => {
   }
 }
 
-export let addAPIErrorNotification = () => {
-  return addNotification({
-    title: `Connection failure`,
-    message: `Please make sure you're still connected to the internet`,
-  })
-}
-
-export let addForbiddenErrorNotification = () => {
-  return addNotification({
-    title: `Token expired`,
-    message: `Please log back in to continue making awesome music!`,
-  })
-}
-
 export const catchAndToastException = async ({ dispatch, toCatch, callback }) => {
   try {
     await toCatch()
-    if (callback) callback()
   }
   catch(e) {
-    if (e === 403) {
-      dispatch(addForbiddenErrorNotification())
-      dispatch(modalOpen({ modalComponent: 'LoginModal' }))
-      dispatch(logout())
-    } else if(e.statusText) {
-      dispatch(addNotification({
-        title: e.status.toString(),
-        message: e.statusText,
-      }))
-    } else {
-      dispatch(addAPIErrorNotification())
+    if(e.statusText) {
+      switch(e.status) {
+        case 403: // Invalid token / unauthorized errors
+          dispatch(addNotification({
+            title: `Token expired`,
+            message: `Please log back in to continue making awesome music!`,
+          }))
+          dispatch(modalOpen({ modalComponent: 'LoginModal' }))
+          dispatch(logout())
+          break
+        default: // Other fetch errors
+          dispatch(addNotification({
+            title: e.status.toString(),
+            message: e.statusText,
+          }))
+      }
     }
+    else // Non fetch errors
+      dispatch(addNotification({
+        title: `System Error`,
+        message: `Please try again later`,
+      }))
     if (callback) callback()
   }
 }
