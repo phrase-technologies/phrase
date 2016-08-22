@@ -8,7 +8,7 @@ export default () => {
       <div className="container">
         <div className="row">
           <div className="logo col-lg-6 col-lg-offset-3">
-            <img src="/img/phrase-logo-white-text-2015-12-09.png" />
+            <img src="/img/phrase-logo-white-text-2015-12-09.png" alt="Phrase Technologies" />
           </div>
         </div>
         <div className="row">
