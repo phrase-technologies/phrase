@@ -14,19 +14,14 @@ import setupSocketConnection from './setupSocketConnection'
 
 async function bootstrap () {
   try {
-
-    /*
-     *  Connect to rethink!
-     */
-
     let db = await r.connect({ host: `localhost`, db: `phrase`, port: 28015 })
 
-    try { await setupDatabase(db) }
+    try { await setupDatabase({ name: `phrase`, db }) }
     catch (err) { console.log(err) }
 
     let app = express()
-    let http = Server(app)
-    let io = socketIO(http)
+    let server = Server(app)
+    let io = socketIO(server)
 
     setupSocketConnection({ io, db })
 
@@ -47,7 +42,7 @@ async function bootstrap () {
 
     app.use(`/api`, router({ app, db, io }))
 
-    http.listen(port, () => {
+    server.listen(port, () => {
       console.log(chalk.white(`☆ listening on localhost:${port}`))
     })
   }

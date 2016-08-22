@@ -2,12 +2,12 @@ import r from 'rethinkdb'
 import chalk from 'chalk'
 import { generateUniqueToken } from './helpers/token'
 
-export default async db => {
+export default async ({ name, db }) => {
   console.log(chalk.yellow(
     `⌛ Setting up database..`
   ))
 
-  await r.dbCreate(`phrase`).run(db)
+  await r.dbCreate(name).run(db)
   await r.tableCreate(`users`).run(db)
   await r.tableCreate(`connections`).run(db)
 

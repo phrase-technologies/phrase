@@ -11,15 +11,16 @@ export default ({ app, db }) => {
 
     let { inviteCode, email, username, password } = req.body
 
+    // Validate Invite Code
+    if (!inviteCode) {
+      res.json({ message: { inviteCodeError: `Invite Code is required.` } })
+    }
+
     let trimmedInviteCode = inviteCode.trim()
     let trimmedEmail = email.trim()
     let trimmedUsername = username.trim()
     let trimmedPassword = password.trim()
 
-    // Validate Invite Code
-    if (!inviteCode) {
-      res.json({ message: { inviteCodeError: `Invite Code is required.` } })
-    }
 
     try {
       let inviteCodeResults = await r
