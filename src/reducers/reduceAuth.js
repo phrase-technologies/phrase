@@ -13,7 +13,7 @@ import { modal, auth } from '../actions/actions'
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave } from 'reducers/reducePhrase'
 import { modalOpen } from 'reducers/reduceModal.js'
-import { catchAndToastException } from 'reducers/reduceNotification'
+import { addNotification, catchAndToastException } from 'reducers/reduceNotification'
 import { tryAnalyticsEvent } from 'helpers/tryAnalytics'
 
 function handleLogin({ dispatch, getState, response }) {
@@ -68,16 +68,17 @@ export let signup = ({ inviteCode, email, username, password }) => {
         await signupHelper({
           body: { inviteCode, email, username, password },
           callback: (response) => {
-            if (response.success)
-              dispatch(modalOpen({
-                modalComponent: `SignupConfirmationModal`,
-                payload: email,
+            if (response.success) {
+              dispatch(login({ email, password }))
+              dispatch(addNotification({
+                title: `You have been sent a confirmation email`,
+                message: `Please confirm`,
               }))
-            else
-              dispatch({
-                type: auth.LOGIN_FAIL,
-                payload: { message: response.message },
-              })
+            }
+            else dispatch({
+              type: auth.LOGIN_FAIL,
+              payload: { message: response.message },
+            })
           }
         })
       },
