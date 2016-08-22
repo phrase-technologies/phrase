@@ -4,7 +4,8 @@
   "scripts": {
     "start": "nodemon index.js",
     "start-prod": "NODE_ENV=production nodemon index.js",
-    "migrate": "babel-node"
+    "migrate": "babel-node",
+    "test": "find ./src -name '*.test.js' | xargs mocha --require babel-core/register"
   },
   "dependencies": {
     "babel-register": "^6.7.2",

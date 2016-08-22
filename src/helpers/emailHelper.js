@@ -1,7 +1,5 @@
 import request from 'request'
-
-import { clientURL } from '../server.config'
-import { sendInBlueApi, sendInBlueKey } from '../config'
+import { clientURL, sendInBlueApi, sendInBlueKey } from '../config'
 
 let api = ({ endpoint, method, body }) => {
   return request({
