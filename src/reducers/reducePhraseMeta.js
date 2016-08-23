@@ -344,6 +344,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
       return u({
         saving: false,
         loading: false,
+        trackSelectionID: 0,
       }, state)
 
     // ------------------------------------------------------------------------

@@ -16,7 +16,7 @@ let autosave = store => next => action => {
     case `pianoroll`:
     case `mixer`:
     case `cursor`:
-    case `transport`:
+    // case `transport`: // Need transport stop actions to pass through here to trigger save upon completion of playback
     case `mouse`:
       return result
     default:
@@ -25,15 +25,16 @@ let autosave = store => next => action => {
 
   let newState = store.getState()
 
+  let existingPhrase = newState.phraseMeta.phraseId
+  let loggedIn = localStorage.userId && localStorage.userId !== 'undefined'
+  let writePermission = localStorage.username === newState.phraseMeta.authorUsername
+
   // Phrase Changes?
   if (hasPhraseBeenModified({ oldState, newState })) {
 
     // Mark as dirty
     store.dispatch(phrasePristine({ pristine: false }))
 
-    let existingPhrase = newState.phraseMeta.phraseId
-    let loggedIn = localStorage.userId && localStorage.userId !== 'undefined'
-    let writePermission = localStorage.username === newState.phraseMeta.authorUsername
 
     // Only save if this is an existing phrase that has been modified
     if (existingPhrase && loggedIn && writePermission) {
@@ -52,7 +53,7 @@ let autosave = store => next => action => {
 
     // If you're logged in and make an edit to a new phrase, save it right away
     else if (!existingPhrase && loggedIn) {
-      if (newState.phraseMeta.saving)
+      if (newState.transport.playing || newState.phraseMeta.saving)
         changesDuringPlayback = true
       else
         store.dispatch(librarySaveNew())
@@ -62,7 +63,10 @@ let autosave = store => next => action => {
   // Save changes that were queued up during playback, or queued up while a new phrase was saving
   else if(!newState.phraseMeta.saving && !newState.transport.playing && changesDuringPlayback) {
     changesDuringPlayback = false
-    store.dispatch(phraseSave())
+    if (existingPhrase)
+      store.dispatch(phraseSave())
+    else
+      store.dispatch(librarySaveNew())
   }
 
   return result

@@ -69,6 +69,7 @@ export default class LibraryPhrases extends Component {
       return (
         <div className="library-preview-explanation">
           <h2>Choose a phrase on the left</h2>
+          {/*
           <p>
             Press
             <small style={{ fontSize: 10, padding: 2 }}>
@@ -86,6 +87,7 @@ export default class LibraryPhrases extends Component {
             </small>
             to cycle through them quickly
           </p>
+          */}
         </div>
       )
     }
