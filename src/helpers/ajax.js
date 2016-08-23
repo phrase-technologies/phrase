@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch'
 
-export default async ({ url, method, body }) => {
+export default async ({ url, method, headers, body }) => {
   let response = await fetch(url, {
     method: method || `POST`,
-    headers: { 'Content-Type': `application/json` },
+    headers: headers || { 'Content-Type': `application/json` },
     ...(body ? { body: JSON.stringify(body) } : {}),
   })
 
