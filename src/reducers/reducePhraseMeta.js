@@ -81,7 +81,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
         dateCreated: action.payload.dateCreated,
         dateModified: action.payload.dateModified,
         trackSelectionID: action.payload.state.present.tracks[0].id,
-      }, defaultState)  // Clear everything else to default!
+      }, action.retainNoteSelection ? state : defaultState)  // Clear everything else to default!
 
     // ------------------------------------------------------------------------
     case phrase.SAVE_START:
