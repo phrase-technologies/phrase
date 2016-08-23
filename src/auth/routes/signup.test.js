@@ -1,6 +1,8 @@
 import r from 'rethinkdb'
 import { expect } from 'chai'
-import fetch from 'isomorphic-fetch'
+import ajax from '../../helpers/ajax'
+
+let url = `http://localhost:9999/signup`
 
 let user = {
   email: `foo@foo`,
@@ -11,28 +13,18 @@ let user = {
 describe(`signup`, () => {
   it(`requires an invite code`, async function() {
     this.timeout(100000)
-    let response = await fetch(`http://localhost:9999/signup`, {
-      method: `POST`,
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify(user),
-    })
-
-    let { message } = await response.json()
+    let { message } = await ajax({ url, body: user })
     expect(message.inviteCodeError).to.eq(`Invite Code is required.`)
   })
 
   it(`will reject an invalid invite code`, async function() {
     this.timeout(100000)
-    let response = await fetch(`http://localhost:9999/signup`, {
-      method: `POST`,
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({
-        inviteCode: `totally not a good code`,
-        ...user,
-      }),
-    })
 
-    let { message } = await response.json()
+    let { message } = await ajax({ url, body: {
+      inviteCode: `totally not a good code`,
+      ...user,
+    }})
+
     expect(message.inviteCodeError).to.eq(`Invalid Code.`)
   })
 
@@ -44,16 +36,7 @@ describe(`signup`, () => {
     let inviteCodes = await cursor.toArray()
     let inviteCode = inviteCodes[0].code
 
-    let response = await fetch(`http://localhost:9999/signup`, {
-      method: `POST`,
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({
-        inviteCode,
-        ...user,
-      }),
-    })
-
-    let { success } = await response.json()
+    let { success } = await ajax({ url, body: { inviteCode, ...user }})
     expect(success).to.be.true
   })
 })
