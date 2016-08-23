@@ -14,7 +14,9 @@
     npm install
     npm start
 
-You may need to update the `src/config.js` file with the phrase-client URL in your environment.
+If the client is not running at `localhost:3000`, start like this instead:
+
+    CLIENT_URL=<ip_address> npm start
 
 # Run Tests
 
@@ -68,7 +70,7 @@ Launch client:
 Launch API:
 
     cd ../phrase-api
-    npm start
+    CLIENT_URL=phrase.fm npm start
 
 Launch RethinkDB (`--bind all` only if you want web console):
 
