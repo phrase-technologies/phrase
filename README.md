@@ -14,11 +14,19 @@
     npm install
     npm start
 
-Create a `server.config.js` file in the root folder with the following contents:
+You may need to update the `src/config.js` file with the phrase-client URL in your environment.
 
-    export let clientURL = `localhost:3000`
+# Run Tests
 
-Replace `localhost:3000` with the phrase-client URL in your environment.
+    npm test
+
+It takes a little while to setup the database every time you run the tests, so consider
+running them at the end of your coding session, and absolutely before merging anything to develop.
+
+## Add Tests!!!
+
+We just added server side tests.. there are many more routes to test so please write
+then when you can. If you add a new route, add a test!
 
 # Deployment
 
