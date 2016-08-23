@@ -21,7 +21,6 @@ export default ({ app, db }) => {
     let trimmedUsername = username.trim()
     let trimmedPassword = password.trim()
 
-
     try {
       let inviteCodeResults = await r
         .table(`inviteCodes`)
