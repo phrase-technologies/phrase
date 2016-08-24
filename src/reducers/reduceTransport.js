@@ -71,14 +71,14 @@ export const transportRewindPlayhead = (bar) => {
     dispatch(adjustPianoMixerScroll())
   }
 }
-export const transportMovePlayhead = (bar, snap = false) => {
+export const transportMovePlayhead = (bar, snap = false, dragging = false) => {
   // We need to know the length of the phrase - use a thunk to access other state branches
   return (dispatch, getState) => {
     let state = getState()
     bar = snap ? Math.round(bar * 4) * 0.25 : bar
     let barCount = state.phrase.present.barCount
     dispatch({ type: transport.MOVE_PLAYHEAD, bar, barCount })
-    dispatch(adjustPianoMixerScroll())
+    if (!dragging) dispatch(adjustPianoMixerScroll())
   }
 }
 export const transportAdvancePlayhead = (bar) => {
