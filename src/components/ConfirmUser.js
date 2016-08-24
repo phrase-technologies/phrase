@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Helmet from "react-helmet"
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 
 import { confirmUser } from 'reducers/reduceAuth'
 import { modalOpen } from 'reducers/reduceModal'
@@ -15,28 +16,35 @@ export class ConfirmUser extends Component {
 
   render = () => (
     <div>
-      {this.props.showError &&
-        <div className="confirm-user">
-          <Helmet title={`Failed to Confirm - Phrase.fm`} />
-          <div className="page-header">
-            <h4 className="text-center">Looks like that link was invalid!</h4>
-          </div>
-          <div className="container text-center">
-            <p>Please&nbsp;
-              <a href='' onClick={this.openConfirmRetryModal}>
-                <strong>click here</strong>
-              </a>
-              &nbsp;to try again
-            </p>
-          </div>
+      <div className="header header-solid">
+        <div className="container">
+          <Link className="header-logo" to="/" />
         </div>
-      }
+      </div>
+      <div className="body">
+        {this.props.showError &&
+          <div className="confirm-user">
+            <Helmet title={`Failed to Confirm - Phrase.fm`} />
+            <div className="page-header">
+              <h4 className="text-center">Looks like that link was invalid!</h4>
+            </div>
+            <div className="container text-center">
+              <p>Please&nbsp;
+                <a href='' onClick={this.openConfirmRetryModal}>
+                  <strong>click here</strong>
+                </a>
+                &nbsp;to try again
+              </p>
+            </div>
+          </div>
+        }
 
-      {!this.props.showError &&
-        <div className="page-header">
-          <h4 className="text-center">Loading....</h4>
-        </div>
-      }
+        {!this.props.showError &&
+          <div className="page-header">
+            <h4 className="text-center">Loading....</h4>
+          </div>
+        }
+      </div>
     </div>
   )
 

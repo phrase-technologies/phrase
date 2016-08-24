@@ -15,6 +15,10 @@ import ConfirmUser from 'components/ConfirmUser'
 export default (
   <Route path="/" component={Site}>
     <IndexRoute component={LandingPage} hideHeader={true} />
+    <Route path="about" component={About} />
+    <Route path="developers" component={About} />
+    <Route path="new-password" component={NewPassword} />
+    <Route path="confirm-user" component={ConfirmUser} />
     <Route path="/" component={App}>
       <Route path="search" component={Library} />
       <Route path="search/:searchTerm" component={Library} />
@@ -22,11 +26,7 @@ export default (
       <Route path="phrase/new" component={Workstation} maximize={true} />
       <Route path="phrase/:username/:phraseId" component={Workstation} maximize={true} />
       <Route path="phrase/:username/:phraseId/:phrasename" component={Workstation} />
-      <Route path="about" component={About} />
-      <Route path="developers" component={About} />
-      <Route path="new-password" component={NewPassword} />
-      <Route path="confirm-user" component={ConfirmUser} />
-      <Route path="*" component={Error404} />
     </Route>
+    <Route path="*" component={Error404} />
   </Route>
 )
