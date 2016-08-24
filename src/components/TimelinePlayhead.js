@@ -59,7 +59,7 @@ export default class TimelinePlayhead extends Component {
       let offsetPixels = e.clientX - this.dragCursorStart
       let offsetBar = offsetPixels / this.container.clientWidth * windowBars
       let newPlayheadBar = this.dragPlayheadStart + offsetBar
-      this.props.dispatch(transportMovePlayhead(newPlayheadBar, !isModifierOn(e)))
+      this.props.dispatch(transportMovePlayhead(newPlayheadBar, !isModifierOn(e), this.dragging))
     }
   }
 
