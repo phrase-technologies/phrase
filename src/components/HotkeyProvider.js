@@ -88,10 +88,12 @@ class HotkeyProvider extends Component {
         ENGINE.sendMidiEvent({ trackID: 0, key: 0, type: 176, velocity: 127 })
         break
       case 90:   // Z - decrement current octave
-        dispatch(midiDecrementOctave())
+        if (!e.metaKey && !e.ctrlKey)
+          dispatch(midiDecrementOctave())
         break
       case 88:   // X - increment current octave
-        dispatch(midiIncrementOctave())
+        if (!e.metaKey && !e.ctrlKey)
+          dispatch(midiIncrementOctave())
         break
     }
     let note = this.getNoteFromKeyCode(e.keyCode)
