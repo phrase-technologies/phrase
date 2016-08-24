@@ -18,7 +18,7 @@ export default (
     <Route path="/" component={App}>
       <Route path="search" component={Library} />
       <Route path="search/:searchTerm" component={Library} />
-      <Route path="user/:userId" component={UserProfile} />
+      <Route path="user/:username" component={UserProfile} />
       <Route path="phrase/new" component={Workstation} maximize={true} />
       <Route path="phrase/:username/:phraseId" component={Workstation} maximize={true} />
       <Route path="phrase/:username/:phraseId/:phrasename" component={Workstation} />

@@ -1,4 +1,5 @@
 import React from 'react'
+import { push } from 'react-router-redux'
 import { phraseNewPhrase } from 'reducers/reducePhrase'
 import HeaderSearch from 'components/HeaderSearch.js'
 import UserNavigation from 'components/UserNavigation.js'
@@ -7,23 +8,18 @@ import isSafari from 'helpers/isSafari'
 
 let handleNewPhraseClick = ({
   dispatch,
-  params,
-  phrase,
+  existingPhrase,
 }) => {
-  let loggedIn = localStorage.userId
-  let existingPhrase = params.phraseId
-  let unsavedChanges = phrase.past.length || phrase.future.length
-  let resetWarning = "Are you sure you want to discard your unsaved phrase, bro?"
-
-  if (loggedIn || existingPhrase || !unsavedChanges || confirm(resetWarning)) {
+  if (existingPhrase) {
+    dispatch(push('/phrase/new'))
+  } else if (confirm("Are you sure you want to discard your changes?")) {
     dispatch(phraseNewPhrase())
   }
 }
 
 let Header = ({
   dispatch,
-  phrase,
-  params,
+  existingPhrase,
   ...props,
 }) => {
   if (!props.show) {
@@ -49,7 +45,7 @@ let Header = ({
           <div className="btn-group">
             <a
               className={buttonClasses}
-              onClick={() => handleNewPhraseClick({ dispatch, params, phrase })}
+              onClick={() => handleNewPhraseClick({ dispatch, existingPhrase })}
             >
               <span className="fa fa-plus-circle" />
               <span> New Phrase</span>
@@ -63,4 +59,10 @@ let Header = ({
   )
 }
 
-export default connect(state => ({ phrase: state.phrase }))(Header)
+function mapStateToProps(state) {
+  return {
+    existingPhrase: state.phraseMeta.phraseId,
+  }
+}
+
+export default connect(mapStateToProps)(Header)

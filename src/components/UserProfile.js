@@ -18,7 +18,7 @@ export class UserProfile extends Component {
     catchAndToastException({ dispatch, toCatch: async() => {
       let { phrases } = await api({
         endpoint: `loadUserPhrases`,
-        body: { userId: localStorage.userId },
+        body: { username: this.props.routeParams.username },
       })
       if (phrases) this.setState({ phrases })
     }})
@@ -28,9 +28,17 @@ export class UserProfile extends Component {
     this.loadUserPhrases()
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.routeParams.username !== this.props.routeParams.username) {
+      this.setState({ phrases: null })
+      // Wait till next tick for props.routeParams to update before kicking off update
+      setTimeout(() => this.loadUserPhrases())
+    }
+  }
+
   render() {
     let user = {
-      username: localStorage.username,
+      username: this.props.routeParams.username,
       //image: deadmau5Image,
       //followers: 28751,
       //verified: true,
@@ -42,10 +50,7 @@ export class UserProfile extends Component {
         <div className="user-profile-header page-header library-header">
           <div className="container">
             <h1>
-              <a>{user.username}</a>
-              &nbsp;
-              <span className="fa fa-fw fa-caret-right" />
-              All Phrases
+              {user.username}
             </h1>
           </div>
         </div>

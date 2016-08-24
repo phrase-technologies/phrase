@@ -19,15 +19,23 @@ class TransportTempo extends Component {
     return (
       <div className="btn-group">
         <div className="transport-tempo-container">
-          <input className="form-control form-control-glow transport-tempo"
-            type="number" min={MIN_TEMPO} max={MAX_TEMPO} step={1}
-            value={this.state.tempo}
-            onChange={this.handleChange}
-            onKeyDown={this.handleKeyDown}
-            onMouseDown={this.handleMouseDown}
-            onBlur={this.handleBlur}
-            tabIndex={-1}
-          />
+          { this.props.editable &&
+            <input className="form-control form-control-glow transport-tempo"
+              type="number" min={MIN_TEMPO} max={MAX_TEMPO} step={1}
+              value={this.state.tempo}
+              onChange={this.handleChange}
+              onKeyDown={this.handleKeyDown}
+              onMouseDown={this.handleMouseDown}
+              onBlur={this.handleBlur}
+              tabIndex={-1}
+            />
+            ||
+            <input
+              className="form-control form-control-glow transport-tempo transport-tempo-disabled disable-select"
+              defaultValue={this.props.tempo}
+              tabIndex={-1} readOnly={true}
+            />
+          }
           <span>BPM</span>
         </div>
       </div>

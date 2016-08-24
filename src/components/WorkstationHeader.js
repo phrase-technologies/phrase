@@ -25,6 +25,7 @@ import isSafari from 'helpers/isSafari'
 import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 
 export class WorkstationHeader extends Component {
+
   constructor() {
     super()
     this.state = {
@@ -33,6 +34,8 @@ export class WorkstationHeader extends Component {
   }
 
   render() {
+    let editable = !this.props.existingPhrase || this.props.ownerOfPhrase
+
     let containerClasses = "container container-maximize"
         containerClasses += isSafari() ? ' container-safari-fix' : ''
 
@@ -40,12 +43,30 @@ export class WorkstationHeader extends Component {
       <div className="workstation-header" style={{ zIndex: 500 }}>
         <div className={containerClasses} style={{ position: 'relative' }}>
           <div className="btn-toolbar" style={{ position: 'absolute', top: 3, left: 0 }}>
-            <div className="btn-group">
-              { this.renderRephraseButton() }
-            </div>
-            <div className="btn-group">
-              { this.renderRephraseReminder() }
-            </div>
+            { !editable &&
+              <Dropdown id="workstation-permissions" className="dropdown-dark">
+                <button
+                  className="dropdown-toggle btn btn-sm btn-primary"
+                  bsRole="toggle" {...makeButtonUnfocusable}
+                >
+                  <span className="fa fa-eye" />
+                  <span> View Only </span>
+                  <span className="caret" />
+                </button>
+                <Dropdown.Menu>
+                  <MenuItem header>
+                    <small>
+                      You do not have access to edit this Phrase,<br/>
+                      and any changes you make will not be saved.<br/>
+                      Click the "REPHRASE" button above to get<br/>
+                      your own editable copy.
+                    </small>
+                  </MenuItem>
+                </Dropdown.Menu>
+              </Dropdown>
+            }
+            { this.renderRephraseButton() }
+            { this.renderRephraseReminder() }
           </div>
           <div className="text-center">
             { this.renderLoginReminder() }
@@ -71,13 +92,15 @@ export class WorkstationHeader extends Component {
         <div className="text-center">
           <TransportControls style={{ display: 'inline-block' }} />
         </div>
-        <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 15 }}>
-          { this.renderQuantizeTool() }
-          <div className="btn-group">
-            <HintRing show={this.props.inputMethodsTour === 3} />
+        { editable &&
+          <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 15 }}>
+            { this.renderQuantizeTool() }
+            <div className="btn-group">
+              <HintRing show={this.props.inputMethodsTour === 3} />
+            </div>
+            { this.renderEditTool() }
           </div>
-          { this.renderEditTool() }
-        </div>
+        }
       </div>
     )
   }
@@ -119,30 +142,35 @@ export class WorkstationHeader extends Component {
     let RephraseTooltip = <Tooltip id="tooltip-rephrase">Make a copy of this Phrase</Tooltip>
 
     return this.props.existingPhrase ? (
-      <OverlayTrigger placement="top" overlay={RephraseTooltip} delayShow={250}>
-        <button
-          className="btn btn-sm btn-bright"
-          onClick={this.rephrase} {...makeButtonUnfocusable}
-        >
-          <span className="fa fa-pencil-square-o" />
-          <span> Rephrase</span>
-        </button>
-      </OverlayTrigger>
+      <div className="btn-group">
+        <OverlayTrigger placement="top" overlay={RephraseTooltip} delayShow={250}>
+          <button
+            className="btn btn-sm btn-bright"
+            onClick={this.rephrase} {...makeButtonUnfocusable}
+          >
+            <span className="fa fa-pencil-square-o" />
+            <span> Rephrase</span>
+          </button>
+        </OverlayTrigger>
+      </div>
     ) : null
   }
 
   renderRephraseReminder() {
     return this.props.rephraseReminder ? (
-      <div
-        className="popover right"  onClick={this.dismissRephraseReminder}
-        style={{ display: 'block', color: '#333', width: 210 }}
-      >
-        <div className="arrow" style={{ top: 16 }} />
-        <div className="popover-content" style={{ padding: '5px 10px' }}>
-          To save your changes to this phrase, <strong>rephrase</strong> it!
-          <a className="btn btn-link btn-xs" href="/TODO" target="_blank" style={{ float: 'none', color: '#555' }}>
-            <span className="fa fa-question-circle"/> Help
-          </a>
+      <div className="btn-group">
+        <div
+          className="popover right"  onClick={this.dismissRephraseReminder}
+          style={{ display: 'block', color: '#333', width: 210, marginTop: -5 }}
+        >
+          <div className="arrow" style={{ top: 16 }} />
+          <div className="popover-content" style={{ padding: '5px 10px' }}>
+            You do not have access to save changes to this Phrase.
+            To get your own editable copy, <strong>rephrase</strong> it!
+            <a className="btn btn-link btn-xs" href="mailto:hello@phrase.fm" target="_blank" style={{ float: 'none', color: '#555' }}>
+              <span className="fa fa-question-circle"/> Help
+            </a>
+          </div>
         </div>
       </div>
     ) : null
@@ -280,6 +308,7 @@ function mapStateToProps(state) {
     arrangeTool: state.arrangeTool,
     quantizeDivision: state.quantizer.division,
     inputMethodsTour: state.navigation.inputMethodsTour,
+    ownerOfPhrase: state.phraseMeta.authorUsername === state.auth.user.username,
   }
 }
 

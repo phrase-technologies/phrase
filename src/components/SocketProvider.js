@@ -15,6 +15,7 @@ class SocketProvider extends Component {
       dispatch({
         type: phrase.LOAD_FINISH,
         ignoreAutosave: true,
+        retainNoteSelection: true,
         payload: {
           parentId: loadedPhrase.parentId,
           id: loadedPhrase.id,

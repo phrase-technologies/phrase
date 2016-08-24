@@ -17,7 +17,7 @@ export default (props) => {
         type="button" className={buttonClasses}
         {...makeButtonUnfocusable}
         onClick={props.onButtonClick}
-        tabIndex="-1"
+        tabIndex="-1" disabled={props.disabled}
       >
         { props.children }
       </button>

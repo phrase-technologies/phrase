@@ -38,8 +38,6 @@ import {
   cursorClear
 } from 'actions/actionsCursor'
 
-import { transportMovePlayhead } from 'reducers/reduceTransport'
-
 import { phrase, mouse } from 'actions/actions'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
@@ -125,7 +123,8 @@ export class PianorollWindowControl extends Component {
 
     // Second Click - Note
     if (this.lastEvent &&
-        this.lastEvent.action === CLICK_NOTE) {
+        this.lastEvent.action === CLICK_NOTE &&
+        this.props.arrangeTool === 'pointer') {
       // Double click - Delete Note
       if (Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY) {
         this.props.dispatch(phraseDeleteNote(foundNote.id))
@@ -231,21 +230,25 @@ export class PianorollWindowControl extends Component {
 
     // First Click - Start Selection
     if (!this.lastEvent) {
-      this.props.dispatch(pianorollSelectionBoxStart(bar, key))
-      this.lastEvent = {
-        action: SELECT_EMPTY_AREA,
-        bar,
-        key,
-        time: Date.now()
+      switch(this.props.arrangeTool) {
+        case `pencil`:
+          this.previewNoteSound([Math.ceil(key)], 127)
+          this.props.dispatch(phraseCreateNote({ trackID: this.props.currentTrack.id, start: bar, key }))
+          break
+        case `scissors`:
+        case `eraser`:
+          // Do nothing
+          break
+        case `velocity`:
+        default:
+          this.props.dispatch(pianorollSelectionBoxStart(bar, key))
+          this.lastEvent = {
+            action: SELECT_EMPTY_AREA,
+            bar,
+            key,
+            time: Date.now()
+          }
       }
-
-      if (this.props.arrangeTool === `pencil`) {
-        this.props.dispatch(phraseCreateNote({ trackID: this.props.currentTrack.id, start: bar, key }))
-      } else {
-        this.props.dispatch(transportMovePlayhead(bar, !isModifierOn(e)))
-      }
-
-      return
     }
   }
 
@@ -397,18 +400,24 @@ export class PianorollWindowControl extends Component {
 
     // Clear cursor if not hovering over a note (but only for the current canvas)
     } else if (e.target === this.container) {
-      if (this.props.arrangeTool === `pencil`) {
-        this.props.dispatch(cursorChange({
-          icon: this.props.arrangeTool,
-          priority: `implicit`
-        }))
-      }
-      else {
-        this.props.dispatch(cursorClear('implicit'))
-        this.props.dispatch({
-          type: mouse.TOGGLE_TOOLTIP,
-          payload: null
-        })
+      switch(this.props.arrangeTool) {
+        case 'pointer':
+          this.props.dispatch(cursorClear('implicit'))
+          this.props.dispatch({
+            type: mouse.TOGGLE_TOOLTIP,
+            payload: null
+          })
+          break
+        case 'velocity':
+          this.props.dispatch({
+            type: mouse.TOGGLE_TOOLTIP,
+            payload: null
+          })
+        default:
+          this.props.dispatch(cursorChange({
+            icon: this.props.arrangeTool,
+            priority: `implicit`
+          }))
       }
     }
   }
@@ -471,27 +480,27 @@ export class PianorollWindowControl extends Component {
     // Play new key
     keyNum = Math.ceil(keyNum)
     this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum, velocity, disableRecording: true })
-    this.lastKeysPlayed = [keyNum]
+    this.lastKeysPlayed = [{ keyNum, velocity }]
   }
 
   previewDragSound(offsetKey) {
     let selectedKeys = _.chain(this.props.notes)
       .filter(note => note.selected)
-      .map(note => note.keyNum + Math.round(offsetKey))
-      .uniq()
-      .sort()
+      .map(note => ({ keyNum: note.keyNum + Math.round(offsetKey), velocity: note.velocity }))
+      .uniqBy(note => note.keyNum)
+      .sortBy(note => note.keyNum)
       .value()
 
     // Fire actions only if there has been a change
-    let addedKeys = _.difference(selectedKeys, this.lastKeysPlayed)
-    let lostKeys  = _.difference(this.lastKeysPlayed, selectedKeys)
+    let addedKeys = _.differenceBy(selectedKeys, this.lastKeysPlayed, note => note.keyNum)
+    let lostKeys  = _.differenceBy(this.lastKeysPlayed, selectedKeys, note => note.keyNum)
     if (addedKeys.length > 0 || lostKeys.length > 0) {
       // Cancel previous keys
       this.killPreviewSound()
 
       // Play new key
-      selectedKeys.forEach(keyNum => {
-        this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum, velocity: 127, disableRecording: true })
+      selectedKeys.forEach(note => {
+        this.props.ENGINE.fireNote({ trackID: this.props.currentTrack.id, keyNum: note.keyNum, velocity: note.velocity, disableRecording: true })
       })
 
       // Store the active state
@@ -501,8 +510,8 @@ export class PianorollWindowControl extends Component {
 
   killPreviewSound() {
     if (this.lastKeysPlayed) {
-      this.lastKeysPlayed.forEach(keyNum => {
-        this.props.ENGINE.killNote({ trackID: this.props.currentTrack.id, keyNum, disableRecording: true })
+      this.lastKeysPlayed.forEach(note => {
+        this.props.ENGINE.killNote({ trackID: this.props.currentTrack.id, keyNum: note.keyNum, disableRecording: true })
       })
     }
     this.lastKeysPlayed = null

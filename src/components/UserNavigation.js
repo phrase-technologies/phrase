@@ -16,10 +16,10 @@ export let UserNavigation = (props) => {
   return (
     <div className="btn-toolbar pull-right">
       <div className="btn-group" style={{ marginRight: 10 }}>
+        {/*
         <Link className={buttonClasses} to="/about" activeClassName="header-nav-active">
           About
         </Link>
-        {/*
         <Link className={buttonClasses} to="/developers" activeClassName="header-nav-active">
           Developers
         </Link>

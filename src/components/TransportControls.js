@@ -17,15 +17,16 @@ import {
 } from '../reducers/reduceTransport.js'
 
 let TransportControls = (props) => {
-  let { dispatch, playing, playhead, recording, countIn, metronome } = props
+  let { dispatch, playing, playhead, recording, countIn, metronome, existingPhrase, ownerOfPhrase } = props
   let enterLabel = isMacintosh() ? `Return` : `Enter`
   let stopType = !playhead || playing ? "stop" : "step-backward"
   let stopTooltip = !playhead || playing ? `Stop Playback (${enterLabel})` : `Return to beginning (${enterLabel})`
   let playTooltip = playing ? "Pause (Space)" : "Play (Space)"
+  let editable = !existingPhrase || ownerOfPhrase
 
   return (
     <div className="btn-toolbar" style={props.style}>
-      <TransportTempo />
+      <TransportTempo editable={editable} />
       <div className="btn-group">
         <TransportButton
           onButtonClick={() => dispatch(transportRewindPlayhead())}
@@ -54,6 +55,7 @@ let TransportControls = (props) => {
         <TransportButton
           onButtonClick={() => dispatch(transportRecord())}
           toggle={recording} color="red" tooltip="Record (R)"
+          disabled={!editable}
         >
           <i className="fa fa-fw fa-circle" />
         </TransportButton>
@@ -82,6 +84,8 @@ let TransportControls = (props) => {
 function mapStateToProps(state) {
   return {
     ...state.transport,
+    existingPhrase: state.phraseMeta.phraseId,
+    ownerOfPhrase: state.phraseMeta.authorUsername === state.auth.user.username,
   }
 }
 
