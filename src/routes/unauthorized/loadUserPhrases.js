@@ -10,14 +10,15 @@ export default ({ api, db }) => {
         .getAll(username, { index: `username` })
         .limit(1)
         .run(db)
-      let user = await userCursor.toArray()[0]
+      let users = await userCursor.toArray()
+      let user = users[0]
       if (!user) {
         return res.status(404).json({ message: `User not found.` })
       }
 
       let phraseCursor = await r
         .table(`phrases`)
-        .getAll(user.userId, { index: `userId` })
+        .getAll(user.id, { index: `userId` })
         .eqJoin(`userId`, r.table(`users`))
         .without({ right: [`id`, `password`, `email`] })
         .zip()
