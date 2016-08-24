@@ -128,7 +128,7 @@ export let newPassword = ({ email, resetToken, password, confirmPassword }) => {
                 user: response.user,
               },
             })
-            dispatch(push(`/`))
+            dispatch(push(`/phrase/new`))
           }
           else {
             dispatch({
