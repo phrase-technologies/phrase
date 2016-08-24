@@ -161,12 +161,13 @@ export class WorkstationHeader extends Component {
       <div className="btn-group">
         <div
           className="popover right"  onClick={this.dismissRephraseReminder}
-          style={{ display: 'block', color: '#333', width: 210 }}
+          style={{ display: 'block', color: '#333', width: 210, marginTop: -5 }}
         >
           <div className="arrow" style={{ top: 16 }} />
           <div className="popover-content" style={{ padding: '5px 10px' }}>
-            To save your changes to this phrase, <strong>rephrase</strong> it!
-            <a className="btn btn-link btn-xs" href="/TODO" target="_blank" style={{ float: 'none', color: '#555' }}>
+            You do not have access to save changes to this Phrase.
+            To get your own editable copy, <strong>rephrase</strong> it!
+            <a className="btn btn-link btn-xs" href="mailto:hello@phrase.fm" target="_blank" style={{ float: 'none', color: '#555' }}>
               <span className="fa fa-question-circle"/> Help
             </a>
           </div>

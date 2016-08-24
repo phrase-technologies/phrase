@@ -47,7 +47,7 @@ let autosave = store => next => action => {
 
     // View-only permissions - warn user changes are not saved!
     else if (existingPhrase && !writePermission) {
-      console.log("UNSAVED!")
+      store.dispatch({ type: phrase.REPHRASE_REMINDER, payload: { show: true } })
     }
 
     // If you're logged in and make an edit to a new phrase, save it right away

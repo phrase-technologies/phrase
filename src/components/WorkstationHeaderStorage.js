@@ -84,6 +84,14 @@ export default class WorkstationHeaderStorage extends Component {
 
     // Unsaved
     if (!this.props.pristine) {
+      if ("TODO: TEMPORARY OVERRIDE UNTIL WE TAKE DOWN AUTHENTICATION WALL") {
+        return (
+          <span className="btn btn-link link-dark" style={{ cursor: 'default' }}>
+            <span className="fa fa-warning text-danger" />
+            <span className="text-danger"> Unsaved</span>
+          </span>
+        )
+      }
       let UnsavedTooltip = <Tooltip id="tooltip-unsaved">Please login to save!</Tooltip>
       return (
         <OverlayTrigger placement="top" overlay={UnsavedTooltip} delayShow={250}>
