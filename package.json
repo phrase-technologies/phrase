@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "scripts": {
     "start": "nodemon index.js",
-    "start-prod": "NODE_ENV=production nodemon index.js",
+    "start-prod": ". ./run-start-prod.sh",
     "migrate": "babel-node",
     "test": "find ./src -name '*.test.js' | xargs mocha --require babel-core/register"
   },
