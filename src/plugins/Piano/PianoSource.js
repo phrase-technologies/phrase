@@ -17,7 +17,7 @@ export default class PianoSource {
   constructor(AudioContext, config, STORE) {
     this.ctx = AudioContext
     this.outputGain = this.ctx.createGain()
-    this.outputGain.gain.value = 8.0
+    this.outputGain.gain.value = 5.0
     this.bufferMap = {}
     this.activeSources = []
     this.sustain = false
