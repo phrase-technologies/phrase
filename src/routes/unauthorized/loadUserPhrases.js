@@ -5,9 +5,10 @@ export default ({ api, db }) => {
   api.post(`/loadUserPhrases`, async (req, res) => {
     try {
       let { username } = req.body
+      let usernameLC = username.trim().toLowerCase()
       let userCursor = await r
         .table(`users`)
-        .getAll(username, { index: `username` })
+        .getAll(usernameLC, { index: `usernameLC` })
         .limit(1)
         .run(db)
       let users = await userCursor.toArray()

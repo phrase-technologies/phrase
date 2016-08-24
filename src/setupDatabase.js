@@ -18,7 +18,6 @@ export default async ({ name, db }) => {
   await r.table(`users`).indexCreate(`email`).run(db)
   await r.table(`users`).indexCreate(`resetToken`).run(db)
   await r.table(`users`).indexCreate(`confirmToken`).run(db)
-  await r.table(`users`).indexCreate(`username`).run(db)
 
   await r.tableCreate(`phrases`).run(db)
   await r.table(`phrases`).indexCreate(`phrasename`).run(db)
