@@ -1,5 +1,6 @@
 import { librarySaveNew } from 'reducers/reduceLibrary'
 import { phraseSave, phrasePristine } from 'reducers/reducePhrase'
+import { phrase } from 'actions/actions'
 
 let changesDuringPlayback = false
 
@@ -8,12 +9,10 @@ let autosave = store => next => action => {
   let oldState = store.getState()
   let result = next(action)
 
-  // bail early on action namespaces we don't care about:
-  let actionNamespace = action.type.split(`/`)[0]
-
+  // Bail early where required
   if (action.ignoreAutosave) return result
-
-  switch (actionNamespace) {
+  let actionNamespace = action.type.split(`/`)[0]
+  switch (actionNamespace) { // Action namespaces that would never affect phrase state
     case `pianoroll`:
     case `mixer`:
     case `cursor`:
@@ -44,6 +43,11 @@ let autosave = store => next => action => {
       } else {
         store.dispatch(phraseSave())
       }
+    }
+
+    // View-only permissions - warn user changes are not saved!
+    else if (existingPhrase && !writePermission) {
+      console.log("UNSAVED!")
     }
 
     // If you're logged in and make an edit to a new phrase, save it right away

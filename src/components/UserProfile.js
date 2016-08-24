@@ -28,6 +28,14 @@ export class UserProfile extends Component {
     this.loadUserPhrases()
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.routeParams.username !== this.props.routeParams.username) {
+      this.setState({ phrases: null })
+      // Wait till next tick for props.routeParams to update before kicking off update
+      setTimeout(() => this.loadUserPhrases())
+    }
+  }
+
   render() {
     let user = {
       username: this.props.routeParams.username,

@@ -74,7 +74,7 @@ a,
   box-shadow: inset 0 1px 6px -1px #FFF;
   background: #444;
   background-image: linear-gradient(to bottom, #AAA, #888);
-  color: #333;
+  color: #000;
   font-weight: bold;
   text-shadow: 0 0 10px #CCC;
 
@@ -99,16 +99,27 @@ a,
   }
 }
 .btn-primary {
-  $btn-primary-color: #FA4;
+  $btn-primary-color: hsl(180, 100%, 50%);
+  border-color: #000;
   background: $btn-primary-color;
   background-image: linear-gradient(to bottom, $btn-primary-color, darken($btn-primary-color, 15%));
-  color: #333 !important;
+  color: #000 !important;
   text-shadow: 0 0 10px lighten($btn-primary-color, 20%);
 
   &.active,
   &:active {
     background: darken($btn-primary-color, 20%);
     background-image: linear-gradient(to bottom, darken($btn-primary-color, 15%), $btn-primary-color);
+  }
+
+}
+.open > .btn-primary {
+  $btn-primary-color: hsl(180, 100%, 50%);
+
+  &.dropdown-toggle,
+  &.dropdown-toggle:focus,
+  &.dropdown-toggle:hover {
+    background: darken($btn-primary-color, 20%);
   }
 }
 .btn-glow {
@@ -341,7 +352,8 @@ a,
 
 // Talkus.io button customization
 #talkus-button {
-  border: 0 !important;
+  border: 1px solid #000 !important;
+  border-bottom: 0 !important;
   border-radius: 4px 4px 0 0 !important;
   width: 140px !important;
   height: 30px !important;

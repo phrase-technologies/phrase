@@ -120,13 +120,13 @@ export default class LibraryPhrases extends Component {
         </div>
         <div className="library-preview-actions">
           <div className="btn-group" style={{ marginRight: 5 }}>
-            <button className="btn btn-bright btn-lg" onClick={() => dispatch(push(`/phrase/${authorUsername}/${phraseId}`))}>
+            <button className="btn btn-primary btn-lg" onClick={() => dispatch(push(`/phrase/${authorUsername}/${phraseId}`))}>
               <span className="fa fa-eye" />
               <span> View Phrase</span>
             </button>
           </div>
           <div className="btn-group" onClick={() => dispatch(phraseRephrase())}>
-            <button className="btn btn-primary btn-lg">
+            <button className="btn btn-bright btn-lg">
               <span className="fa fa-pencil-square-o" />
               <span> Rephrase</span>
             </button>

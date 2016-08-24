@@ -114,6 +114,13 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
   text-align: right;
   cursor: ns-resize;
 }
+.transport-tempo-disabled {
+  background-color: transparent !important;
+  cursor: inherit !important;
+  box-shadow: none !important;
+  border: none !important;
+  text-shadow: none !important;
+}
 .transport-time-a,
 .transport-time-b,
 .transport-time-c,
@@ -169,6 +176,9 @@ $workstation-effects-chain-z-index: 500;  // Above.... TODO: Obsolete after remo
     font-style: italic !important;
     text-shadow: none !important;
   }
+}
+div.workstation-header-title {
+  padding-top: 5px;
 }
 .workstation-header-author {
   display: inline-block;
