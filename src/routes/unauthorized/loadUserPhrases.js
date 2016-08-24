@@ -17,7 +17,7 @@ export default ({ api, db }) => {
 
       let phraseCursor = await r
         .table(`phrases`)
-        .getAll(userId, { index: `userId` })
+        .getAll(user.userId, { index: `userId` })
         .eqJoin(`userId`, r.table(`users`))
         .without({ right: [`id`, `password`, `email`] })
         .zip()

@@ -13,17 +13,19 @@ let user = {
 describe(`signup`, () => {
   it(`requires an invite code`, async function() {
     this.timeout(100000)
-    let { message } = await ajax({ url, body: user })
+    let response = await ajax({ url, body: user })
+    let { message } = await response.json()
     expect(message.inviteCodeError).to.eq(`Invite Code is required.`)
   })
 
   it(`will reject an invalid invite code`, async function() {
     this.timeout(100000)
 
-    let { message } = await ajax({ url, body: {
+    let response = await ajax({ url, body: {
       inviteCode: `totally not a good code`,
       ...user,
     }})
+    let { message } = await response.json()
 
     expect(message.inviteCodeError).to.eq(`Invalid Code.`)
   })
@@ -36,7 +38,8 @@ describe(`signup`, () => {
     let inviteCodes = await cursor.toArray()
     let inviteCode = inviteCodes[0].code
 
-    let { success } = await ajax({ url, body: { inviteCode, ...user }})
+    let response = await ajax({ url, body: { inviteCode, ...user }})
+    let { success } = await response.json()
     expect(success).to.be.true
   })
 })

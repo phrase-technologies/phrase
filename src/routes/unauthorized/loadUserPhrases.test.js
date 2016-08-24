@@ -12,7 +12,6 @@ describe(`loadUserPhrases`, () => {
   it(`returns 404 for nonexistant users`, async function() {
     this.timeout(100000)
     let response = await ajax({ url, body: user })
-console.log( "WHERE IS MY response.status?!", response )
     expect(response.status).to.eq(404)
   })
 })
