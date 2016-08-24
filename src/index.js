@@ -34,6 +34,7 @@ const browserHistory = useBeforeUnload(useRouterHistory(createHistory))()
 import autosave from 'middleware/autosave'
 
 // Socket stuff!
+if (!API_URL) throw 'API_URL not provided! Please prepend your run command like this: API_URL=ip.add.ress:port npm ...'
 import io from 'socket.io-client'
 const SOCKET = io(API_URL)
 
