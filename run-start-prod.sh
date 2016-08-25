@@ -2,5 +2,5 @@
 if [ -z ${CLIENT_URL+x} ]; then
   echo "CLIENT_URL must be defined. Try this format: CLIENT_URL=phrase.fm npm run start-prod"
 else
-  NODE_ENV=production nodemon index.js
+  NODE_ENV=production forever start -c nodemon index.js
 fi
