@@ -1000,6 +1000,10 @@ function reduceCreateTrack(state, action) {
 }
 
 function reduceCreateClip(state, action) {
+  // Cannot create negative length clips
+  if (action.payload.length && action.payload.length < 0)
+    return state
+
   // Skip if clip already exists
   if (!action.payload.newRecording && getClipAtBar(state, action.payload.start, action.payload.trackID))
     return state
@@ -1024,6 +1028,10 @@ function reduceCreateClip(state, action) {
 }
 
 function reduceCreateNote(state, action) {
+  // Cannot create negative length notes
+  if (action.payload.end && action.payload.end < 0)
+    return state
+
   // Which clip should we create the note in?
   let foundClip
   if (Number.isInteger(action.payload.targetClipID)) {
