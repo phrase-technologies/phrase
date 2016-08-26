@@ -14,6 +14,9 @@ export default ({ io, db }) => {
     ))
 
     socket.on(`client::joinRoom`, ({ phraseId }) => {
+      // Leave all other rooms first
+      Object.keys(socket.rooms).forEach(room => socket.leave(room))
+      // Then join this room
       socket.join(phraseId)
 
       console.log(chalk.yellow(
