@@ -22,11 +22,12 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
     if (state.transport.recording) {
 
       // Completed note - record it!
-      if (!velocity) {
+      if (!velocity && end > 0) {
+        let actualStart = state.midi.keys[key].start
         dispatch(phraseCreateNote({
           targetClipID: state.transport.targetClipID,
           key,
-          start: state.midi.keys[key].start,
+          start: actualStart < 0 ? 0 : actualStart,
           end,
           velocity: state.midi.keys[key].velocity,
           ignore: true,
@@ -35,7 +36,9 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
       }
 
       // Create the target clip if this is first note being recorded
-      if (velocity && !Number.isInteger(state.transport.targetClipID)) {
+      let newClip = !Number.isInteger(state.transport.targetClipID)
+      let validPosition = state.transport.playhead >= 0
+      if (velocity && newClip && validPosition) {
         dispatch(phraseCreateClip({
           trackID: state.phraseMeta.trackSelectionID,
           start: state.transport.playhead,
