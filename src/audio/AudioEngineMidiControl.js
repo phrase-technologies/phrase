@@ -20,6 +20,9 @@ export default (engine, STORE) => {
   let midiAccess
 
   try {
+    if (!navigator.requestMIDIAccess)
+      throw("navigator.requestMIDIAccess is not defined.")
+
     navigator.requestMIDIAccess().then(response => {
       midiAccess = response
       midiAccess.onstatechange = onstatechange

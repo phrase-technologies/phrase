@@ -38,9 +38,14 @@ export class Workstation extends Component {
     document.documentElement.style.overflow = "hidden"
     document.body.style.overflow = "hidden"
 
+    // Subscribe to socket updates for the lifetime of the component
+    socket.on(`server::updatePhrase`, this.receiveSocketUpdate)
+
     // Load existing phrase from URL param
-    if (params.phraseId && loading !== phrase.REPHRASE) {
-      dispatch(phraseLoadFromDb(phraseId))
+    if (params.phraseId) {
+      if (loading !== phrase.REPHRASE)
+        dispatch(phraseLoadFromDb(phraseId))
+
       socket.emit(`client::joinRoom`, { phraseId })
     }
 
@@ -152,6 +157,9 @@ export class Workstation extends Component {
     // Take the page back out of "app-mode"
     document.documentElement.style.overflow = "auto"
     document.body.style.overflow = "auto"
+
+console.log( "socket.off!")
+    this.props.socket.off()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -209,6 +217,30 @@ export class Workstation extends Component {
     window.dispatchEvent(new Event('resize'))
   }
 
+  receiveSocketUpdate = (loadedPhrase) => {
+    // Only if it's the correct phrase!
+    let correctPhrase = loadedPhrase.id === this.props.phraseId
+    let ownerOfPhrase = this.props.authorUsername === this.props.currentUsername
+    if (correctPhrase && !ownerOfPhrase) {
+      this.props.dispatch({
+        type: phrase.LOAD_FINISH,
+        ignoreAutosave: true,
+        retainNoteSelection: true,
+        payload: {
+          parentId: loadedPhrase.parentId,
+          id: loadedPhrase.id,
+          name: loadedPhrase.phrasename,
+          username: loadedPhrase.username,
+          dateCreated: loadedPhrase.dateCreated,
+          dateModified: loadedPhrase.dateModified,
+          state: loadedPhrase.state,
+        }
+      })
+    } else {
+      console.warn(`Received redundant socket update for ${loadedPhrase.id}`)
+    }
+  }
+
   getMixerSplit() {
     if (this.props.focusedTrack === null) return { bottom: 0 }
     else if (this.props.consoleSplitRatio < 0.2) return { height: 0 }
@@ -233,13 +265,7 @@ export class Workstation extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    // Ensure all canvases are re-rendered upon clip editor being shown
-    if (Math.abs(this.props.consoleSplitRatio - nextProps.consoleSplitRatio) > 0.25) {
-      setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
-      setTimeout(() => window.dispatchEvent(new Event('resize')), 0) // Some lifecycle methods are missed on the first event propogation due to race conditions
-    }
-
-    return diffProps(nextProps, this.props, [
+    let shouldChange = diffProps(nextProps, this.props, [
       'loading',
       'autosaving',
       'pristine',
@@ -255,6 +281,21 @@ export class Workstation extends Component {
       'samples',
       'inputMethodsTour',
     ])
+
+    // Switch session connection
+    if (nextProps.phraseId !== this.props.phraseId) {
+      this.props.socket.emit(`disconnect`, { phraseId: this.props.phraseId })
+      if (nextProps.phraseId)
+        this.props.socket.emit(`client::joinRoom`, { phraseId: nextProps.phraseId })
+    }
+
+    // Ensure all canvases are re-rendered upon clip editor being shown
+    if (Math.abs(this.props.consoleSplitRatio - nextProps.consoleSplitRatio) > 0.25) {
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 0) // Some lifecycle methods are missed on the first event propogation due to race conditions
+    }
+
+    return shouldChange
   }
 }
 
