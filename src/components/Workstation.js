@@ -40,13 +40,17 @@ export class Workstation extends Component {
 
     // Subscribe to socket updates for the lifetime of the component
     socket.on(`server::updatePhrase`, this.receiveSocketUpdate)
+    socket.on(`server::updatePresence`, room => console.log("ROOM:", room))
 
     // Load existing phrase from URL param
     if (params.phraseId) {
       if (loading !== phrase.REPHRASE)
         dispatch(phraseLoadFromDb(phraseId))
 
-      socket.emit(`client::joinRoom`, { phraseId })
+      socket.emit(`client::joinRoom`, {
+        phraseId,
+        username: this.props.currentUsername
+      })
     }
 
     // Load brand new phrase
@@ -158,8 +162,7 @@ export class Workstation extends Component {
     document.documentElement.style.overflow = "auto"
     document.body.style.overflow = "auto"
 
-console.log( "socket.off!")
-    this.props.socket.off()
+    this.props.socket.off("server::updatePhrase", this.receiveSocketUpdate)
   }
 
   componentWillReceiveProps(nextProps) {
