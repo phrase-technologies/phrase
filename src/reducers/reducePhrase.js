@@ -104,6 +104,10 @@ export const phraseCreateNote = ({
     if (!ignore) {
       let state = getState()
       let notes = state.phrase.present.notes
+
+      // Can't select if no notes created (attempted note creation at t < 0)
+      if (!notes.length) return
+
       let newNoteID = notes[notes.length - 1].id
       let renderedNotes = currentNotesSelector(state)
       let newNoteLoopIterations = renderedNotes.filter(note => note.id === newNoteID)
@@ -1004,6 +1008,10 @@ function reduceCreateClip(state, action) {
   if (action.payload.length && action.payload.length < 0)
     return state
 
+  // Cannot create clips in negative time region
+  if (action.payload.start < 0)
+    return state
+
   // Skip if clip already exists
   if (!action.payload.newRecording && getClipAtBar(state, action.payload.start, action.payload.trackID))
     return state
@@ -1030,6 +1038,10 @@ function reduceCreateClip(state, action) {
 function reduceCreateNote(state, action) {
   // Cannot create negative length notes
   if (action.payload.end && action.payload.end < 0)
+    return state
+
+  // Cannot create notes in negative time region
+  if (action.payload.start < 0)
     return state
 
   // Which clip should we create the note in?
