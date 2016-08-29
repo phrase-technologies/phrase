@@ -751,6 +751,10 @@ export default function reducePhrase(state = defaultState, action) {
         noteSelectionIDs,
       } = action.payload
       if (selectionType === "tracks") {
+        // Can not delete last track! (Until we launch multitrack: TODO)
+        if (state.tracks.length <= 1)
+          return state
+
         let trackToRemove = state.tracks.find(track => track.id === action.payload.trackSelectionID)
         return u({
           tracks: trackToRemove ? uRemove(trackToRemove) : state.tracks,

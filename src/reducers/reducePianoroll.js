@@ -246,12 +246,15 @@ export default function reducePianoroll(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
       // Watch for current track deletion!
+      /*
+      // Temporarily disable until we launch multitrack again (TODO)
       let { selectionType, trackSelectionID } = action.payload
       if (selectionType === "tracks" && trackSelectionID === state.currentTrack) {
         return u({
           currentTrack: null
         }, state)
       }
+      */
       return state
 
     // ------------------------------------------------------------------------

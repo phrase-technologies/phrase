@@ -164,7 +164,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case phrase.DELETE_SELECTION:
       if (action.payload.selectionType === "tracks") {
-        // When a track is delete, automatically select an adjacent track
+        // When a track is deleted, automatically select an adjacent track
         let trackSelectionPosition = action.payload.trackIDs.findIndex(trackID => trackID === state.trackSelectionID)
         let lastTrackBeingDeleted = trackSelectionPosition === action.payload.trackIDs.length - 1
         if (lastTrackBeingDeleted)
