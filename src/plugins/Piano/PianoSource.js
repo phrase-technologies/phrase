@@ -116,7 +116,7 @@ export default class PianoSource {
       }
       else {
         // Note off, but sustain is down. Schedule release when pedal lifts
-        this.activeSources.forEach(x => x.removeWhenSustainOff = true)
+        activeSource.removeWhenSustainOff = true
       }
     }
     else if (velocity && !activeSource) {
