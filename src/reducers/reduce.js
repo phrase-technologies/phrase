@@ -32,10 +32,8 @@ import { phrase } from 'actions/actions'
 function rehydratePhrase (reducer) {
   return (state, action) => {
     switch (action.type) {
-      case phrase.LOAD_FINISH:  // Can't do this in the reducePhrase branch,
-        return {                // payload.state encapsulates undo history
-          ...action.payload.state
-        }
+      case phrase.LOAD_FINISH:      // Can't do this in the reducePhrase branch,
+        return action.payload.state // payload.state encapsulates undo history
 
       default:
         return reducer(state, action)

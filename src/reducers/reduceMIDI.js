@@ -21,20 +21,6 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
     // Record the activity if recording
     if (state.transport.recording) {
 
-      // Completed note - record it!
-      if (!velocity && end > 0) {
-        let actualStart = state.midi.keys[key].start
-        dispatch(phraseCreateNote({
-          targetClipID: state.transport.targetClipID,
-          key,
-          start: actualStart < 0 ? 0 : actualStart,
-          end,
-          velocity: state.midi.keys[key].velocity,
-          ignore: true,
-          snapStart: false,
-        }))
-      }
-
       // Create the target clip if this is first note being recorded
       let newClip = !Number.isInteger(state.transport.targetClipID)
       let validPosition = state.transport.playhead >= 0
@@ -46,6 +32,20 @@ export const midiNoteOn = ({ key, start, end, velocity = 0 }) => {
           ignore: true,
           newRecording: true,
           recordingTargetClipID: state.phrase.present.clipAutoIncrement,
+        }))
+      }
+
+      // Completed note - record it!
+      if (!newClip && !velocity && end > 0) {
+        let actualStart = state.midi.keys[key].start
+        dispatch(phraseCreateNote({
+          targetClipID: state.transport.targetClipID,
+          key,
+          start: actualStart < 0 ? 0 : actualStart,
+          end,
+          velocity: state.midi.keys[key].velocity,
+          ignore: true,
+          snapStart: false,
         }))
       }
     }
