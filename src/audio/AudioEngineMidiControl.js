@@ -68,11 +68,13 @@ export default (engine, STORE) => {
     if (armedTrack && [144, 128].some(x => x === type)) {
       let yamahaOffsetCompensation = event.srcElement.manufacturer === "Yamaha" ? 12 : 0
 
+console.log( "Note:", type, key, velocity )
+
       fireNote({
         engine,
         trackID: armedTrack.id,
         keyNum: key - yamahaOffsetCompensation,
-        velocity,
+        velocity: type === 128 ? 0 : velocity,
       })
     }
     // Any other MIDI event
