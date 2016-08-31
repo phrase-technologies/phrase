@@ -9,7 +9,10 @@ import { api } from 'helpers/ajaxHelpers'
 
 export default class InputMethodsTour extends Component {
   state = {
-    signupMic: { success: false, message: `` },
+    signupMic: { 
+      success: localStorage.signupMicSuccess === `true`,
+      message: `` 
+    },
     signupMicCalling: false,
   }
 
@@ -21,6 +24,7 @@ export default class InputMethodsTour extends Component {
     })
     let message = ``
     if (!response.success) message = `Invalid email, please try again`
+    localStorage.setItem(`signupMicSuccess`, response.success)
     this.setState({
       signupMic: {
         success: response.success,
@@ -35,6 +39,7 @@ export default class InputMethodsTour extends Component {
       return null
     }
 
+    let loggedIn = typeof localStorage.userId !== 'undefined' || localStorage.userId
     let caretPosition = this.props.openInputMethod ? 82 + 32 * this.props.openInputMethod : 42
     let caretClasses = 'input-tour-caret' + (this.props.openInputMethod ? ' dark' : '')
 
@@ -61,7 +66,6 @@ export default class InputMethodsTour extends Component {
       },
     ]
 
-    let loggedIn = typeof localStorage.userId !== 'undefined' || localStorage.userId
 
     return (
       <div className="input-tour">
