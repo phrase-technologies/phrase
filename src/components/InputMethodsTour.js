@@ -61,6 +61,8 @@ export default class InputMethodsTour extends Component {
       },
     ]
 
+    let loggedIn = typeof localStorage.userId !== 'undefined' || localStorage.userId
+
     return (
       <div className="input-tour">
         <h3 className={`input-tour-header ${this.props.openInputMethod ? 'collapsed' : ''}`}>
@@ -153,19 +155,23 @@ export default class InputMethodsTour extends Component {
               <strong>
                 Coming Soon
               </strong>
-              <span> - we'll let you know when we launch this feature!</span>
+              <span> - we'll email you when we launch this feature!</span>
             </p>
             {!this.state.signupMic.success &&
               <form>
                 <div className="input-group" style={{ width: 300, margin: 'auto' }}>
-                  <input
-                    type="text" className="form-control form-control-dark"
+                  {(!loggedIn) &&
+                    <input type="text" className="form-control form-control-dark"
                     placeholder="Email" ref={ ref => this.email = ref }
                     defaultValue={localStorage.email} />
-                  <span className="input-group-btn">
+                  }
+                  <span className="input-group-btn" style={{ textAlign: 'center' }}>
                     <LaddaButton
                       className="btn btn-dark" type="button"
-                      onClick={() => this.signupMicNotification(this.email.value)}
+                      onClick={() => {
+                        let email = loggedIn ? localStorage.email : this.email
+                        this.signupMicNotification(email)
+                      }}
                       loading={this.state.signupMicCalling}>
                       Get Notified!
                     </LaddaButton>
