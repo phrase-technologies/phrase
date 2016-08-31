@@ -272,6 +272,7 @@ function restrictKeyboardZoom(state) {
   let yMin = state.yMin
   let yMax = state.yMax
   let keyboardHeight = state.height / (state.yMax - state.yMin)
+  if (keyboardHeight <= 0 || isNaN(keyboardHeight)) return state // Do nothing if keyboard is not shown
   if (keyboardHeight < minKeyboardHeight) [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/minKeyboardHeight)
   if (keyboardHeight > maxKeyboardHeight) [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/maxKeyboardHeight)
   return u({
