@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 // - Implicit, generally for use on hover
 // - Explicit, generally for use on drag&drop
 //
-export default class CursorProvider extends Component {
+export class CursorProvider extends Component {
 
   getCursorClass() {
     let resultClass = ''

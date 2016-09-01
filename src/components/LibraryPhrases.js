@@ -8,7 +8,7 @@ import { transportPlayToggle } from 'reducers/reduceTransport'
 
 import PhraseCard from 'components/PhraseCard'
 
-export default class LibraryPhrases extends Component {
+export class LibraryPhrases extends Component {
   render() {
     return (
       <div className="library-body">

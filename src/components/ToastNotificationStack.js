@@ -4,7 +4,7 @@ import { NotificationStack } from 'react-notification'
 
 import { dismissNotification } from 'reducers/reduceNotification'
 
-export default class ToastNotificationStack extends Component {
+export class ToastNotificationStack extends Component {
 
   render() {
     return (

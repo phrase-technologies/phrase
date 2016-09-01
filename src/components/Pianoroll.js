@@ -18,7 +18,7 @@ import TimelineCursor         from './TimelineCursor.js'
 import TimelineSelectionBox   from './TimelineSelectionBox.js'
 import TimelinePlayhead       from './TimelinePlayhead.js'
 
-export default class Pianoroll extends Component {
+export class Pianoroll extends Component {
 
   render() {
     if (this.props.minimized) {

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { cursorResizeRow,
          cursorDrop } from '../actions/actionsCursor.js'
 
-export default class WorkstationSplit extends Component {
+export class WorkstationSplit extends Component {
 
   render() {
     let scrollPosition

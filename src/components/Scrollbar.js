@@ -11,7 +11,7 @@ import { cursorResizeX,
          cursorResizeBottom,
          cursorClear } from '../actions/actionsCursor.js'
 
-export default class Scrollbar extends Component {
+export class Scrollbar extends Component {
 
   constructor() {
     super()
