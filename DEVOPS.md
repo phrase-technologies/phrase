@@ -83,13 +83,18 @@ We will setup something for that later.
 Sources: official guide: [https://www.rethinkdb.com/docs/start-on-startup/](https://www.rethinkdb.com/docs/start-on-startup/)
 
 ## Codebase
-At the end of this, you're expected to have a director structure that looks like this:
+At the end of this, you're expected to have a directory structure that looks like this:
 
-   /home
-     /phrase
-       /phrase-client  -> React/Redux Client
-       /phrase-api     -> Express API
-       /database       -> Rethink Stuff
+    CLIENT SERVER
+    /home
+      /phrase
+        /phrase-client  -> React/Redux Client
+
+    API SERVER
+    /home
+      /phrase
+        /phrase-api     -> Express API
+        /database       -> Rethink Stuff
 
 Git clone this repository (`phrase-api`) and the corresponding `phrase-client` repository.
 
@@ -103,12 +108,11 @@ Instead of directly install node, use nvm:
 See full instructions here: [https://github.com/creationix/nvm](https://github.com/creationix/nvm)
 Then, in each repository's folder, install the modules:
 
-    $ cd phrase-client
-    $ npm install
-    $ cd ../phrase-api
     $ npm install
 
 ## Deployment
+
+### Initial setup
 Linux servers have a security feature that prevents non-root users from binding things
 to ports below 1024, meaning the `phrase` user by default won't be able to
 deploy the codebase (we want to listen to port 80). There's a handy trick to circumvent this:
@@ -122,6 +126,7 @@ Next, we need `nodemon` which is a wrapper around node that watches for file cha
 
     $ npm install -g nodemon
 
+### Initial Client Build
 Now, to deploy to production, we use a different process than the `npm start` that we would use for
 the local development environment. Starting with the client. First we build to optimize the 
 bundle.js file size:
@@ -141,13 +146,40 @@ To stop the server, next time you ssh into the server, simply rejoin the tmux an
     $ tmux attach
     CTRL+C
 
+### Deploying New Client Build
 To deploy a new build, you don't have to cancel the process. Simply leave it running,
-and repeat the build command, and the new build will get picked up by the "forever" serving process.
+and repeat the build command with the new codebase,
+and the new build will get picked up by the "forever" serving process.
 
+    $ git checkout master
+    $ git pull origin master
     $ API_URL='"http://api.phrase.fm"' npm run build
 
+To verify that the new build was picked up by the server, check that it is respawned:
 
-TODO:
-- Separate API server
-- Automigration checks
-- 
+    $ tmux attach
+    Check for "Server Started" log
+
+Also, a good sanity check is to simply browse to the site to see that the change appears. 
+TODO: Indicate a unique build number, probably the corresponding git commit hash, and indicate it
+visibly on the website somewhere.
+
+### Initial API Build
+On the API server, it's the same idea except that there is no separate build process.
+
+    $ tmux
+    # CLIENT_URL=phrase.fm npm run start-prod
+
+### Deploying New API Build
+Since there is no build process, deploying a new build is as simple as pulling down the new code.
+The serving process in the tmux should automatically pick up the new code:
+
+    $ git checkout master
+    $ git pull origin master
+    $ tmux attach
+    Check for "restarting due to changes..." log
+
+
+### Migratations (TODO)
+TODO: Automigration checks.
+Next person who writes a migration must build the automigration feature.
