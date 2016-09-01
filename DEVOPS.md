@@ -33,13 +33,13 @@ Create a new OS user account named `phrase`:
     adduser phrase
 
 Record the password here:
-[](https://docs.google.com/a/phrase.fm/spreadsheets/d/16FWt_OTcICjk4RsWUGjZPIM9VAqUdDDObyR7RfmSjLk/edit?usp=sharing)
+[Google Doc](https://docs.google.com/a/phrase.fm/spreadsheets/d/16FWt_OTcICjk4RsWUGjZPIM9VAqUdDDObyR7RfmSjLk/edit?usp=sharing)
 Now, going forward, you can SSH in via the `phrase` user:
 
     ssh -i ~/.ssh/digital_ocean phrase@SERVER_IP_ADDRESS
 
 Above is the example specifying a specific SSH key if you have multiple. Feel free to setup SSH keys. More info here:
-[](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04)
+[https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04)
 
 ### RethinkDB
 The default RethinkDB installation is not good.
@@ -47,7 +47,7 @@ You need to configure it to make it more robust in a continuous deployment scena
 Please follow carefully below:
 
 #### Installation
-Instructions: [](https://www.rethinkdb.com/docs/install/ubuntu/)
+Instructions: [https://www.rethinkdb.com/docs/install/ubuntu/](https://www.rethinkdb.com/docs/install/ubuntu/)
 
 #### Configure
 Once installed, you need to set it up with 2 requirements:
@@ -81,5 +81,5 @@ Now, install the unofficial RethinkDB CLI interface so you can query stuff.
 This is just for sanity checks during devops, try not to use the production DB for reporting queries.
 We will setup something for that later.
 
-Sources: official guide: [](https://www.rethinkdb.com/docs/start-on-startup/)
+Sources: official guide: [https://www.rethinkdb.com/docs/start-on-startup/](https://www.rethinkdb.com/docs/start-on-startup/)
 
