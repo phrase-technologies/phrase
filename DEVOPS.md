@@ -26,17 +26,17 @@ On production/staging environments, use `Ubuntu 16.04`.
 When deploying on DigitalOcean, remember to setup a secondary user instead of just using the root user.
 Start by SSH'ing into the server as root:
 
-  ssh root@SERVER_IP_ADDRESS
+    ssh root@SERVER_IP_ADDRESS
 
 Create a new OS user account named `phrase`:
 
-  adduser phrase
+    adduser phrase
 
 Record the password here:
 https://docs.google.com/a/phrase.fm/spreadsheets/d/16FWt_OTcICjk4RsWUGjZPIM9VAqUdDDObyR7RfmSjLk/edit?usp=sharing
 Now, going forward, you can SSH in via the `phrase` user:
 
-  ssh -i ~/.ssh/digital_ocean phrase@SERVER_IP_ADDRESS
+    ssh -i ~/.ssh/digital_ocean phrase@SERVER_IP_ADDRESS
 
 Above is the example specifying a specific SSH key if you have multiple. Feel free to setup SSH keys. More info here:
 https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04
@@ -57,26 +57,26 @@ Once installed, you need to set it up with 2 requirements:
 
 You can accomplish this in Ubuntu 16.04 by creating a custom instance config:
 
-  sudo cp /etc/rethinkdb/default.conf.sample /etc/rethinkdb/instances.d/instance1.conf
-  sudo vim /etc/rethinkdb/instances.d/instance1.conf
+    sudo cp /etc/rethinkdb/default.conf.sample /etc/rethinkdb/instances.d/instance1.conf
+    sudo vim /etc/rethinkdb/instances.d/instance1.conf
   
 Then, hardcode the directory by adding the following line:
 
-  directory=/home/phrase/database
+    directory=/home/phrase/database
   
 Which is equivalent to `~/database`. Now you'll actually have to create the directory,
 and set it's privileges so that only RethinkDB has control:
 
-  mkdir ~/database
-  sudo chown -R rethinkdb.rethinkdb /home/phrase/database
+    mkdir ~/database
+    sudo chown -R rethinkdb.rethinkdb /home/phrase/database
   
 You should now be able to start the database:
 
-  sudo /etc/init.d/rethinkdb restart
+    sudo /etc/init.d/rethinkdb restart
 
 Now, install the unofficial RethinkDB CLI interface so you can query stuff.
 
-  npm install -g reql-cli
+    npm install -g reql-cli
 
 This is just for sanity checks during devops, try not to use the production DB for reporting queries.
 We will setup something for that later.
