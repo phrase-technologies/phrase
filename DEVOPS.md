@@ -1,5 +1,6 @@
 # Dev Ops
 Full recipe for setting up consistent development and production environments is documented here.
+These steps should only ever have to be run once. Remember to update this doc when changes are implemented.
 
 ## Security and Robustness Requirements
 Here are the motivations for the architectural decisions in this recipe.
@@ -16,13 +17,10 @@ Here are the motivations for the architectural decisions in this recipe.
 - Deployments must be instant
 - Deployments must be rollbackable instantly 
 
-## Initial Server Configuration
-These steps should only ever have to be run once. Remember to update this doc when changes are implemented.
-
-### Ubuntu
+## Ubuntu
 On production/staging environments, use `Ubuntu 16.04`.
 
-### SSH Access
+## SSH Access
 When deploying on DigitalOcean, remember to setup a secondary user instead of just using the root user.
 Start by SSH'ing into the server as root:
 
@@ -41,15 +39,15 @@ Now, going forward, you can SSH in via the `phrase` user:
 Above is the example specifying a specific SSH key if you have multiple. Feel free to setup SSH keys. More info here:
 [https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04)
 
-### RethinkDB
+## RethinkDB
 The default RethinkDB installation is not good.
 You need to configure it to make it more robust in a continuous deployment scenario.
 Please follow carefully below:
 
-#### Installation
+### Installation
 Instructions: [https://www.rethinkdb.com/docs/install/ubuntu/](https://www.rethinkdb.com/docs/install/ubuntu/)
 
-#### Configure
+### Configure
 Once installed, you need to set it up with 2 requirements:
 
 - Automatically starts upon server reboot
@@ -75,6 +73,7 @@ You should now be able to start the database:
     sudo /etc/init.d/rethinkdb restart
 
 Now, install the unofficial RethinkDB CLI interface so you can query stuff.
+(You might need to install node/npm first)
 
     npm install -g reql-cli
 
@@ -82,4 +81,41 @@ This is just for sanity checks during devops, try not to use the production DB f
 We will setup something for that later.
 
 Sources: official guide: [https://www.rethinkdb.com/docs/start-on-startup/](https://www.rethinkdb.com/docs/start-on-startup/)
+
+## Codebase
+At the end of this, you're expected to have a director structure that looks like this:
+
+   /home
+     /phrase
+       /phrase-client  -> React/Redux Client
+       /phrase-api     -> Express API
+       /database       -> Rethink Stuff
+
+Git clone this repository (`phrase-api`) and the corresponding `phrase-client` repository.
+
+    git clone ...
+    
+You'll now have to install node and npm, followed by each of the repositories' node modules.
+Instead of directly install node, use nvm:
+
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh | bash
+    
+See full instructions here: [https://github.com/creationix/nvm](https://github.com/creationix/nvm)
+Then, in each repository's folder, install the modules:
+
+    cd phrase-client
+    npm install
+    cd ../phrase-api
+    npm install
+
+## Deployment
+Linux servers have a security feature that prevents non-root users from binding things
+to ports below 1024, meaning the `phrase` user by default won't be able to
+deploy the codebase (we want to listen to port 80). There's a handy trick to circumvent this:
+
+    sudo apt-get install libcap2-bin
+    sudo setcap cap_net_bind_service=+ep `readlink -f \`which node\``
+
+Source: [http://stackoverflow.com/a/23281417/476426](http://stackoverflow.com/a/23281417/476426)
+
 
