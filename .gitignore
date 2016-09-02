@@ -3,4 +3,5 @@ npm-debug.log
 .DS_Store
 server.config.js
 dist
-logs/forever.*
+logs/*
+!logs/LOGS.md
