@@ -78,7 +78,14 @@ You should now be able to start the database:
 ✅ Automatic Database Reboot!
 
 Now, install the unofficial RethinkDB CLI interface so you can query stuff.
-(You might need to install node/npm first)
+You'll need to install node and npm first, followed by each of the repositories' node modules.
+Instead of directly install node, use nvm:
+
+    $ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh | bash
+    
+See full instructions here: [https://github.com/creationix/nvm](https://github.com/creationix/nvm)
+Back to the RethinkDB CLI:
+
 
     $ npm install -g reql-cli
 
@@ -134,12 +141,6 @@ Git clone this repository (`phrase-api`) and the corresponding `phrase-client` r
 
     $ git clone ...
     
-You'll now have to install node and npm, followed by each of the repositories' node modules.
-Instead of directly install node, use nvm:
-
-    $ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh | bash
-    
-See full instructions here: [https://github.com/creationix/nvm](https://github.com/creationix/nvm)
 Then, in each repository's folder, install the modules:
 
     $ npm install
