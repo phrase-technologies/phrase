@@ -14,10 +14,12 @@ import setupSocketConnection from './setupSocketConnection'
 
 async function bootstrap () {
   try {
+    console.log(chalk.yellow("⌛ Bootstrapping express server..."))
+
     let db = await r.connect({ host: `localhost`, db: `phrase`, port: 28015 })
 
     try { await setupDatabase({ name: `phrase`, db }) }
-    catch (err) { console.log(err) }
+    catch (err) { console.log("❌", chalk.red(err.msg || err)) }
 
     let app = express()
     let server = Server(app)
@@ -44,7 +46,7 @@ async function bootstrap () {
 
     server.listen(port, () => {
       console.log(chalk.white(`☆ listening on localhost:${port}`))
-      console.log("✅ Server started at " + new Date(Date.now()))
+      console.log(chalk.green("✅ Server started at " + new Date(Date.now())))
     })
   }
 

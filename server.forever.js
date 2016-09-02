@@ -7,7 +7,7 @@ var forever = require('forever-monitor')
 var child = new(forever.Monitor)('index.js', {
   'silent': false,
   'watch': true,
-  'watchDirectory': '.',          // Top-level directory to watch from.
+  'watchDirectory': './src',      // Top-level directory to watch from.
   'logFile': 'logs/forever.log',  // Path to log output from forever process (when daemonized)
   'outFile': 'logs/forever.out',  // Path to log output from child stdout
   'errFile': 'logs/forever.err',

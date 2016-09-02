@@ -30,5 +30,5 @@ else
   printf "$YELLOW"
   echo "⌛ Launching with CLIENT_URL = $CLIENT_URL and PORT = $FINAL_PORT"
   printf "$RESET"
-  NODE_ENV=production PORT=$FINAL_PORT node server.forever.js
+  FORCE_COLOR=1 NODE_ENV=production PORT=$FINAL_PORT node server.forever.js
 fi
