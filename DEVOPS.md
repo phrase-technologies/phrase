@@ -5,17 +5,20 @@ These steps should only ever have to be run once. Remember to update this doc wh
 ## Requirements and Motivations
 Here are the motivations for the architectural decisions in this recipe.
 
-- Server configurations are easy and cheap to replicate both locally and remotely - Ubuntu (16+ at time of writing)
-- Servers are not accessed via root privileges - by default, ssh via a sub user, and sudo only when necessary
-- Database must automatically start upon server reset (cannot rely on humans remembering)
-- Database must automatically load from a hardcoded directory (unlike RethinkDB's default configuration, which is to automatically create a blank DB in the current directory. Cannot rely on humans remembering)
-- Database must automatically backup hourly (cannot rely on humans remembering)
-- Database migrations must be automatically run upon deployment (cannot rely on humans remembering)
-- API Responses must automatically be monitored for uptime (cannot rely on humans remembering to check)
-- API must be on a separate server (non-standard ports are blocked at some places e.g. Ryerson, and merging repos to share same port on same server impractical)
-- Deployments must be a single step, e.g. abstracted into a single script (cannot rely on humans getting multiple steps correctly)
-- Deployments must be instant
-- Deployments must be rollbackable instantly 
+- ☑️ Server configurations are easy and cheap to replicate both locally and remotely - Ubuntu (16+ at time of writing)
+- ☑️ Servers are not accessed via root privileges - by default, ssh via a sub user, and sudo only when necessary
+- ☑️ Database must automatically start upon server reset (cannot rely on humans remembering)
+- ☑️ Database must automatically load from a hardcoded directory (unlike RethinkDB's default configuration, which is to automatically create a blank DB in the current directory. Cannot rely on humans remembering)
+- ☑️ Database must automatically backup hourly (cannot rely on humans remembering)
+- ☑️ Database migrations must be automatically run upon deployment (cannot rely on humans remembering)
+- ☑️ API Responses must automatically be monitored for uptime (cannot rely on humans remembering to check)
+- ☑️ API must be on a separate server (non-standard ports are blocked at some places e.g. Ryerson, and merging repos to share same port on same server impractical)
+- ☑️ Deployments must be a single step, e.g. abstracted into a single script (cannot rely on humans getting multiple steps correctly)
+- ☑️ Deployments must be instant
+- ☑️ Deployments must be rollbackable instantly 
+
+At the end of each section below, each critical checkpoint is marked with a ✅.
+Make sure each of these checkpoints is met!
 
 ## Ubuntu
 On production/staging environments, use `Ubuntu 16.04`.
@@ -71,6 +74,8 @@ and set it's privileges so that only RethinkDB has control:
 You should now be able to start the database:
 
     $ sudo /etc/init.d/rethinkdb restart
+    
+✅ Automatic Database Reboot!
 
 Now, install the unofficial RethinkDB CLI interface so you can query stuff.
 (You might need to install node/npm first)
@@ -81,6 +86,28 @@ This is just for sanity checks during devops, try not to use the production DB f
 We will setup something for that later.
 
 Sources: official guide: [https://www.rethinkdb.com/docs/start-on-startup/](https://www.rethinkdb.com/docs/start-on-startup/)
+
+### Automatic Backup
+Super important! We'll use cronjobs to take regular backups and regularly clear out old ones.
+
+    $ crontab -e
+    
+And then configure it like this:
+
+    # Hourly
+      0  *  *  *  *  /home/phrase/phrase-api/scripts/backup/backup-hourly.sh
+    
+    # Daily at 4:05AM
+      5  4  *  *  *  /home/phrase/phrase-api/scripts/backup/backup-daily.sh
+    
+    # Weekly at Tuesday morning 4:10AM
+     10  4  *  *  2  /home/phrase/phrase-api/scripts/backup/backup-weekly.sh
+    
+    # Monthly, on first day of the Month at 4:15AM
+     15  4  1  *  *  /home/phrase/phrase-api/scripts/backup/backup-monthly.sh
+
+
+✅ Automatic Database Backup!
 
 ## Codebase
 At the end of this, you're expected to have a directory structure that looks like this:
@@ -164,11 +191,13 @@ Also, a good sanity check is to simply browse to the site to see that the change
 TODO: Indicate a unique build number, probably the corresponding git commit hash, and indicate it
 visibly on the website somewhere.
 
+✅ Instant Client deployment!
+
 ### Initial API Build
 On the API server, it's the same idea except that there is no separate build process.
 
     $ tmux
-    # CLIENT_URL=phrase.fm npm run start-prod
+    $ CLIENT_URL=phrase.fm npm run start-prod
 
 ### Deploying New API Build
 Since there is no build process, deploying a new build is as simple as pulling down the new code.
@@ -179,7 +208,24 @@ The serving process in the tmux should automatically pick up the new code:
     $ tmux attach
     Check for "restarting due to changes..." log
 
+✅ Instant API deployment!
+
+Now, make sure that any API endpoints have their corresponding API tests
+(at time of writing, using Runscope.com) updated as well!
+
+✅ Automated API Testing!
 
 ### Migratations (TODO)
 TODO: Automigration checks.
 Next person who writes a migration must build the automigration feature.
+
+☑️ Automatic Database Migration (TODO)
+
+
+### Automatic Client/API Reboot (TODO)
+We need to make sure that in the event the server(s) get rebooted,
+the builds are automatically served upon system startup, to minimize human error and downtime.
+
+TODO: [http://stackoverflow.com/questions/4681067/how-do-i-run-a-node-js-application-as-its-own-process](http://stackoverflow.com/questions/4681067/how-do-i-run-a-node-js-application-as-its-own-process)
+
+☑️ Automatic Client/API Reboot (TODO)
