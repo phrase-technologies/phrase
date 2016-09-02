@@ -140,12 +140,18 @@ bundle.js file size:
 You can check to see if the build is complete by finding the result in `./dist`.
 Once the build is ready, you just need to serve it.
 Because we want to be able to rejoin the process that is serving the build next time
-we ssh into the server, let's use tmux:
+we ssh into the server, let's use `tmux`:
 
+    $ sudo apt-get install tmux
     $ tmux
+    $ cd ~/phrase-client
     $ API_URL='"http://api.phrase.fm"' npm run serve
 
-To stop the server, next time you ssh into the server, simply rejoin the tmux and cancel the process:
+To detach from `tmux`, do
+
+    CTRL+B, D
+
+To stop the server, next time you ssh into the server, simply rejoin the `tmux` and cancel the process:
 
     $ tmux attach
     CTRL+C
@@ -174,7 +180,13 @@ visibly on the website somewhere.
 On the API server, it's the same idea except that there is no separate build process.
 
     $ tmux
+    $ cd ~/phrase-api
     $ CLIENT_URL=phrase.fm npm run start-prod
+    Check for "Server started" message
+
+To detach from `tmux`, do
+
+    CTRL+B, D
 
 ### Deploying New API Build
 Since there is no build process, deploying a new build is as simple as pulling down the new code.
