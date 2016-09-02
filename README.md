@@ -38,54 +38,14 @@ We just added server side tests.. there are many more routes to test so please w
 then when you can. If you add a new route, add a test!
 
 # Deployment
-
-#### Shell into digital ocean server
-
-    ssh root@159.203.75.254
-
-#### Pull latest `TODO: write script for this`
-
-    cd phrase
-    cd phrase-api && git pull origin develop
-    cd ../phrase-client && git pull origin develop
+See [full deployment docs here](DEVOPS.md)
 
 ### Database Migrations
+Certain migrations need babel transpilation to work, in those cases use this command:
 
     npm run migrate -- scripts/migrations/2016....
+    
+Otherwise, you can just do:
 
-#### Running panes/servers
+    node scripts/migrations/2016...
 
-    tmux attach
-
-If nothing already running, launch new panes:
-
-    tmux
-    ctrl+b, %
-
-Launch client:
-
-    cd ../phrase-client
-    npm run start-prod
-
-Launch API:
-
-    cd ../phrase-api
-    CLIENT_URL=phrase.fm npm start
-
-Launch RethinkDB (`--bind all` only if you want web console):
-
-    cd ../../rethinkdb_data
-    rethinkdb --bind all
-
-
-#### Switch active pane
-
-    ctrl+b, o
-
-#### Detach from `tmux`
-
-    ctrl+b, d
-
-#### Exit active pane/server
-
-    exit
