@@ -24,23 +24,23 @@ Make sure each of these checkpoints is met!
 On production/staging environments, use `Ubuntu 16.04`.
 
 ## SSH Access
-When deploying on DigitalOcean, remember to setup a secondary user instead of just using the root user.
+When deploying a new server, remember to setup a secondary user instead of just using the root user.
 Start by SSH'ing into the server as root:
 
     $ ssh root@SERVER_IP_ADDRESS
 
-Create a new OS user account named `phrase`:
+Create a new OS user account named `phrase`, and adding them to sudoers:
 
     $ adduser phrase
+    $ gpasswd -a phrase sudo
 
 Record the password here:
 [Google Doc](https://docs.google.com/a/phrase.fm/spreadsheets/d/16FWt_OTcICjk4RsWUGjZPIM9VAqUdDDObyR7RfmSjLk/edit?usp=sharing)
 Now, going forward, you can SSH in via the `phrase` user:
 
-    $ ssh -i ~/.ssh/digital_ocean phrase@SERVER_IP_ADDRESS
+    $ ssh -i ~/.ssh/your_private_key phrase@SERVER_IP_ADDRESS
 
-Above is the example specifying a specific SSH key if you have multiple. Feel free to setup SSH keys. More info here:
-[https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04)
+Above is the example specifying a specific SSH key if you have multiple. Feel free to setup SSH keys.
 
 ## RethinkDB
 The default RethinkDB installation is not good.
