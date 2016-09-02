@@ -14,6 +14,7 @@ export default ({ app, db }) => {
     // Validate Invite Code
     if (!inviteCode) {
       res.json({ message: { inviteCodeError: `Invite Code is required.` } })
+      return
     }
 
     let trimmedInviteCode = inviteCode.trim()
