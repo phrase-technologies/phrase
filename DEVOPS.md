@@ -130,10 +130,6 @@ deploy the codebase (we want to listen to port 80). There's a handy trick to cir
 
 Source: [http://stackoverflow.com/a/23281417/476426](http://stackoverflow.com/a/23281417/476426)
 
-Next, we need `nodemon` which is a wrapper around node that watches for file changes.
-
-    $ npm install -g nodemon
-
 ### Initial Client Build
 Now, to deploy to production, we use a different process than the `npm start` that we would use for
 the local development environment. Starting with the client. First we build to optimize the 
