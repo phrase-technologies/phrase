@@ -65,6 +65,8 @@ Then, hardcode the directory by adding the following line:
 
     directory=/home/phrase/database
   
+✅ Hard-coded database directory!
+
 Which is equivalent to `~/database`. Now you'll actually have to create the directory,
 and set it's privileges so that only RethinkDB has control:
 
@@ -75,8 +77,6 @@ You should now be able to start the database:
 
     $ sudo /etc/init.d/rethinkdb restart
     
-✅ Automatic Database Reboot!
-
 Now, install the unofficial RethinkDB CLI interface so you can query stuff.
 You'll need to install node and npm first, followed by each of the repositories' node modules.
 Instead of directly install node, use nvm:
@@ -94,34 +94,7 @@ We will setup something for that later.
 
 Sources: official guide: [https://www.rethinkdb.com/docs/start-on-startup/](https://www.rethinkdb.com/docs/start-on-startup/)
 
-### Automatic Backup
-Super important! We'll use cronjobs to take regular backups and regularly clear out old ones.
-
-    $ crontab -e
-    
-And then configure it like this:
-
-    # Hourly
-      0  *  *  *  *  /home/phrase/phrase-api/scripts/backup/backup-hourly.sh
-    
-    # Daily at 4:05AM
-      5  4  *  *  *  /home/phrase/phrase-api/scripts/backup/backup-daily.sh
-    
-    # Weekly at Tuesday morning 4:10AM
-     10  4  *  *  2  /home/phrase/phrase-api/scripts/backup/backup-weekly.sh
-    
-    # Monthly, on first day of the Month at 4:15AM
-     15  4  1  *  *  /home/phrase/phrase-api/scripts/backup/backup-monthly.sh
-
-Test the scripts out by running them directly.
-They might need a Rethink python driver installed to work:
-
-    sudo pip install rethinkdb
-    
-Source: [https://www.rethinkdb.com/docs/install-drivers/python/](https://www.rethinkdb.com/docs/install-drivers/python/)
-Make sure the crontab is working by checking after an hour.
-
-✅ Automatic Database Backup!
+✅ Automatic Database Reboot!
 
 ## Codebase
 At the end of this, you're expected to have a directory structure that looks like this:
@@ -222,6 +195,36 @@ Now, make sure that any API endpoints have their corresponding API tests
 (at time of writing, using Runscope.com) updated as well!
 
 ✅ Automated API Testing!
+
+### Automatic Database Backup
+Super important! We'll use cronjobs to take regular backups and regularly clear out old ones.
+
+    $ crontab -e
+    
+And then configure it like this:
+
+    # Hourly
+      0  *  *  *  *  /home/phrase/phrase-api/scripts/backup/backup-hourly.sh
+    
+    # Daily at 4:05AM
+      5  4  *  *  *  /home/phrase/phrase-api/scripts/backup/backup-daily.sh
+    
+    # Weekly at Tuesday morning 4:10AM
+     10  4  *  *  2  /home/phrase/phrase-api/scripts/backup/backup-weekly.sh
+    
+    # Monthly, on first day of the Month at 4:15AM
+     15  4  1  *  *  /home/phrase/phrase-api/scripts/backup/backup-monthly.sh
+
+Test the scripts out by running them directly.
+They might need a Rethink python driver installed to work:
+
+    sudo pip install rethinkdb
+    
+Source: [https://www.rethinkdb.com/docs/install-drivers/python/](https://www.rethinkdb.com/docs/install-drivers/python/)
+Make sure the crontab is working by checking after an hour.
+
+✅ Automatic Database Backup!
+
 
 ### Migratations (TODO)
 TODO: Automigration checks.
