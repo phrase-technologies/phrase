@@ -209,19 +209,23 @@ Super important! We'll use cronjobs to take regular backups and regularly clear 
 
     $ crontab -e
     
+We'll use the `phrase` user that you're logged in with, should be fine.
+But be warned that it matters which user the crontab is created for, in debugging.
 And then configure it like this:
 
     # Hourly
-      0  *  *  *  *  /home/phrase/phrase-api/scripts/backup/backup-hourly.sh
+      0  *  *  *  *  cd /home/phrase/phrase-api/scripts/backup/ && ./backup-hourly.sh
     
     # Daily at 4:05AM
-      5  4  *  *  *  /home/phrase/phrase-api/scripts/backup/backup-daily.sh
+      5  4  *  *  *  cd /home/phrase/phrase-api/scripts/backup/ && ./backup-daily.sh
     
     # Weekly at Tuesday morning 4:10AM
-     10  4  *  *  2  /home/phrase/phrase-api/scripts/backup/backup-weekly.sh
+     10  4  *  *  2  cd /home/phrase/phrase-api/scripts/backup/ && ./backup-weekly.sh
     
     # Monthly, on first day of the Month at 4:15AM
-     15  4  1  *  *  /home/phrase/phrase-api/scripts/backup/backup-monthly.sh
+     15  4  1  *  *  cd /home/phrase/phrase-api/scripts/backup/ && ./backup-monthly.sh
+    
+    <<<<<<<< REMEMBER TO LEAVE A NEWLINE AT THE END OF THE CRONTAB!
 
 Test the scripts out by running them directly.
 They might need a Rethink python driver installed to work:
