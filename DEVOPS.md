@@ -135,7 +135,7 @@ Now, to deploy to production, we use a different process than the `npm start` th
 the local development environment. Starting with the client. First we build to optimize the 
 bundle.js file size:
 
-    $ API_URL='"http://api.phrase.fm"' npm run build
+    $ API_URL=http://api.phrase.fm npm run build
 
 You can check to see if the build is complete by finding the result in `./dist`.
 Once the build is ready, you just need to serve it.
@@ -145,7 +145,7 @@ we ssh into the server, let's use `tmux`:
     $ sudo apt-get install tmux
     $ tmux
     $ cd ~/phrase-client
-    $ API_URL='"http://api.phrase.fm"' npm run serve
+    $ API_URL=http://api.phrase.fm npm run serve
 
 To detach from `tmux`, do
 
@@ -163,7 +163,7 @@ and the new build will get picked up by the "forever" serving process.
 
     $ git checkout master
     $ git pull origin master
-    $ API_URL='"http://api.phrase.fm"' npm run build
+    $ API_URL=http://api.phrase.fm npm run build
 
 To verify that the new build was picked up by the server, check that it is respawned:
 
