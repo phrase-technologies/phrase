@@ -1,4 +1,7 @@
 node_modules
+npm-debug.log
 .DS_Store
 rethinkdb_data
 rethinkdb.exe
+backups
+logs/forever*

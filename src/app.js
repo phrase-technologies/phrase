@@ -44,6 +44,7 @@ async function bootstrap () {
 
     server.listen(port, () => {
       console.log(chalk.white(`☆ listening on localhost:${port}`))
+      console.log("✅ Server started at " + new Date(Date.now()))
     })
   }
 
