@@ -1,6 +1,7 @@
 // ============================================================================
 // Serve with Forever
 // ============================================================================
+/* eslint no-var: 0 */
 console.log("⌛ Loading forever-monitor...")
 var forever = require('forever-monitor')
 var child = new(forever.Monitor)('server.prod.js', {
