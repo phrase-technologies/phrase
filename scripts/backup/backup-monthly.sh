@@ -1,6 +1,8 @@
 # =============================================================================
 # MONTHLY BACKUP
 # =============================================================================
+export PATH="$PATH:/usr/local/bin"  # Needed for ubuntu rethinkdb-dump.
+                                    # See: http://stackoverflow.com/a/32786725/476426
 
 # Get the 4-week old backup from weekly folder (60 x 24 x 7 x 4 = 40,320 minutes, subtract some catching)
 mkdir -p ../../backups/monthly/

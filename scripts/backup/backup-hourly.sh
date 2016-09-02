@@ -1,6 +1,8 @@
 # =============================================================================
 # HOURLY BACKUP
 # =============================================================================
+export PATH="$PATH:/usr/local/bin"  # Needed for ubuntu rethinkdb-dump.
+                                    # See: http://stackoverflow.com/a/32786725/476426
 
 # Create the new backup
 rethinkdb dump

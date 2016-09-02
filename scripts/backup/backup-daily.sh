@@ -1,6 +1,8 @@
 # =============================================================================
 # DAILY BACKUP
 # =============================================================================
+export PATH="$PATH:/usr/local/bin"  # Needed for ubuntu rethinkdb-dump.
+                                    # See: http://stackoverflow.com/a/32786725/476426
 
 # Get the 24-hour old backup from hourly folder (60 x 24 = 1440 minutes, subtract some catching)
 mkdir -p ../../backups/daily/
