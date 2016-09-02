@@ -106,6 +106,13 @@ And then configure it like this:
     # Monthly, on first day of the Month at 4:15AM
      15  4  1  *  *  /home/phrase/phrase-api/scripts/backup/backup-monthly.sh
 
+Test the scripts out by running them directly.
+They might need a Rethink python driver installed to work:
+
+    sudo pip install rethinkdb
+    
+Source: [https://www.rethinkdb.com/docs/install-drivers/python/](https://www.rethinkdb.com/docs/install-drivers/python/)
+Make sure the crontab is working by checking after an hour.
 
 ✅ Automatic Database Backup!
 
