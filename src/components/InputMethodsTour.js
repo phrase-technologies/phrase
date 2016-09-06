@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Carousel } from 'react-bootstrap'
 import LaddaButton from 'react-ladda'
+import { connect } from 'react-redux'
 
 import ExternalMidiController from 'components/ExternalMidiController'
 import MusicalTyping from 'components/MusicalTyping'
@@ -39,7 +40,6 @@ export default class InputMethodsTour extends Component {
       return null
     }
 
-    let loggedIn = typeof localStorage.userId !== 'undefined' || localStorage.userId
     let caretPosition = this.props.openInputMethod ? 82 + 32 * this.props.openInputMethod : 42
     let caretClasses = 'input-tour-caret' + (this.props.openInputMethod ? ' dark' : '')
 
@@ -164,7 +164,7 @@ export default class InputMethodsTour extends Component {
             {!this.state.signupMic.success &&
               <form>
                 <div className="input-group" style={{ width: 300, margin: 'auto' }}>
-                  {(!loggedIn) &&
+                  {(!this.props.loggedIn) &&
                     <input type="text" className="form-control form-control-dark"
                     placeholder="Email" ref={ ref => this.email = ref }
                     defaultValue={localStorage.email} />
@@ -173,7 +173,7 @@ export default class InputMethodsTour extends Component {
                     <LaddaButton
                       className="btn btn-dark" type="button"
                       onClick={() => {
-                        let email = loggedIn ? localStorage.email : this.email
+                        let email = this.props.loggedIn ? this.props.user.email : this.email
                         this.signupMicNotification(email)
                       }}
                       loading={this.state.signupMicCalling}>
@@ -196,3 +196,11 @@ export default class InputMethodsTour extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    ...state.auth
+  }
+}
+
+export default connect(mapStateToProps)(InputMethodsTour)
