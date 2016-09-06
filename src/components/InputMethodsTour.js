@@ -198,9 +198,7 @@ export default class InputMethodsTour extends Component {
 }
 
 function mapStateToProps(state) {
-  return {
-    ...state.auth
-  }
+  return state.auth
 }
 
 export default connect(mapStateToProps)(InputMethodsTour)
