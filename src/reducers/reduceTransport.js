@@ -2,26 +2,21 @@ import u from 'updeep'
 import { phrase, transport } from 'actions/actions'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
+import { getNewScroll } from 'helpers/transportHelpers'
+
 import { pianorollScrollX } from 'reducers/reducePianoroll'
 import { mixerScrollX } from 'reducers/reduceMixer'
 
-const getNewScroll = ({ min, max, playhead, barCount }) => {
-  let viewWidth = max - min
-  let playheadPercent = playhead / barCount
-  if (max < 1 && (max - playheadPercent) < 0) {
-    let newMax = Math.min(1, playheadPercent + viewWidth)
-    let offset = (newMax < 1) ? 0.05 * viewWidth : 0
-    return { min: newMax - viewWidth - offset, max: newMax - offset }
+// ============================================================================
+// Transport Action Creators
+// ============================================================================
+export const transportPlayToggle = () => {
+  return (dispatch) => {
+    dispatch(transportConsolidateRecording())
+    dispatch({ type: transport.PLAY_TOGGLE })
   }
-  else if (min > 0 && (playheadPercent - min) < 0) {
-    let newMin = Math.max(0, playheadPercent - viewWidth)
-    let offset = (newMin > 0) ? 0.05 * viewWidth : 0
-    return { min: newMin + offset, max: newMin + viewWidth + offset }
-  }
-  return null
 }
-
-const adjustPianoMixerScroll = () => {
+const transportAdjustPianoMixerScroll = () => {
   return (dispatch, getState) => {
     let state = getState()
     let playhead = state.transport.playhead
@@ -44,16 +39,6 @@ const adjustPianoMixerScroll = () => {
     if (adjustment) dispatch(mixerScrollX(adjustment))
   }
 }
-
-// ============================================================================
-// Transport Action Creators
-// ============================================================================
-export const transportPlayToggle = () => {
-  return (dispatch) => {
-    dispatch(transportConsolidateRecording())
-    dispatch({ type: transport.PLAY_TOGGLE })
-  }
-}
 export const transportRewindPlayhead = (bar) => {
   // We need to know the length of the phrase - use a thunk to access other state branches
   return (dispatch, getState) => {
@@ -68,7 +53,7 @@ export const transportRewindPlayhead = (bar) => {
     } else {
       dispatch({ type: transport.REWIND_PLAYHEAD, bar, barCount })
     }
-    dispatch(adjustPianoMixerScroll())
+    dispatch(transportAdjustPianoMixerScroll())
   }
 }
 export const transportMovePlayhead = (bar, snap = false, dragging = false) => {
@@ -78,7 +63,7 @@ export const transportMovePlayhead = (bar, snap = false, dragging = false) => {
     bar = snap ? Math.round(bar * 8) * 0.125 : bar
     let barCount = state.phrase.present.barCount
     dispatch({ type: transport.MOVE_PLAYHEAD, bar, barCount })
-    if (!dragging) dispatch(adjustPianoMixerScroll())
+    if (!dragging) dispatch(transportAdjustPianoMixerScroll())
   }
 }
 export const transportAdvancePlayhead = (bar) => {
@@ -95,14 +80,14 @@ export const transportAdvancePlayhead = (bar) => {
     } else {
       dispatch({ type: transport.ADVANCE_PLAYHEAD, bar, barCount })
     }
-    dispatch(adjustPianoMixerScroll())
+    dispatch(transportAdjustPianoMixerScroll())
   }
 }
 export const transportStop = () => {
   return (dispatch) => {
     dispatch(transportConsolidateRecording())
     dispatch({ type: transport.STOP })
-    dispatch(adjustPianoMixerScroll())
+    dispatch(transportAdjustPianoMixerScroll())
   }
 }
 export const transportRecord = () => {
