@@ -1,5 +1,6 @@
 import React from 'react'
 import { push } from 'react-router-redux'
+import { Link } from 'react-router'
 import { phraseNewPhrase } from 'reducers/reducePhrase'
 import HeaderSearch from 'components/HeaderSearch.js'
 import UserNavigation from 'components/UserNavigation.js'
@@ -52,7 +53,7 @@ let Header = ({
             </a>
           </div>
         </div>
-        <a className="header-logo" href="/" />
+        <Link className="header-logo" to="/" />
         <UserNavigation theme={theme} />
       </div>
     </div>
