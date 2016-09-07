@@ -52,7 +52,7 @@ let Header = ({
             </a>
           </div>
         </div>
-        <div className="header-logo" />
+        <a className="header-logo" href="/" />
         <UserNavigation theme={theme} />
       </div>
     </div>
