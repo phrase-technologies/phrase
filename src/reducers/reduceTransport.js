@@ -1,8 +1,8 @@
 import u from 'updeep'
-import { phrase, transport } from 'actions/actions'
+import { phrase, transport, pianoroll, mixer } from 'actions/actions'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
-import { getNewScroll } from 'helpers/transportHelpers'
+import { getNewScroll, isPlayheadInView } from 'helpers/transportHelpers'
 
 import { pianorollScrollX } from 'reducers/reducePianoroll'
 import { mixerScrollX } from 'reducers/reduceMixer'
@@ -22,21 +22,43 @@ const transportAdjustPianoMixerScroll = () => {
     let playhead = state.transport.playhead
     let barCount = state.phrase.present.barCount
 
-    let adjustment = getNewScroll({
-      min: state.pianoroll.xMin,
-      max: state.pianoroll.xMax,
-      playhead,
-      barCount,
-    })
-    if (adjustment) dispatch(pianorollScrollX(adjustment))
+    // Adjust the pianoroll view
+    if (state.pianoroll.disableAutoScroll) {
+      let isInView = isPlayheadInView({
+        min: state.pianoroll.xMin,
+        max: state.pianoroll.xMax,
+        playhead,
+        barCount,
+      })
+      if (isInView) dispatch({ type: pianoroll.ENABLE_AUTOSCROLL })
+    } else {
+      let adjustment = getNewScroll({
+        min: state.pianoroll.xMin,
+        max: state.pianoroll.xMax,
+        playhead,
+        barCount,
+      })
+      if (adjustment) dispatch(pianorollScrollX({ ...adjustment, isAuto: true, }))
+    }
 
-    adjustment = getNewScroll({
-      min: state.mixer.xMin,
-      max: state.mixer.xMax,
-      playhead,
-      barCount,
-    })
-    if (adjustment) dispatch(mixerScrollX(adjustment))
+    // Adjust the mixer view
+    if (state.mixer.disableAutoScroll) {
+      let isInView = isPlayheadInView({
+        min: state.mixer.xMin,
+        max: state.mixer.xMax,
+        playhead,
+        barCount,
+      })
+      if (isInView) dispatch({ type: mixer.ENABLE_AUTOSCROLL })
+    } else {
+      let adjustment = getNewScroll({
+        min: state.mixer.xMin,
+        max: state.mixer.xMax,
+        playhead,
+        barCount,
+      })
+      if (adjustment) dispatch(mixerScrollX({ ...adjustment, isAuto: true, }))
+    }
   }
 }
 export const transportRewindPlayhead = (bar) => {
