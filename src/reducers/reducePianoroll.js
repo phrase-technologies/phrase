@@ -4,21 +4,23 @@ import {
   shiftInterval,
   restrictTimelineZoom,
   maxBarWidth,
-} from '../helpers/intervalHelpers.js'
+} from 'helpers/intervalHelpers'
 
-import { pianoroll, phrase } from '../actions/actions.js'
-import { currentNotesSelector } from '../selectors/selectorPianoroll.js'
+import { pianoroll, phrase, transport } from 'actions/actions'
+import { currentNotesSelector } from 'selectors/selectorPianoroll'
 
 // ============================================================================
 // Pianoroll Action Creators
 // ============================================================================
 export const pianorollScrollY = ({ min, max, delta, fulcrum }) => ({type: pianoroll.SCROLL_Y, min, max, delta, fulcrum})
-export const pianorollScrollX = ({ min, max, delta, fulcrum }) => {
+export const pianorollScrollX = ({ min, max, delta, fulcrum, isAuto }) => {
   // We need to know the length of the phrase - use a thunk to access other state branches
   return (dispatch, getState) => {
     let state = getState()
     let barCount = state.phrase.present.barCount
     dispatch({ type: pianoroll.SCROLL_X, min, max, delta, fulcrum, barCount})
+    if (state.pianoroll.autoScroll && state.transport.playing && !isAuto)
+      dispatch({ type: pianoroll.DISABLE_AUTOSCROLL })
   }
 }
 
@@ -71,6 +73,7 @@ export const defaultState = {
   selectionEndY: null,
   cursor: null,
   tooltip: null,
+  autoScroll: true,
 }
 
 export default function reducePianoroll(state = defaultState, action) {
@@ -128,6 +131,7 @@ export default function reducePianoroll(state = defaultState, action) {
           xMax: action.max === undefined ? state.xMax : Math.min(1.0, action.max)
         }, state)
       }
+
       return restrictTimelineZoom(state, action.barCount)
 
     // ------------------------------------------------------------------------
@@ -261,6 +265,15 @@ export default function reducePianoroll(state = defaultState, action) {
     case phrase.NEW_PHRASE:
     case phrase.LOAD_START:
       return defaultState
+
+    // ------------------------------------------------------------------------
+    case pianoroll.DISABLE_AUTOSCROLL:
+      return u({ autoScroll: false }, state)
+
+    // ------------------------------------------------------------------------
+    case transport.PLAY_TOGGLE:
+    case pianoroll.ENABLE_AUTOSCROLL:
+      return u({ autoScroll: true }, state)
 
     // ------------------------------------------------------------------------
     default:

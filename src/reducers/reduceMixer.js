@@ -4,20 +4,22 @@ import {
   shiftInterval,
   restrictTimelineZoom,
   maxBarWidth,
-} from '../helpers/intervalHelpers.js'
-import { getTracksHeight } from '../helpers/trackHelpers.js'
-import { mixer } from '../actions/actions.js'
+} from 'helpers/intervalHelpers'
+import { getTracksHeight } from 'helpers/trackHelpers'
+import { mixer, transport } from 'actions/actions'
 
 // ============================================================================
 // Mixer Action Creators
 // ============================================================================
 export const mixerScrollY = ({ min, max, delta, fulcrum }) => ({ type: mixer.SCROLL_Y, min, max, delta, fulcrum })
-export const mixerScrollX = ({ min, max, delta, fulcrum }) => {
+export const mixerScrollX = ({ min, max, delta, fulcrum, isAuto }) => {
   // We need to know the length of the phrase - use a thunk to access other state branches
   return (dispatch, getState) => {
     let state = getState()
     let barCount = state.phrase.present.barCount
     dispatch({ type: mixer.SCROLL_X, min, max, barCount, delta, fulcrum })
+    if (state.mixer.autoScroll && state.transport.playing && !isAuto)
+      dispatch({ type: mixer.DISABLE_AUTOSCROLL })
   }
 }
 export const mixerResizeHeight = (height) => {
@@ -55,7 +57,8 @@ let defaultState = {
   selectionStartY: null,
   selectionEndX: null,
   selectionEndY: null,
-  cursor: null
+  cursor: null,
+  autoScroll: true,
 }
 
 export default function reduceMixer(state = defaultState, action) {
@@ -172,6 +175,15 @@ export default function reduceMixer(state = defaultState, action) {
       return Object.assign({}, state, {
         cursor: action.percent
       })
+
+    // ------------------------------------------------------------------------
+    case mixer.DISABLE_AUTOSCROLL:
+      return u({ autoScroll: false }, state)
+
+    // ------------------------------------------------------------------------
+    case transport.PLAY_TOGGLE:
+    case mixer.ENABLE_AUTOSCROLL:
+      return u({ autoScroll: true }, state)
 
     // ------------------------------------------------------------------------
     default:
