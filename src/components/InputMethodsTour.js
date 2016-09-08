@@ -8,11 +8,11 @@ import MusicalTyping from 'components/MusicalTyping'
 
 import { api } from 'helpers/ajaxHelpers'
 
-export default class InputMethodsTour extends Component {
+export class InputMethodsTour extends Component {
   state = {
-    signupMic: { 
+    signupMic: {
       success: localStorage.signupMicSuccess === `true`,
-      message: `` 
+      message: ``
     },
     signupMicCalling: false,
   }
