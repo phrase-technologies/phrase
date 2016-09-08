@@ -18,7 +18,7 @@ export const mixerScrollX = ({ min, max, delta, fulcrum, isAuto }) => {
     let state = getState()
     let barCount = state.phrase.present.barCount
     dispatch({ type: mixer.SCROLL_X, min, max, barCount, delta, fulcrum })
-    if (state.transport.playing && !isAuto)
+    if (state.mixer.autoScroll && state.transport.playing && !isAuto)
       dispatch({ type: mixer.DISABLE_AUTOSCROLL })
   }
 }
@@ -58,7 +58,7 @@ let defaultState = {
   selectionEndX: null,
   selectionEndY: null,
   cursor: null,
-  disableautoScroll: false,
+  autoScroll: true,
 }
 
 export default function reduceMixer(state = defaultState, action) {
@@ -178,12 +178,12 @@ export default function reduceMixer(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case mixer.DISABLE_AUTOSCROLL:
-      return u({ disableAutoScroll: true }, state)
+      return u({ autoScroll: false }, state)
 
     // ------------------------------------------------------------------------
     case transport.PLAY_TOGGLE:
     case mixer.ENABLE_AUTOSCROLL:
-      return u({ disableAutoScroll: false }, state)
+      return u({ autoScroll: true }, state)
 
     // ------------------------------------------------------------------------
     default:

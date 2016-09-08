@@ -23,7 +23,7 @@ const transportAdjustPianoMixerScroll = () => {
     let barCount = state.phrase.present.barCount
 
     // Adjust the pianoroll view
-    if (state.pianoroll.disableAutoScroll) {
+    if (!state.pianoroll.autoScroll) {
       let isInView = isPlayheadInView({
         min: state.pianoroll.xMin,
         max: state.pianoroll.xMax,
@@ -42,7 +42,7 @@ const transportAdjustPianoMixerScroll = () => {
     }
 
     // Adjust the mixer view
-    if (state.mixer.disableAutoScroll) {
+    if (!state.mixer.autoScroll) {
       let isInView = isPlayheadInView({
         min: state.mixer.xMin,
         max: state.mixer.xMax,

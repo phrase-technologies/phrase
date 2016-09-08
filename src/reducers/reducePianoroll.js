@@ -19,7 +19,7 @@ export const pianorollScrollX = ({ min, max, delta, fulcrum, isAuto }) => {
     let state = getState()
     let barCount = state.phrase.present.barCount
     dispatch({ type: pianoroll.SCROLL_X, min, max, delta, fulcrum, barCount})
-    if (state.transport.playing && !isAuto)
+    if (state.pianoroll.autoScroll && state.transport.playing && !isAuto)
       dispatch({ type: pianoroll.DISABLE_AUTOSCROLL })
   }
 }
@@ -73,7 +73,7 @@ export const defaultState = {
   selectionEndY: null,
   cursor: null,
   tooltip: null,
-  disableautoScroll: false,
+  autoScroll: true,
 }
 
 export default function reducePianoroll(state = defaultState, action) {
@@ -265,12 +265,12 @@ export default function reducePianoroll(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case pianoroll.DISABLE_AUTOSCROLL:
-      return u({ disableAutoScroll: true }, state)
+      return u({ autoScroll: false }, state)
 
     // ------------------------------------------------------------------------
     case transport.PLAY_TOGGLE:
     case pianoroll.ENABLE_AUTOSCROLL:
-      return u({ disableAutoScroll: false }, state)
+      return u({ autoScroll: true }, state)
 
     // ------------------------------------------------------------------------
     default:
