@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Attempt at using React for this sequencer prototype!",
   "scripts": {
-    "prestart": "npm install",
     "start": ". ./run-start-local.sh",
     "start-windows": "set API_URL='http://localhost:5000'&&set NODE_ENV='development'&&node server.js",
     "start-prod": ". ./run-start-prod.sh",

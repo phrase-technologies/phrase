@@ -1,0 +1,171 @@
+.workstation-discussion {
+  border-radius: 4px;
+  background: #222;
+
+  pointer-events: all;
+}
+.discussion-presence {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 42px;
+
+  border: 1px solid #000;
+  border-radius: 3px 3px 0 0;
+  background: #555;
+  background-image: linear-gradient(180deg, #666, #555);
+  padding: 6px 5px;
+}
+.discussion-presence-all {
+  position: relative;
+  display: inline-block;
+  height: 28px;
+
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 28px;
+
+  margin-right: 4px;
+}
+.discussion-user {
+  position: relative;
+  display: inline-block;
+  width:  28px;
+  height: 28px;
+
+  border: 1px solid #000;
+  border-radius: 50%;
+  background: #688;
+  font-size: 12px;
+  text-align: center;
+  line-height: 26px;
+
+  margin-right: 4px;
+}
+.discussion-invite {
+  float: right;
+  padding: 4px 8px;
+}
+.discussion-body {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  border-top: 1px solid #000;
+  overflow: hidden;
+
+  // Timeline - vertical line
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 28px;
+    bottom: 0;
+    width: 1px;
+
+    background: #888;
+
+    pointer-events: none;
+  }
+
+  // Inset Shadow
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+
+    border-bottom: 1px solid #000;
+    border-radius: 0 0 4px 4px;
+    box-shadow: inset 0 0 5px 1px #000;
+
+    pointer-events: none;
+  }
+}
+.discussion-timeline-gutter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  overflow: auto;
+  padding: 10px 10px;
+}
+.discussion-timeline {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+.discussion-timeline-item {
+  position: relative;
+  padding: 25px 0 15px 75px;
+}
+.discussion-timeline-tick {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 28px;
+
+  padding: 6px 0;
+  font-size: 11px;
+  color: #FFF;
+  text-align: right;
+  background: #222;
+}
+.discussion-timeline-meta {
+  position: absolute;
+  top: 0;
+  left: 40px;
+  right: 0;
+  height: 28px;
+
+  padding-top: 3px;
+  padding-left: 35px;
+
+  .discussion-user {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+.discussion-timeline-username {
+  padding-right: 5px;
+  color: #FFF;
+  font-weight: bold;
+}
+.discussion-timeline-timestamp {
+  color: #888;
+  font-size: 11px;
+}
+.discussion-timeline-content {
+  font-size: 14px;
+  cursor: text;
+  font-weight: 200;
+}
+.discussion-timeline-reply {
+  > a {
+    color: #0FF;
+    font-size: 12px;
+  }
+}
+
+// ============================================================================
+// Mobile
+// ============================================================================
+@media (max-width: $screen-sm-max) {
+  .discussion-timeline-content {
+    font-size: 16px;
+  }
+}

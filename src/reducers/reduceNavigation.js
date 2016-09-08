@@ -15,6 +15,7 @@ let defaultState = {
   consoleEmbedded: false,
   consoleSplitRatio: 0.0,
   rackOpen: false,
+  discussionOpen: true,
   inputMethodsTour: null, // null = tour closed, 0 = tour intro, 1 = external midi, 2 = musical typing, etc.
 }
 

@@ -93,7 +93,7 @@ export class WorkstationHeader extends Component {
           <TransportControls style={{ display: 'inline-block' }} />
         </div>
         { editable &&
-          <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 15 }}>
+          <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 10 }}>
             { this.renderQuantizeTool() }
             <div className="btn-group">
               <HintRing show={this.props.inputMethodsTour === 3} />
