@@ -1,6 +1,6 @@
 .workstation-discussion {
   border-radius: 4px;
-  background: #222;
+  background: #282828;
 
   pointer-events: all;
 }
@@ -122,7 +122,7 @@
   font-size: 11px;
   color: #FFF;
   text-align: right;
-  background: #222;
+  background: #282828;
 }
 .discussion-timeline-meta {
   position: absolute;
@@ -154,11 +154,14 @@
   cursor: text;
   font-weight: 200;
 }
-.discussion-timeline-reply {
+.discussion-timeline-actions {
   > a {
     color: #0FF;
-    font-size: 12px;
+    font-size: 11px;
   }
+}
+.discussion-timeline-reply {
+  margin-top: 5px;
 }
 
 // ============================================================================
@@ -167,5 +170,13 @@
 @media (max-width: $screen-sm-max) {
   .discussion-timeline-content {
     font-size: 16px;
+  }
+
+  .discussion-timeline-reply {
+    z-index: 1000;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
   }
 }

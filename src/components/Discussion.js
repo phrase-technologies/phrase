@@ -56,9 +56,6 @@ export default class Discussion extends Component {
                 timestamp={"Saturday"}
                 comment="Cool."
               />
-              <li>
-                <input className="form-control" />
-              </li>
             </ul>
           </div>
         </div>
