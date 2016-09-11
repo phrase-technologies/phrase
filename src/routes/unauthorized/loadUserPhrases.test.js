@@ -1,11 +1,13 @@
 import { expect } from 'chai'
 import ajax from '../../helpers/ajax'
+import { domain } from '../../root.test'
 
-let url = `http://localhost:9999/api/loadUserPhrases`
+let url = `${domain}/api/loadUserPhrases`
 
 let userExisting = {
   username: `foo`,
 }
+
 let userFake = {
   username: `bar`,
 }

@@ -1,8 +1,9 @@
 import r from 'rethinkdb'
 import { expect } from 'chai'
 import ajax from '../../helpers/ajax'
+import { domain } from '../../root.test'
 
-let url = `http://localhost:9999/signup`
+let url = `${domain}/signup`
 
 let user = {
   email: `foo@foo`,

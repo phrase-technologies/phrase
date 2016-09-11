@@ -1,12 +1,16 @@
+// Vendor
 import r from 'rethinkdb'
 import express from 'express'
 import socketIO from 'socket.io'
 import chalk from 'chalk'
 import { Server } from 'http'
 import bodyParser from 'body-parser'
+
+// Custom
 import router from './router'
-import setupDatabase from './setupDatabase'
-import setupSocketConnection from './setupSocketConnection'
+import { setupDatabase, setupSocketConnection } from './setup'
+
+/*----------------------------------------------------------------------------*/
 
 let app, db, io, server
 
@@ -23,7 +27,6 @@ before(async function() {
 
   setupSocketConnection({ io, db })
 
-  // app.use(cors())
   app.use(bodyParser.json({ limit: `50mb` }))
   app.use(bodyParser.urlencoded({ limit: `50mb`, extended: true }))
 
@@ -35,3 +38,7 @@ before(async function() {
 after(() => {
   server.close()
 })
+
+/*----------------------------------------------------------------------------*/
+
+export let domain = `http://localhost:9999`

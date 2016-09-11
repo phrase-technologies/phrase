@@ -1,6 +1,6 @@
 import r from 'rethinkdb'
 import chalk from 'chalk'
-import { generateUniqueToken } from './helpers/token'
+import { generateUniqueToken } from '../helpers/token'
 
 export default async ({ name, db }) => {
   console.log(chalk.yellow(

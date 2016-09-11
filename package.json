@@ -5,7 +5,8 @@
     "start": "nodemon index.js",
     "start-prod": ". ./run-start-prod.sh",
     "migrate": "babel-node",
-    "test": "find ./src -name '*.test.js' | xargs mocha --require babel-core/register"
+    "test": "find ./src -name '*.test.js' | xargs mocha --require babel-core/register",
+    "test-watch": "find ./src -name '*.test.js' | xargs mocha --require babel-core/register -w"
   },
   "dependencies": {
     "babel-register": "^6.7.2",

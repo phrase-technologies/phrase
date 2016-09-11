@@ -7,6 +7,11 @@ export default ({ api, app, db }) => {
 
     let { email, password } = req.body
 
+    if (!email || !password) {
+      res.json({ success: false, message: `Must provide an email and password.`})
+      return
+    }
+
     try {
       let lowerCaseUnameEmail = email.toLowerCase()
 
@@ -42,6 +47,8 @@ export default ({ api, app, db }) => {
       }
     }
 
-    catch (err) { console.log(err) }
+    catch (err) {
+      console.log(err)
+    }
   })
 }

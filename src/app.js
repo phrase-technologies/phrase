@@ -9,8 +9,7 @@ import { secret } from './config'
 import socketIO from 'socket.io'
 import { Server } from 'http'
 import router from './router'
-import setupDatabase from './setupDatabase'
-import setupSocketConnection from './setupSocketConnection'
+import { setupDatabase, setupSocketConnection } from './setup'
 
 async function bootstrap () {
   try {
