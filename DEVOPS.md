@@ -23,12 +23,29 @@ Make sure each of these checkpoints is met!
 ## Ubuntu
 On production/staging environments, use `Ubuntu 16.04`.
 
+## Existing Servers
+At the time of writing, these are our servers from IBM SoftLayer:
+
+    # =============================================================================
+    # Phrase Technologies Inc.
+    # =============================================================================
+    208.43.253.181  bach-web
+    208.43.253.180  bach-api
+    208.43.253.182  mozart-web
+    208.43.253.178  mozart-api
+    
+Add these entries to your hosts file (Usually located at `/etc/hosts` in Linux/MacOS) so that you can
+easily identify which server is which during SSH (see below).
+At the time of writing, `bach-web` and `bach-api` are being used for production,
+while `mozart-web` and `mozart-api` are reserved for the staging environment.
+
 ## SSH Access
 When deploying a new server, remember to setup a secondary user instead of just using the root user.
 Start by SSH'ing into the server as root:
 
     $ ssh root@SERVER_IP_ADDRESS
 
+Here, you can do `bach-web` or `mozart-api` instead of typing out the full ip address.
 Create a new OS user account named `phrase`, and adding them to sudoers:
 
     $ adduser phrase
