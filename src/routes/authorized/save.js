@@ -4,7 +4,9 @@ import { sendRephraseEmail } from '../../helpers/emailHelper'
 
 export default ({ api, db }) => {
   api.post(`/save`, async (req, res) => {
-    let { parentId = null, phraseState, phraseName, userId } = req.body
+    let { parentId = null, phraseState, phraseName } = req.body
+    let { id: userId } = req.decoded
+
     try {
       let result = await r.table(`phrases`).insert({
         parentId,

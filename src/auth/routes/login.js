@@ -7,8 +7,18 @@ export default ({ api, app, db }) => {
 
     let { email, password } = req.body
 
-    if (!email || !password) {
-      res.json({ success: false, message: `Must provide an email and password.`})
+    if (!email && password) {
+      res.json({ success: false, message: `Must provide an email/username.`})
+      return
+    }
+
+    if (email && !password) {
+      res.json({ success: false, message: `Must provide a password.`})
+      return
+    }
+
+    if (!email && !password) {
+      res.json({ success: false, message: `Must provide an email/username and password.`})
       return
     }
 

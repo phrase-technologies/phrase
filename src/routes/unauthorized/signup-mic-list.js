@@ -6,7 +6,7 @@ export default ({ api, db }) => {
   api.post(`/signup-mic-list`, async (req, res) => {
     try {
       let { email } = req.body
-      
+
       if (!isValidEmail(email)) {
         res.json({ success: false })
       }
