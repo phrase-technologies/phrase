@@ -19,8 +19,8 @@ export default class Discussion extends Component {
     // This override is necessary for mobile web, where position fixed
     // gets nixxed by ancestral elements with overflow scroll.
     let fullscreenOverride = this.state.fullscreenReply
-      ? { "overflow": "hidden" }
-      : {}
+      ? " discussion-fullscreen-override"
+      : ""
 
     return (
       <div className="workstation-discussion">
@@ -43,7 +43,7 @@ export default class Discussion extends Component {
           </button>
         </div>
         <div className="discussion-body">
-          <div className="discussion-timeline-gutter" style={fullscreenOverride}>
+          <div className={"discussion-timeline-gutter" + fullscreenOverride}>
             <ul className="discussion-timeline">
               <DiscussionTimelineItem
                 tick={ "4.1.1" }

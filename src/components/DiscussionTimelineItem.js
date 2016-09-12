@@ -49,31 +49,36 @@ export default class DiscussionTimelineItem extends Component {
   renderReply() {
     if (this.state.replying) {
       return (
-        <div className="discussion-fullscreen">
-          <button className="close close-dark" onClick={this.closeReply}>
+        <form className="discussion-fullscreen">
+          <button className="close close-dark visible-xs-inline-block" onClick={this.closeReply}>
             &times;
           </button>
-          <div className="discussion-fullscreen-header">
-            <button className="btn btn-primary btn-sm discussion-fullscreen-submit">
+          <div className="discussion-fullscreen-header visible-xs-block visible-xs-block">
+            <button
+              className="btn btn-primary btn-sm discussion-fullscreen-submit visible-xs-inline-block"
+              ref={ref => this.submitButton = ref} onClick={this.submitReply}
+            >
               Reply
             </button>
           </div>
           <TextareaAuto
             className="discussion-timeline-reply form-control form-control-dark"
-            placeholder="Write a reply..."
-            ref={ref => this.textarea = ref}
+            placeholder="Write a reply..." ref={ref => this.textarea = ref}
+            onKeyDown={this.keyDownHandler}
           />
-          <div className="discussion-fullscreen-context">
+          <div className="discussion-fullscreen-context visible-xs-block">
             <span className="fa fa-level-up fa-flip-horizontal" />
             <span> in reply to </span>
             <span className="discussion-timeline-username">
               { this.props.user.username }
             </span>
             <p style={{ marginTop: 5 }}>
-              { this.props.comment }
+              <span className="fa fa-quote-left" />
+              <span> { this.props.comment } </span>
+              <span className="fa fa-quote-right" />
             </p>
           </div>
-        </div>
+        </form>
       )
     }
 
@@ -88,6 +93,22 @@ export default class DiscussionTimelineItem extends Component {
   closeReply = () => {
     this.props.setFullscreenReply(false)
     this.setState({ replying: false })
+  }
+
+  keyDownHandler = (e) => {
+    // Only submit on regular Enter (SHIFT+Enter reserved for newlines)
+    if (e.keyCode === 13 && !e.shiftKey) {
+      let style = window.getComputedStyle(this.submitButton)
+      let isMobile = style.display !== 'none'
+      console.log( "isMobile", isMobile, style.display, this.submitButton )
+      // On Mobile, force user to use the
+      if (!isMobile)
+        this.submitReply()
+    }
+  }
+
+  submitReply = () => {
+    this.closeReply()
   }
 
   componentDidUpdate() {

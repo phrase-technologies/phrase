@@ -205,6 +205,9 @@
       right: none;
     }
   }
+  .discussion-fullscreen-override {
+    overflow: hidden;
+  }
   .discussion-fullscreen-header {
     text-align: right;
     margin-bottom: 10px;
@@ -215,6 +218,7 @@
   .discussion-fullscreen-context {
     position: relative;
 
+    margin-left: 5px;
     margin-top: 10px;
     height: 200px;
     overflow: hidden;
@@ -222,6 +226,7 @@
     opacity: 0.5;
 
     > p {
+      margin-left: 12px;
       font-size: 16px;
       font-weight: 200;
     }
