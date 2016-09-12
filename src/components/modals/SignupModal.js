@@ -5,23 +5,22 @@ import LaddaButton from 'react-ladda'
 
 import isAValidEmail from 'helpers/isEmail'
 import isValidUsername from 'helpers/isUsername'
-import { signup } from 'reducers/reduceAuth'
+import { signup, oAuthLogin } from 'reducers/reduceAuth'
 import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class SignupModal extends Component {
-
-  constructor() {
-    super()
-    this.state = {
-      inviteCodeError: null,
-      inviteCodePristine: true,
-      emailError: null,
-      emailPristine: true,
-      usernameError: null,
-      usernamePristine: true,
-      passwordError: null,
-      passwordPristine: true,
-    }
+  state = {
+    inviteCodeError: null,
+    inviteCodePristine: true,
+    emailError: null,
+    emailPristine: true,
+    usernameError: null,
+    usernamePristine: true,
+    passwordError: null,
+    passwordPristine: true,
+    oAuth: null,
+    oAuthError: null,
+    oAuthMessage: null,
   }
 
   render() {
@@ -34,6 +33,9 @@ export class SignupModal extends Component {
     let passwordGroupClass = 'form-group'
         passwordGroupClass += !this.state.passwordPristine && this.state.passwordError ? ' has-error' : ''
     let errorStyle = { fontSize: 12, marginTop: 3, lineHeight: 1 }
+
+    let oAuthHide = this.state.oAuth ? `none` : `block`
+    let oAuthClassName = this.state.oAuthError ? `text-danger` : `text-info`
 
     let ModalComponent
     let modalProps
@@ -58,6 +60,12 @@ export class SignupModal extends Component {
           <div className="form-group">
             <h4 className="text-center">Create an Account.</h4>
           </div>
+          <p><a href="" onClick={this.facebookOAuth}>Log in with facebook</a></p>
+          { (this.state.oAuthError || this.state.oAuthMessage) &&
+            <p className={oAuthClassName} style={errorStyle}>
+              { this.state.oAuthError || this.state.oAuthMessage }
+            </p>
+          }
           <form onSubmit={this.signup} noValidate>
             <div className={inviteCodeGroupClass} style={{marginBottom: 10}}>
               <div className="input-group">
@@ -74,7 +82,7 @@ export class SignupModal extends Component {
                 {this.state.inviteCodeError}
               </p>
             </div>
-            <div className={emailGroupClass} style={{marginBottom: 10}}>
+            <div className={emailGroupClass} style={{marginBottom: 10, display: oAuthHide}}>
               <input
                 className="form-control" type="email"
                 placeholder="Email" ref={(ref) => this.email = ref}
@@ -94,7 +102,7 @@ export class SignupModal extends Component {
                 {this.state.usernameError}
               </p>
             </div>
-            <div className={passwordGroupClass} style={{marginBottom: 10}}>
+            <div className={passwordGroupClass} style={{marginBottom: 10, display: oAuthHide}}>
               <input
                 className="form-control" type="password"
                 placeholder="Password" ref={(ref) => this.password = ref}
@@ -226,7 +234,38 @@ export class SignupModal extends Component {
       email: this.email.value,
       username: this.username.value,
       password: this.password.value,
+      oAuthToken: this.state.oAuthToken,
     }))
+  }
+
+  facebookOAuth = (e) => {
+    e.preventDefault()
+    this.setState({ oAuth: `Facebook` })
+    window.oAuthCallback = this.oAuthCallback // Place callback on window object to give child window access
+    let newWindow = window.open(
+      `${API_URL}/auth/facebook`,
+      `Login with Facebook`,
+      `height=500,width=500`
+    )
+    newWindow.focus()
+  }
+
+  oAuthCallback = ({ success, token, email, newUser }) => {
+    success = JSON.parse(success)
+    newUser = JSON.parse(newUser)
+
+    if (!success)
+      this.setState({ oAuthError: `${this.state.oAuth} authentication failed, please try again` })
+    else {
+      if (newUser) {
+        this.setState({
+          oAuthMessage: `${this.state.oAuth} authentication successful, please choose a username below to finish signing up`,
+          oAuthToken: token,
+        })
+        this.email.value = email
+      }
+      else this.props.dispatch(oAuthLogin({ token, email }))
+    }
   }
 
   // Attach this to onMouseDown (in addition to onClick) to take

@@ -8,6 +8,7 @@ import {
   newPassword as newPasswordHelper,
   confirmUser as confirmUserHelper,
   retryConfirmUser as retryConfirmUserHelper,
+  oAuthLogin as oAuthLoginHelper,
 } from 'helpers/authHelpers'
 import { modal, auth } from '../actions/actions'
 import { librarySaveNew } from 'reducers/reduceLibrary'
@@ -60,21 +61,26 @@ export let login = ({ email, password }) => {
   }
 }
 
-export let signup = ({ inviteCode, email, username, password }) => {
+export let signup = ({ inviteCode, email, username, password, oAuthToken }) => {
   return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST })
 
     catchAndToastException({ dispatch,
       toCatch: async () => {
         await signupHelper({
-          body: { inviteCode, email, username, password },
+          body: { inviteCode, email, username, password, oAuthToken },
           callback: (response) => {
             if (response.success) {
-              dispatch(login({ email, password }))
-              dispatch(addNotification({
-                title: `You have been sent a confirmation email`,
-                message: `Please confirm`,
-              }))
+              if (oAuthToken) {
+                dispatch(oAuthLogin({ email, token: oAuthToken }))
+              }
+              else {
+                dispatch(login({ email, password }))
+                dispatch(addNotification({
+                  title: `You have been sent a confirmation email`,
+                  message: `Please confirm`,
+                }))
+              }
             }
             else dispatch({
               type: auth.LOGIN_FAIL,
@@ -207,6 +213,29 @@ export let retryConfirmUser = ({ email }) => {
           })
         })
       },
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
+    })
+  }
+}
+
+export let oAuthLogin = ({ email, token }) => {
+  return (dispatch, getState) => {
+    dispatch({ type: auth.LOGIN_REQUEST})
+    catchAndToastException({ dispatch,
+      toCatch: async () => {
+        await oAuthLoginHelper({
+          body: { email, token },
+          callback: async response => {
+            if (response.success) {
+              tryAnalyticsEvent({ eventName: "Logged In" })
+              handleLogin({ dispatch, getState, response })
+            }
+            else dispatch({
+              type: auth.LOGIN_FAIL,
+              payload: { message: response.message },
+            })
+          }
+      })},
       callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
     })
   }

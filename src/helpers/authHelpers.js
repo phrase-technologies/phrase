@@ -73,3 +73,16 @@ export let retryConfirmUser = async (body, callback) => {
   if (success) callback({ success })
   else callback({ message })
 }
+
+export let oAuthLogin = async ({ body, callback }) => {
+  let response = await phraseFetch({
+    endpoint: 'oauth-login',
+    body,
+  })
+  let { success, token, user, message } = response
+  if (success) {
+    setUserLocalStorage({ token, user })
+    callback({ success, token, user})
+  }
+  else callback({ message })
+}
