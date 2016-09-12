@@ -19,7 +19,7 @@ export default class WorkstationHeaderStorage extends Component {
     // let HistoryTooltip = <Tooltip id="tooltip-all-versions">Version History</Tooltip>
 
     return (
-      <div className="btn-toolbar" style={this.props.style}>
+      <div className="btn-toolbar workstation-header-storage">
         <div className="btn-group">
           <OverlayTrigger placement="top" overlay={UndoTooltip} delayShow={250}>
             <button

@@ -1,5 +1,6 @@
 $header-height: 55px;
 $header-transition: 0.125s;
+$header-height-mobile: 45px;
 
 html,
 body {
@@ -36,8 +37,8 @@ body {
   // box-shadow: 0 0 10px 10px transparentize(#EEE, 0.1);
   padding: 10px 15px;
 
-  z-index: 3; // So outer box-shadow + dropdown flows ver the Body (1) and over the Workstation (2)
   transition: background $header-transition, height $header-transition;
+  // Avoid creating unnecessary stacking contexts here with z-index
 
   .dropdown-toggle {
     text-decoration: none !important;
@@ -101,7 +102,21 @@ body {
 }
 .header-user-name {
   font-size: 14px;
-  padding-right: 10px;
+}
+
+@media (max-width: $screen-sm-max) {
+  .header {
+    padding: 5px 15px !important;
+    height: $header-height-mobile;
+  }
+  .header-logo {
+    width: 88px;
+    height: 36px;
+    margin-left: -44px;
+
+    background-image: url('img/phrase-logo-white-text-2015-12-09.png');
+    background-size: 88px;
+  }
 }
 
 // ============================================================================
@@ -117,8 +132,6 @@ body {
   background: transparent;
   padding: 0;
 
-  overflow: auto;
-  z-index: 1; // Under the Header (1)
   transition: background $header-transition;
 }
 // If the Phrase is maximized, we fade the body to black for a nice transition
@@ -131,6 +144,13 @@ body {
   border-bottom: 1px solid #DDD;
   margin: 0 auto 20px;
 }
+
+@media (max-width: $screen-sm-max) {
+  .body {
+    top: $header-height-mobile;
+  }
+}
+
 
 // ============================================================================
 // Modal

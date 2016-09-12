@@ -45,11 +45,12 @@ let Header = ({
           */}
           <div className="btn-group">
             <a
-              className={buttonClasses}
+              className={buttonClasses} style={{ paddingLeft: 0 }}
               onClick={() => handleNewPhraseClick({ dispatch, existingPhrase })}
             >
               <span className="fa fa-plus-circle" />
-              <span> New Phrase</span>
+              <span> New</span>
+              <span className="hidden-xs"> Phrase</span>
             </a>
           </div>
         </div>

@@ -6,9 +6,9 @@ import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 export default (props) => {
   let colorClass = ` ${props.color ? `active-${props.color}` : ''}`
   let activeClass = ` ${props.toggle ? 'active' : ''}`
-  let narrowClass = ` ${props.narrow ? 'btn-narrow' : 'transport-btn'}`
   let buttonLookClass = ` ${props.link ? 'btn-link btn-glow' : 'btn-dark'}`
-  let buttonClasses = 'btn' + buttonLookClass + activeClass + colorClass + narrowClass
+  let injectedClass = ` ${props.className ? props.className : ''}`
+  let buttonClasses = 'btn transport-btn' + buttonLookClass + activeClass + colorClass + injectedClass
   let buttonTooltip = <Tooltip id="tooltip-all-versions">{props.tooltip}</Tooltip>
 
   return (

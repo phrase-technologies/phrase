@@ -1,8 +1,6 @@
 $workstation-minimize-transition: 0.125s;
 $workstation-mixer-width: 240px;
-$workstation-mixer-z-index: 200;          // Above Page
 $workstation-header-height: 103px;
-$workstation-header-z-index: 300;         // Above Page & Mixer
 $workstation-clip-width: 240px;
 $workstation-clip-z-index: 400;           // Above Page & Mixer
 $workstation-footer-height: 37px;
@@ -50,8 +48,8 @@ $workstation-discussion-z-index: 500;     // Above.... TODO: Obsolete after remo
   background: #444;
   background-image: linear-gradient(165deg, #555 0%, #444 40%, #606060 60%,#555 100% );
 
-  z-index: 2; // Over the Body (1) and below the Header (3)
   pointer-events: none;
+  // Avoid creating unnecessary stacking contexts here with z-index
 
   // Use CSS translations (CPU Optimized) for smooth minimization and maximization
   transition: transform $workstation-minimize-transition;
@@ -74,7 +72,6 @@ $workstation-discussion-z-index: 500;     // Above.... TODO: Obsolete after remo
   left: 0;
   right: 0;
   height: $workstation-header-height;
-  z-index: $workstation-header-z-index;
 
   padding: 10px 15px;
   text-align: left;
@@ -90,6 +87,16 @@ $workstation-discussion-z-index: 500;     // Above.... TODO: Obsolete after remo
     }
   }
 }
+.workstation-header-rephrase {
+  position: absolute;
+  top: 3;
+  left: 0;
+}
+.workstation-header-social {
+  position: absolute;
+  top: 3px;
+  right: 0;
+}
 .workstation-drop-target {
   border: 2px dashed;
 }
@@ -99,6 +106,9 @@ $workstation-discussion-z-index: 500;     // Above.... TODO: Obsolete after remo
   height: 4px;
   background-image:
     radial-gradient(at top, #000, transparent, transparent);
+}
+.workstation-controls {
+  text-align: center;
 }
 .transport {
   color: #FFF;
@@ -207,6 +217,16 @@ div.workstation-header-title {
   font-size: 12px;
   text-align: right;
 }
+.workstation-header-storage {
+  position: absolute;
+  top: 65px;
+  left: 15px;
+}
+.workstation-header-tools {
+  position: absolute;
+  top: 65px;
+  right: 15px;
+}
 .workstation-header-profile-pic {
   display: inline-block;
 
@@ -241,40 +261,6 @@ div.workstation-header-title {
   right: 0;
   bottom: $workstation-footer-height;
 }
-.workstation-heading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 0;
-  padding: 13px;
-
-  font-size: 16px;
-  color: #DDD;
-
-  &:hover {
-    cursor: pointer;
-
-    box-shadow: inset  0px  1px 1px -1px #FFF,
-                inset -1px -1px 0px  0px #111;
-    background: rgba(255,255,255,0.25);
-    color: #FFF;
-  }
-}
-.workstation-heading-vertical {
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  text-align: right;
-  transform: rotate(-90deg);
-  transform-origin: bottom right 0;
-  margin-top: -45px;
-  width: 200px;
-  height: 45px;
-  padding: 14px;
-}
 
 // ============================================================================
 // Mixer Arrangement
@@ -284,7 +270,6 @@ div.workstation-header-title {
   top: 0;
   left: 0;
   right: 0;
-  z-index: $workstation-mixer-z-index;
 
   transition: left .25s, right .25s, margin .25s;
 
@@ -556,16 +541,42 @@ div.workstation-header-title {
     padding: 10px 5px;
   }
   .workstation-header {
+    right: 0 !important;
+    padding: 5px;
+  }
+  .workstation-header-rephrase {
+    display: none;
+  }
+  .workstation-header-social {
+    display: none;
+  }
+  .workstation-divider {
+    display: none;
+  }
+  .workstation-header-storage {
+    display: none;
+  }
+  .workstation-controls {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+  }
+  .workstation-header-tools {
     display: none;
   }
   .workstation-core {
-    display: none;
+    right: 0 !important;
+  }
+  .workstation-body {
+    top: 35px;
   }
   .workstation-discussion {
-    top: 15px;
-    left: 15px;
+    top: 100px;
+    left: 0;
     width: auto;
-    bottom: 15px;
+    right: 0;
+    bottom: 0;
+    border-radius: 0 !important;
   }
   .workstation-footer {
     display: none;

@@ -17,7 +17,7 @@ class TransportTempo extends Component {
 
   render() {
     return (
-      <div className="btn-group">
+      <div className="btn-group hidden-xs">
         <div className="transport-tempo-container">
           { this.props.editable &&
             <input className="form-control form-control-glow transport-tempo"

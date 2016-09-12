@@ -60,7 +60,7 @@ let TransportControls = (props) => {
           <i className="fa fa-fw fa-circle" />
         </TransportButton>
       </div>
-      <div className="btn-group">
+      <div className="btn-group hidden-xs">
         <TransportButton
           onButtonClick={() => dispatch(transportCountIn())}
           toggle={countIn} tooltip="Count In (⇧M)" narrow={true} link={true}

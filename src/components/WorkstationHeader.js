@@ -42,7 +42,7 @@ export class WorkstationHeader extends Component {
     return (
       <div className="workstation-header" style={{ zIndex: 500 }}>
         <div className={containerClasses} style={{ position: 'relative' }}>
-          <div className="btn-toolbar" style={{ position: 'absolute', top: 3, left: 0 }}>
+          <div className="btn-toolbar workstation-header-rephrase">
             { !editable &&
               <Dropdown id="workstation-permissions" className="dropdown-dark">
                 <button
@@ -75,7 +75,7 @@ export class WorkstationHeader extends Component {
               <WorkstationHeaderAuthor />
             </div>
           </div>
-          <div className="btn-toolbar" style={{ position: 'absolute', top: 3, right: 0 }}>
+          <div className="btn-toolbar workstation-header-social">
             <div className="btn-group">
               <span className="workstation-header-share">
                 Share:
@@ -88,12 +88,12 @@ export class WorkstationHeader extends Component {
           </div>
         </div>
         <div className="workstation-divider" />
-        <WorkstationHeaderStorage {...this.props} style={{ position: 'absolute', top: 65, left: 15 }} />
-        <div className="text-center">
+        <WorkstationHeaderStorage {...this.props} />
+        <div className="workstation-controls">
           <TransportControls style={{ display: 'inline-block' }} />
         </div>
         { editable &&
-          <div className="btn-toolbar" style={{ position: 'absolute', top: 65, right: 10 }}>
+          <div className="btn-toolbar workstation-header-tools">
             { this.renderQuantizeTool() }
             <div className="btn-group">
               <HintRing show={this.props.inputMethodsTour === 3} />

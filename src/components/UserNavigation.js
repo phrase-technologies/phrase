@@ -15,8 +15,8 @@ export let UserNavigation = (props) => {
 
   return (
     <div className="btn-toolbar pull-right">
+      {/*
       <div className="btn-group" style={{ marginRight: 10 }}>
-        {/*
         <Link className={buttonClasses} to="/about" activeClassName="header-nav-active">
           About
         </Link>
@@ -26,9 +26,9 @@ export let UserNavigation = (props) => {
         <Link className={buttonClasses} to="/contact" activeClassName="header-nav-active">
           Contact
         </Link>
-        */}
         { notificationButton({ loggedIn: props.loggedIn }) }
       </div>
+      */}
       {
         !props.loggedIn
           ? notLoggedIn(props)
