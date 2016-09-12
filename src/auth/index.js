@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken'
 import authRoutes from './routes'
+import passport from 'passport'
+import strategies from './strategies'
 
 export default ({
   api,
@@ -7,6 +9,9 @@ export default ({
   db,
 }) => {
 
+  app.use(passport.initialize())
+
+  strategies.forEach(strategy => strategy({ app, db }))
   authRoutes.forEach(route => route({ api, app, db }))
 
   api.use((req, res, next) => {
