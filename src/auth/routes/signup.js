@@ -1,4 +1,11 @@
 import r from 'rethinkdb'
+import {
+  rUserUpdateFromEmail,
+  rUserGetFromEmail,
+  rUserInsert,
+  rInviteCodeUpdateMarkUsed,
+} from '../../helpers/db-helpers'
+
 import { generateUniqueToken } from '../../helpers/token'
 import isValidEmail from '../../helpers/isEmail'
 import isValidUsername from '../../helpers/isUsername'
@@ -9,7 +16,7 @@ import doubleHash from '../../helpers/doubleHash'
 export default ({ app, db }) => {
   app.post(`/signup`, async (req, res) => {
 
-    let { inviteCode, email, username, password } = req.body
+    let { inviteCode, email, username, password, oAuthToken } = req.body
 
     // Validate Invite Code
     if (!inviteCode) {
@@ -54,19 +61,22 @@ export default ({ app, db }) => {
 
       try {
         let lowerCaseEmail = trimmedEmail.toLowerCase()
-
-        let userByEmailResults = await r
-          .table(`users`)
-          .getAll(lowerCaseEmail, { index: `email` })
-          .limit(1)
-          .run(db)
-
-        let userByEmail = await userByEmailResults.toArray()
-
-        if (userByEmail.length) {
+        let user = await rUserGetFromEmail(db, { email: lowerCaseEmail })
+        if (oAuthToken && !user) {
+          res.json({
+            success: false,
+            message: { oAuthError: `oAuth error, please retry logging in through your provider` },
+          })
+        }
+        else if ((!oAuthToken && user) || (oAuthToken && user.username)) {
           res.json({
             success: false,
             message: { emailError: `An account with this email already exists.` },
+          })
+        } else if (oAuthToken && oAuthToken !== user.oAuthToken) {
+          res.json({
+            success: false,
+            message: { oAuthError: `Invalid oAuthToken, please try again` },
           })
         } else if (!trimmedUsername || !isValidUsername(trimmedUsername)) {
           res.json({
@@ -94,37 +104,42 @@ export default ({ app, db }) => {
               success: false,
               message: { usernameError: `Sorry, the username "${username}" is taken.` },
             })
-          } else if (!trimmedPassword || !isValidPassword(trimmedPassword)) {
+          } else if (!oAuthToken && (!trimmedPassword || !isValidPassword(trimmedPassword))) {
             res.json({
               success: false,
               message: { passwordError: `Passwords must be at least 6 characters long` },
             })
-          } else {
-            let token = await generateUniqueToken({ index: `confirmToken`, db })
+          }
+          else {
+            if (oAuthToken) {
+              rUserUpdateFromEmail(db, {
+                email: lowerCaseEmail,
+                update: { username: trimmedUsername },
+              })
+            }
+            else {
+              let token = await generateUniqueToken({ index: `confirmToken`, db })
 
-            let user = await r.table(`users`).insert({
-              username: trimmedUsername,
-              email: lowerCaseEmail,
-              password: doubleHash(trimmedPassword),
-              confirmToken: token,
-              dateCreated: new Date(),
-            }).run(db)
+              rUserInsert(db, {
+                username: trimmedUsername,
+                email: lowerCaseEmail,
+                password: doubleHash(trimmedPassword),
+                confirmToken: token,
+                dateCreated: new Date(),
+              })
 
-            r.table(`inviteCodes`)
-              .getAll(trimmedInviteCode, { index: `code` })
-              .limit(1)
-              .update({used: true})
-              .run(db)
+              sendWelcomeEmail({
+                email: lowerCaseEmail,
+                username: trimmedUsername,
+                confirmToken: token,
+              })
+            }
 
-            sendWelcomeEmail({
-              email: lowerCaseEmail,
-              username: trimmedUsername,
-              confirmToken: token,
-            })
+            rInviteCodeUpdateMarkUsed(db, { inviteCode: trimmedInviteCode })
 
             console.log(`${trimmedUsername} signed up!`)
 
-            res.json({ success: true, user })
+            res.json({ success: true })
           }
         }
       }
