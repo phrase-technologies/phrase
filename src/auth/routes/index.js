@@ -4,6 +4,7 @@ import newPassword from './new-password'
 import forgotPassword from './forgot-password'
 import confirmUser from './confirm-user'
 import retryConfirmUser from './retry-confirm-user'
+import oAuthLogin from './oauth-login'
 
 export default [
   signup,
@@ -12,4 +13,5 @@ export default [
   forgotPassword,
   confirmUser,
   retryConfirmUser,
+  oAuthLogin,
 ]
