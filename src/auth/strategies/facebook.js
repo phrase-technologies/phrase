@@ -1,15 +1,16 @@
 
 import passport from 'passport'
 import FacebookStrategy from 'passport-facebook'
+import { facebookAppID, facebookAppSecret, apiURL } from '../../config'
 import { rUserGetFromEmail, rUserInsert, rUserUpdate } from '../../helpers/db-helpers'
 import { generateUniqueToken } from '../../helpers/token'
 import { getOAuthCallbackURL } from '../../helpers/oAuth'
 
 export default ({ app, db }) => {
   passport.use(new FacebookStrategy({
-    clientID: `992813620834731`,
-    clientSecret: `a9edb37f4e18aa31d4c5d0b41edf5a24`,
-    callbackURL: `http://phrase.fm:5000/auth/facebook/callback`,
+    clientID: facebookAppID,
+    clientSecret: facebookAppSecret,
+    callbackURL: `${apiURL}/auth/facebook/callback`,
     profileFields: [`id`, `emails`, `name`],
   }, async (accessToken, refreshToken, profile, done) => {
       let { emails } = profile
