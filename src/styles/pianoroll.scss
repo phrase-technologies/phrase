@@ -464,6 +464,9 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
     left: 0 !important;
     right: 0 !important;
 
+    > .timeline-cursor-window {
+      display: none;
+    }
     > .timeline-playhead-window {
       top: 12px;
     }
