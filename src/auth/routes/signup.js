@@ -1,9 +1,10 @@
-import r from 'rethinkdb'
 import {
   rUserUpdateFromEmail,
   rUserGetFromEmail,
+  rUserGetFromUsername,
   rUserInsert,
   rInviteCodeUpdateMarkUsed,
+  rInviteCodeGetFromCode,
 } from '../../helpers/db-helpers'
 
 import { generateUniqueToken } from '../../helpers/token'
@@ -15,7 +16,6 @@ import doubleHash from '../../helpers/doubleHash'
 
 export default ({ app, db }) => {
   app.post(`/signup`, async (req, res) => {
-
     let { inviteCode, email, username, password, oAuthToken } = req.body
 
     // Validate Invite Code
@@ -30,18 +30,12 @@ export default ({ app, db }) => {
     let trimmedPassword = password.trim()
 
     try {
-      let inviteCodeResults = await r
-        .table(`inviteCodes`)
-        .getAll(trimmedInviteCode, { index: `code` })
-        .limit(1)
-        .run(db)
+      let inviteCodeResult = await rInviteCodeGetFromCode(db, { inviteCode })
 
-      let foundInviteCode = await inviteCodeResults.toArray()
-
-      if (!foundInviteCode[0]) {
+      if (!inviteCodeResult) {
         res.json({ message: { inviteCodeError: `Invalid Code.` } })
         return
-      } else if (foundInviteCode[0].used) {
+      } else if (inviteCodeResult.used) {
         res.json({ message: { inviteCodeError: `Expired or Used Code.` } })
         return
       }
@@ -58,7 +52,6 @@ export default ({ app, db }) => {
         message: { emailError: `Invalid email.` },
       })
     } else {
-
       try {
         let lowerCaseEmail = trimmedEmail.toLowerCase()
         let user = await rUserGetFromEmail(db, { email: lowerCaseEmail })
@@ -91,15 +84,9 @@ export default ({ app, db }) => {
             message: { usernameError: `Usernames may be at most 20 characters long.`},
           })
         } else {
-          let userByUsernameResults = await r
-            .table(`users`)
-            .getAll(trimmedUsername.toLowerCase(), { index: `usernameLC` })
-            .limit(1)
-            .run(db)
+          let userByUsername = await rUserGetFromUsername(db, { username: trimmedUsername })
 
-          let userByUsername = await userByUsernameResults.toArray()
-
-          if (userByUsername.length) {
+          if (userByUsername) {
             res.json({
               success: false,
               message: { usernameError: `Sorry, the username "${username}" is taken.` },
