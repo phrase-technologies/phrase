@@ -1,3 +1,5 @@
+$discussion-presence-height: 42px;
+
 .workstation-discussion {
   border-radius: 4px;
   background: #282828;
@@ -9,7 +11,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 42px;
+  height: $discussion-presence-height;
 
   border: 1px solid #000;
   border-radius: 3px 3px 0 0;
@@ -49,7 +51,7 @@
 }
 .discussion-body {
   position: absolute;
-  top: 42px;
+  top: $discussion-presence-height;
   left: 0;
   right: 0;
   bottom: 0;
@@ -178,12 +180,22 @@
     border-right: 0;
     border-bottom: 0;
     border-radius: 0;
+
+    top: auto;
+    bottom: 0;
   }
   .discussion-body {
+    border-bottom: 0;
+    top: 0;
+    bottom: $discussion-presence-height;
+
     // Inset Shadow
     &::after {
       border-radius: 0;
-      box-shadow: inset 0 5px 5px -5px #000;
+      box-shadow:
+        inset 0  5px 5px -5px #000,
+        inset 0 -5px 5px -5px #000;
+      border-bottom: 0;
     }
   }
 

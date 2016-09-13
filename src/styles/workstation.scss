@@ -547,6 +547,9 @@ div.workstation-header-title {
   .workstation-header-rephrase {
     display: none;
   }
+  .workstation-header-title {
+    max-width: 150px !important;
+  }
   .workstation-header-social {
     display: none;
   }
@@ -569,9 +572,10 @@ div.workstation-header-title {
   }
   .workstation-body {
     top: 35px;
+    height: 160px;
   }
   .workstation-discussion {
-    top: 100px;
+    top: 190px;
     left: 0;
     width: auto;
     right: 0;

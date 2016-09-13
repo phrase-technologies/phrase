@@ -282,7 +282,7 @@ export default function reducePianoroll(state = defaultState, action) {
 }
 
 // Restrict min/max zoom against the pianoroll's height (ensure keyboard doesn't get too small or large)
-const minKeyboardHeight =  800
+const minKeyboardHeight =  400
 const maxKeyboardHeight = 1275 + 300
 function restrictKeyboardZoom(state) {
   let yMin = state.yMin

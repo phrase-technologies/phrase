@@ -49,7 +49,7 @@ export default class DiscussionTimelineItem extends Component {
   renderReply() {
     if (this.state.replying) {
       return (
-        <form className="discussion-fullscreen">
+        <div className="discussion-fullscreen">
           <button className="close close-dark visible-xs-inline-block" onClick={this.closeReply}>
             &times;
           </button>
@@ -78,7 +78,7 @@ export default class DiscussionTimelineItem extends Component {
               <span className="fa fa-quote-right" />
             </p>
           </div>
-        </form>
+        </div>
       )
     }
 
@@ -86,6 +86,12 @@ export default class DiscussionTimelineItem extends Component {
   }
 
   openReply = () => {
+    // If already open, focus!
+    if (this.textarea) {
+      this.textarea.focus()
+    }
+
+    // Make sure open
     this.props.setFullscreenReply(true)
     this.setState({ replying: true })
   }
@@ -98,22 +104,26 @@ export default class DiscussionTimelineItem extends Component {
   keyDownHandler = (e) => {
     // Only submit on regular Enter (SHIFT+Enter reserved for newlines)
     if (e.keyCode === 13 && !e.shiftKey) {
-      let style = window.getComputedStyle(this.submitButton)
-      let isMobile = style.display !== 'none'
-      console.log( "isMobile", isMobile, style.display, this.submitButton )
-      // On Mobile, force user to use the
-      if (!isMobile)
+      // On Mobile, force user to tap the submit button
+      if (!this.isMobile()) {
+        e.preventDefault()
         this.submitReply()
+      }
     }
+  }
+
+  isMobile() {
+    let style = window.getComputedStyle(this.submitButton)
+    return style.display !== 'none'
   }
 
   submitReply = () => {
     this.closeReply()
   }
 
-  componentDidUpdate() {
-    // Focus the textarea if opened!
-    if (this.state.replying) {
+  componentDidUpdate(prevProps, prevState) {
+    // Focus the textarea if newly opened!
+    if (this.state.replying && !prevState.replying) {
       this.textarea.focus()
     }
   }
