@@ -43,7 +43,10 @@ export default class Discussion extends Component {
           </button>
         </div>
         <div className="discussion-body">
-          <div className={"discussion-timeline-gutter" + fullscreenOverride}>
+          <div
+            className={"discussion-timeline-gutter" + fullscreenOverride}
+            ref={ref => this.scrollWindow = ref}
+          >
             <ul className="discussion-timeline">
               <DiscussionTimelineItem
                 tick={ "4.1.1" }
@@ -81,7 +84,20 @@ export default class Discussion extends Component {
   }
 
   setFullscreenReply = (booleanStatus) => {
+    this.freezeScrollWindow(booleanStatus)
+
     this.setState({ fullscreenReply: booleanStatus })
   }
 
+  // This is a hack to prevent background scrolling in iOS Safari when position: fixed input gets focused.
+  // See: http://stackoverflow.com/a/32389421/476426
+  freezeScrollWindow(booleanStatus) {
+    // Freeze (record) the scroll position before entering fullscreen
+    if (!this.state.fullscreenReply && booleanStatus)
+      this.scrollPosition = this.scrollWindow.scrollTop
+
+    // Unfreeze (reset) the scroll position if leaving fullscreen
+    if (this.state.fullscreenReply && !booleanStatus)
+      this.scrollWindow.scrollTop = this.scrollPosition
+  }
 }

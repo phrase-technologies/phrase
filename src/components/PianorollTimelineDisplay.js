@@ -25,18 +25,23 @@ export class PianorollTimelineDisplay extends Component {
 
   renderFrame() {
     return function(canvasContext) {
+      let mobile = this.props.grid.height < 40 * this.props.grid.pixelScale
       canvasContext.fillStyle = '#282828'
       canvasContext.fillRect(0, 0, this.props.grid.width, this.props.grid.height)
       this.props.grid.calculateZoomThreshold()
-      this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax)
-      this.renderClips(canvasContext, this.props.xMin, this.props.xMax, this.props.clips)
+      this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax, mobile)
+      this.renderClips(canvasContext, this.props.xMin, this.props.xMax, this.props.clips, mobile)
     }.bind(this)
   }
 
-  renderBarLines(canvasContext, xMin, xMax) {
+  renderBarLines(canvasContext, xMin, xMax, mobile) {
+    let fontSize =  mobile ? 8 : 11
+    let fontTop  = (mobile ? 9 : 14) * this.props.grid.pixelScale
+    let topEdge  = (mobile ? 7 : 14) * this.props.grid.pixelScale
+
     // Styles
     canvasContext.lineWidth = 1.0
-    canvasContext.font = 11*this.props.grid.pixelScale + 'px Helvetica Neue, Helvetica, Arial, sans-serif'
+    canvasContext.font = fontSize*this.props.grid.pixelScale + 'px Helvetica Neue, Helvetica, Arial, sans-serif'
     canvasContext.fillStyle = '#AAAAAA'
     canvasContext.textAlign = 'start'
 
@@ -59,12 +64,11 @@ export class PianorollTimelineDisplay extends Component {
       if (bar % this.props.grid.lineThresholdsWithKeys.majorLine === 0)
       {
         // Bar Number
-        let topEdge  = 14*this.props.grid.pixelScale
         let leftEdge =  4*this.props.grid.pixelScale + xPosition
         let barNumber = Math.floor(bar + 1)
         let barBeat = ((bar + 1) % 1) * 4 + 1
         let outputText = (majorIncrement < 1.0) ? (barNumber + '.' + barBeat) : barNumber
-        canvasContext.fillText(outputText, leftEdge, topEdge)
+        canvasContext.fillText(outputText, leftEdge, fontTop)
 
         // Bar line style
         canvasContext.strokeStyle = '#555555'
@@ -73,13 +77,13 @@ export class PianorollTimelineDisplay extends Component {
       else if (bar % this.props.grid.lineThresholdsWithKeys.middleLine === 0)
       {
         canvasContext.strokeStyle = '#383838'
-        yPosition = 18 * this.props.grid.pixelScale
+        yPosition = topEdge + 4 * this.props.grid.pixelScale
       }
       // Minor lines
       else if (this.props.grid.lineThresholdsWithKeys.minorLine)
       {
         canvasContext.strokeStyle = '#333333'
-        yPosition = 20 * this.props.grid.pixelScale
+        yPosition = topEdge + 6 * this.props.grid.pixelScale
       }
 
       // Draw each line
@@ -89,19 +93,20 @@ export class PianorollTimelineDisplay extends Component {
     }
   }
 
-  renderClips(canvasContext, xMin, xMax, clips, gradient = true) {
-    let topBox = closestHalfPixel(25*this.props.grid.pixelScale, this.props.grid.pixelScale)
+  renderClips(canvasContext, xMin, xMax, clips, mobile, gradient = true) {
+    let topBase = mobile ? 15 : 25
+
+    let topBox = closestHalfPixel(topBase*this.props.grid.pixelScale, this.props.grid.pixelScale)
     let bottomBox = closestHalfPixel(this.props.grid.height + 1*this.props.grid.pixelScale, this.props.grid.pixelScale)
     let radiusBox = 6*this.props.grid.pixelScale
-    let topSelection = Math.floor(26.5*this.props.grid.pixelScale)
+    let topSelection = Math.floor((topBase + 1.5) * this.props.grid.pixelScale)
     let bottomSelection = this.props.grid.height - 1.0*this.props.grid.pixelScale
     let radiusSelection = 5*this.props.grid.pixelScale
-    let bottomLabel = this.props.grid.height + 1*this.props.grid.pixelScale
 
     clips.forEach(clip => {
       this.renderClipBox(canvasContext, xMin, xMax, clip, topBox, bottomBox, radiusBox, this.props.currentTrack.color, gradient)
       this.renderClipSelection(canvasContext, xMin, xMax, clip, topSelection, bottomSelection, radiusSelection, this.props.currentTrack.color, gradient)
-      this.renderClipLabel(canvasContext, xMin, xMax, clip, bottomLabel, this.props.currentTrack.color)
+      this.renderClipLabel(canvasContext, xMin, xMax, clip, this.props.currentTrack.color, mobile)
       this.renderClipLoopLines(canvasContext, xMin, xMax, clip, topSelection, bottomSelection, this.props.currentTrack.color)
     })
   }
@@ -177,7 +182,7 @@ export class PianorollTimelineDisplay extends Component {
     canvasContext.fill()
   }
 
-  renderClipLabel(canvasContext, xMin, xMax, clip, bottom, color) {
+  renderClipLabel(canvasContext, xMin, xMax, clip, color, mobile) {
     let left   = closestHalfPixel(this.props.grid.barToXCoord(clip.start), this.props.grid.pixelScale)
     let right  = closestHalfPixel(this.props.grid.barToXCoord(clip.end), this.props.grid.pixelScale)
     // Don't waste CPU cycles drawing stuff that's not visible
@@ -186,8 +191,8 @@ export class PianorollTimelineDisplay extends Component {
 
     canvasContext.fillStyle = clip.selected ? color : '#000'
     canvasContext.textAlign = 'start'
-    let x = left   + 6*this.props.grid.pixelScale
-    let y = bottom - 9*this.props.grid.pixelScale
+    let x = left + (mobile ? 3 : 6) * this.props.grid.pixelScale
+    let y = (mobile ? 25 : 41) * this.props.grid.pixelScale
     canvasContext.fillText(`Clip ${clip.id}`, x, y)
   }
 

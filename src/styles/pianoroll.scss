@@ -31,7 +31,7 @@ $pianoroll-scroll-vertical: 20px;
   }
 
   > .timeline-playhead-window {
-    top: 10px;
+    top: 18px;
     left: $pianoroll-settings + $pianoroll-keyboard-width;
     right: 0;
     bottom: 0 + 1px;
@@ -458,9 +458,15 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 // Mobile
 // ============================================================================
 @media (max-width: $screen-sm-max) {
+  $pianoroll-timeline-height-mobile: 30px;
+  $pianoroll-keyboard-width-mobile: 45px;
   .pianoroll {
     left: 0 !important;
     right: 0 !important;
+
+    > .timeline-playhead-window {
+      top: 12px;
+    }
   }
   .pianoroll-settings {
     display: none !important;
@@ -469,23 +475,33 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
   .pianoroll-timeline-control,
   .pianoroll-window-display,
   .pianoroll-window-control {
-    left: 45px !important;
+    left: $pianoroll-keyboard-width-mobile !important;
+  }
+  .pianoroll-chunk,
+  .pianoroll-timeline-display,
+  .pianoroll-timeline-control {
+    height: $pianoroll-timeline-height-mobile !important;
+  }
+  .pianoroll-keyboard,
+  .pianoroll-window-display,
+  .pianoroll-window-control {
+    top: $pianoroll-timeline-height-mobile !important;
   }
   .pianoroll {
     > .timeline-cursor-window,
     > .timeline-playhead-window {
-      left: 45px !important;
+      left: $pianoroll-keyboard-width-mobile !important;
     }
   }
   .pianoroll-chunk {
     left: 0 !important;
     border-left: 0 !important;
-    width: 45px + 1px;
+    width: $pianoroll-keyboard-width-mobile + 1px;
   }
   .pianoroll-keyboard {
     left: 0 !important;
     border-left: 0 !important;
-    width: 45px !important;
+    width: $pianoroll-keyboard-width-mobile !important;
   }
   .pianoroll-key {
     &.black {
@@ -509,6 +525,7 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 
     &::after {
       border-top-right-radius: 0 !important;
+      box-shadow: inset 1px  1px 3px -1px #000;
     }
   }
   .pianoroll-window-display {
@@ -516,6 +533,55 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
 
     &::after {
       border-bottom-right-radius: 0 !important;
+      box-shadow:
+        inset 0    5px 5px -5px #000,
+        inset 5px  0   5px -5px #000,
+        inset 0   -5px 5px -5px #000;
+    }
+  }
+
+  .pianoroll-scrollbar-horizontal {
+    height: 5px;
+    left: 5px;
+    right: 10px;
+    bottom: 5px;
+
+    padding: 0;
+
+    pointer-events: none;
+    touch-action: none;
+
+    > .scrollbar-gutter {
+      height: 5px;
+      background: transparent;
+      box-shadow: none;
+
+      &:hover {
+        margin: 0;
+        height: 5px;
+      }
+    }
+  }
+  .pianoroll-scrollbar-vertical {
+    width: 5px;
+    top: 5px;
+    bottom: 10px;
+    right: 5px;
+
+    padding: 0;
+
+    pointer-events: none;
+    touch-action: none;
+
+    > .scrollbar-gutter {
+      width: 5px;
+      background: transparent;
+      box-shadow: none;
+
+      &:hover {
+        margin: 0;
+        height: 5px;
+      }
     }
   }
 }
