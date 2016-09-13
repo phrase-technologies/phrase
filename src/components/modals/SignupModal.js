@@ -5,7 +5,7 @@ import LaddaButton from 'react-ladda'
 
 import isAValidEmail from 'helpers/isEmail'
 import isValidUsername from 'helpers/isUsername'
-import { signup, oAuthLogin } from 'reducers/reduceAuth'
+import { signup, makeOAuthRequest } from 'reducers/reduceAuth'
 import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class SignupModal extends Component {
@@ -18,9 +18,7 @@ export class SignupModal extends Component {
     usernamePristine: true,
     passwordError: null,
     passwordPristine: true,
-    oAuth: null,
     oAuthError: null,
-    oAuthMessage: null,
   }
 
   render() {
@@ -34,7 +32,7 @@ export class SignupModal extends Component {
         passwordGroupClass += !this.state.passwordPristine && this.state.passwordError ? ' has-error' : ''
     let errorStyle = { fontSize: 12, marginTop: 3, lineHeight: 1 }
 
-    let oAuthHide = this.state.oAuth ? `none` : `block`
+    let oAuthHide = this.props.oAuth ? `none` : `block`
     let oAuthClassName = this.state.oAuthError ? `text-danger` : `text-info`
 
     let ModalComponent
@@ -60,10 +58,14 @@ export class SignupModal extends Component {
           <div className="form-group">
             <h4 className="text-center">Create an Account.</h4>
           </div>
-          <p><a href="" onClick={this.facebookOAuth}>Log in with facebook</a></p>
-          { (this.state.oAuthError || this.state.oAuthMessage) &&
+          <div className="form-group">
+            <button className="btn btn-sm btn-dark btn-block btn-facebook" onClick={this.facebookOAuth}>
+              <span className="fa fa-fw fa-facebook" />Login with Facebook
+            </button>
+          </div>
+          { (this.state.oAuthError || this.props.oAuthMessage) &&
             <p className={oAuthClassName} style={errorStyle}>
-              { this.state.oAuthError || this.state.oAuthMessage }
+              { this.state.oAuthError || this.props.oAuthMessage }
             </p>
           }
           <form onSubmit={this.signup} noValidate>
@@ -222,6 +224,8 @@ export class SignupModal extends Component {
   signup = (e) => {
     e ? e.preventDefault() : null
 
+    let email = this.props.oAuth ? this.props.oAuthEmail : this.email.value
+
     this.setState({
       inviteCodePristine: false,
       emailPristine: false,
@@ -231,41 +235,16 @@ export class SignupModal extends Component {
 
     this.props.dispatch(signup({
       inviteCode: this.inviteCode.value,
-      email: this.email.value,
+      email,
       username: this.username.value,
       password: this.password.value,
-      oAuthToken: this.state.oAuthToken,
+      oAuthToken: this.props.oAuthToken,
     }))
   }
 
   facebookOAuth = (e) => {
     e.preventDefault()
-    this.setState({ oAuth: `Facebook` })
-    window.oAuthCallback = this.oAuthCallback // Place callback on window object to give child window access
-    let newWindow = window.open(
-      `${API_URL}/auth/facebook`,
-      `Login with Facebook`,
-      `height=500,width=500`
-    )
-    newWindow.focus()
-  }
-
-  oAuthCallback = ({ success, token, email, newUser }) => {
-    success = JSON.parse(success)
-    newUser = JSON.parse(newUser)
-
-    if (!success)
-      this.setState({ oAuthError: `${this.state.oAuth} authentication failed, please try again` })
-    else {
-      if (newUser) {
-        this.setState({
-          oAuthMessage: `${this.state.oAuth} authentication successful, please choose a username below to finish signing up`,
-          oAuthToken: token,
-        })
-        this.email.value = email
-      }
-      else this.props.dispatch(oAuthLogin({ token, email }))
-    }
+    this.props.dispatch(makeOAuthRequest({ oAuth: `Facebook` }))
   }
 
   // Attach this to onMouseDown (in addition to onClick) to take

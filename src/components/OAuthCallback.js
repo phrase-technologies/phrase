@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 export class OAuthCallback extends Component {
   componentWillMount = () => {
-    window.opener.oAuthCallback(this.props.location.query)
+    window.opener.dispatch(window.opener.oAuthCallback(this.props.location.query))
     window.close()
   }
 
