@@ -7,6 +7,9 @@ import { login, makeOAuthRequest } from 'reducers/reduceAuth'
 import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class LoginModal extends Component {
+  state = {
+    errorMessage: null,
+  }
 
   render() {
     let ModalComponent
@@ -59,7 +62,7 @@ export class LoginModal extends Component {
               Log in
             </LaddaButton>
             <p className="text-danger text-center" style={{ marginTop: 5, marginBottom: 0 }}>
-              { this.props.errorMessage }
+              { this.state.errorMessage }
               { this.props.confirmFail && <a href="" onClick={this.openSignupConfirmationModal}>confirm here</a> }
             </p>
           </form>
@@ -78,6 +81,15 @@ export class LoginModal extends Component {
 
   shouldComponentUpdate(nextProps) {
     return !nextProps.activeModal || nextProps.activeModal === 'LoginModal'
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errorMessage) {
+      if(nextProps.errorMessage.oAuthError)
+        this.setState({ errorMessage: nextProps.errorMessage.oAuthError })
+      else
+        this.setState({ errorMessage: nextProps.errorMessage })
+    }
   }
 
   login = (e) => {
