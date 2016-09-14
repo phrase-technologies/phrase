@@ -237,8 +237,8 @@ export let makeOAuthRequest = ({ oAuth }) => {
 let oAuthCallback = ({ success, token, email, newUser }) => {
   return (dispatch, getState) => {
     let state = getState()
-    success = JSON.parse(success)
-    newUser = JSON.parse(newUser)
+    success = success === `true`
+    newUser = newUser === `true`
 
     if (!success)
       dispatch({
@@ -246,13 +246,16 @@ let oAuthCallback = ({ success, token, email, newUser }) => {
         payload: { message: { oAuthError: `${state.auth.oAuth} authentication failed, please try again`, }}
       })
     else {
-      if (newUser)
+      if (newUser) {
+        if (state.modal.activeModal !== `SignupModal`)
+          dispatch(modalOpen({ modalComponent: `SignupModal` }))
         dispatch({
           type: auth.OAUTH_SUCCESS,
           oAuthMessage: `${state.auth.oAuth} authentication successful, please choose a username below to finish signing up`,
           oAuthToken: token,
           oAuthEmail: email,
         })
+      }
       else dispatch(oAuthLogin({ token, email }))
     }
   }

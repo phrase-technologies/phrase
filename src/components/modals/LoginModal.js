@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import LaddaButton from 'react-ladda'
 
-import { login } from '../../reducers/reduceAuth.js'
-import { modalOpen, modalClose } from '../../reducers/reduceModal.js'
+import { login, makeOAuthRequest } from 'reducers/reduceAuth'
+import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class LoginModal extends Component {
 
@@ -30,6 +30,11 @@ export class LoginModal extends Component {
           { !this.props.embedded && <button type="button" className="close" onClick={this.closeModal}>&times;</button> }
           <div className="form-group">
             <h4 className="text-center">Have an account?</h4>
+          </div>
+          <div className="form-group">
+            <button className="btn btn-sm btn-dark btn-block btn-facebook" onClick={this.facebookOAuth}>
+              <span className="fa fa-fw fa-facebook" />Login with Facebook
+            </button>
           </div>
           <form onSubmit={this.login} noValidate>
             <div className="form-group" style={{marginBottom: 10}}>
@@ -82,6 +87,11 @@ export class LoginModal extends Component {
       email: this.email.value,
       password: this.password.value,
     }))
+  }
+
+  facebookOAuth = (e) => {
+    e.preventDefault()
+    this.props.dispatch(makeOAuthRequest({ oAuth: `Facebook` }))
   }
 
   openSignupModal = (e) => {
