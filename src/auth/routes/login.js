@@ -40,6 +40,12 @@ export default ({ api, app, db }) => {
           success: false,
           message: `User not found.`,
         })
+      } else if (!user.password) {
+        res.json({
+          success: false,
+          message: `Password has not been set yet, please `,
+          passwordFail: true,
+        })
       } else if (user.password !== doubleHash(password.trim())) {
         res.json({
           success: false,
