@@ -9,13 +9,13 @@ export default ({ app, db }) => {
     try {
       let user = await rUserGetFromEmail(db, { email })
       if (!user) {
-        res.json({ success: false, message: `Invalid user email` })
+        res.json({ success: false, message: { oAuthError: `Invalid user email` }})
         return
       }
 
       // Ensure token matches user email
       if (user.oAuthToken !== token) {
-        res.json({ success: false, message: `oAuth tokens do not match` })
+        res.json({ success: false, message: { oAuthError: `oAuth tokens do not match` }})
         return
       }
 
