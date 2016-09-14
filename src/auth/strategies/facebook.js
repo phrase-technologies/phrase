@@ -4,7 +4,7 @@ import FacebookStrategy from 'passport-facebook'
 import { facebookAppID, facebookAppSecret, apiURL } from '../../config'
 import { rUserGetFromEmail, rUserInsert, rUserUpdate } from '../../helpers/db-helpers'
 import { generateUniqueToken } from '../../helpers/token'
-import { getOAuthCallbackURL } from '../../helpers/oAuth'
+import { oAuthRedirect } from '../../helpers/oAuth'
 
 export default ({ app, db }) => {
   passport.use(new FacebookStrategy({
@@ -61,16 +61,9 @@ export default ({ app, db }) => {
   )
 
   app.get(`/auth/facebook/callback`, (req, res, next) => {
-    passport.authenticate(`facebook`, { session: false },
-      (err, user) => {
-        if (!user) {
-          console.log(err)
-          res.redirect(getOAuthCallbackURL({ error: true }))
-        }
-        else {
-          res.redirect(getOAuthCallbackURL(user))
-        }
-      },
+    passport.authenticate(`facebook`,
+      { session: false },
+      (err, user) => { oAuthRedirect(res, err, user) },
     )(req, res, next)
   })
 }
