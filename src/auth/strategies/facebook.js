@@ -62,7 +62,15 @@ export default ({ app, db }) => {
 
   app.get(`/auth/facebook/callback`, (req, res, next) => {
     passport.authenticate(`facebook`, { session: false },
-      (err, user) => { res.redirect(getOAuthCallbackURL(user)) },
+      (err, user) => {
+        if (!user) {
+          console.log(err)
+          res.redirect(getOAuthCallbackURL({ error: true }))
+        }
+        else {
+          res.redirect(getOAuthCallbackURL(user))
+        }
+      },
     )(req, res, next)
   })
 }
