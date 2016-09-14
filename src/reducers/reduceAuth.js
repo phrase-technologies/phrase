@@ -52,7 +52,7 @@ export let login = ({ email, password }) => {
             }
             else dispatch({
               type: auth.LOGIN_FAIL,
-              payload: { message: response.message, confirmFail: response.confirmFail },
+              payload: { message: response.message, passwordFail: response.passwordFail },
             })
           }
         })
@@ -311,6 +311,7 @@ let intialState = {
     username: localStorage.username,
   },
   errorMessage: null,
+  passwordFail: false,
   showConfirmUserError: false,
   oAuth: null,
   oAuthMessage: null,
@@ -327,7 +328,7 @@ export default (state = intialState, action) => {
       if (['LoginModal', 'SignupModal', 'ForgotPasswordModal'].find(x => x === action.modalComponent)) {
         return u({
           errorMessage: null,
-          confirmFail: false,
+          passwordFail: false,
         }, state)
       }
       else if (['ForgotPasswordSuccessModal', 'SignupConfirmationModal', 'ConfirmRetryModal'].find(x => x === action.modalComponent)) {
@@ -372,7 +373,7 @@ export default (state = intialState, action) => {
     case auth.LOGIN_FAIL:
       return u({
         errorMessage: action.payload.message,
-        confirmFail: action.payload.confirmFail,
+        passwordFail: action.payload.passwordFail,
         requestingAuth: false,
       }, state)
 

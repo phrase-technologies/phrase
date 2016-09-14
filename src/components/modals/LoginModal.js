@@ -63,7 +63,7 @@ export class LoginModal extends Component {
             </LaddaButton>
             <p className="text-danger text-center" style={{ marginTop: 5, marginBottom: 0 }}>
               { this.state.errorMessage }
-              { this.props.confirmFail && <a href="" onClick={this.openSignupConfirmationModal}>confirm here</a> }
+              { this.props.passwordFail && <a href="" onClick={this.openForgotPasswordModal}>set one here</a> }
             </p>
           </form>
         </Modal.Body>
@@ -114,18 +114,6 @@ export class LoginModal extends Component {
   openForgotPasswordModal = (e) => {
     e.preventDefault()
     this.props.dispatch(modalOpen({ modalComponent: 'ForgotPasswordModal' }))
-  }
-
-  openSignupConfirmationModal = (e) => {
-    e.preventDefault()
-    let email = this.email.value.indexOf('@') > -1 ? this.email.value : null
-    if (email)
-      this.props.dispatch(modalOpen({
-        modalComponent: 'SignupConfirmationModal',
-        payload: email,
-      }))
-    else
-      this.props.dispatch(modalOpen({ modalComponent: 'ConfirmRetryModal' }))
   }
 
   closeModal = () => {

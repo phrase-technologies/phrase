@@ -23,12 +23,12 @@ export let login = async ({ body, callback }) =>  {
       endpoint: `api/login`,
       body,
     })
-    let { success, message, token, user, confirmFail } = response
+    let { success, message, token, user, passwordFail } = response
     if (success) {
       setUserLocalStorage({ token, user })
       callback({ success, message, user })
     }
-    else callback({ message, confirmFail })
+    else callback({ message, passwordFail })
 }
 
 export let forgotPassword = async (body, callback) => {
