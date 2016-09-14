@@ -11,24 +11,23 @@ export default ({ app, db }) => {
     clientID: facebookAppID,
     clientSecret: facebookAppSecret,
     callbackURL: `${apiURL}/auth/facebook/callback`,
-    profileFields: [`id`, `emails`, `name`],
+    profileFields: [`id`, `emails`, `name`, `picture`],
   }, async (accessToken, refreshToken, profile, done) => {
-      let { emails } = profile
-      if (!emails || !accessToken) {
+      let { emails, photos } = profile
+      if (!photos || !emails || !accessToken) {
         done(null, { success: false })
         return
       }
 
-      // Get user by email
       let { value: email } = emails[0]
+      let { value: picture } = photos[0]
       let lowerCaseEmail = email.toLowerCase()
-      let user = await rUserGetFromEmail(db, { email })
-
       let facebook = {
         accessToken,
         refreshToken: !refreshToken ? null : refreshToken,
       }
       let oAuthToken = await generateUniqueToken({ index: `oAuthToken`, db })
+      let user = await rUserGetFromEmail(db, { email })
 
       // Add user if they don't already exist, update their tokens if they do exist
       if (!user)
@@ -38,10 +37,16 @@ export default ({ app, db }) => {
           password: null,
           facebook,
           oAuthToken,
+          picture,
         })
-      else await rUserUpdate(db, {
+      else
+        await rUserUpdate(db, {
           id: user.id,
-          update: { oAuthToken, facebook },
+          update: {
+            oAuthToken,
+            facebook,
+            picture,
+          },
         })
 
       done(null, {
