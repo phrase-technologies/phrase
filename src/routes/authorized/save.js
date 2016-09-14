@@ -7,14 +7,21 @@ export default ({ api, db }) => {
     let { parentId = null, phraseState, phraseName } = req.body
     let { id: userId } = req.decoded
 
+    if (!phraseState) {
+      res.json({ success: false, message: `State must exist to save.` })
+      return
+    }
+
     try {
+      let timestamp = +new Date()
+
       let result = await r.table(`phrases`).insert({
         parentId,
         state: phraseState,
         public: true,
-        dateCreated: +new Date(),
-        dateModified: +new Date(),
-        phrasename: phraseName,
+        dateCreated: timestamp,
+        dateModified: timestamp,
+        phrasename: phraseName, // TODO: fix this inconsistency
         userId,
       }).run(db)
 

@@ -13,25 +13,32 @@ import { secret } from '../src/config'
 
 /*----------------------------------------------------------------------------*/
 
-// Auth Tests
+// Auth
 import signup from './auth/routes/signup'
 import login from './auth/routes/login'
 
-// Unauthorized Tests
+// Unauthorized
 import loadUserPhrases from './routes/unauthorized/loadUserPhrases'
 
-// Authorized Tests
+// Authorized
 import save from './routes/authorized/save'
+import deletePhrase from './routes/authorized/deletePhrase'
 
 /*----------------------------------------------------------------------------*/
 
 let app, db, io, server
 let domain = `http://localhost:9999`
 
-let testUser = {
-  email: `foo@foo`,
-  username: `foo`,
-  password: `best_password_bro`,
+let alice = {
+  email: `alice@foo`,
+  username: `alice`,
+  password: `alice_password`,
+}
+
+let bob = {
+  email: `bob@foo`,
+  username: `bob`,
+  password: `bob_password`,
 }
 
 /*----------------------------------------------------------------------------*/
@@ -61,14 +68,26 @@ async function runTests () {
     server.listen(9999)
   })
 
-/*----------------------------------------------------------------------------*/
+/*---Test order matters!------------------------------------------------------*/
 
-  // Test order matters!
+  // Auth
+  await signup({ domain, user: alice })
+  await signup({ domain, user: bob })
 
-  signup({ domain, testUser })
-  let { token, user } = await login({ domain, testUser })
-  loadUserPhrases({ domain, user })
-  save({ domain, user, token })
+  let aliceLogin = await login({ domain, user: alice })
+  alice.token = aliceLogin.token
+  alice.user = aliceLogin.user
+
+  let bobLogin = await login({ domain, user: bob })
+  bob.token = bobLogin.token
+  bob.user = bobLogin.user
+
+  // Unauthorized
+  loadUserPhrases({ domain, user: alice })
+
+  // Authorized
+  let { phraseId } = await save({ domain, user: alice, token: alice.token })
+  deletePhrase({ domain, author: alice, observer: bob, phraseId })
 
 /*----------------------------------------------------------------------------*/
 

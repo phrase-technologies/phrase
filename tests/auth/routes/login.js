@@ -7,10 +7,10 @@ let fakeUser = {
   password: `fake_password_bro`,
 }
 
-export default ({ domain, testUser }) => {
-  return new Promise(resolve => {
-    let url = `${domain}/api/login`
+export default ({ domain, user }) => {
+  let url = `${domain}/api/login`
 
+  return new Promise(resolve => {
     describe(`login`, () => {
       it(`should warn about missing email`, async function() {
         this.timeout(100000)
@@ -42,14 +42,14 @@ export default ({ domain, testUser }) => {
 
       it(`should return a jwt on successful login`, async function() {
         this.timeout(100000)
-        let response = await ajax({ url, body: testUser })
-        let { message, token, user } = await response.json()
+        let response = await ajax({ url, body: user })
+        let { message, token, user: userFromDb } = await response.json()
         expect(token).to.exist
         expect(user).to.exist
         expect(message).to.eq(`Enjoy your token!`)
 
         // This info will be used for subsequent tests
-        resolve({ token, user })
+        resolve({ token, user: userFromDb })
       })
     })
   })
