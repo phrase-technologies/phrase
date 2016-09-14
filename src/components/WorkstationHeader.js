@@ -40,7 +40,7 @@ export class WorkstationHeader extends Component {
         containerClasses += isSafari() ? ' container-safari-fix' : ''
 
     return (
-      <div className="workstation-header" style={{ zIndex: 500 }}>
+      <div className="workstation-header">
         <div className={containerClasses} style={{ position: 'relative' }}>
           <div className="btn-toolbar workstation-header-rephrase">
             { !editable &&
@@ -90,7 +90,7 @@ export class WorkstationHeader extends Component {
         <div className="workstation-divider" />
         <WorkstationHeaderStorage {...this.props} />
         <div className="workstation-controls">
-          <TransportControls style={{ display: 'inline-block' }} />
+          <TransportControls />
         </div>
         { editable &&
           <div className="btn-toolbar workstation-header-tools">

@@ -25,9 +25,9 @@ let TransportControls = (props) => {
   let editable = !existingPhrase || ownerOfPhrase
 
   return (
-    <div className="btn-toolbar" style={props.style}>
+    <div className="btn-toolbar transport">
       <TransportTempo editable={editable} />
-      <div className="btn-group">
+      <div className="btn-group hidden-xs">
         <TransportButton
           onButtonClick={() => dispatch(transportRewindPlayhead())}
           toggle={false} tooltip="Rewind Playhead (<)"
@@ -77,6 +77,33 @@ let TransportControls = (props) => {
           <i className="phrase-icon-metronome" />
         </TransportButton>
       </div>
+      { mobilePlayButton(props) }
+    </div>
+  )
+}
+
+function mobilePlayButton({ dispatch, playing, playhead }) {
+  let buttonClasses = "btn btn-primary btn-sm"
+  let stopHandler = () => dispatch(transportStop())
+  let playHandler = () => dispatch(transportPlayToggle())
+  let stopType = !playhead || playing ? "stop" : "step-backward"
+
+  return (
+    <div className="btn-group visible-xs-block">
+      <button
+        type="button" className={buttonClasses}
+        onClick={stopHandler}
+        tabIndex="-1"
+      >
+        <i className={`fa fa-fw fa-${stopType}`} />
+      </button>
+      <button
+        type="button" className={buttonClasses}
+        onClick={playHandler}
+        tabIndex="-1"
+      >
+        <i className={`fa fa-fw fa-${playing ? 'pause' : 'play'}`} />
+      </button>
     </div>
   )
 }

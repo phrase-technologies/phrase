@@ -77,6 +77,7 @@ $workstation-discussion-z-index: 500;     // Above.... TODO: Obsolete after remo
   text-align: left;
 
   pointer-events: all;
+  z-index: 500;
 
   > .transport {
     display: inline-block;
@@ -111,7 +112,7 @@ $workstation-discussion-z-index: 500;     // Above.... TODO: Obsolete after remo
   text-align: center;
 }
 .transport {
-  color: #FFF;
+  display: inline-block;
 }
 .transport-btn {
   padding-left:  9px;
@@ -543,12 +544,18 @@ div.workstation-header-title {
   .workstation-header {
     right: 0 !important;
     padding: 5px;
+    height: 190px;
+    text-align: center;
+
+    pointer-events: none;
   }
   .workstation-header-rephrase {
     display: none;
   }
   .workstation-header-title {
     max-width: 150px !important;
+
+    pointer-events: all;
   }
   .workstation-header-social {
     display: none;
@@ -561,14 +568,22 @@ div.workstation-header-title {
   }
   .workstation-controls {
     position: absolute;
-    left: 10px;
-    bottom: 10px;
+    left: 6px;
+    bottom: 6px;
+
+    pointer-events: all;
+  }
+  .transport {
+    display: block;
   }
   .workstation-header-tools {
     display: none;
   }
   .workstation-core {
     right: 0 !important;
+  }
+  .workstation-main {
+    bottom: 40px;
   }
   .workstation-body {
     top: 35px;
