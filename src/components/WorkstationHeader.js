@@ -6,7 +6,6 @@ import Dropdown from 'react-bootstrap/lib/Dropdown'
 import WorkstationHeaderTitle from './WorkstationHeaderTitle'
 import WorkstationHeaderAuthor from './WorkstationHeaderAuthor'
 import WorkstationHeaderStorage from './WorkstationHeaderStorage'
-import WorkstationHeaderShare from './WorkstationHeaderShare'
 import TransportControls from './TransportControls'
 import HintRing from 'components/HintRing'
 
@@ -76,12 +75,6 @@ export class WorkstationHeader extends Component {
             </div>
           </div>
           <div className="btn-toolbar workstation-header-social">
-            <div className="btn-group">
-              <span className="workstation-header-share">
-                Share:
-              </span>
-            </div>
-            <WorkstationHeaderShare />
             <div className="btn-group">
               { this.renderMIDIExportButton() }
             </div>

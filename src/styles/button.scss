@@ -22,12 +22,18 @@ a,
   text-decoration: none !important;
 }
 
+.link-primary {
+  color: hsl(180,50%,40%);
+
+  &:hover {
+    color: hsl(180,50%,50%);
+  }
+}
+
 // ============================================================================
 // Buttons
 // ============================================================================
 .btn {
-  outline: none !important;
-
   &.disabled,
   &[disabled] {
     opacity: 0.5;

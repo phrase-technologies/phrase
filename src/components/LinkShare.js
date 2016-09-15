@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import { Tooltip, Popover, OverlayTrigger } from 'react-bootstrap'
 import Clipboard from 'clipboard'
 import isSafari from 'helpers/isSafari'
-import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 
-export default class WorkstationHeaderShare extends Component {
+export default class LinkShare extends Component {
 
   constructor() {
     super()
@@ -35,49 +34,51 @@ export default class WorkstationHeaderShare extends Component {
     let safariClick = {}
     if (isSafari()) {
       CopiedTooltip = (
-        <Popover
-          id="popover-clipboard" className="clipboard-popover"
+        <Tooltip
+          id="tooltip-clipboard"
           style={{ visibility: this.state.clipboard ? 'visible' : 'hidden' }}
         >
           Press ⌘ + C to copy
-          <br/>
-          <input
-            type="text" className="form-control"
-            value={location.href} readOnly
-            ref={ref => this.safariSelection = ref}
-          />
-        </Popover>
+        </Tooltip>
       )
       safariClick.trigger = "click"
       safariClick.rootClose = true
     }
 
     return (
-      <div className="btn-group">
-        <button
-          className="btn btn-sm btn-dark btn-narrow btn-facebook"
-          onClick={this.facebookShare} {...makeButtonUnfocusable}
-        >
-          <span className="fa fa-fw fa-facebook" />
-        </button>
-        <a
-          className="btn btn-sm btn-dark btn-narrow btn-twitter"
-          href={`http://twitter.com/share?url=${location.href}&text=${"Check this out! @PhraseTech"}`}
-          target="_blank" {...makeButtonUnfocusable}
-        >
-          <span className="fa fa-fw fa-twitter" />
-        </a>
-        <OverlayTrigger placement="top" overlay={CopiedTooltip} delayHide={1250} {...safariClick} onExit={this.copyFinish}>
-          <OverlayTrigger placement="top" overlay={ClipboardTooltip} delayShow={250}>
-            <button
-              className="btn btn-sm btn-dark clipboard-link"
-              data-clipboard-text={location.href} {...makeButtonUnfocusable}
-            >
-              <span className="fa fa-paperclip" />
-              <span> Link</span>
-            </button>
+      <div className="input-group input-group-sm">
+        <input
+          type="text" className="form-control"
+          defaultValue={location.href} readOnly
+          ref={ref => this.linkControl = ref}
+        />
+        <div className="input-group-btn">
+          <OverlayTrigger placement="top" overlay={CopiedTooltip} delayHide={1250} {...safariClick} onExit={this.copyFinish}>
+            <OverlayTrigger placement="top" overlay={ClipboardTooltip} delayShow={250}>
+              <button
+                className="btn btn-sm btn-bright clipboard-link"
+                data-clipboard-text={location.href}
+                onClick={() => this.linkControl.select()}
+              >
+                <span className="fa fa-paperclip" />
+                <span> Link</span>
+              </button>
+            </OverlayTrigger>
           </OverlayTrigger>
-        </OverlayTrigger>
+          <button
+            className="btn btn-sm btn-dark btn-narrow btn-facebook"
+            onClick={this.facebookShare}
+          >
+            <span className="fa fa-fw fa-facebook" />
+          </button>
+          <a
+            className="btn btn-sm btn-dark btn-narrow btn-twitter"
+            href={`http://twitter.com/share?url=${location.href}&text=${"Check this out! @PhraseTech"}`}
+            target="_blank"
+          >
+            <span className="fa fa-fw fa-twitter" />
+          </a>
+        </div>
       </div>
     )
   }

@@ -7,6 +7,11 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
 
+.form-control {
+  &:focus {
+    border: 1px solid hsl(180,100%,30%);
+  }
+}
 .form-control-dark {
   border: 1px solid transparent;
   background: #222;
@@ -16,6 +21,10 @@ input::-webkit-inner-spin-button {
     0px 1px 1px #888;
   padding: 0 8px;
   color: #FFF;
+
+  &:focus {
+    border: 1px solid hsl(180,100%,50%);
+  }
 }
 .form-control-glow {
   border: 1px solid transparent;
