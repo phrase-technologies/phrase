@@ -18,6 +18,10 @@ export default ({ app, db }) => {
       }
 
       let oAuth = await rOAuthGetFromEmail(db, { email })
+      if (!oAuth) {
+        res.json({ success: false, message: { oAuthError: `Login failed, please try again` }})
+        return
+      }
       if (oAuth.oAuthToken !== token) {
         res.json({ success: false, message: { oAuthError: `oAuth tokens do not match` }})
         return
