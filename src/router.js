@@ -9,7 +9,7 @@ export default ({ app, db, io }) => {
 
   unauthorizedRoutes.forEach(route => route({ api, db, io }))
 
-  auth({ app, api, db })
+  auth({ app, api, db, io })
 
   authorizedRoutes.forEach(route => route({ api, db, io }))
 
