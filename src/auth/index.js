@@ -7,11 +7,12 @@ export default ({
   api,
   app,
   db,
+  io,
 }) => {
 
   app.use(passport.initialize())
 
-  strategies.forEach(strategy => strategy({ app, db }))
+  strategies.forEach(strategy => strategy({ app, db, io }))
   authRoutes.forEach(route => route({ api, app, db }))
 
   api.use((req, res, next) => {
