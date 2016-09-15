@@ -2,7 +2,9 @@ console.log(`Run this with: npm run migrate -- scripts/migrations/20160815_invit
 let r = require(`rethinkdb`)
 
 r.connect({ host: `localhost`, db: `phrase`, port: 28015 }, async (err, conn) => {
-  r.table(`users`).indexCreate(`oAuthToken`).run(conn)
-  console.log(`index created`)
+  await r.tableCreate(`oAuth`).run(conn)
+  await r.table(`oAuth`).indexCreate(`oAuthToken`).run(conn)
+  await r.table(`oAuth`).indexCreate(`email`).run(conn)
+  console.log(`table and index created`)
   process.exit()
 })
