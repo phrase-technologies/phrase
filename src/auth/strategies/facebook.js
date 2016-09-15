@@ -28,7 +28,7 @@ export default ({ app, db, io }) => {
   app.get(`/auth/facebook/callback`, (req, res, next) => {
     passport.authenticate(`facebook`,
       { session: false },
-      (err, user) => { completeOAuth({ res, io, err, user }) },
+      (err, user, info) => { completeOAuth({ res, io, err, user, info }) },
     )(req, res, next)
   })
 }

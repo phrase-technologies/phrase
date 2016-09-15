@@ -7,9 +7,9 @@ import {
 
 import { generateUniqueToken } from './token'
 
-export let completeOAuth = ({ res, io, err, user }) => {
+export let completeOAuth = ({ res, io, err, user, info }) => {
   if (!user) {
-    console.log(err)
+    console.log(`oAuth error: ${err}::${info}::${user}`)
     io.emit(`server::oAuthUser`, { error: true })
   }
   else io.emit(`server::oAuthUser`, user)
@@ -33,6 +33,7 @@ export let handleOAuth = async ({ profile, done, db }) => {
     let oAuthToken = await generateUniqueToken({ table: `oAuth`, index: `oAuthToken`, db })
     let user = await rUserGetFromEmail(db, { email })
 
+    // Remove old oAuth login credentials, insert new one
     await rOAuthDeleteFromEmail(db, { email })
     await rOAuthInsert(db, {
       email,
@@ -55,6 +56,6 @@ export let handleOAuth = async ({ profile, done, db }) => {
   }
   catch (e) {
     console.log(e)
-    done(true)
+    done(e)
   }
 }
