@@ -47,6 +47,9 @@ export class LoginModal extends Component {
             <button className="btn btn-sm btn-dark btn-block btn-facebook" onClick={this.facebookOAuth}>
               <span className="fa fa-fw fa-facebook" />Login with Facebook
             </button>
+            <button className="btn btn-sm btn-dark btn-block btn-google" onClick={this.googleOAuth}>
+              <span className="fa fa-fw fa-google" /> Login with Google
+            </button>
           </div>
           <form onSubmit={this.login} noValidate>
             <div className="form-group" style={{marginBottom: 10}}>
@@ -113,6 +116,11 @@ export class LoginModal extends Component {
   facebookOAuth = (e) => {
     e.preventDefault()
     this.props.dispatch(makeOAuthRequest({ oAuth: `Facebook` }))
+  }
+
+  googleOAuth = (e) => {
+    e.preventDefault()
+    this.props.dispatch(makeOAuthRequest({ oAuth: `Google` }))
   }
 
   receiveSocketOAuth = (user) => {

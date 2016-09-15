@@ -224,7 +224,7 @@ export let makeOAuthRequest = ({ oAuth }) => {
     let newWindow = window.open(
       `${API_URL}/auth/${oAuth.toLowerCase()}`,
       `Login with ${oAuth}`,
-      `height=500,width=500`
+      `height=700,width=700`
     )
     newWindow.focus()
   }
