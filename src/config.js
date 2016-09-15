@@ -15,9 +15,9 @@ export let facebookAppSecret = isProd() ?
   `a9edb37f4e18aa31d4c5d0b41edf5a24` :
   `4539c09f436b3dfeca6f1574ce2d0900`
 
-  export let googleAppID = isProd() ?
-    `824442938754-vgnee5n6289d7ugtv9bndebsittjv215.apps.googleusercontent.com` :
-    `96612606068-smbafu4j3cdle1fjtgt3nopm9l7009jd.apps.googleusercontent.com`
-  export let googleAppSecret = isProd() ?
-    `x4TqOFs1p1R3dHmGLbLNq6n8` :
-    `ZtB-78up4C72El69lJJwyKfj`
+export let googleAppID = isProd() ?
+  `824442938754-vgnee5n6289d7ugtv9bndebsittjv215.apps.googleusercontent.com` :
+  `96612606068-smbafu4j3cdle1fjtgt3nopm9l7009jd.apps.googleusercontent.com`
+export let googleAppSecret = isProd() ?
+  `x4TqOFs1p1R3dHmGLbLNq6n8` :
+  `ZtB-78up4C72El69lJJwyKfj`
