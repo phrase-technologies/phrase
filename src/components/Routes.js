@@ -11,7 +11,6 @@ import About from 'components/About.js'
 import NewPassword from 'components/NewPassword.js'
 import Error404 from 'components/Error404.js'
 import ConfirmUser from 'components/ConfirmUser'
-import OAuthCallback from 'components/OAuthCallback'
 
 export default (
   <Route path="/" component={Site}>
@@ -20,7 +19,6 @@ export default (
     <Route path="developers" component={About} />
     <Route path="new-password" component={NewPassword} />
     <Route path="confirm-user" component={ConfirmUser} />
-    <Route path="oauth-callback" component={OAuthCallback} />
     <Route path="/" component={App}>
       <Route path="search" component={Library} />
       <Route path="search/:searchTerm" component={Library} />

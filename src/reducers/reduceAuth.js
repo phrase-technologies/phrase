@@ -221,10 +221,6 @@ export let retryConfirmUser = ({ email }) => {
 export let makeOAuthRequest = ({ oAuth }) => {
   return (dispatch) => {
     dispatch({ type: auth.OAUTH_REQUEST, oAuth})
-
-    // Bind dispatch and oAuthCallback to the parent window, so that the client window has access
-    window.dispatch = dispatch
-    window.oAuthCallback = oAuthCallback
     let newWindow = window.open(
       `${API_URL}/auth/${oAuth.toLowerCase()}`,
       `Login with ${oAuth}`,
@@ -234,12 +230,9 @@ export let makeOAuthRequest = ({ oAuth }) => {
   }
 }
 
-let oAuthCallback = ({ success, token, email, newUser }) => {
+export let oAuthCallback = ({ success, token, email, newUser }) => {
   return (dispatch, getState) => {
     let state = getState()
-    success = success === `true`
-    newUser = newUser === `true`
-
     if (!success)
       dispatch({
         type: auth.LOGIN_FAIL,

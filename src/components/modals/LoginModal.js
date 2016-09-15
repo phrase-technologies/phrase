@@ -3,12 +3,21 @@ import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import LaddaButton from 'react-ladda'
 
-import { login, makeOAuthRequest } from 'reducers/reduceAuth'
+import withSocket from 'components/withSocket'
+import { login, makeOAuthRequest, oAuthCallback } from 'reducers/reduceAuth'
 import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class LoginModal extends Component {
   state = {
     errorMessage: null,
+  }
+
+  componentDidMount() {
+    this.props.socket.on(`server::oAuthUser`, this.receiveSocketOAuth)
+  }
+
+  componentWillUnmount() {
+    this.props.socket.off("server::oAuthUser", this.receiveSocketOAuth)
   }
 
   render() {
@@ -106,6 +115,10 @@ export class LoginModal extends Component {
     this.props.dispatch(makeOAuthRequest({ oAuth: `Facebook` }))
   }
 
+  receiveSocketOAuth = (user) => {
+    this.props.dispatch(oAuthCallback(user))
+  }
+
   openSignupModal = (e) => {
     e.preventDefault()
     this.props.dispatch(modalOpen({ modalComponent: 'SignupModal'  }))
@@ -129,4 +142,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(LoginModal)
+export default withSocket(connect(mapStateToProps)(LoginModal))

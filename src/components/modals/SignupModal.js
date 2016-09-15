@@ -3,9 +3,10 @@ import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import LaddaButton from 'react-ladda'
 
+import withSocket from 'components/withSocket'
 import isAValidEmail from 'helpers/isEmail'
 import isValidUsername from 'helpers/isUsername'
-import { signup, makeOAuthRequest } from 'reducers/reduceAuth'
+import { signup, makeOAuthRequest, oAuthCallback } from 'reducers/reduceAuth'
 import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class SignupModal extends Component {
@@ -19,6 +20,14 @@ export class SignupModal extends Component {
     passwordError: null,
     passwordPristine: true,
     oAuthError: null,
+  }
+
+  componentDidMount() {
+    this.props.socket.on(`server::oAuthUser`, this.receiveSocketOAuth)
+  }
+
+  componentWillUnmount() {
+    this.props.socket.off("server::oAuthUser", this.receiveSocketOAuth)
   }
 
   render() {
@@ -247,6 +256,10 @@ export class SignupModal extends Component {
     this.props.dispatch(makeOAuthRequest({ oAuth: `Facebook` }))
   }
 
+  receiveSocketOAuth = (user) => {
+    this.props.dispatch(oAuthCallback(user))
+  }
+
   // Attach this to onMouseDown (in addition to onClick) to take
   // precedence over validaiton onBlur handlers
   openLoginModal = (e) => {
@@ -265,4 +278,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(SignupModal)
+export default withSocket(connect(mapStateToProps)(SignupModal))
