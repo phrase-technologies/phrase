@@ -1,5 +1,9 @@
 
-import { rUserGetFromEmail } from '../../helpers/db-helpers'
+import {
+  rUserGetFromEmail,
+  rOAuthGetFromEmail,
+  rOAuthDeleteFromEmail,
+} from '../../helpers/db-helpers'
 import { generateAPIToken } from '../../helpers/token'
 
 export default ({ app, db }) => {
@@ -13,11 +17,12 @@ export default ({ app, db }) => {
         return
       }
 
-      // Ensure token matches user email
-      if (user.oAuthToken !== token) {
+      let oAuth = await rOAuthGetFromEmail(db, { email })
+      if (oAuth.oAuthToken !== token) {
         res.json({ success: false, message: { oAuthError: `oAuth tokens do not match` }})
         return
       }
+      rOAuthDeleteFromEmail(db, { email })
 
       // Valid token, valid user, return user details
       let apiToken = await generateAPIToken(user, app)

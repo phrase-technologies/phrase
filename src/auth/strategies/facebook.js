@@ -2,7 +2,12 @@
 import passport from 'passport'
 import FacebookStrategy from 'passport-facebook'
 import { facebookAppID, facebookAppSecret, apiURL } from '../../config'
-import { rUserGetFromEmail, rUserInsert, rUserUpdate } from '../../helpers/db-helpers'
+import {
+  rUserGetFromEmail,
+  rOAuthInsert,
+  rUserUpdate,
+  rOAuthDeleteFromEmail,
+} from '../../helpers/db-helpers'
 import { generateUniqueToken } from '../../helpers/token'
 import { completeOAuth } from '../../helpers/oAuth'
 
@@ -27,24 +32,22 @@ export default ({ app, db, io }) => {
           accessToken,
           refreshToken: !refreshToken ? null : refreshToken,
         }
-        let oAuthToken = await generateUniqueToken({ index: `oAuthToken`, db })
+        let oAuthToken = await generateUniqueToken({ table: `oAuth`, index: `oAuthToken`, db })
         let user = await rUserGetFromEmail(db, { email })
 
-        // Add user if they don't already exist, update their tokens if they do exist
-        if (!user)
-          await rUserInsert(db, {
-            username: null,
-            email: lowerCaseEmail,
-            password: null,
-            facebook,
-            oAuthToken,
-            picture,
-          })
-        else
+
+        await rOAuthDeleteFromEmail(db, { email })
+        await rOAuthInsert(db, {
+          oAuthToken,
+          email,
+          facebook,
+          picture,
+        })
+
+        if (user) // If user exists update their info
           await rUserUpdate(db, {
             id: user.id,
             update: {
-              oAuthToken,
               facebook,
               picture,
             },

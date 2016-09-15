@@ -1,10 +1,11 @@
 import {
-  rUserUpdateFromEmail,
+  rUserInsert,
   rUserGetFromEmail,
   rUserGetFromUsername,
-  rUserInsert,
-  rInviteCodeUpdateMarkUsed,
   rInviteCodeGetFromCode,
+  rInviteCodeUpdateMarkUsed,
+  rOAuthGetFromEmail,
+  rOAuthDeleteFromEmail,
 } from '../../helpers/db-helpers'
 
 import { generateUniqueToken } from '../../helpers/token'
@@ -18,19 +19,19 @@ export default ({ app, db }) => {
   app.post(`/signup`, async (req, res) => {
     let { inviteCode, email, username, password, oAuthToken } = req.body
 
-    // Validate Invite Code
-    if (!inviteCode) {
-      res.json({ message: { inviteCodeError: `Invite Code is required.` } })
-      return
-    }
-
-    let trimmedInviteCode = inviteCode.trim()
-    let trimmedEmail = email.trim()
-    let trimmedUsername = username.trim()
-    let trimmedPassword = password.trim()
-
     try {
-      let inviteCodeResult = await rInviteCodeGetFromCode(db, { inviteCode })
+      let trimmedInviteCode = inviteCode.trim()
+      let trimmedEmail = email.trim()
+      let trimmedUsername = username.trim()
+      let trimmedPassword = password.trim()
+
+      // Validate Invite Code
+      if (!trimmedInviteCode) {
+        res.json({ message: { inviteCodeError: `Invite Code is required.` } })
+        return
+      }
+
+      let inviteCodeResult = await rInviteCodeGetFromCode(db, { inviteCode: trimmedInviteCode })
 
       if (!inviteCodeResult) {
         res.json({ message: { inviteCodeError: `Invalid Code.` } })
@@ -39,101 +40,109 @@ export default ({ app, db }) => {
         res.json({ message: { inviteCodeError: `Expired or Used Code.` } })
         return
       }
-    }
-    catch (err) {
-      console.log(err)
-      res.json({ inviteCodeError: `Database Error.` })
-      return
-    }
 
-    if (!trimmedEmail || !isValidEmail(trimmedEmail)) {
-      res.json({
-        success: false,
-        message: { emailError: `Invalid email.` },
-      })
-    } else {
-      try {
-        let lowerCaseEmail = trimmedEmail.toLowerCase()
-        let user = await rUserGetFromEmail(db, { email: lowerCaseEmail })
-        if (oAuthToken && !user) {
+      if (!trimmedEmail || !isValidEmail(trimmedEmail)) {
+        res.json({
+          success: false,
+          message: { emailError: `Invalid email.` },
+        })
+        return
+      }
+
+      let lowerCaseEmail = trimmedEmail.toLowerCase()
+      let user = await rUserGetFromEmail(db, { email: lowerCaseEmail })
+      if (user) {
+        res.json({
+          success: false,
+          message: { emailError: `An account with this email already exists.` },
+        })
+        return
+      }
+      if (!trimmedUsername || !isValidUsername(trimmedUsername)) {
+        res.json({
+          success: false,
+          message: {
+            usernameError: `Usernames may only contain letters, numbers, and underscores.`,
+          },
+        })
+        return
+      }
+      if (trimmedUsername.length > 20) {
+        res.json({
+          success: false,
+          message: { usernameError: `Usernames may be at most 20 characters long.`},
+        })
+        return
+      }
+
+      let userByUsername = await rUserGetFromUsername(db, { username: trimmedUsername })
+
+      if (userByUsername) {
+        res.json({
+          success: false,
+          message: { usernameError: `Sorry, the username "${username}" is taken.` },
+        })
+        return
+      }
+
+      let oAuth = await rOAuthGetFromEmail(db, { email: lowerCaseEmail })
+      if (oAuthToken) {
+        if (!oAuth) {
           res.json({
             success: false,
-            message: { oAuthError: `oAuth error, please retry logging in through your provider` },
+            message: { emailError: `An oAuth error ocurred, please try again` },
           })
+          return
         }
-        else if ((!oAuthToken && user) || (oAuthToken && user.username)) {
-          res.json({
-            success: false,
-            message: { emailError: `An account with this email already exists.` },
-          })
-        } else if (oAuthToken && oAuthToken !== user.oAuthToken) {
+        if (oAuthToken !== oAuth.oAuthToken) {
           res.json({
             success: false,
             message: { oAuthError: `Invalid oAuthToken, please try again` },
           })
-        } else if (!trimmedUsername || !isValidUsername(trimmedUsername)) {
-          res.json({
-            success: false,
-            message: {
-              usernameError: `Usernames may only contain letters, numbers, and underscores.`,
-            },
-          })
-        } else if (trimmedUsername.length > 20) {
-          res.json({
-            success: false,
-            message: { usernameError: `Usernames may be at most 20 characters long.`},
-          })
-        } else {
-          let userByUsername = await rUserGetFromUsername(db, { username: trimmedUsername })
-
-          if (userByUsername) {
-            res.json({
-              success: false,
-              message: { usernameError: `Sorry, the username "${username}" is taken.` },
-            })
-          } else if (!oAuthToken && (!trimmedPassword || !isValidPassword(trimmedPassword))) {
-            res.json({
-              success: false,
-              message: { passwordError: `Passwords must be at least 6 characters long` },
-            })
-          }
-          else {
-            if (oAuthToken) {
-              rUserUpdateFromEmail(db, {
-                email: lowerCaseEmail,
-                update: { username: trimmedUsername },
-              })
-            }
-            else {
-              let token = await generateUniqueToken({ index: `confirmToken`, db })
-
-              rUserInsert(db, {
-                username: trimmedUsername,
-                email: lowerCaseEmail,
-                password: doubleHash(trimmedPassword),
-                confirmToken: token,
-                dateCreated: new Date(),
-              })
-
-              sendWelcomeEmail({
-                email: lowerCaseEmail,
-                username: trimmedUsername,
-                confirmToken: token,
-              })
-            }
-
-            rInviteCodeUpdateMarkUsed(db, { inviteCode: trimmedInviteCode })
-
-            console.log(`${trimmedUsername} signed up!`)
-
-            res.json({ success: true })
-          }
+          return
         }
+        delete oAuth.dateCreated
+        delete oAuth.id
+        delete oAuth.oAuthToken
+        delete oAuth.email
+        rUserInsert(db, {
+          username: trimmedUsername,
+          email: lowerCaseEmail,
+          ...oAuth,
+        })
       }
-      catch (err) {
-        console.log(err)
-        res.json({ success: false })
+      else {
+        if (!trimmedPassword || !isValidPassword(trimmedPassword)) {
+          res.json({
+            success: false,
+            message: { passwordError: `Passwords must be at least 6 characters long` },
+          })
+          return false
+        }
+        if (oAuth) await rOAuthDeleteFromEmail(db, { email: lowerCaseEmail })
+        let token = await generateUniqueToken({ index: `confirmToken`, db })
+        rUserInsert(db, {
+          username: trimmedUsername,
+          email: lowerCaseEmail,
+          password: doubleHash(trimmedPassword),
+          confirmToken: token,
+        })
+        sendWelcomeEmail({
+          email: lowerCaseEmail,
+          username: trimmedUsername,
+          confirmToken: token,
+        })
       }
+
+      rInviteCodeUpdateMarkUsed(db, { inviteCode: trimmedInviteCode })
+
+      console.log(`${trimmedUsername} signed up!`)
+
+      res.json({ success: true })
+    }
+    catch (err) {
+      console.log(err)
+      res.json({ success: false })
     }
   })
 }
