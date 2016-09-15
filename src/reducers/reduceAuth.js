@@ -381,6 +381,7 @@ export default (state = intialState, action) => {
       return u({
         requestingAuth: true,
         errorMessage: null,
+        oAuthMessage: null,
         oAuth: action.oAuth,
       }, state)
 

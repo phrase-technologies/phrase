@@ -41,7 +41,7 @@ export class SignupModal extends Component {
         passwordGroupClass += !this.state.passwordPristine && this.state.passwordError ? ' has-error' : ''
     let errorStyle = { fontSize: 12, marginTop: 3, lineHeight: 1 }
 
-    let oAuthHide = this.props.oAuth ? `none` : `block`
+    let oAuthHide = this.props.oAuthToken ? `none` : `block`
     let oAuthClassName = this.state.oAuthError ? `text-danger` : `text-info`
 
     let ModalComponent
@@ -144,6 +144,7 @@ export class SignupModal extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    this.setState({ oAuthError: null })
     if (nextProps.errorMessage)
       this.setState(nextProps.errorMessage)
   }
@@ -233,7 +234,7 @@ export class SignupModal extends Component {
   signup = (e) => {
     e ? e.preventDefault() : null
 
-    let email = this.props.oAuth ? this.props.oAuthEmail : this.email.value
+    let email = this.props.oAuthToken ? this.props.oAuthEmail : this.email.value
 
     this.setState({
       inviteCodePristine: false,
