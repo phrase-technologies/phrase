@@ -2,12 +2,13 @@ import r from 'rethinkdb'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 
-export let generateUniqueToken = async ({ index, db }) => {
+export let generateUniqueToken = async ({ table, index, db }) => {
   let nBytes = 3
   let token = crypto.randomBytes(nBytes).toString(`hex`).toUpperCase()
+  if (!table) table = `users`
 
   while(true) {
-    let cursor = await r.table(`users`)
+    let cursor = await r.table(table)
       .getAll(token, { index })
       .limit(1)
       .run(db)
