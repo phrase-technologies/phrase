@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
 import DiscussionUser from 'components/DiscussionUser'
 import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
 
-export default class Discussion extends Component {
+import { modalOpen } from 'reducers/reduceModal.js'
+
+export class Discussion extends Component {
 
   constructor() {
     super()
@@ -37,7 +41,10 @@ export default class Discussion extends Component {
           <DiscussionUser>
             ZZ
           </DiscussionUser>
-          <button className="btn btn-primary btn-sm discussion-invite">
+          <button
+            className="btn btn-primary btn-sm discussion-invite"
+            onClick={this.openPermissions}
+          >
             <span className="fa fa-share" />
             <span> Share</span>
           </button>
@@ -100,4 +107,11 @@ export default class Discussion extends Component {
     if (this.state.fullscreenReply && !booleanStatus)
       this.scrollWindow.scrollTop = this.scrollPosition
   }
+
+  openPermissions = () => {
+    this.props.dispatch(modalOpen({ modalComponent: 'PermissionsModal' }))
+  }
+
 }
+
+export default connect()(Discussion)
