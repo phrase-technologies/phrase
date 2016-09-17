@@ -17,11 +17,11 @@ export default class LinkShare extends Component {
         <input
           type="text" className="form-control"
           defaultValue={location.href} readOnly
-          ref={ref => this.linkControl = ref}
+          ref={ref => this.linkControl = ref} onClick={e => e.target.select()}
         />
         <div className="input-group-btn">
           <OverlayTrigger placement="top" overlay={CopiedTooltip} trigger="click" rootClose delayHide={1250}>
-            <button className="btn btn-sm btn-bright" id="clipboard-link">
+            <button className="btn btn-sm btn-bright hidden-xs" id="clipboard-link">
               <span className="fa fa-paperclip" />
               <span> Copy Link</span>
             </button>

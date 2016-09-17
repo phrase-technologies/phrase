@@ -66,7 +66,7 @@ export class PermissionsModal extends Component {
                 AK
               </UserBubble>
               <span className="user-username">
-                ProfessorAnson
+                ProfessorAnson <strong>(Owner)</strong>
               </span>
             </li>
             <li>
@@ -87,8 +87,15 @@ export class PermissionsModal extends Component {
             </li>
           </ul>
 
-          <small>Link to share</small>
-          <LinkShare />
+          {
+            this.state.savedPermission !== 'private'
+            && (
+              <div>
+                <small>Link to share</small>
+                <LinkShare />
+              </div>
+            )
+          }
         </Modal.Body>
         <Modal.Footer>
           { this.renderPermissions() }
@@ -139,10 +146,10 @@ export class PermissionsModal extends Component {
     let option = this.permissionsOptions.find(x => x.type === this.state.savedPermission)
     return (
       <div className="row" style={{ marginBottom: 0, textAlign: 'left' }}>
-        <div className="col-xs-9">
+        <div className="col-xs-8">
           <PermissionsOption option={option} />
         </div>
-        <div className="col-xs-3 text-right">
+        <div className="col-xs-4 text-right">
           <button className="btn btn-link link-primary" onClick={this.expandPermissions}>
             <span>Change </span>
             <span className="fa fa-sort" />
