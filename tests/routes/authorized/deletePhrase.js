@@ -14,21 +14,30 @@ export default ({ domain, author, observer, phraseId }) => {
 
     it(`should warn about missing phraseId`, async function() {
       this.timeout(100000)
-      let response = await ajax({ url, body: { token: author.token }})
+      let response = await ajax({ url, body: { token: author.token, userId: author.id }})
       let { message } = await response.json()
       expect(message).to.eq(`Must provide a phraseId`)
     })
 
     it(`should only allow author to delete`, async function() {
       this.timeout(100000)
-      let response = await ajax({ url, body: { token: observer.token, phraseId }})
+
+      let response = await ajax({
+        url,
+        body: {
+          token: observer.token,
+          userId: observer.id,
+          phraseId,
+        },
+      })
+
       let { message } = await response.json()
       expect(message).to.eq(`Only original author can delete a Phrase!`)
     })
 
     it(`should successfully delete a phrase`, async function() {
       this.timeout(100000)
-      let response = await ajax({ url, body: { token: author.token, phraseId }})
+      let response = await ajax({ url, body: { token: author.token, userId: author.id, phraseId }})
       let { message } = await response.json()
       expect(message).to.eq(`Phrase deleted!`)
 

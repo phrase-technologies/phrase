@@ -17,12 +17,16 @@ export default ({
 
   api.use((req, res, next) => {
 
-    let token = req.body.token
+    let { token, userId } = req.body
 
     if (token) {
       jwt.verify(token, app.get(`superSecret`), (err, decoded) => {
         if (err) {
           return res.status(403).json({ message: `Failed to authenticate token.` })
+        }
+
+        if (decoded.id !== userId) {
+          return res.status(401).json({ message: `User ID does not match JWT.` })
         }
 
         req.decoded = decoded

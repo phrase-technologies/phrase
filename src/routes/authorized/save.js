@@ -22,6 +22,12 @@ export default ({ api, db }) => {
         dateCreated: timestamp,
         dateModified: timestamp,
         phrasename: phraseName, // TODO: fix this inconsistency
+        // In the future we may want multiple people controlling at the same time
+        // So keep this as an array
+        masterControl: [ userId ],
+        // type privacySetting = `public` | `unlisted` | `private`
+        privacySetting: `public`,
+        collaborators: [],
         userId,
       }).run(db)
 

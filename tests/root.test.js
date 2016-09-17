@@ -19,10 +19,14 @@ import login from './auth/routes/login'
 
 // Unauthorized
 import loadUserPhrases from './routes/unauthorized/loadUserPhrases'
+import loadOne from './routes/unauthorized/loadOne'
 
 // Authorized
 import save from './routes/authorized/save'
+import update from './routes/authorized/update'
 import deletePhrase from './routes/authorized/deletePhrase'
+import setPrivacySetting from './routes/authorized/setPrivacySetting'
+import masterControl from './routes/authorized/masterControl'
 
 /*----------------------------------------------------------------------------*/
 
@@ -70,24 +74,55 @@ async function runTests () {
 
 /*---Test order matters!------------------------------------------------------*/
 
-  // Auth
+  // Create two users
   await signup({ domain, user: alice })
   await signup({ domain, user: bob })
 
   let aliceLogin = await login({ domain, user: alice })
-  alice.token = aliceLogin.token
-  alice.user = aliceLogin.user
+
+  alice = {
+    ...alice,
+    ...aliceLogin.user,
+    token: aliceLogin.token,
+  }
 
   let bobLogin = await login({ domain, user: bob })
-  bob.token = bobLogin.token
-  bob.user = bobLogin.user
 
-  // Unauthorized
+  bob = {
+    ...bob,
+    ...bobLogin.user,
+    token: bobLogin.token,
+  }
+
   loadUserPhrases({ domain, user: alice })
 
-  // Authorized
-  let { phraseId } = await save({ domain, user: alice, token: alice.token })
-  deletePhrase({ domain, author: alice, observer: bob, phraseId })
+  let { phraseId: publicPhraseId } = await save({ domain, user: alice, token: alice.token })
+  let { phraseId: unlistedPhraseId } = await save({ domain, user: alice, token: alice.token })
+  let { phraseId: privatePhraseId } = await save({ domain, user: alice, token: alice.token })
+
+  setPrivacySetting({
+    domain,
+    phraseId: unlistedPhraseId,
+    author: alice,
+    observer: bob,
+    privacySetting: `unlisted`,
+  })
+
+  setPrivacySetting({
+    domain,
+    phraseId: privatePhraseId,
+    author: alice,
+    observer: bob,
+    privacySetting: `private`,
+  })
+
+  loadOne({ domain, author: alice, observer: bob, publicPhraseId, privatePhraseId })
+
+  update({ domain, author: alice, observer: bob, phraseId: publicPhraseId })
+
+  masterControl({ domain, author: alice, observer: bob, phraseId: publicPhraseId })
+
+  deletePhrase({ domain, author: alice, observer: bob, phraseId: publicPhraseId })
 
 /*----------------------------------------------------------------------------*/
 

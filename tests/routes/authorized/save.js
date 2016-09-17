@@ -15,10 +15,9 @@ export default ({ domain, user, token }) => {
         expect(response.status).to.eq(403)
       })
 
-      // This test is very general, should move it out to its own thing
       it(`should complain if no phraseState provided`, async function() {
         this.timeout(100000)
-        let response = await ajax({ url, body: user })
+        let response = await ajax({ url, body: { ...user, userId: user.id }})
         let { message } = await response.json()
         expect(message).to.eq(`State must exist to save.`)
       })
@@ -35,7 +34,17 @@ export default ({ domain, user, token }) => {
 
       it(`should successfully save a phrase`, async function() {
         this.timeout(100000)
-        let response = await ajax({ url, body: { ...user, token, phraseState, phraseName }})
+
+        let response = await ajax({
+          url,
+          body: {
+            ...user,
+            userId: user.id,
+            token,
+            phraseState,
+            phraseName,
+        }})
+
         let { message, phraseId } = await response.json()
         expect(message).to.eq(`Project Saved!`)
 
