@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import LaddaButton from 'react-ladda'
 
 import PermissionsOption from 'components/PermissionsOption'
+import UserBubble from 'components/UserBubble'
 import LinkShare from 'components/LinkShare'
 import { modalClose } from 'reducers/reduceModal.js'
 
@@ -12,7 +13,8 @@ export class PermissionsModal extends Component {
   constructor() {
     super()
     this.state = {
-      permission: "private",
+      savedPermission: "private",
+      selectedPermission: "private",
       choosingPermissions: false,
     }
   }
@@ -20,11 +22,12 @@ export class PermissionsModal extends Component {
   permissionsOptions = [
     {
       type: "private",
-      title: "Private Access",
-      description: "Only invited collaborators can access this session",
+      title: "Private Session",
+      description: "Only collaborators listed above can access this session",
       icon: "lock",
       iconSize: 1,
     },
+    /*
     {
       type: "link",
       title: "Link-only Access",
@@ -32,10 +35,11 @@ export class PermissionsModal extends Component {
       icon: "link",
       iconSize: 1,
     },
+    */
     {
       type: "public",
-      title: "Public Access",
-      description: "Anyone can access this session",
+      title: "Public Session",
+      description: "Anyone with the link can access this session",
       icon: "globe",
       iconSize: 2,
     },
@@ -43,35 +47,52 @@ export class PermissionsModal extends Component {
 
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.closeModal}>
+      <Modal show={this.props.show} onHide={this.closeModal} className="">
         <Modal.Body>
-          { this.renderPermissions() }
-        </Modal.Body>
-        <Modal.Body>
-          <label>
-            Share the link to your session
-          </label>
-          <LinkShare />
-        </Modal.Body>
-        <Modal.Body>
-          <div className="form-group" style={{marginBottom: 10}}>
+          <button type="button" className="close" onClick={this.closeModal}>&times;</button>
+          <div className="form-group" style={{ marginBottom: 0 }}>
             <label htmlFor="collaborator-input">
               Invite Collaborators
             </label>
             <input id="collaborator-input"
-              className="form-control" type="text"
+              className="form-control input-sm" type="text"
               placeholder="Email or Username" ref={(ref) => this.email = ref}
             />
           </div>
-          <div className="text-right">
-            <LaddaButton
-              className="btn btn-dark btn-sm" buttonStyle="zoom-in"
-              loading={this.props.requestingAuth} type="submit"
-            >
-              Done
-            </LaddaButton>
-          </div>
+
+          <ul className="user-collaborator-list">
+            <li>
+              <UserBubble>
+                AK
+              </UserBubble>
+              <span className="user-username">
+                ProfessorAnson
+              </span>
+            </li>
+            <li>
+              <UserBubble>
+                ZZ
+              </UserBubble>
+              <span className="user-username">
+                zavoshz
+              </span>
+            </li>
+            <li>
+              <UserBubble>
+                AZ
+              </UserBubble>
+              <span className="user-username">
+                DJAzium
+              </span>
+            </li>
+          </ul>
+
+          <small>Link to share</small>
+          <LinkShare />
         </Modal.Body>
+        <Modal.Footer>
+          { this.renderPermissions() }
+        </Modal.Footer>
       </Modal>
     )
   }
@@ -79,7 +100,7 @@ export class PermissionsModal extends Component {
   renderPermissions() {
     if (this.state.choosingPermissions) {
       return (
-        <form>
+        <form style={{ textAlign: 'left' }}>
           {
             this.permissionsOptions.map((option, index) => {
               return (
@@ -87,8 +108,9 @@ export class PermissionsModal extends Component {
                   <label>
                     <input
                       type="radio" name="permission_option"
-                      value={option.type}
+                      value={option.type} checked={option.type === this.state.selectedPermission}
                       style={{ marginTop: 12 }}
+                      onChange={this.selectPermissions}
                     />
                     <PermissionsOption option={option} />
                   </label>
@@ -99,12 +121,14 @@ export class PermissionsModal extends Component {
           <button
             type="submit" className="btn btn-primary btn-sm"
             style={{ position: 'absolute', right: 105, bottom: 15, width: 80 }}
+            onClick={this.savePermissions}
           >
             Save
           </button>
           <button
             type="submit" className="btn btn-bright btn-sm"
             style={{ position: 'absolute', right: 15, bottom: 15, width: 80 }}
+            onClick={this.closePermissions}
           >
             Cancel
           </button>
@@ -112,14 +136,14 @@ export class PermissionsModal extends Component {
       )
     }
 
-    let option = this.permissionsOptions.find(x => x.type === this.state.permission)
+    let option = this.permissionsOptions.find(x => x.type === this.state.savedPermission)
     return (
-      <div className="row">
+      <div className="row" style={{ marginBottom: 0, textAlign: 'left' }}>
         <div className="col-xs-9">
           <PermissionsOption option={option} />
         </div>
         <div className="col-xs-3 text-right">
-          <button className="btn btn-link link-primary" onClick={this.choosePermissions}>
+          <button className="btn btn-link link-primary" onClick={this.expandPermissions}>
             <span>Change </span>
             <span className="fa fa-sort" />
           </button>
@@ -128,9 +152,24 @@ export class PermissionsModal extends Component {
     )
   }
 
-  choosePermissions = () => {
-    this.setState({ choosingPermissions: true })
+  expandPermissions = () => {
+    this.setState({
+      choosingPermissions: true,
+      selectedPermission: this.state.savedPermission,
+    })
   }
+  selectPermissions = (e) => {
+    this.setState({ selectedPermission: e.currentTarget.value })
+  }
+  savePermissions = (e) => {
+    this.setState({ savedPermission: this.state.selectedPermission })
+    this.closePermissions(e)
+  }
+  closePermissions = (e) => {
+    this.setState({ choosingPermissions: false })
+    e.preventDefault()
+  }
+
 
   closeModal = () => {
     this.props.dispatch(modalClose())

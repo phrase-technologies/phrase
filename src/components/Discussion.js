@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import DiscussionUser from 'components/DiscussionUser'
+import UserBubble from 'components/UserBubble'
 import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
 
 import { modalOpen } from 'reducers/reduceModal.js'
@@ -32,15 +32,15 @@ export class Discussion extends Component {
           <div className="discussion-presence-all">
             In this session:
           </div>
-          <DiscussionUser>
+          <UserBubble>
             PB
-          </DiscussionUser>
-          <DiscussionUser>
+          </UserBubble>
+          <UserBubble>
             AK
-          </DiscussionUser>
-          <DiscussionUser>
+          </UserBubble>
+          <UserBubble>
             ZZ
-          </DiscussionUser>
+          </UserBubble>
           <button
             className="btn btn-primary btn-sm discussion-invite"
             onClick={this.openPermissions}

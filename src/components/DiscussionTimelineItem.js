@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import TextareaAuto from 'react-textarea-autosize'
-import DiscussionUser from 'components/DiscussionUser'
+import UserBubble from 'components/UserBubble'
 
 export default class DiscussionTimelineItem extends Component {
 
@@ -18,10 +18,10 @@ export default class DiscussionTimelineItem extends Component {
           { this.props.tick }
         </div>
         <div className="discussion-timeline-meta">
-          <DiscussionUser>
+          <UserBubble>
             { this.props.user.initials }
-          </DiscussionUser>
-          <span className="discussion-timeline-username">
+          </UserBubble>
+          <span className="user-username">
             { this.props.user.username }
           </span>
           <span className="discussion-timeline-timestamp">

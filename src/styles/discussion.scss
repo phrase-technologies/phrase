@@ -30,21 +30,6 @@ $discussion-presence-height: 42px;
 
   margin-right: 4px;
 }
-.discussion-user {
-  position: relative;
-  display: inline-block;
-  width:  28px;
-  height: 28px;
-
-  border: 1px solid #000;
-  border-radius: 50%;
-  background: #688;
-  font-size: 12px;
-  text-align: center;
-  line-height: 26px;
-
-  margin-right: 4px;
-}
 .discussion-invite {
   float: right;
   padding: 4px 8px;
@@ -136,16 +121,11 @@ $discussion-presence-height: 42px;
   padding-top: 3px;
   padding-left: 35px;
 
-  .discussion-user {
+  .user-bubble {
     position: absolute;
     top: 0;
     left: 0;
   }
-}
-.discussion-timeline-username {
-  padding-right: 5px;
-  color: #FFF;
-  font-weight: bold;
 }
 .discussion-timeline-timestamp {
   color: #888;

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 
-export default class DiscussionUser extends Component {
+export default class UserBubble extends Component {
 
   render() {
     return (
-      <div className="discussion-user">
+      <div className="user-bubble">
         { this.props.children }
       </div>
     )

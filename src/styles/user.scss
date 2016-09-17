@@ -53,3 +53,39 @@
     margin: 0 8px;
   }
 }
+
+.user-bubble {
+  position: relative;
+  display: inline-block;
+  width:  28px;
+  height: 28px;
+
+  border: 1px solid #000;
+  border-radius: 50%;
+  background: #688;
+  font-size: 12px;
+  text-align: center;
+  line-height: 26px;
+
+  margin-right: 4px;
+}
+.user-username {
+  padding-right: 5px;
+  color: #FFF;
+  font-weight: bold;
+}
+.user-collaborator-list {
+  list-style: none;
+  margin: 10px 0 15px;
+  padding: 0 0 0 15px;
+
+  > li {
+    margin-top: 5px;
+
+    > .user-username {
+      color: #333;
+      font-weight: normal;
+      font-size: 12px;
+    }
+  }
+}
