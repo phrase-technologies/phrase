@@ -68,7 +68,7 @@ export class PermissionsModal extends Component {
 
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.closeModal}>
+      <Modal show={this.props.show} onHide={this.closeModal} keyboard={false} enforceFocus={false}>
         <Modal.Body>
           <button type="button" className="close" onClick={this.closeModal}>&times;</button>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -192,14 +192,6 @@ export class PermissionsModal extends Component {
         </div>
       </div>
     )
-  }
-
-  // Prevent closing the modal via escape key when trying to just escape the dropdown.
-  // Not done yet. TODO!
-  catchEscape = (e) => {
-    if (e.keyCode === 27) {
-      e.stopPropogation()
-    }
   }
 
   expandPermissions = () => {

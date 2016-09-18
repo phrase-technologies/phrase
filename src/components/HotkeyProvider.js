@@ -54,13 +54,7 @@ class HotkeyProvider extends Component {
   }
 
   handleKeyDown = (e) => {
-    let { dispatch, show: modalShowing, ENGINE } = this.props
-
-    if (modalShowing) {
-      if (e.keyCode === 27) { // 'escape' - close modals
-        return dispatch(modalClose())
-      }
-    }
+    let { dispatch, ENGINE } = this.props
 
     // -----------------------------------------------------------------------
     // Bypass - Prevent doublebooking events with form <inputs>
