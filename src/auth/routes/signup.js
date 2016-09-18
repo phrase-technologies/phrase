@@ -19,17 +19,17 @@ export default ({ app, db }) => {
   app.post(`/signup`, async (req, res) => {
     let { inviteCode, email, username, password, oAuthToken } = req.body
 
+    // Validate Invite Code
+    if (!inviteCode) {
+      res.json({ message: { inviteCodeError: `Invite Code is required.` } })
+      return
+    }
+
     try {
       let trimmedInviteCode = inviteCode.trim()
       let trimmedEmail = email.trim()
       let trimmedUsername = username.trim()
       let trimmedPassword = password.trim()
-
-      // Validate Invite Code
-      if (!trimmedInviteCode) {
-        res.json({ message: { inviteCodeError: `Invite Code is required.` } })
-        return
-      }
 
       let inviteCodeResult = await rInviteCodeGetFromCode(db, { inviteCode: trimmedInviteCode })
 
