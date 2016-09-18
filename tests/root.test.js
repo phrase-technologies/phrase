@@ -110,10 +110,10 @@ async function runTests () {
 
   setPrivacySetting({
     domain,
-    phraseId: privatePhraseId,
+    phraseId: publicPhraseId,
     author: alice,
     observer: bob,
-    privacySetting: `private`,
+    privacySetting: `public`,
   })
 
   loadOne({ domain, author: alice, observer: bob, publicPhraseId, privatePhraseId })

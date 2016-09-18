@@ -25,7 +25,7 @@ export default ({ api, db }) => {
         // So keep this as an array
         masterControl: [ userId ],
         // type privacySetting = `public` | `unlisted` | `private`
-        privacySetting: `public`,
+        privacySetting: `private`,
         collaborators: [],
         userId,
       }).run(db)
@@ -48,7 +48,10 @@ export default ({ api, db }) => {
         `Phrase ${result.generated_keys[0]} added!`
       ))
 
-      res.json({ message: `Project Saved!`, phraseId: result.generated_keys[0] })
+      res.json({
+        message: `Project Saved!`,
+        phraseId: result.generated_keys[0],
+      })
 
     } catch (err) {
       console.log(`/save:`, chalk.magenta(err))

@@ -6,7 +6,7 @@ r.connect({ host: `localhost`, db: `phrase`, port: 28015 }, (err, conn) => {
 
     r.table(`phrases`).update(row => ({
       masterControl: [row(`userId`)],
-      privacySetting: `public`,
+      privacySetting: `private`,
       collaborators: [],
     })).run(conn, err => {
       if (err) throw err
