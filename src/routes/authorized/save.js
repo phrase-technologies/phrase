@@ -18,7 +18,6 @@ export default ({ api, db }) => {
       let result = await r.table(`phrases`).insert({
         parentId,
         state: phraseState,
-        public: true,
         dateCreated: timestamp,
         dateModified: timestamp,
         phrasename: phraseName, // TODO: fix this inconsistency
