@@ -32,15 +32,9 @@ export class Discussion extends Component {
           <div className="discussion-presence-all">
             In this session:
           </div>
-          <UserBubble>
-            PB
-          </UserBubble>
-          <UserBubble>
-            AK
-          </UserBubble>
-          <UserBubble>
-            ZZ
-          </UserBubble>
+          <UserBubble initials="PB" online={true} />
+          <UserBubble initials="AK" />
+          <UserBubble initials="ZZ" />
           <button
             className="btn btn-primary btn-sm discussion-invite"
             onClick={this.openPermissions}

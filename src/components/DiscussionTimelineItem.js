@@ -18,9 +18,7 @@ export default class DiscussionTimelineItem extends Component {
           { this.props.tick }
         </div>
         <div className="discussion-timeline-meta">
-          <UserBubble>
-            { this.props.user.initials }
-          </UserBubble>
+          <UserBubble initials={this.props.user.initials} />
           <span className="user-username">
             { this.props.user.username }
           </span>

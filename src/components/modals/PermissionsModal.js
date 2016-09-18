@@ -78,25 +78,19 @@ export class PermissionsModal extends Component {
 
           <ul className="user-collaborator-list">
             <li>
-              <UserBubble>
-                AK
-              </UserBubble>
+              <UserBubble initials="AK" />
               <span className="user-username">
                 ProfessorAnson <strong>(Owner)</strong>
               </span>
             </li>
             <li>
-              <UserBubble>
-                ZZ
-              </UserBubble>
+              <UserBubble initials="ZZ" />
               <span className="user-username">
                 zavoshz
               </span>
             </li>
             <li>
-              <UserBubble>
-                AZ
-              </UserBubble>
+              <UserBubble initials="AZ" />
               <span className="user-username">
                 DJAzium
               </span>
@@ -173,6 +167,14 @@ export class PermissionsModal extends Component {
         </div>
       </div>
     )
+  }
+
+  // Prevent closing the modal via escape key when trying to just escape the dropdown.
+  // Not done yet. TODO!
+  catchEscape = (e) => {
+    if (e.keyCode === 27) {
+      e.stopPropogation()
+    }
   }
 
   expandPermissions = () => {

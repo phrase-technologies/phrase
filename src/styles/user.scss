@@ -68,6 +68,13 @@
   line-height: 26px;
 
   margin-right: 4px;
+
+  .signal {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    margin: 0;
+  }
 }
 .user-username {
   padding-right: 5px;
