@@ -11,6 +11,14 @@ export default ({ domain, author, observer, publicPhraseId, privatePhraseId }) =
       expect(response.status).to.eq(200)
     })
 
+    it(`should return 404 if no phrase found`, async function() {
+      this.timeout(100000)
+      let response = await ajax({ url, body: { phraseId: `fake-id` } })
+      let { message } = await response.json()
+      expect(response.status).to.eq(404)
+      expect(message).to.eq(`Phrase not found!`)
+    })
+
     it(`should retreive a phrase by its id`, async function() {
       this.timeout(100000)
       let response = await ajax({ url, body: { phraseId: publicPhraseId } })
@@ -52,6 +60,7 @@ export default ({ domain, author, observer, publicPhraseId, privatePhraseId }) =
       })
 
       let { message } = await response.json()
+      expect(response.status).to.eq(404)
       expect(message).to.eq(`Phrase not found!`)
     })
   })
