@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
+import ReactSelect from 'react-select'
 import LaddaButton from 'react-ladda'
 
 import PermissionsOption from 'components/PermissionsOption'
@@ -45,18 +46,33 @@ export class PermissionsModal extends Component {
     },
   ]
 
+  autocompleteUsers = (input, callback) => {
+    setTimeout(() => {
+      callback(null, {
+        options: [
+          { value: 1, label: 'zavoshz' },
+          { value: 2, label: 'DJAzium' },
+          { value: 3, label: 'CarpeDN' },
+          { value: 4, label: 'jgnieuwhof' },
+        ]//.filter(x => x.label.indexOf(input) >= 0)
+      })
+    }, 500)
+  }
+
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.closeModal} className="">
+      <Modal show={this.props.show} onHide={this.closeModal}>
         <Modal.Body>
           <button type="button" className="close" onClick={this.closeModal}>&times;</button>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label htmlFor="collaborator-input">
               Invite Collaborators
             </label>
-            <input id="collaborator-input"
-              className="form-control input-sm" type="text"
-              placeholder="Email or Username" ref={(ref) => this.email = ref}
+            <ReactSelect.Async
+                name="collaborator-input"
+                placeholder="Email or Username"
+                loadOptions={this.autocompleteUsers}
+                onChange={() => true} autoload={false}
             />
           </div>
 
