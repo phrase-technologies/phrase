@@ -3,25 +3,31 @@ import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import LaddaButton from 'react-ladda'
 
+import withSocket from 'components/withSocket'
 import isAValidEmail from 'helpers/isEmail'
 import isValidUsername from 'helpers/isUsername'
-import { signup } from 'reducers/reduceAuth'
+import { signup, makeOAuthRequest, oAuthCallback } from 'reducers/reduceAuth'
 import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class SignupModal extends Component {
+  state = {
+    inviteCodeError: null,
+    inviteCodePristine: true,
+    emailError: null,
+    emailPristine: true,
+    usernameError: null,
+    usernamePristine: true,
+    passwordError: null,
+    passwordPristine: true,
+    oAuthError: null,
+  }
 
-  constructor() {
-    super()
-    this.state = {
-      inviteCodeError: null,
-      inviteCodePristine: true,
-      emailError: null,
-      emailPristine: true,
-      usernameError: null,
-      usernamePristine: true,
-      passwordError: null,
-      passwordPristine: true,
-    }
+  componentDidMount() {
+    this.props.socket.on(`server::oAuthUser`, this.receiveSocketOAuth)
+  }
+
+  componentWillUnmount() {
+    this.props.socket.off("server::oAuthUser", this.receiveSocketOAuth)
   }
 
   render() {
@@ -34,6 +40,9 @@ export class SignupModal extends Component {
     let passwordGroupClass = 'form-group'
         passwordGroupClass += !this.state.passwordPristine && this.state.passwordError ? ' has-error' : ''
     let errorStyle = { fontSize: 12, marginTop: 3, lineHeight: 1 }
+
+    let oAuthHide = this.props.oAuthToken ? `none` : `block`
+    let oAuthClassName = this.state.oAuthError ? `text-danger` : `text-info`
 
     let ModalComponent
     let modalProps
@@ -58,6 +67,19 @@ export class SignupModal extends Component {
           <div className="form-group">
             <h4 className="text-center">Create an Account.</h4>
           </div>
+          <div className="form-group">
+            <button className="btn btn-sm btn-dark btn-block btn-facebook" onClick={this.facebookOAuth}>
+              <span className="fa fa-fw fa-facebook" />Login with Facebook
+            </button>
+            <button className="btn btn-sm btn-dark btn-block btn-google" onClick={this.googleOAuth}>
+              <span className="fa fa-fw fa-google" /> Login with Google
+            </button>
+          </div>
+          { (this.state.oAuthError || this.props.oAuthMessage) &&
+            <p className={oAuthClassName} style={errorStyle}>
+              { this.state.oAuthError || this.props.oAuthMessage }
+            </p>
+          }
           <form onSubmit={this.signup} noValidate>
             <div className={inviteCodeGroupClass} style={{marginBottom: 10}}>
               <div className="input-group">
@@ -74,7 +96,7 @@ export class SignupModal extends Component {
                 {this.state.inviteCodeError}
               </p>
             </div>
-            <div className={emailGroupClass} style={{marginBottom: 10}}>
+            <div className={emailGroupClass} style={{marginBottom: 10, display: oAuthHide}}>
               <input
                 className="form-control" type="email"
                 placeholder="Email" ref={(ref) => this.email = ref}
@@ -94,7 +116,7 @@ export class SignupModal extends Component {
                 {this.state.usernameError}
               </p>
             </div>
-            <div className={passwordGroupClass} style={{marginBottom: 10}}>
+            <div className={passwordGroupClass} style={{marginBottom: 10, display: oAuthHide}}>
               <input
                 className="form-control" type="password"
                 placeholder="Password" ref={(ref) => this.password = ref}
@@ -125,6 +147,7 @@ export class SignupModal extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    this.setState({ oAuthError: null })
     if (nextProps.errorMessage)
       this.setState(nextProps.errorMessage)
   }
@@ -214,6 +237,8 @@ export class SignupModal extends Component {
   signup = (e) => {
     e ? e.preventDefault() : null
 
+    let email = this.props.oAuthToken ? this.props.oAuthEmail : this.email.value
+
     this.setState({
       inviteCodePristine: false,
       emailPristine: false,
@@ -223,10 +248,25 @@ export class SignupModal extends Component {
 
     this.props.dispatch(signup({
       inviteCode: this.inviteCode.value,
-      email: this.email.value,
+      email,
       username: this.username.value,
       password: this.password.value,
+      oAuthToken: this.props.oAuthToken,
     }))
+  }
+
+  facebookOAuth = (e) => {
+    e.preventDefault()
+    this.props.dispatch(makeOAuthRequest({ oAuth: `Facebook` }))
+  }
+
+  googleOAuth = (e) => {
+    e.preventDefault()
+    this.props.dispatch(makeOAuthRequest({ oAuth: `Google` }))
+  }
+
+  receiveSocketOAuth = (user) => {
+    this.props.dispatch(oAuthCallback(user))
   }
 
   // Attach this to onMouseDown (in addition to onClick) to take
@@ -247,4 +287,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(SignupModal)
+export default withSocket(connect(mapStateToProps)(SignupModal))

@@ -3,10 +3,22 @@ import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import LaddaButton from 'react-ladda'
 
-import { login } from '../../reducers/reduceAuth.js'
-import { modalOpen, modalClose } from '../../reducers/reduceModal.js'
+import withSocket from 'components/withSocket'
+import { login, makeOAuthRequest, oAuthCallback } from 'reducers/reduceAuth'
+import { modalOpen, modalClose } from 'reducers/reduceModal'
 
 export class LoginModal extends Component {
+  state = {
+    errorMessage: null,
+  }
+
+  componentDidMount() {
+    this.props.socket.on(`server::oAuthUser`, this.receiveSocketOAuth)
+  }
+
+  componentWillUnmount() {
+    this.props.socket.off("server::oAuthUser", this.receiveSocketOAuth)
+  }
 
   render() {
     let ModalComponent
@@ -31,6 +43,14 @@ export class LoginModal extends Component {
           <div className="form-group">
             <h4 className="text-center">Have an account?</h4>
           </div>
+          <div className="form-group">
+            <button className="btn btn-sm btn-dark btn-block btn-facebook" onClick={this.facebookOAuth}>
+              <span className="fa fa-fw fa-facebook" />Login with Facebook
+            </button>
+            <button className="btn btn-sm btn-dark btn-block btn-google" onClick={this.googleOAuth}>
+              <span className="fa fa-fw fa-google" /> Login with Google
+            </button>
+          </div>
           <form onSubmit={this.login} noValidate>
             <div className="form-group" style={{marginBottom: 10}}>
               <input
@@ -54,8 +74,8 @@ export class LoginModal extends Component {
               Log in
             </LaddaButton>
             <p className="text-danger text-center" style={{ marginTop: 5, marginBottom: 0 }}>
-              { this.props.errorMessage }
-              { this.props.confirmFail && <a href="" onClick={this.openSignupConfirmationModal}>confirm here</a> }
+              { this.state.errorMessage }
+              { this.props.passwordFail && <a href="" onClick={this.openForgotPasswordModal}>set one here</a> }
             </p>
           </form>
         </Modal.Body>
@@ -75,6 +95,15 @@ export class LoginModal extends Component {
     return !nextProps.activeModal || nextProps.activeModal === 'LoginModal'
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errorMessage) {
+      if(nextProps.errorMessage.oAuthError)
+        this.setState({ errorMessage: nextProps.errorMessage.oAuthError })
+      else
+        this.setState({ errorMessage: nextProps.errorMessage })
+    }
+  }
+
   login = (e) => {
     e.preventDefault()
 
@@ -82,6 +111,20 @@ export class LoginModal extends Component {
       email: this.email.value,
       password: this.password.value,
     }))
+  }
+
+  facebookOAuth = (e) => {
+    e.preventDefault()
+    this.props.dispatch(makeOAuthRequest({ oAuth: `Facebook` }))
+  }
+
+  googleOAuth = (e) => {
+    e.preventDefault()
+    this.props.dispatch(makeOAuthRequest({ oAuth: `Google` }))
+  }
+
+  receiveSocketOAuth = (user) => {
+    this.props.dispatch(oAuthCallback(user))
   }
 
   openSignupModal = (e) => {
@@ -92,18 +135,6 @@ export class LoginModal extends Component {
   openForgotPasswordModal = (e) => {
     e.preventDefault()
     this.props.dispatch(modalOpen({ modalComponent: 'ForgotPasswordModal' }))
-  }
-
-  openSignupConfirmationModal = (e) => {
-    e.preventDefault()
-    let email = this.email.value.indexOf('@') > -1 ? this.email.value : null
-    if (email)
-      this.props.dispatch(modalOpen({
-        modalComponent: 'SignupConfirmationModal',
-        payload: email,
-      }))
-    else
-      this.props.dispatch(modalOpen({ modalComponent: 'ConfirmRetryModal' }))
   }
 
   closeModal = () => {
@@ -119,4 +150,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(LoginModal)
+export default withSocket(connect(mapStateToProps)(LoginModal))

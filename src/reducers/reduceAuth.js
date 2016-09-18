@@ -8,6 +8,7 @@ import {
   newPassword as newPasswordHelper,
   confirmUser as confirmUserHelper,
   retryConfirmUser as retryConfirmUserHelper,
+  oAuthLogin as oAuthLoginHelper,
 } from 'helpers/authHelpers'
 import { modal, auth } from '../actions/actions'
 import { librarySaveNew } from 'reducers/reduceLibrary'
@@ -16,7 +17,7 @@ import { modalOpen } from 'reducers/reduceModal.js'
 import { addNotification, catchAndToastException } from 'reducers/reduceNotification'
 import { tryAnalyticsEvent } from 'helpers/tryAnalytics'
 
-function handleLogin({ dispatch, getState, response }) {
+let handleLogin = ({ dispatch, getState, response }) => {
   dispatch({
     type: auth.LOGIN_SUCCESS,
     payload: {
@@ -32,6 +33,7 @@ function handleLogin({ dispatch, getState, response }) {
       dispatch(librarySaveNew())
   }
 }
+
 // ============================================================================
 // Authentication Action Creators
 // ============================================================================
@@ -50,7 +52,7 @@ export let login = ({ email, password }) => {
             }
             else dispatch({
               type: auth.LOGIN_FAIL,
-              payload: { message: response.message, confirmFail: response.confirmFail },
+              payload: { message: response.message, passwordFail: response.passwordFail },
             })
           }
         })
@@ -60,21 +62,25 @@ export let login = ({ email, password }) => {
   }
 }
 
-export let signup = ({ inviteCode, email, username, password }) => {
+export let signup = ({ inviteCode, email, username, password, oAuthToken }) => {
   return (dispatch) => {
     dispatch({ type: auth.LOGIN_REQUEST })
-
     catchAndToastException({ dispatch,
       toCatch: async () => {
         await signupHelper({
-          body: { inviteCode, email, username, password },
+          body: { inviteCode, email, username, password, oAuthToken },
           callback: (response) => {
             if (response.success) {
-              dispatch(login({ email, password }))
-              dispatch(addNotification({
-                title: `You have been sent a confirmation email`,
-                message: `Please confirm`,
-              }))
+              if (oAuthToken) {
+                dispatch(oAuthLogin({ email, token: oAuthToken }))
+              }
+              else {
+                dispatch(login({ email, password }))
+                dispatch(addNotification({
+                  title: `You have been sent a confirmation email`,
+                  message: `Please confirm`,
+                }))
+              }
             }
             else dispatch({
               type: auth.LOGIN_FAIL,
@@ -212,6 +218,65 @@ export let retryConfirmUser = ({ email }) => {
   }
 }
 
+export let makeOAuthRequest = ({ oAuth }) => {
+  return (dispatch) => {
+    dispatch({ type: auth.OAUTH_REQUEST, oAuth})
+    let newWindow = window.open(
+      `${API_URL}/auth/${oAuth.toLowerCase()}`,
+      `Login with ${oAuth}`,
+      `height=700,width=700`
+    )
+    newWindow.focus()
+  }
+}
+
+export let oAuthCallback = ({ success, token, email, newUser }) => {
+  return (dispatch, getState) => {
+    let state = getState()
+    if (!success)
+      dispatch({
+        type: auth.LOGIN_FAIL,
+        payload: { message: { oAuthError: `${state.auth.oAuth} authentication failed, please try again`, }}
+      })
+    else {
+      if (newUser) {
+        if (state.modal.activeModal !== `SignupModal`)
+          dispatch(modalOpen({ modalComponent: `SignupModal` }))
+        dispatch({
+          type: auth.OAUTH_SUCCESS,
+          oAuthMessage: `${state.auth.oAuth} authentication successful, please choose a username below to finish signing up`,
+          oAuthToken: token,
+          oAuthEmail: email,
+        })
+      }
+      else dispatch(oAuthLogin({ token, email }))
+    }
+  }
+}
+
+export let oAuthLogin = ({ email, token }) => {
+  return (dispatch, getState) => {
+    dispatch({ type: auth.LOGIN_REQUEST})
+    catchAndToastException({ dispatch,
+      toCatch: async () => {
+        await oAuthLoginHelper({
+          body: { email, token },
+          callback: async response => {
+            if (response.success) {
+              tryAnalyticsEvent({ eventName: "Logged In" })
+              handleLogin({ dispatch, getState, response })
+            }
+            else dispatch({
+              type: auth.LOGIN_FAIL,
+              payload: { message: response.message },
+            })
+          }
+      })},
+      callback: () => { dispatch({ type: auth.LOGIN_FAIL, payload: { message: `` }}) },
+    })
+  }
+}
+
 export let logout = () => {
   return (dispatch) => {
     localStorage.clear()
@@ -239,7 +304,12 @@ let intialState = {
     username: localStorage.username,
   },
   errorMessage: null,
+  passwordFail: false,
   showConfirmUserError: false,
+  oAuth: null,
+  oAuthMessage: null,
+  oAuthToken: null,
+  oAuthEmail: null,
 }
 
 export default (state = intialState, action) => {
@@ -251,7 +321,7 @@ export default (state = intialState, action) => {
       if (['LoginModal', 'SignupModal', 'ForgotPasswordModal'].find(x => x === action.modalComponent)) {
         return u({
           errorMessage: null,
-          confirmFail: false,
+          passwordFail: false,
         }, state)
       }
       else if (['ForgotPasswordSuccessModal', 'SignupConfirmationModal', 'ConfirmRetryModal'].find(x => x === action.modalComponent)) {
@@ -296,7 +366,7 @@ export default (state = intialState, action) => {
     case auth.LOGIN_FAIL:
       return u({
         errorMessage: action.payload.message,
-        confirmFail: action.payload.confirmFail,
+        passwordFail: action.payload.passwordFail,
         requestingAuth: false,
       }, state)
 
@@ -304,6 +374,25 @@ export default (state = intialState, action) => {
     case auth.USER_CONFIRM_FAIL:
       return u({
         showConfirmUserError: true,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case auth.OAUTH_REQUEST:
+      return u({
+        requestingAuth: true,
+        errorMessage: null,
+        oAuthMessage: null,
+        oAuth: action.oAuth,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case auth.OAUTH_SUCCESS:
+      return u({
+        oAuthMessage: action.oAuthMessage,
+        oAuthToken: action.oAuthToken,
+        oAuthEmail: action.oAuthEmail,
+        requestingAuth: false,
+        errorMessage: null,
       }, state)
 
     // ------------------------------------------------------------------------

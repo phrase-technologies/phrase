@@ -221,8 +221,10 @@ a,
   }
 }
 
-.btn-facebook {
-  background-image: linear-gradient(to bottom, #4B68B9, #3B55A1);
+.btn-facebook,
+.btn-twitter,
+.btn-google ,
+.btn-soundcloud {
   color: #FFF;
 
   &.disabled,
@@ -230,15 +232,10 @@ a,
     color: #AAA !important;
   }
 }
-.btn-twitter {
-  background-image: linear-gradient(to bottom, #1B95E0, #0B72B1);
-  color: #FFF;
-
-  &.disabled,
-  &[disabled] {
-    color: #AAA !important;
-  }
-}
+.btn-facebook { background-image: linear-gradient(to bottom, #4B68B9, #3B55A1); }
+.btn-twitter { background-image: linear-gradient(to bottom, #1B95E0, #0B72B1); }
+.btn-google { background-image: linear-gradient(to bottom, #EE4433, #CC4433); }
+.btn-soundcloud { background-image: linear-gradient(to bottom, #FF7600, #FF3500); } 
 
 // When against a light background, reduce contrast
 .btn-light-bg {

@@ -23,12 +23,12 @@ export let login = async ({ body, callback }) =>  {
       endpoint: `api/login`,
       body,
     })
-    let { success, message, token, user, confirmFail } = response
+    let { success, message, token, user, passwordFail } = response
     if (success) {
       setUserLocalStorage({ token, user })
       callback({ success, message, user })
     }
-    else callback({ message, confirmFail })
+    else callback({ message, passwordFail })
 }
 
 export let forgotPassword = async (body, callback) => {
@@ -71,5 +71,18 @@ export let retryConfirmUser = async (body, callback) => {
   })
   let { success, message } = response
   if (success) callback({ success })
+  else callback({ message })
+}
+
+export let oAuthLogin = async ({ body, callback }) => {
+  let response = await phraseFetch({
+    endpoint: 'oauth-login',
+    body,
+  })
+  let { success, token, user, message } = response
+  if (success) {
+    setUserLocalStorage({ token, user })
+    callback({ success, token, user})
+  }
   else callback({ message })
 }
