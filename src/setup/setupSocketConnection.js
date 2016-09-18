@@ -8,15 +8,6 @@ export default async ({ io, db }) => {
 
   io.on(`connection`, async (socket) => {
 
-    try { await r.table(`connections`).insert({ id: socket.id }).run(db) }
-    catch (e) { console.log(chalk.white(e)) }
-
-    let count = await r.table(`connections`).count().run(db)
-
-    console.log(chalk.yellow(
-      `⚡ New connection! Number of open connections: ${count}`
-    ))
-
     socket.on(`client::joinRoom`, ({ phraseId, username }) => {
       // Leave all other rooms first
       Object.keys(socket.rooms).forEach(room => {
@@ -47,6 +38,17 @@ export default async ({ io, db }) => {
         `⚡ Disconnection! Number of open connections: ${count}`
       ))
     })
+
+    // Setup `on` handlers synchronously in order for tests to work. 
+
+    try { await r.table(`connections`).insert({ id: socket.id }).run(db) }
+    catch (e) { console.log(chalk.white(e)) }
+
+    let count = await r.table(`connections`).count().run(db)
+
+    console.log(chalk.yellow(
+      `⚡ New connection! Number of open connections: ${count}`
+    ))
 
   })
 }

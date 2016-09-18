@@ -1,5 +1,6 @@
 import { expect } from 'chai'
 import ajax from '../../../src/helpers/ajax'
+import socketClientIO from 'socket.io-client'
 
 export default ({
   domain,
@@ -26,6 +27,28 @@ export default ({
 
       let { message } = await response.json()
       expect(message).to.eq(`Autosave success.`)
+    })
+    
+    it(`sockets should receive the updated phrase`, () => {
+      let socket = socketClientIO.connect(`http://localhost:9999`)
+
+      socket.emit(`client::joinRoom`, { phraseId, username: author.username })
+
+      socket.on(`server::updatePhrase`, data => {
+        expect(data.id).to.eq(phraseId)
+        socket.disconnect()
+      })
+
+      ajax({
+        url,
+        body: {
+          userId: author.id,
+          token: author.token,
+          phraseId,
+          phraseName: ``,
+          phraseState: {},
+        },
+      })
     })
 
     it(`should only allow user with master control to update`, async function() {

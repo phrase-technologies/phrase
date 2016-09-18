@@ -1,5 +1,6 @@
 import { expect } from 'chai'
 import ajax from '../../../src/helpers/ajax'
+import socketClientIO from 'socket.io-client'
 
 export default ({
   domain,
@@ -28,7 +29,26 @@ export default ({
       expect(message).to.eq(`User added to master control.`)
     })
 
-    it(`should fail if user by target id does not exist`, async function() {
+    it(`should notify users that master control has changed`, () => {
+      let client = socketClientIO.connect(`http://localhost:9999`)
+
+      client.on(`server::masterControlChanged`, data => {
+        expect(data.targetUserId).to.eq(observer.id)
+        client.disconnect()
+      })
+
+      ajax({
+        url: addUrl,
+        body: {
+          userId: author.id,
+          token: author.token,
+          phraseId,
+          targetUserId: observer.id,
+        },
+      })
+    })
+
+    it(`should fail if user does not exist`, async function() {
       this.timeout(100000)
 
       let response = await ajax({
