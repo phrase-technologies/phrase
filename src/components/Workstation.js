@@ -42,6 +42,14 @@ export class Workstation extends Component {
     // Subscribe to socket updates for the lifetime of the component
     socket.on(`server::updatePhrase`, this.receiveSocketUpdate)
     socket.on(`server::updatePresence`, room => console.log("ROOM:", room))
+    socket.on(`server::privacySettingChanged`, socketData => {
+      if (socketData.phraseId === phraseId) {
+        dispatch({
+          type: phrase.UPDATE_PRIVACY_SETTING,
+          payload: { privacySetting: socketData.privacySetting },
+        })
+      }
+    })
 
     // Load existing phrase from URL param
     if (params.phraseId) {

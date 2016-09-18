@@ -495,20 +495,15 @@ export const phraseLoadFromDb = phraseId => {
     dispatch({ type: phrase.LOAD_START })
     catchAndToastException({ dispatch, toCatch: async () => {
       let { loadedPhrase } = await api({
-          endpoint: `loadOne`,
-          body: { phraseId },
+        endpoint: `loadOne`,
+        body: { phraseId },
       })
       if (loadedPhrase) {
         dispatch({
           type: phrase.LOAD_FINISH,
           payload: {
-            parentId: loadedPhrase.parentId,
-            id: phraseId,
-            name: loadedPhrase.phrasename,
-            username: loadedPhrase.username,
-            dateCreated: loadedPhrase.dateCreated,
-            dateModified: loadedPhrase.dateModified,
-            state: loadedPhrase.state,
+            ...loadedPhrase,
+            name: loadedPhrase.phrasename, // should probably make these the same
           }
         })
       }

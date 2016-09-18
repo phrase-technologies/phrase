@@ -2,6 +2,7 @@ import u from 'updeep'
 import { notification } from 'actions/actions'
 import { modalOpen } from 'reducers/reduceModal'
 import { logout } from 'reducers/reduceAuth'
+import { push } from 'react-router-redux'
 
 // ============================================================================
 // Notification Action Creators
@@ -40,6 +41,9 @@ export const catchAndToastException = async ({ dispatch, toCatch, callback }) =>
           }))
           dispatch(modalOpen({ modalComponent: 'LoginModal' }))
           dispatch(logout())
+          break
+        case 404:
+          dispatch(push(`/not-found`))
           break
         default: // Other fetch errors
           dispatch(addNotification({

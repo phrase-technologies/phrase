@@ -2,22 +2,17 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import ReactSelect from 'react-select'
-import LaddaButton from 'react-ladda'
 
 import PermissionsOption from 'components/PermissionsOption'
 import UserBubble from 'components/UserBubble'
 import LinkShare from 'components/LinkShare'
 import { modalClose } from 'reducers/reduceModal.js'
+import { setPrivacySetting } from 'reducers/reducePhraseMeta'
 
 export class PermissionsModal extends Component {
-
-  constructor() {
-    super()
-    this.state = {
-      savedPermission: "private",
-      selectedPermission: "private",
-      choosingPermissions: false,
-    }
+  state = {
+    selectedPermission: "",
+    choosingPermissions: false,
   }
 
   permissionsOptions = [
@@ -69,10 +64,11 @@ export class PermissionsModal extends Component {
               Invite Collaborators
             </label>
             <ReactSelect.Async
-                name="collaborator-input"
-                placeholder="Email or Username"
-                loadOptions={this.autocompleteUsers}
-                onChange={() => true} autoload={false}
+              name="collaborator-input"
+              placeholder="Email or Username"
+              loadOptions={this.autocompleteUsers}
+              onChange={() => true}
+              autoload={false}
             />
           </div>
 
@@ -153,7 +149,7 @@ export class PermissionsModal extends Component {
       )
     }
 
-    let option = this.permissionsOptions.find(x => x.type === this.state.savedPermission)
+    let option = this.permissionsOptions.find(x => x.type === this.props.phraseMeta.privacySetting)
     return (
       <div className="row" style={{ marginBottom: 0, textAlign: 'left' }}>
         <div className="col-xs-8">
@@ -180,14 +176,14 @@ export class PermissionsModal extends Component {
   expandPermissions = () => {
     this.setState({
       choosingPermissions: true,
-      selectedPermission: this.state.savedPermission,
+      selectedPermission: this.props.phraseMeta.privacySetting,
     })
   }
   selectPermissions = (e) => {
     this.setState({ selectedPermission: e.currentTarget.value })
   }
   savePermissions = (e) => {
-    this.setState({ savedPermission: this.state.selectedPermission })
+    this.props.dispatch(setPrivacySetting({ privacySetting: this.state.selectedPermission }))
     this.closePermissions(e)
   }
   closePermissions = (e) => {
@@ -202,4 +198,4 @@ export class PermissionsModal extends Component {
 
 }
 
-export default connect()(PermissionsModal)
+export default connect(state => ({ phraseMeta: state.phraseMeta }))(PermissionsModal)

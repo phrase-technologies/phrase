@@ -2,6 +2,8 @@ import _ from 'lodash'
 import u from 'updeep'
 import { objectMergeKeyArrays } from 'helpers/arrayHelpers'
 import { phrase, pianoroll, library } from 'actions/actions'
+import { api } from 'helpers/ajaxHelpers'
+
 
 // ============================================================================
 // Phrase META Reducer
@@ -14,7 +16,16 @@ import { phrase, pianoroll, library } from 'actions/actions'
 // - Which clips and notes are currently selected by the user?
 // - If the user is performing drag and drop of the current selection, track
 //   those offsets here so we can show temporary previews of drag
+export let setPrivacySetting = ({ privacySetting }) => {
+  return (dispatch, getState) => {
+    let { phraseId } = getState().phraseMeta
 
+    api({
+      endpoint: `setPrivacySetting`,
+      body: { phraseId, privacySetting },
+    })
+  }
+}
 
 export const defaultState = {
   loading: true,
@@ -24,6 +35,7 @@ export const defaultState = {
   phraseId: null,
   phraseName: null,
   authorUsername: null,
+  privacySetting: `private`,
   dateCreated: null,
   dateModified: null,
   loginReminder: false,
@@ -74,6 +86,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
     case phrase.LOAD_FINISH:
       return u({
         loading: false,
+        ...action.payload, // lots of key conversions, maybe try and consolidate
         parentId: action.payload.parentId,
         phraseId: action.payload.id,
         phraseName: action.payload.name,
@@ -376,6 +389,12 @@ export default function reducePhraseMeta(state = defaultState, action) {
     case phrase.PRISTINE:
       return u({
         pristine: action.payload.pristine,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.UPDATE_PRIVACY_SETTING:
+      return u({
+        privacySetting: action.payload.privacySetting,
       }, state)
 
     // ------------------------------------------------------------------------
