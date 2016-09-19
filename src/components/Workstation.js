@@ -22,7 +22,7 @@ import SamplesProgress from 'components/SamplesProgress'
 import withSocket from 'components/withSocket'
 
 import WorkstationHeader from 'components/WorkstationHeader'
-import WorkstationSplit from 'components/WorkstationSplit'
+// import WorkstationSplit from 'components/WorkstationSplit'
 import WorkstationFooter from 'components/WorkstationFooter'
 import Mixer from 'components/Mixer'
 import Pianoroll from 'components/Pianoroll'
@@ -48,6 +48,19 @@ export class Workstation extends Component {
           type: phrase.UPDATE_PRIVACY_SETTING,
           payload: { privacySetting: socketData.privacySetting },
         })
+
+        // It's possible a user will get a link that's private, but is meant to be,
+        // or will be public at some point in time. Let's automatically try to load
+        // it for them if they are sitting with the `not found` messeage.
+
+        /* TECHNICAL NOTE */
+
+        // `notFound` must be referenced inside this socket handler.
+        // If we destructure it at top with the rest of the props
+        // `notFound` will always be the value at mounting time.
+        if (this.props.notFound && socketData.privacySetting === `public`) {
+          dispatch(phraseLoadFromDb(phraseId))
+        }
       }
     })
 
