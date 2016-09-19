@@ -3,6 +3,7 @@ import update from './update'
 import deletePhrase from './deletePhrase'
 import setPrivacySetting from './setPrivacySetting'
 import masterControl from './masterControl'
+import searchUsers from './searchUsers'
 
 export default [
   save,
@@ -10,4 +11,5 @@ export default [
   deletePhrase,
   setPrivacySetting,
   masterControl,
+  searchUsers,
 ]

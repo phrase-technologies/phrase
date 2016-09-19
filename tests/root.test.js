@@ -27,6 +27,7 @@ import update from './routes/authorized/update'
 import deletePhrase from './routes/authorized/deletePhrase'
 import setPrivacySetting from './routes/authorized/setPrivacySetting'
 import masterControl from './routes/authorized/masterControl'
+import searchUsers from './routes/authorized/searchUsers'
 
 /*----------------------------------------------------------------------------*/
 
@@ -93,6 +94,8 @@ async function runTests () {
     ...bobLogin.user,
     token: bobLogin.token,
   }
+
+  searchUsers({ domain, user: alice, searchTerm: `bob` })
 
   loadUserPhrases({ domain, user: alice })
 
