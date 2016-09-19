@@ -4,6 +4,7 @@ import deletePhrase from './deletePhrase'
 import setPrivacySetting from './setPrivacySetting'
 import masterControl from './masterControl'
 import searchUsers from './searchUsers'
+import collab from './collab'
 
 export default [
   save,
@@ -12,4 +13,5 @@ export default [
   setPrivacySetting,
   masterControl,
   searchUsers,
+  collab,
 ]

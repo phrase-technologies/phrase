@@ -17,7 +17,7 @@ export default ({ api, db }) => {
     res.json({
       succcess: true,
       message: `Users found`,
-      users: users.map(user => ({ username: user.username })),
+      users: users.map(user => ({ username: user.username, userId: user.id })),
     })
   })
 }

@@ -28,6 +28,7 @@ import deletePhrase from './routes/authorized/deletePhrase'
 import setPrivacySetting from './routes/authorized/setPrivacySetting'
 import masterControl from './routes/authorized/masterControl'
 import searchUsers from './routes/authorized/searchUsers'
+import collab from './routes/authorized/collab'
 
 /*----------------------------------------------------------------------------*/
 
@@ -35,15 +36,21 @@ let app, db, io, server
 let domain = `http://localhost:9999`
 
 let alice = {
-  email: `alice@foo`,
+  email: `alice@phrase`,
   username: `alice`,
   password: `alice_password`,
 }
 
 let bob = {
-  email: `bob@foo`,
+  email: `bob@phrase`,
   username: `bob`,
   password: `bob_password`,
+}
+
+let chris = {
+  email: `chris@phrase`,
+  username: `chris`,
+  password: `chris_password`,
 }
 
 /*----------------------------------------------------------------------------*/
@@ -75,9 +82,9 @@ async function runTests () {
 
 /*---Test order matters!------------------------------------------------------*/
 
-  // Create two users
   await signup({ domain, user: alice })
   await signup({ domain, user: bob })
+  await signup({ domain, user: chris })
 
   let aliceLogin = await login({ domain, user: alice })
 
@@ -93,6 +100,14 @@ async function runTests () {
     ...bob,
     ...bobLogin.user,
     token: bobLogin.token,
+  }
+
+  let chrisLogin = await login({ domain, user: chris })
+
+  chris = {
+    ...chris,
+    ...chrisLogin.user,
+    token: chrisLogin.token,
   }
 
   searchUsers({ domain, user: alice, userToSearch: bob })
@@ -120,6 +135,8 @@ async function runTests () {
   })
 
   loadOne({ domain, author: alice, observer: bob, publicPhraseId, privatePhraseId })
+
+  collab({ domain, author: alice, collaborator: chris, phraseId: privatePhraseId })
 
   update({ domain, author: alice, observer: bob, phraseId: publicPhraseId })
 

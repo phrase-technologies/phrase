@@ -57,7 +57,7 @@ export default ({
     })
 
     // maybe later people can choose what fields are private, but username MUST be public
-    it(`should only return username`, async function() {
+    it(`should only return username and userId`, async function() {
       this.timeout(100000)
 
       let response = await ajax({
@@ -74,8 +74,10 @@ export default ({
       // if you find a rule that allows unused-vars when excluding, add it!
       // .. and I'll buy you a beer. - azium
       expect(users.every(
-        ({ username, ...rest }) => !Object.keys(rest).length
+        ({ username, userId, ...rest }) => !Object.keys(rest).length
       )).to.be.true
+      expect(users.every(x => x.userId)).to.be.true
+      expect(users.every(x => x.username)).to.be.true
     })
   })
 }
