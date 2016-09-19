@@ -85,6 +85,7 @@ $Select-border-color: hsl(180, 100%, 30%);
 .Select-menu-outer {
   border-color: $Select-border-color;
   font-size: 12px !important;
+  z-index: 5;
 }
 .Select-option {
   line-height: $Select-height;

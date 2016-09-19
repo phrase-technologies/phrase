@@ -7,12 +7,8 @@ import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
 import { modalOpen } from 'reducers/reduceModal.js'
 
 export class Discussion extends Component {
-
-  constructor() {
-    super()
-    this.state = {
-      fullscreenReply: false,
-    }
+  state = {
+    fullscreenReply: false,
   }
 
   render() {
@@ -32,10 +28,11 @@ export class Discussion extends Component {
           <div className="discussion-presence-all">
             In this session:
           </div>
-          <UserBubble initials="PB" online={true} />
+          {/* <UserBubble initials="PB" online={true} />
           <UserBubble initials="AK" />
-          <UserBubble initials="ZZ" />
+          <UserBubble initials="ZZ" /> */}
           <button
+            disabled={!this.props.phraseId}
             className="btn btn-primary btn-sm discussion-invite"
             onClick={this.openPermissions}
           >
@@ -49,7 +46,7 @@ export class Discussion extends Component {
             ref={ref => this.scrollWindow = ref}
           >
             <ul className="discussion-timeline">
-              <DiscussionTimelineItem
+              {/* <DiscussionTimelineItem
                 tick={ "4.1.1" }
                 user={{ initials: "ZZ", username: "zavoshz" }}
                 timestamp={"11:32 AM"}
@@ -76,7 +73,7 @@ export class Discussion extends Component {
                 timestamp={"Saturday"}
                 comment="Cool."
                 setFullscreenReply={this.setFullscreenReply}
-              />
+              /> */}
             </ul>
           </div>
         </div>
@@ -108,4 +105,4 @@ export class Discussion extends Component {
 
 }
 
-export default connect()(Discussion)
+export default connect(state => ({ phraseId: state.phraseMeta.phraseId }))(Discussion)

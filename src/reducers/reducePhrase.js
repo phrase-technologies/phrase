@@ -700,7 +700,6 @@ export default function reducePhrase(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.CREATE_MIDI_EVENT:
-      console.log('>>> midievent', action.payload)
       return {
         ...state,
         midiEvents: [

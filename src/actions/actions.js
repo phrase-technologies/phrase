@@ -86,6 +86,9 @@ export const phrase = namespaceActions(
     'QUANTIZE_SELECTION',
     'UPDATE_PRIVACY_SETTING',
     'NOT_FOUND',
+    'ADD_COLLABORATOR',
+    'REMOVE_COLLABORATOR',
+    'GIVE_CONTROL',
   ]
 )
 

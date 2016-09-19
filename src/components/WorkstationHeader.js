@@ -24,12 +24,8 @@ import isSafari from 'helpers/isSafari'
 import makeButtonUnfocusable from 'helpers/makeButtonUnfocusable'
 
 export class WorkstationHeader extends Component {
-
-  constructor() {
-    super()
-    this.state = {
-      quantizeDropdownIsOpen: false,
-    }
+  state = {
+    quantizeDropdownIsOpen: false,
   }
 
   render() {

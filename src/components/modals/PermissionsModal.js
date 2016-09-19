@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import ReactSelect from 'react-select'
 
+import { api } from 'helpers/ajaxHelpers'
 import PermissionsOption from 'components/PermissionsOption'
 import UserBubble from 'components/UserBubble'
 import LinkShare from 'components/LinkShare'
@@ -13,6 +14,14 @@ export class PermissionsModal extends Component {
   state = {
     selectedPermission: "",
     choosingPermissions: false,
+    loadingPermissions: false,
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.phraseMeta.privacySetting !== nextProps.phraseMeta.privacySetting) {
+      this.setState({ loadingPermissions: false })
+      this.closePermissions()
+    }
   }
 
   permissionsOptions = [
@@ -41,17 +50,19 @@ export class PermissionsModal extends Component {
     },
   ]
 
-  autocompleteUsers = (input, callback) => {
-    setTimeout(() => {
-      callback(null, {
-        options: [
-          { value: 1, label: 'zavoshz' },
-          { value: 2, label: 'DJAzium' },
-          { value: 3, label: 'CarpeDN' },
-          { value: 4, label: 'jgnieuwhof' },
-        ]//.filter(x => x.label.indexOf(input) >= 0)
-      })
-    }, 500)
+  autocompleteUsers = async (input, callback) => {
+    let data = await api({
+      endpoint: `searchUsers`,
+      body: {  },
+    })
+    callback(null, {
+      options: [
+        { value: 1, label: 'zavoshz' },
+        { value: 2, label: 'DJAzium' },
+        { value: 3, label: 'CarpeDN' },
+        { value: 4, label: 'jgnieuwhof' },
+      ]//.filter(x => x.label.indexOf(input) >= 0)
+    })
   }
 
   render() {
@@ -74,27 +85,15 @@ export class PermissionsModal extends Component {
 
           <ul className="user-collaborator-list">
             <li>
-              <UserBubble initials="AK" />
+              <UserBubble initials={this.props.phraseMeta.authorUsername.substr(0, 2).toUpperCase()} />
               <span className="user-username">
-                ProfessorAnson <strong>(Owner)</strong>
-              </span>
-            </li>
-            <li>
-              <UserBubble initials="ZZ" />
-              <span className="user-username">
-                zavoshz
-              </span>
-            </li>
-            <li>
-              <UserBubble initials="AZ" />
-              <span className="user-username">
-                DJAzium
+                {this.props.phraseMeta.authorUsername} <strong>(Owner)</strong>
               </span>
             </li>
           </ul>
 
           {
-            this.state.savedPermission !== 'private'
+            this.props.phraseMeta.privacySetting !== 'private'
             && (
               <div>
                 <small>Link to share</small>
@@ -104,6 +103,20 @@ export class PermissionsModal extends Component {
           }
         </Modal.Body>
         <Modal.Footer>
+          <div
+            style={{
+              backgroundColor: `rgba(202, 202, 202, 0.8)`,
+              position: `absolute`,
+              top: 0,
+              left: 0,
+              width: `100%`,
+              height: `100%`,
+              zIndex: 10,
+              transition: `opacity 0.35s ease`,
+              opacity: this.state.loadingPermissions ? 1 : 0,
+              pointerEvents: `none`,
+            }}
+          />
           { this.renderPermissions() }
         </Modal.Footer>
       </Modal>
@@ -111,13 +124,14 @@ export class PermissionsModal extends Component {
   }
 
   renderPermissions() {
-    if (this.state.choosingPermissions) {
+    if (this.state.choosingPermissions || this.state.loadingPermissions) {
       return (
         <form style={{ textAlign: 'left' }}>
           {
             this.permissionsOptions.map((option, index) => {
               return (
                 <div className="radio" key={index}>
+
                   <label>
                     <input
                       type="radio" name="permission_option"
@@ -183,12 +197,13 @@ export class PermissionsModal extends Component {
     this.setState({ selectedPermission: e.currentTarget.value })
   }
   savePermissions = (e) => {
+    this.setState({ loadingPermissions: true })
     this.props.dispatch(setPrivacySetting({ privacySetting: this.state.selectedPermission }))
-    this.closePermissions(e)
+    e.preventDefault()
   }
   closePermissions = (e) => {
     this.setState({ choosingPermissions: false })
-    e.preventDefault()
+    if (e) e.preventDefault()
   }
 
 

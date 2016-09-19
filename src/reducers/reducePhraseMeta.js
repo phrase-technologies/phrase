@@ -36,6 +36,8 @@ export const defaultState = {
   phraseId: null,
   phraseName: null,
   authorUsername: null,
+  observers: [],
+  masterConrtol: [],
   privacySetting: `private`,
   dateCreated: null,
   dateModified: null,

@@ -53,8 +53,9 @@ export class Workstation extends Component {
 
     // Load existing phrase from URL param
     if (params.phraseId) {
-      if (loading !== phrase.REPHRASE)
+      if (loading !== phrase.REPHRASE) {
         dispatch(phraseLoadFromDb(phraseId))
+      }
 
       socket.emit(`client::joinRoom`, {
         phraseId,
@@ -92,7 +93,7 @@ export class Workstation extends Component {
           <div className="workstation-container">
             <Helmet title={`Not found! - Phrase.fm`} />
             <div className="workstation-loading text-center">
-              <p>¯\_(ツ)_/¯</p>
+              <p style={{ fontSize: `3rem` }}>¯\_(ツ)_/¯</p>
               <p style={{ marginTop: 15 }}>
                 Phrase not found!
               </p>
