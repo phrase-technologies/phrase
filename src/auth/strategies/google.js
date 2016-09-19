@@ -12,6 +12,8 @@ export default ({ app, db, io }) => {
       callbackURL: `${apiURL}/auth/google/callback`,
     },
     (accessToken, refreshToken, profile, done) => {
+      if(profile.photos) // Adjust photo size if we have a photo
+        profile.photos[0] = { value: profile.photos[0].value.replace("sz=50", "sz=500")}
       handleOAuth({ profile, done, db })
     }
   ))
