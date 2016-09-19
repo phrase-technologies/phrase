@@ -11,17 +11,19 @@ export default ({ app, db }) => {
     let { token, email } = req.body
 
     if (!token && email) {
-      res.json({ success: false, message: `Missing oAuth token, please try again.`})
+      res.json({ success: false, message: { oAuthError: `Missing oAuth token, please try again.` }})
       return
     }
 
     if (!email && token) {
-      res.json({ success: false, message: `Missing email, please try again.`})
+      res.json({ success: false, message: { oAuthError: `Missing email, please try again.` }})
       return
     }
 
     if (!email && !token) {
-      res.json({ success: false, message: `Missing email and oAuth token, please try again.`})
+      res.json({ success: false, message: {
+        oAuthError: `Missing email and oAuth token, please try again.`
+      }})
       return
     }
 
