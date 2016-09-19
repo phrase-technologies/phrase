@@ -221,6 +221,7 @@ export class WorkstationHeader extends Component {
     // TEMPORARILY DISABLE UNTIL WE FIX SLICE (TODO)
     // let SliceTooltip = <Tooltip id="tooltip-slice-tool">Slice Tool (4)</Tooltip>
     let VelocityTooltip = <Tooltip id="tooltip-velocity-tool">Velocity Tool (4)</Tooltip>// TEMPORARILY CHANGE from 5 to 4 UNTIL WE FIX SLICE (TODO)
+    let CommentTooltip = <Tooltip id="tooltip-comment-tool">Comment Tool (5)</Tooltip>// TEMPORARILY CHANGE from 6 to 4 UNTIL WE FIX SLICE (TODO)
 
     return (
       <div className="btn-group">
@@ -264,6 +265,14 @@ export class WorkstationHeader extends Component {
             onClick={() => dispatch(arrangeToolSelect(`velocity`))} {...makeButtonUnfocusable}
           >
             <span style={{ padding: `0 0.45rem` }}>V</span>
+          </button>
+        </OverlayTrigger>
+        <OverlayTrigger placement="top" overlay={CommentTooltip} delayShow={250}>
+          <button
+            className={ `btn btn-dark btn-narrow ${arrangeTool === `comment` ? `active` : ``}` }
+            onClick={() => dispatch(arrangeToolSelect(`comment`))} {...makeButtonUnfocusable}
+          >
+            <span className="fa fa-fw fa-comments" />
           </button>
         </OverlayTrigger>
       </div>

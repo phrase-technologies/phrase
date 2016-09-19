@@ -177,6 +177,9 @@ class HotkeyProvider extends Component {
       case 52:  // 4 - Velocity tool
         dispatch(arrangeToolSelect(`velocity`))
         break
+      case 53:  // 5 - Velocity tool
+        dispatch(arrangeToolSelect(`comment`))
+        break
       // ----------------------------------------------------------------------
       // Layout
       /* // TEMPORARILY DISABLE UNTIL WE LAUNCH RACKS (TODO)
