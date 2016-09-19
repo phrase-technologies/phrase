@@ -45,8 +45,6 @@ export class Workstation extends Component {
       currentUsername,
     } = this.props
 
-    let { phraseId } = params
-
     // Put the page into "app-mode" to prevent inertia scroll
     document.documentElement.style.overflow = "hidden"
     document.body.style.overflow = "hidden"
@@ -55,7 +53,7 @@ export class Workstation extends Component {
     socket.on(`server::updatePhrase`, this.receiveSocketUpdate)
     socket.on(`server::updatePresence`, room => console.log("ROOM:", room))
     socket.on(`server::privacySettingChanged`, socketData => {
-      if (socketData.phraseId === phraseId) {
+      if (socketData.phraseId === this.props.params.phraseId) {
         dispatch({
           type: phrase.UPDATE_PRIVACY_SETTING,
           payload: { privacySetting: socketData.privacySetting },
@@ -71,27 +69,45 @@ export class Workstation extends Component {
         // If we destructure it at top with the rest of the props
         // `notFound` will always be the value at mounting time.
         if (this.props.notFound && socketData.privacySetting === terms.PUBLIC) {
-          dispatch(phraseLoadFromDb(phraseId))
+          dispatch(phraseLoadFromDb(this.props.params.phraseId))
         }
 
         // This goes both ways.. if an observer is on a phrase that change to
         // private, they should no longer have access it, and see `Not found`.
 
-        // TODO: collaboratos should be able to stay
+        // TODO: collaborators should be able to stay
         else if (socketData.privacySetting === terms.PRIVATE && authorUsername !== currentUsername) {
           dispatch(phraseNotFound())
         }
       }
     })
 
+    socket.on(`server::collaboratorAdded`, socketData => {
+      if (socketData.phraseId === this.props.params.phraseId) {
+        dispatch({
+          type: phrase.ADD_COLLABORATOR,
+          payload: socketData,
+        })
+      }
+    })
+
+    socket.on(`server::collaboratorLeft`, socketData => {
+      if (socketData.phraseId === this.props.params.phraseId) {
+        dispatch({
+          type: phrase.REMOVE_COLLABORATOR,
+          payload: { userId: socketData.userId },
+        })
+      }
+    })
+
     // Load existing phrase from URL param
-    if (params.phraseId) {
+    if (this.props.params.phraseId) {
       if (loading !== phrase.REPHRASE) {
-        dispatch(phraseLoadFromDb(phraseId))
+        dispatch(phraseLoadFromDb(this.props.params.phraseId))
       }
 
       socket.emit(`client::joinRoom`, {
-        phraseId,
+        phraseId: this.props.params.phraseId,
         username: this.props.currentUsername
       })
     }

@@ -60,6 +60,7 @@ export const defaultState = {
   authorUsername: null,
   observers: [],
   masterConrtol: [],
+  collaborators: [],
   privacySetting: `private`,
   dateCreated: null,
   dateModified: null,
@@ -420,6 +421,24 @@ export default function reducePhraseMeta(state = defaultState, action) {
     case phrase.UPDATE_PRIVACY_SETTING:
       return u({
         privacySetting: action.payload.privacySetting,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.ADD_COLLABORATOR:
+      return u({
+        collaborators: [
+          ...state.collaborators,
+          {
+            username: action.payload.username,
+            userId: action.payload.userId
+          }
+        ]
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.REMOVE_COLLABORATOR:
+      return u({
+        collaborators: state.collaborators.filter(user => user.userId !== action.payload.userId)
       }, state)
 
     // ------------------------------------------------------------------------

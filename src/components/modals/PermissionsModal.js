@@ -91,6 +91,20 @@ export class PermissionsModal extends Component {
                 {this.props.phraseMeta.authorUsername} <strong>(Owner)</strong>
               </span>
             </li>
+            {this.props.phraseMeta.collaborators.map(user =>
+              <li key={user.userId}>
+                <UserBubble initials={user.username.substr(0, 2).toUpperCase()} />
+                <span className="user-username">
+                  {user.username}
+                  <a
+                    style={{ marginLeft: `0.5rem` }}
+                    onClick={() => this.props.dispatch(removeCollaborator({ targetUserId: user.userId }))}
+                  >
+                    <strong>Remove</strong>
+                  </a>
+                </span>
+              </li>
+            )}
           </ul>
 
           {
