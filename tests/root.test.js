@@ -95,7 +95,7 @@ async function runTests () {
     token: bobLogin.token,
   }
 
-  searchUsers({ domain, user: alice, searchTerm: `bob` })
+  searchUsers({ domain, user: alice, userToSearch: bob })
 
   loadUserPhrases({ domain, user: alice })
 

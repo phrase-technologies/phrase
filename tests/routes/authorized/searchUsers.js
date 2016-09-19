@@ -4,7 +4,7 @@ import ajax from '../../../src/helpers/ajax'
 export default ({
   domain,
   user,
-  searchTerm,
+  userToSearch,
 }) => {
   let url = `${domain}/api/searchUsers`
 
@@ -17,14 +17,14 @@ export default ({
         body: {
           userId: user.id,
           token: user.token,
-          searchTerm,
+          searchTerm: '',
         },
       })
 
       expect(response.status).to.eq(200)
     })
 
-    it(`should return a valid user array`, async function() {
+    it(`should return a lengthy array if found a user by username`, async function() {
       this.timeout(100000)
 
       let response = await ajax({
@@ -32,12 +32,28 @@ export default ({
         body: {
           userId: user.id,
           token: user.token,
-          searchTerm,
+          searchTerm: userToSearch.username,
         },
       })
 
       let { users } = await response.json()
-      expect(users).to.have.length
+      expect(users).to.have.length.above(0)
+    })
+
+    it(`should return a lengthy array if found a user by email`, async function() {
+      this.timeout(100000)
+
+      let response = await ajax({
+        url,
+        body: {
+          userId: user.id,
+          token: user.token,
+          searchTerm: userToSearch.email,
+        },
+      })
+
+      let { users } = await response.json()
+      expect(users).to.have.length.above(0)
     })
 
     // maybe later people can choose what fields are private, but username MUST be public
@@ -49,7 +65,7 @@ export default ({
         body: {
           userId: user.id,
           token: user.token,
-          searchTerm,
+          searchTerm: userToSearch.username,
         },
       })
 

@@ -9,7 +9,7 @@ export default ({ api, db }) => {
     }
 
     let userCursor = await r.table(`users`).filter(row =>
-      row(`username`).match(searchTerm) || row(`email`).match(searchTerm)
+      row(`username`).match(searchTerm).or(row(`email`).match(searchTerm))
     ).run(db)
 
     let users = await userCursor.toArray()
