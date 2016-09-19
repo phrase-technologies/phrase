@@ -51,18 +51,20 @@ export class PermissionsModal extends Component {
     },
   ]
 
-  autocompleteUsers = async (input, callback) => {
-    let { users = [] } = await api({
+  autocompleteUsers = _.debounce((input, callback) => {
+    api({
       endpoint: `searchUsers`,
       body: { searchTerm: input },
+    }).then(({ users = [] }) => {
+      callback(null, {
+        options: users
+          .filter(x => x.userId !== localStorage.userId) // could extend endpoint for this but nbd
+          .map(x => ({ value: x.userId, label: x.username }))
+      })
+    }).catch((error) => {
+      callback(error, null)
     })
-
-    callback(null, {
-      options: users
-        .filter(x => x.userId !== localStorage.userId) // could extend endpoint for this but nbd
-        .map(x => ({ value: x.userId, label: x.username }))
-    })
-  }
+  }, 250)
 
   render() {
     return (
@@ -76,7 +78,7 @@ export class PermissionsModal extends Component {
             <ReactSelect.Async
               name="collaborator-input"
               placeholder="Email or Username"
-              loadOptions={_.debounce(this.autocompleteUsers, 500)}
+              loadOptions={this.autocompleteUsers}
               onChange={({ value }) => this.props.dispatch(addCollaborator({ targetUserId: value }))}
               autoload={false}
             />
