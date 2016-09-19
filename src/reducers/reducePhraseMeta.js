@@ -27,6 +27,28 @@ export let setPrivacySetting = ({ privacySetting }) => {
   }
 }
 
+export let addCollaborator = ({ targetUserId }) => {
+  return (dispatch, getState) => {
+    let { phraseId } = getState().phraseMeta
+
+    api({
+      endpoint: `collab/add`,
+      body: { phraseId, targetUserId },
+    })
+  }
+}
+
+export let removeCollaborator = ({ targetUserId }) => {
+  return (dispatch, getState) => {
+    let { phraseId } = getState().phraseMeta
+
+    api({
+      endpoint: `collab/remove`,
+      body: { phraseId, targetUserId },
+    })
+  }
+}
+
 export const defaultState = {
   loading: true,
   notFound: false, // this value is used to display a message when loadOne fails

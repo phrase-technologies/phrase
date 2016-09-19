@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import _ from 'lodash'
 import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import ReactSelect from 'react-select'
@@ -8,7 +9,7 @@ import PermissionsOption from 'components/PermissionsOption'
 import UserBubble from 'components/UserBubble'
 import LinkShare from 'components/LinkShare'
 import { modalClose } from 'reducers/reduceModal.js'
-import { setPrivacySetting } from 'reducers/reducePhraseMeta'
+import { setPrivacySetting, addCollaborator, removeCollaborator } from 'reducers/reducePhraseMeta'
 
 export class PermissionsModal extends Component {
   state = {
@@ -51,17 +52,15 @@ export class PermissionsModal extends Component {
   ]
 
   autocompleteUsers = async (input, callback) => {
-    let data = await api({
+    let { users = [] } = await api({
       endpoint: `searchUsers`,
-      body: {  },
+      body: { searchTerm: input },
     })
+
     callback(null, {
-      options: [
-        { value: 1, label: 'zavoshz' },
-        { value: 2, label: 'DJAzium' },
-        { value: 3, label: 'CarpeDN' },
-        { value: 4, label: 'jgnieuwhof' },
-      ]//.filter(x => x.label.indexOf(input) >= 0)
+      options: users
+        .filter(x => x.userId !== localStorage.userId) // could extend endpoint for this but nbd
+        .map(x => ({ value: x.userId, label: x.username }))
     })
   }
 
@@ -77,8 +76,8 @@ export class PermissionsModal extends Component {
             <ReactSelect.Async
               name="collaborator-input"
               placeholder="Email or Username"
-              loadOptions={this.autocompleteUsers}
-              onChange={() => true}
+              loadOptions={_.debounce(this.autocompleteUsers, 500)}
+              onChange={({ value }) => this.props.dispatch(addCollaborator({ targetUserId: value }))}
               autoload={false}
             />
           </div>
