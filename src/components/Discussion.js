@@ -32,7 +32,7 @@ export class Discussion extends Component {
           <UserBubble initials="AK" />
           <UserBubble initials="ZZ" /> */}
           <button
-            disabled={!this.props.phraseId}
+            disabled={!this.props.phraseId || (this.props.currentUsername !== this.props.authorUsername)}
             className="btn btn-primary btn-sm discussion-invite"
             onClick={this.openPermissions}
           >
@@ -105,4 +105,8 @@ export class Discussion extends Component {
 
 }
 
-export default connect(state => ({ phraseId: state.phraseMeta.phraseId }))(Discussion)
+export default connect(state => ({
+  phraseId: state.phraseMeta.phraseId,
+  authorUsername: state.phraseMeta.authorUsername,
+  currentUsername: state.auth.user.username,
+}))(Discussion)

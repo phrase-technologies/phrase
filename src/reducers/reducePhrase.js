@@ -490,6 +490,8 @@ export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated
   }
 }
 
+export const phraseNotFound = () => ({ type: phrase.NOT_FOUND })
+
 export const phraseLoadFromDb = phraseId => {
   return async (dispatch) => {
     dispatch({ type: phrase.LOAD_START })
@@ -508,7 +510,7 @@ export const phraseLoadFromDb = phraseId => {
           }
         })
       } else if (message === `Phrase not found!`) {
-        dispatch({ type: phrase.NOT_FOUND })
+        dispatch(phraseNotFound())
       }
 
     }})

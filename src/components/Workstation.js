@@ -11,6 +11,7 @@ import {
   phraseNewPhrase,
   phraseLoginReminder,
   phraseRephraseReminder,
+  phraseNotFound,
 } from 'reducers/reducePhrase'
 
 import { layoutConsoleSplit } from 'reducers/reduceNavigation'
@@ -28,11 +29,22 @@ import Mixer from 'components/Mixer'
 import Pianoroll from 'components/Pianoroll'
 import Rack from 'components/Rack'
 import Discussion from 'components/Discussion'
+import terms from 'constants/terms'
 
 export class Workstation extends Component {
 
   componentDidMount() {
-    let { dispatch, params, loading, socket, route, router } = this.props
+    let {
+      dispatch,
+      params,
+      loading,
+      socket,
+      route,
+      router,
+      authorUsername,
+      currentUsername,
+    } = this.props
+
     let { phraseId } = params
 
     // Put the page into "app-mode" to prevent inertia scroll
@@ -58,8 +70,16 @@ export class Workstation extends Component {
         // `notFound` must be referenced inside this socket handler.
         // If we destructure it at top with the rest of the props
         // `notFound` will always be the value at mounting time.
-        if (this.props.notFound && socketData.privacySetting === `public`) {
+        if (this.props.notFound && socketData.privacySetting === terms.PUBLIC) {
           dispatch(phraseLoadFromDb(phraseId))
+        }
+
+        // This goes both ways.. if an observer is on a phrase that change to
+        // private, they should no longer have access it, and see `Not found`.
+
+        // TODO: collaboratos should be able to stay
+        else if (socketData.privacySetting === terms.PRIVATE && authorUsername !== currentUsername) {
+          dispatch(phraseNotFound())
         }
       }
     })
