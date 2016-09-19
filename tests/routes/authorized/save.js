@@ -4,8 +4,8 @@ import ajax from '../../../src/helpers/ajax'
 let phraseState = {}
 let phraseName = `testPhrase`
 
-export default ({ domain, user, token }) => {
-  let url = `${domain}/api/save`
+export default ({ globals, user, token }) => {
+  let url = `${globals.domain}/api/save`
 
   return new Promise(resolve => {
     describe(`save`, () => {

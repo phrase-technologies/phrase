@@ -5,8 +5,8 @@ let fakeUser = {
   username: `bar`,
 }
 
-export default ({ domain, user }) => {
-  let url = `${domain}/api/loadUserPhrases`
+export default ({ globals, user }) => {
+  let url = `${globals.domain}/api/loadUserPhrases`
 
   describe(`loadUserPhrases`, () => {
     it(`returns 404 for nonexistant users`, async function() {
