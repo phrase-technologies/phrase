@@ -85,6 +85,7 @@ export const phrase = namespaceActions(
     'PRISTINE',
     'QUANTIZE_SELECTION',
     'UPDATE_PRIVACY_SETTING',
+    'NOT_FOUND',
   ]
 )
 

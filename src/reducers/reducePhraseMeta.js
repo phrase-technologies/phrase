@@ -29,6 +29,7 @@ export let setPrivacySetting = ({ privacySetting }) => {
 
 export const defaultState = {
   loading: true,
+  notFound: false, // this value is used to display a message when loadOne fails
   saving: false,
   pristine: true,
   parentId: null,
@@ -60,7 +61,7 @@ export const defaultState = {
   noteSelectionOffsetKey: null,
   noteSelectionOffsetSnap: true,
   noteSelectionOffsetCopy: null,
-  noteSelectionVelocities: []
+  noteSelectionVelocities: [],
 }
 
 export default function reducePhraseMeta(state = defaultState, action) {
@@ -395,6 +396,12 @@ export default function reducePhraseMeta(state = defaultState, action) {
     case phrase.UPDATE_PRIVACY_SETTING:
       return u({
         privacySetting: action.payload.privacySetting,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.NOT_FOUND:
+      return u({
+        notFound: true,
       }, state)
 
     // ------------------------------------------------------------------------

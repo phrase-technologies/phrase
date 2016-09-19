@@ -42,8 +42,7 @@ export const catchAndToastException = async ({ dispatch, toCatch, callback }) =>
           dispatch(modalOpen({ modalComponent: 'LoginModal' }))
           dispatch(logout())
           break
-        case 404:
-          dispatch(push(`/not-found`))
+        case 404: // Don't display 404 as notification
           break
         default: // Other fetch errors
           dispatch(addNotification({

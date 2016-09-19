@@ -86,6 +86,28 @@ export class Workstation extends Component {
       )
     }
 
+    if (this.props.notFound) {
+      return (
+        <div className="workstation-background">
+          <div className="workstation-container">
+            <Helmet title={`Not found! - Phrase.fm`} />
+            <div className="workstation-loading text-center">
+              <p>¯\_(ツ)_/¯</p>
+              <p style={{ marginTop: 15 }}>
+                Phrase not found!
+              </p>
+              <p
+                style={{ color: `#00FFFF`, cursor: `pointer`, textDecoration: `underline` }}
+                onClick={() => this.props.dispatch(phraseNewPhrase())}
+              >
+                Click here to start a new Phrase
+              </p>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     // Loading Screen
     if (this.props.loading) {
       let loadingMessage
@@ -278,6 +300,7 @@ export class Workstation extends Component {
   shouldComponentUpdate(nextProps) {
     let shouldChange = diffProps(nextProps, this.props, [
       'loading',
+      'notFound',
       'autosaving',
       'pristine',
       'phrase',
@@ -315,6 +338,7 @@ function mapStateToProps(state) {
 
   return {
     loading: state.phraseMeta.loading,
+    notFound: state.phraseMeta.notFound,
     autosaving: state.phraseMeta.saving,
     pristine: state.phraseMeta.pristine,
     phrase: state.phrase,

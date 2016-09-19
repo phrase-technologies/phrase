@@ -494,10 +494,11 @@ export const phraseLoadFromDb = phraseId => {
   return async (dispatch) => {
     dispatch({ type: phrase.LOAD_START })
     catchAndToastException({ dispatch, toCatch: async () => {
-      let { loadedPhrase } = await api({
+      let { loadedPhrase, message } = await api({
         endpoint: `loadOne`,
         body: { phraseId },
       })
+
       if (loadedPhrase) {
         dispatch({
           type: phrase.LOAD_FINISH,
@@ -506,7 +507,10 @@ export const phraseLoadFromDb = phraseId => {
             name: loadedPhrase.phrasename, // should probably make these the same
           }
         })
+      } else if (message === `Phrase not found!`) {
+        dispatch({ type: phrase.NOT_FOUND })
       }
+
     }})
   }
 }
