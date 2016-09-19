@@ -15,7 +15,6 @@ export default ({ domain, author, observer, publicPhraseId, privatePhraseId }) =
       this.timeout(100000)
       let response = await ajax({ url, body: { phraseId: `fake-id` } })
       let { message } = await response.json()
-      expect(response.status).to.eq(404)
       expect(message).to.eq(`Phrase not found!`)
     })
 
@@ -60,7 +59,6 @@ export default ({ domain, author, observer, publicPhraseId, privatePhraseId }) =
       })
 
       let { message } = await response.json()
-      expect(response.status).to.eq(404)
       expect(message).to.eq(`Phrase not found!`)
     })
   })
