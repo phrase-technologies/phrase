@@ -62,7 +62,7 @@ export default class DiscussionTimelineItem extends Component {
           <TextareaAuto
             className="discussion-timeline-reply form-control form-control-dark"
             placeholder="Write a reply..." ref={ref => this.textarea = ref}
-            onKeyDown={this.keyDownHandler}
+            onKeyDown={this.keyDownHandler} maxRows={6}
           />
           <div className="discussion-fullscreen-context visible-xs-block">
             <span className="fa fa-level-up fa-flip-horizontal" />

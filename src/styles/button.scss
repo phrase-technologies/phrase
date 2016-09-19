@@ -76,7 +76,7 @@ a,
 }
 .btn-primary,
 .btn-bright {
-  border-color: #222;
+  border-color: #222 !important;
   box-shadow: inset 0 1px 6px -1px #FFF;
   background: #444;
   background-image: linear-gradient(to bottom, #AAA, #888);

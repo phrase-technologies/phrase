@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import TextareaAuto from 'react-textarea-autosize'
 
 import UserBubble from 'components/UserBubble'
 import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
@@ -10,6 +11,9 @@ import { addMasterControl, removeMasterControl } from 'reducers/reducePhraseMeta
 export class Discussion extends Component {
   state = {
     fullscreenReply: false,
+    formHeight: 90,
+    formFocused: false,
+    formMobileOpen: false,
     loadingMasterControl: false
   }
 
@@ -29,6 +33,10 @@ export class Discussion extends Component {
     let fullscreenOverride = this.state.fullscreenReply
       ? " discussion-fullscreen-override"
       : ""
+
+    // This override adjusts form height based on textarea content
+    let discussionFormStyles = { height: this.state.formHeight }
+    let discussionFormClasses = `discussion-form ${this.state.formMobileOpen ? '' : 'hidden-xs'}`
 
     return (
       <div className="workstation-discussion">
@@ -110,7 +118,7 @@ export class Discussion extends Component {
             <span> Share</span>
           </button>
         </div>
-        <div className="discussion-body">
+        <div className="discussion-body" style={{ bottom: this.state.formHeight }}>
           <div
             className={"discussion-timeline-gutter" + fullscreenOverride}
             ref={ref => this.scrollWindow = ref}
@@ -147,6 +155,42 @@ export class Discussion extends Component {
             </ul>
           </div>
         </div>
+        <button
+          className="discussion-form-mobile-trigger btn btn-bright btn-sm visible-xs-inline-block"
+          onClick={() => this.setState({ formMobileOpen: true })}
+        >
+          <span className="fa fa-comment-o fa-flip-horizontal" />
+          <span> Leave a comment</span>
+        </button>
+        <div className={discussionFormClasses} style={discussionFormStyles}>
+          <button
+            className="close close-dark visible-xs-inline-block"
+            onClick={() => this.setState({ formMobileOpen: false })}
+          >
+            &times;
+          </button>
+          <TextareaAuto
+            className="discussion-form-input form-control form-control-dark"
+            placeholder="Leave a comment..." ref={ref => this.textarea = ref}
+            onKeyDown={this.keyDownHandler} minRows={2} maxRows={6}
+            onHeightChange={this.handleHeightChange}
+            onFocus={() => this.setState({ formFocused: true })}
+            onBlur={() => this.setState({ formFocused: false })}
+          />
+          <div className={`form-control form-control-dark discussion-form-attachment ${this.state.formFocused ? 'focused' : ''}`}>
+            <span className="fa fa-clock-o" />
+            <span> General comment. </span>
+            <a>Tag specific timestamp/region</a>
+          </div>
+          <div className="text-right" style={{ marginTop: 8 }}>
+            <button className="btn btn-dark btn-sm visible-xs-inline-block" style={{ marginRight: 5 }}>
+              Cancel
+            </button>
+            <button className="btn btn-bright btn-sm">
+              Comment
+            </button>
+          </div>
+        </div>
       </div>
     )
   }
@@ -171,6 +215,17 @@ export class Discussion extends Component {
 
   openPermissions = () => {
     this.props.dispatch(modalOpen({ modalComponent: 'PermissionsModal' }))
+  }
+
+  handleHeightChange = (height) => {
+    this.setState({ formHeight: height + 82 })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Focus the textarea if newly opened!
+    if (this.state.formMobileOpen && !prevState.formMobileOpen) {
+      this.textarea.focus()
+    }
   }
 
 }

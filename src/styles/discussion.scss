@@ -1,5 +1,9 @@
 $discussion-presence-height: 42px;
+$discussion-form-height: 90px;
 
+// ============================================================================
+// Discussion Module
+// ============================================================================
 .workstation-discussion {
   border-radius: 4px;
   background: #282828;
@@ -39,7 +43,7 @@ $discussion-presence-height: 42px;
   top: $discussion-presence-height;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: $discussion-form-height;
 
   border-top: 1px solid #000;
   overflow: hidden;
@@ -71,7 +75,6 @@ $discussion-presence-height: 42px;
     z-index: 2;
 
     border-bottom: 1px solid #000;
-    border-radius: 0 0 4px 4px;
     box-shadow: inset 0 0 5px 1px #000;
 
     pointer-events: none;
@@ -147,6 +150,57 @@ $discussion-presence-height: 42px;
 }
 
 // ============================================================================
+// Discussion form for leaving new comments
+// ============================================================================
+.discussion-form {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: $discussion-form-height;
+  bottom: 0;
+
+  border: 1px solid #000;
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+  padding: 10px;
+  background: #555;
+  background-image: linear-gradient(180deg, #707070, #484848);
+
+  > .close {
+    left: 10px;
+    right: none;
+  }
+}
+.discussion-form-input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: inset 0px 2px 1px #000; // Remove outer shadow which causes gap on mobile safari
+
+  &:focus {
+    border-bottom-style: dashed;
+  }
+}
+.discussion-form-attachment {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-color: #000;
+  border-top: 0;
+  background: #282828;
+  box-shadow: none;
+  padding-top: 3px;
+  height: 24px;
+  color: #888;
+  font-size: 12px;
+
+  &.focused {
+    border-color: hsl(180,100%,50%) !important;
+    box-shadow:
+      0 0 8px hsla(180,100%,50%, 0.5),
+      inset 0 1px 1px rgba(0, 0, 0, 0.075) !important;
+  }
+}
+
+// ============================================================================
 // Mobile
 // ============================================================================
 @media (max-width: $screen-sm-max) {
@@ -167,7 +221,7 @@ $discussion-presence-height: 42px;
   .discussion-body {
     border-bottom: 0;
     top: 0;
-    bottom: $discussion-presence-height;
+    bottom: $discussion-presence-height !important;
 
     // Inset Shadow
     &::after {
@@ -190,7 +244,7 @@ $discussion-presence-height: 42px;
     bottom: 0;
 
     padding: 15px;
-    background: #333;
+    background: #444;
 
     > .close {
       left: 10px;
@@ -230,7 +284,7 @@ $discussion-presence-height: 42px;
       right: 0;
       bottom: -1px;
       height: 1px;
-      box-shadow: 0 0 50px 50px #333;
+      box-shadow: 0 0 50px 50px #444;
     }
   }
   .discussion-timeline-reply {
@@ -243,5 +297,25 @@ $discussion-presence-height: 42px;
     left: 0;
     right: 0;
     bottom: 0;
+  }
+
+  .discussion-form-mobile-trigger {
+    position: fixed;
+    top: 202px;
+    right: 7px;
+  }
+  .discussion-form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto !important;
+    z-index: 5000;
+
+    border: 0;
+    border-radius: 0;
+    padding: 45px 15px;
+    background: #444;
   }
 }
