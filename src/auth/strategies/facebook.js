@@ -10,7 +10,7 @@ export default ({ app, db, io }) => {
       clientID: facebookAppID,
       clientSecret: facebookAppSecret,
       callbackURL: `${apiURL}/auth/facebook/callback`,
-      profileFields: [`id`, `emails`, `name`, `picture`],
+      profileFields: [`id`, `emails`, `name`, `picture.width(500)`],
     },
     (accessToken, refreshToken, profile, done) => {
       handleOAuth({ profile, done, db })
