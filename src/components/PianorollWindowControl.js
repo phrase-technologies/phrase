@@ -38,6 +38,11 @@ import {
   cursorClear
 } from 'actions/actionsCursor'
 
+import {
+  commentSelectionStart,
+  commentSelectionEnd,
+} from 'reducers/reduceComment'
+
 import { phrase, mouse } from 'actions/actions'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
@@ -47,6 +52,7 @@ const CLICK_NOTE = 'CLICK_NOTE'
 const DRAG_NOTE = 'DRAG_NOTE'
 const CHANGE_NOTE_VELOCITY = 'CHANGE_NOTE_VELOCITY'
 const SELECTION_BOX = 'SELECTION_BOX'
+const COMMENT_GRIP = 'COMMENT_GRIP'
 const DOUBLECLICK_DELAY = 360
 
 export class PianorollWindowControl extends Component {
@@ -106,6 +112,13 @@ export class PianorollWindowControl extends Component {
   }
 
   leftClickEvent(e) {
+    let editable = !this.props.existingPhrase || this.props.ownerOfPhrase
+    if (!editable)
+      return
+
+    if (this.props.arrangeTool === "comment")
+      return this.commentGripEvent(e)
+
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     let key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange()) * this.props.keyCount + 8)
     let foundNote = this.getNoteAtBarKey(bar, key)
@@ -254,6 +267,9 @@ export class PianorollWindowControl extends Component {
 
   mouseMoveEvent(e) {
     let { dispatch, arrangeTool } = this.props
+
+    if (arrangeTool === 'comment')
+      return this.commentDragEvent(e)
 
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     let key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange()) * this.props.keyCount + 8
@@ -462,6 +478,7 @@ export class PianorollWindowControl extends Component {
       return
     }
 
+    // Change Velocity
     if (this.lastEvent &&
         this.lastEvent.action === CHANGE_NOTE_VELOCITY) {
       this.props.dispatch(phraseDropNoteVelocity())
@@ -470,6 +487,29 @@ export class PianorollWindowControl extends Component {
 
     // No Action - Clear the queue
     this.lastEvent = null
+  }
+
+  commentGripEvent(e) {
+    let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
+    this.lastEvent = {
+      action: COMMENT_GRIP,
+      bar,
+    }
+
+    this.props.dispatch(commentSelectionStart({
+      start: bar,
+      trackID: this.props.currentTrack.id
+    }))
+  }
+
+  commentDragEvent(e) {
+    if (this.lastEvent && this.lastEvent.action === COMMENT_GRIP) {
+      let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
+
+      this.props.dispatch(commentSelectionEnd({
+        end: bar,
+      }))
+    }
   }
 
   previewNoteSound(keyNum, velocity = 127) {
@@ -555,6 +595,8 @@ PianorollWindowControl.propTypes = {
 
 export default
 connect(state => ({
+  existingPhrase: state.phraseMeta.phraseId,
+  ownerOfPhrase: state.phraseMeta.authorUsername === state.auth.user.username,
   arrangeTool: state.arrangeTool,
   mouse: state.mouse,
 }))(

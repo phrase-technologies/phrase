@@ -185,3 +185,34 @@
   border: 1px solid rgba(255,255,255,0.500);
   background: rgba(255,255,255,0.050);
 }
+
+// ----------------------------------------------------------------------------
+// Comment Range
+// ----------------------------------------------------------------------------
+.timeline-comment-range-window {
+  position: absolute;
+  top:    0;
+  left:   0;
+  right:  0;
+  bottom: 0;
+
+  pointer-events: none;
+  overflow: hidden;
+}
+.timeline-comment-range-grid {
+  position: absolute;
+  top:    0;
+  left:   0;
+  right:  0;
+  bottom: 0;
+}
+.timeline-comment-range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;   // Above notes
+
+  border-left: 1px solid #0FF;
+  border-right: 1px solid #0FF;
+  background: rgba(#0FF,0.125);
+}

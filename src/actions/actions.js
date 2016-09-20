@@ -225,3 +225,12 @@ export const midi = namespaceActions(
     'CONNECTION_UNAVAILABLE',
   ]
 )
+
+export const comment = namespaceActions(
+  'comment',
+  [
+    'SELECTION_START',
+    'SELECTION_END',
+    'SELECTION_CLEAR',
+  ]
+)

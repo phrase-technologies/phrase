@@ -17,6 +17,7 @@ import Scrollbar              from './Scrollbar.js'
 import TimelineCursor         from './TimelineCursor.js'
 import TimelineSelectionBox   from './TimelineSelectionBox.js'
 import TimelinePlayhead       from './TimelinePlayhead.js'
+import TimelineCommentRange   from './TimelineCommentRange.js'
 
 export class Pianoroll extends Component {
 
@@ -52,7 +53,13 @@ export class Pianoroll extends Component {
       selectionEndX: this.props.selectionEndX,
       selectionEndY: this.props.selectionEndY
     }
-
+    let commentRangeProps = {
+      barCount: this.props.barCount,
+      xMin: this.props.xMin,
+      xMax: this.props.xMax,
+      commentRangeStart: this.props.commentRangeStart,
+      commentRangeEnd: this.props.commentRangeEnd,
+    }
     let playheadProps = {
       ...timelineProps,
       recording: this.props.recording,
@@ -115,6 +122,7 @@ export class Pianoroll extends Component {
             />
           </div>
         </PianorollWindowControl>
+        <TimelineCommentRange {...commentRangeProps} />
         <TimelineSelectionBox {...selectionBoxProps} />
         <TimelineCursor cursor={this.props.cursor} />
         <TimelinePlayhead {...playheadProps} />
@@ -146,6 +154,8 @@ Pianoroll.propTypes = {
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,
   selectionEndY: React.PropTypes.number,
+  commentRangeStart: React.PropTypes.number,
+  commentRangeEnd: React.PropTypes.number,
   maximize: React.PropTypes.func.isRequired,
 }
 Pianoroll.defaultProps = {

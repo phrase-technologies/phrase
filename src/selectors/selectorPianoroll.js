@@ -27,7 +27,8 @@ const noteSelectionOffsetStart  = (state) => (state.phraseMeta.noteSelectionOffs
 const noteSelectionOffsetEnd    = (state) => (state.phraseMeta.noteSelectionOffsetEnd)
 const noteSelectionOffsetKey    = (state) => (state.phraseMeta.noteSelectionOffsetKey)
 const noteSelectionOffsetSnap   = (state) => (state.phraseMeta.noteSelectionOffsetSnap)
-const noteSelectionVelocities = (state) => (state.phraseMeta.noteSelectionVelocities)
+const noteSelectionVelocities   = (state) => (state.phraseMeta.noteSelectionVelocities)
+const commentSelector           = (state) => (state.comment)
 
 export const clipSelectionOffsetValidated = createSelector(
   clipsSelector,
@@ -281,7 +282,8 @@ export const mapPianorollToProps = createSelector(
   barCountSelector,
   playheadSelector,
   recordingSelector,
-  (pianoroll, currentTrack, currentClips, currentNotes, barCount, playhead, recording) => {
+  commentSelector,
+  (pianoroll, currentTrack, currentClips, currentNotes, barCount, playhead, recording, comment) => {
     return {
       ...pianoroll,
       currentTrack,
@@ -290,6 +292,8 @@ export const mapPianorollToProps = createSelector(
       barCount,
       playhead,
       recording,
+      commentRangeStart: comment.selectionStart,
+      commentRangeEnd: comment.selectionEnd,
     }
   }
 )
