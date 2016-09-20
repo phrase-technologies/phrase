@@ -6,3 +6,4 @@ rethinkdb.exe
 backups
 logs/*
 !logs/LOGS.md
+public

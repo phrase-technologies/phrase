@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken'
 import authRoutes from './routes'
 import passport from 'passport'
 import strategies from './strategies'
+import { validateAPIToken } from '../helpers/token'
 
 export default ({
   api,
@@ -15,27 +15,12 @@ export default ({
   strategies.forEach(strategy => strategy({ app, db, io }))
   authRoutes.forEach(route => route({ api, app, db }))
 
-  api.use((req, res, next) => {
-
+  api.use(async (req, res, next) => {
     let token = req.body.token
-
-    if (token) {
-      jwt.verify(token, app.get(`superSecret`), (err, decoded) => {
-        if (err) {
-          return res.status(403).json({ message: `Failed to authenticate token.` })
-        }
-
-        req.decoded = decoded
-
-        next()
-      })
-
-    } else {
-
-      return res.status(403).send({
-        success: false,
-        message: `No token provided.`,
-      })
-    }
+    let result = await validateAPIToken({ app, token })
+    if (!result.success)
+      return res.status(403).json(result)
+    req.decoded = result.decoded
+    next()
   })
 }
