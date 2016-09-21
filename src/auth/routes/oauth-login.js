@@ -22,7 +22,7 @@ export default ({ app, db }) => {
 
     if (!email && !token) {
       res.json({ success: false, message: {
-        oAuthError: `Missing email and oAuth token, please try again.`
+        oAuthError: `Missing email and oAuth token, please try again.`,
       }})
       return
     }
@@ -49,7 +49,7 @@ export default ({ app, db }) => {
         })
         return
       }
-      rOAuthDeleteFromEmail(db, { email })
+      await rOAuthDeleteFromEmail(db, { email })
 
       // Valid token, valid user, return user details
       let apiToken = await generateAPIToken(user, app)
