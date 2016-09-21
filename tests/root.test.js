@@ -30,6 +30,7 @@ import setPrivacySetting from './routes/authorized/setPrivacySetting'
 import masterControl from './routes/authorized/masterControl'
 import searchUsers from './routes/authorized/searchUsers'
 import collab from './routes/authorized/collab'
+import uploadProfilePic from './routes/authorized/uploadProfilePic'
 
 /*----------------------------------------------------------------------------*/
 
@@ -152,6 +153,11 @@ async function runTests () {
   masterControl({ globals, author: alice, observer: bob, phraseId: publicPhraseId })
 
   deletePhrase({ globals, author: alice, observer: bob, phraseId: publicPhraseId })
+
+  // Authorized
+  let { phraseId } = await save({ domain, user: alice, token: alice.token })
+  deletePhrase({ domain, author: alice, observer: bob, phraseId })
+  uploadProfilePic({ domain, user: alice })
 
 /*----------------------------------------------------------------------------*/
 
