@@ -6,4 +6,5 @@ rethinkdb.exe
 backups
 logs/*
 !logs/LOGS.md
-public
+public/profile/*
+!public/profile/PROFILE_PICTURE_UPLOADS.md

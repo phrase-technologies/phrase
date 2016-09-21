@@ -27,6 +27,7 @@ export default ({ api, db }) => {
       fs.writeFileSync(tempPath, base64, 'base64')
     }
     catch(e) {
+      console.log(`/uploadProfilePic: fs.writeFileSync()`, e)
       return res.status(500).end()
     }
 
@@ -59,6 +60,7 @@ export default ({ api, db }) => {
     }
     catch(e) {
       if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath)
+      console.log(`/uploadProfilePic: fs.renameSync()`, e)
       return res.status(500).end()
     }
 
@@ -75,6 +77,7 @@ export default ({ api, db }) => {
     }
     catch(e) {
       if (fs.existsSync(filePath)) fs.unlinkSync(filePath)
+      console.log(`/uploadProfilePic: rUserUpdate()`, e)
       return res.status(500).end()
     }
 
