@@ -91,7 +91,6 @@ async function runTests () {
   // Get oAuth out of the way, other tests don't depend on it
   oAuthLogin({ globals })
 
-
   await signup({ globals, user: alice })
   await signup({ globals, user: bob })
   await signup({ globals, user: chris })
@@ -154,9 +153,6 @@ async function runTests () {
 
   deletePhrase({ globals, author: alice, observer: bob, phraseId: publicPhraseId })
 
-  // Authorized
-  let { phraseId } = await save({ globals, user: alice, token: alice.token })
-  deletePhrase({ globals, author: alice, observer: bob, phraseId })
   uploadProfilePic({ globals, user: alice })
 
 /*----------------------------------------------------------------------------*/
