@@ -155,9 +155,9 @@ async function runTests () {
   deletePhrase({ globals, author: alice, observer: bob, phraseId: publicPhraseId })
 
   // Authorized
-  let { phraseId } = await save({ domain, user: alice, token: alice.token })
-  deletePhrase({ domain, author: alice, observer: bob, phraseId })
-  uploadProfilePic({ domain, user: alice })
+  let { phraseId } = await save({ globals, user: alice, token: alice.token })
+  deletePhrase({ globals, author: alice, observer: bob, phraseId })
+  uploadProfilePic({ globals, user: alice })
 
 /*----------------------------------------------------------------------------*/
 
