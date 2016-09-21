@@ -40,7 +40,7 @@ export class UserProfile extends Component {
   render() {
     let user = {
       username: this.props.routeParams.username,
-      //image: deadmau5Image,
+      image: this.props.userPicture,
       //followers: 28751,
       //verified: true,
     }
@@ -50,7 +50,10 @@ export class UserProfile extends Component {
         <Helmet title={`${user.username} - Phrase.fm`} />
         <div className="user-profile-header page-header library-header">
           <div className="container">
-            <a href="" onClick={this.openPhotoUpload}>Upload Photo Placeholder </a>
+            <div className="user-profile-pic" onClick={this.openPhotoUpload}>
+              <img src={user.image} />
+              { this.renderVerified({ user }) }
+            </div>
             <h1 style={{ display: `inline-block` }}>
               {user.username}
             </h1>
@@ -105,4 +108,4 @@ export class UserProfile extends Component {
   }
 }
 
-export default connect(null)(UserProfile)
+export default connect(() => { return { userPicture: localStorage.picture }})(UserProfile)

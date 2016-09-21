@@ -2,12 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { MenuItem } from 'react-bootstrap'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
-import { Link } from 'react-router'
 import { push } from 'react-router-redux'
 
 import { modalOpen } from 'reducers/reduceModal'
 import { logout } from 'reducers/reduceAuth'
-// import profileImageUrl from '../img/user/anson-kao.jpg'
 
 export let UserNavigation = (props) => {
   let buttonClasses = "btn btn-link"
@@ -68,12 +66,12 @@ let notLoggedIn = ({ dispatch }) => {
   )
 }
 
-let loggedIn = ({ user, dispatch }) => {
+let loggedIn = ({ user, dispatch, userPicture }) => {
 
   return (
     <Dropdown id="header-user-navigation-dropdown" pullRight className="dropdown-arrow" style={{ marginTop: 7 }}>
       <a className="dropdown-toggle" bsRole="toggle">
-        {/*<img className="header-user-profile-pic" src={profileImageUrl} />*/}
+        <img className="header-user-profile-pic" src={userPicture} />
         <span className="header-user-name">{user.username || user.email} <span className="caret" /></span>
       </a>
       <Dropdown.Menu>
@@ -85,4 +83,11 @@ let loggedIn = ({ user, dispatch }) => {
   )
 }
 
-export default connect(state => state.auth)(UserNavigation)
+function mapStateToProps(state) {
+  return {
+    ...state.auth,
+    userPicture: localStorage.picture,
+  }
+}
+
+export default connect(mapStateToProps)(UserNavigation)
