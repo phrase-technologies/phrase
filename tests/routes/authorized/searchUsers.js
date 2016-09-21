@@ -2,11 +2,11 @@ import { expect } from 'chai'
 import ajax from '../../../src/helpers/ajax'
 
 export default ({
-  domain,
+  globals,
   user,
   userToSearch,
 }) => {
-  let url = `${domain}/api/searchUsers`
+  let url = `${globals.domain}/api/searchUsers`
 
   describe(`searchUsers`, () => {
     it(`should exist`, async function() {

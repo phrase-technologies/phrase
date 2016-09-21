@@ -7,8 +7,8 @@ let fakeUser = {
   password: `fake_password_bro`,
 }
 
-export default ({ domain, user }) => {
-  let url = `${domain}/api/login`
+export default ({ globals, user }) => {
+  let url = `${globals.domain}/api/login`
 
   return new Promise(resolve => {
     describe(`login`, () => {

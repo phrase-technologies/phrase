@@ -3,13 +3,13 @@ import ajax from '../../../src/helpers/ajax'
 import socketClientIO from 'socket.io-client'
 
 export default ({
-  domain,
+  globals,
   author,
   collaborator,
   phraseId,
 }) => {
-  let addUrl = `${domain}/api/collab/add`
-  let removeUrl = `${domain}/api/collab/remove`
+  let addUrl = `${globals.domain}/api/collab/add`
+  let removeUrl = `${globals.domain}/api/collab/remove`
 
   describe(`collab`, () => {
     it(`author should be able to add a collaborator`, async function() {

@@ -4,8 +4,8 @@ import ajax from '../../../src/helpers/ajax'
 
 let inviteCodesUsed = 0
 
-export default ({ domain, user }) => {
-  let url = `${domain}/signup`
+export default ({ globals, user }) => {
+  let url = `${globals.domain}/signup`
 
   return new Promise(resolve => {
     describe(`signup`, () => {

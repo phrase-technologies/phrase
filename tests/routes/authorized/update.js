@@ -3,12 +3,12 @@ import ajax from '../../../src/helpers/ajax'
 import socketClientIO from 'socket.io-client'
 
 export default ({
-  domain,
+  globals,
   author,
   observer,
   phraseId,
 }) => {
-  let url = `${domain}/api/update`
+  let url = `${globals.domain}/api/update`
 
   describe(`update`, () => {
     it(`should successfully update if userId is in masterControl`, async function() {
@@ -28,7 +28,7 @@ export default ({
       let { message } = await response.json()
       expect(message).to.eq(`Autosave success.`)
     })
-    
+
     it(`sockets should receive the updated phrase`, () => {
       let socket = socketClientIO.connect(`http://localhost:9999`)
 

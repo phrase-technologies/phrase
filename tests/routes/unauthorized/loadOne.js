@@ -1,8 +1,8 @@
 import { expect } from 'chai'
 import ajax from '../../../src/helpers/ajax'
 
-export default ({ domain, author, observer, publicPhraseId, privatePhraseId }) => {
-  let url = `${domain}/api/loadOne`
+export default ({ globals, author, observer, publicPhraseId, privatePhraseId }) => {
+  let url = `${globals.domain}/api/loadOne`
 
   describe(`loadOne`, () => {
     it(`should exist`, async function() {

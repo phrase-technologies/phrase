@@ -3,13 +3,13 @@ import ajax from '../../../src/helpers/ajax'
 import socketClientIO from 'socket.io-client'
 
 export default ({
-  domain,
+  globals,
   author,
   observer,
   phraseId,
   privacySetting,
 }) => {
-  let url = `${domain}/api/setPrivacySetting`
+  let url = `${globals.domain}/api/setPrivacySetting`
 
   describe(`setPrivacySetting`, () => {
     it(`should successfully update privacy setting if made by author`, async function() {

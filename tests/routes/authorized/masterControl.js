@@ -3,13 +3,13 @@ import ajax from '../../../src/helpers/ajax'
 import socketClientIO from 'socket.io-client'
 
 export default ({
-  domain,
+  globals,
   author,
   observer,
   phraseId,
 }) => {
-  let addUrl = `${domain}/api/masterControl/add`
-  let removeUrl = `${domain}/api/masterControl/remove`
+  let addUrl = `${globals.domain}/api/masterControl/add`
+  let removeUrl = `${globals.domain}/api/masterControl/remove`
 
   describe(`masterControl`, () => {
     it(`should successfully add a user to master control array`, async function() {

@@ -2,8 +2,8 @@ import r from 'rethinkdb'
 import { expect } from 'chai'
 import ajax from '../../../src/helpers/ajax'
 
-export default ({ domain, author, observer, phraseId }) => {
-  let url = `${domain}/api/deletePhrase`
+export default ({ globals, author, observer, phraseId }) => {
+  let url = `${globals.domain}/api/deletePhrase`
 
   describe(`deletePhrase`, () => {
     it(`endpoint should exist`, async function() {
