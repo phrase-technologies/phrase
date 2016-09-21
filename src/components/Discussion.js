@@ -28,16 +28,22 @@ export class Discussion extends Component {
           <div className="discussion-presence-all">
             In this session:
           </div>
-          {this.props.authorUserId === this.props.userId &&
-            <UserBubble
-              type="author"
-              key={`collab-${this.props.userId}`}
-              initials={this.props.currentUsername.substr(0, 2).toUpperCase()}
-              masterControl={this.props.masterControl.includes(this.props.userId)}
-              online
-            />
-          }
-          {this.props.collaborators.map(x =>
+          <UserBubble
+            type={
+              this.props.authorUserId === this.props.userId
+                ? `author`
+                : this.props.collaborators.find(x => x.userId === this.props.userId)
+                  ? `collaborator`
+                  : `observer`
+            }
+            key={`collab-${this.props.userId}`}
+            initials={this.props.currentUsername.substr(0, 2).toUpperCase()}
+            masterControl={this.props.masterControl.includes(this.props.userId)}
+            online
+          />
+          {this.props.collaborators
+          .filter(x => x.userId !== this.props.userId)
+          .map(x =>
             <UserBubble
               type="collaborator"
               key={`collab-${x.userId}`}
@@ -50,8 +56,8 @@ export class Discussion extends Component {
             />
           )}
           {this.props.users
-          .filter(x => !this.props.collaborators
-            .find(c => c.userId === x.userId)
+          .filter(x =>
+            !this.props.collaborators.find(c => c.userId === x.userId)
           )
           .map(x =>
             <UserBubble

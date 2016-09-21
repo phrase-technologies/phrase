@@ -96,10 +96,10 @@ export class Workstation extends Component {
         // This goes both ways.. if an observer is on a phrase that change to
         // private, they should no longer have access it, and see `Not found`.
 
-        // TODO: collaborators should be able to stay
         else if (
           socketData.privacySetting === terms.PRIVATE &&
-          this.props.authorUsername !== this.props.currentUsername
+          this.props.authorUsername !== this.props.currentUsername &&
+          !this.props.collaborators.find(x => x.userId === this.props.userId)
         ) {
           dispatch(phraseNotFound())
         }
@@ -108,6 +108,10 @@ export class Workstation extends Component {
 
     socket.on(`server::collaboratorAdded`, socketData => {
       if (socketData.phraseId === this.props.params.phraseId) {
+        if (this.props.notFound) {
+          dispatch(phraseLoadFromDb(this.props.params.phraseId))
+        }
+
         dispatch({
           type: phrase.ADD_COLLABORATOR,
           payload: socketData,
@@ -117,6 +121,11 @@ export class Workstation extends Component {
 
     socket.on(`server::collaboratorLeft`, socketData => {
       if (socketData.phraseId === this.props.params.phraseId) {
+        if (socketData.privacySetting === `private` &&
+          this.props.authorUsername !== this.props.currentUsername) {
+          dispatch(phraseNotFound())
+        }
+
         dispatch({
           type: phrase.REMOVE_COLLABORATOR,
           payload: { userId: socketData.userId },
@@ -382,6 +391,7 @@ export class Workstation extends Component {
       'phraseId',
       'phraseName',
       'authorUsername',
+      'collaborators',
       'focusedTrack',
       'consoleEmbedded',
       'consoleSplitRatio',
@@ -427,6 +437,7 @@ function mapStateToProps(state) {
     phraseId: state.phraseMeta.phraseId,
     phraseName: state.phraseMeta.phraseName,
     authorUsername: state.phraseMeta.authorUsername,
+    collaborators: state.phraseMeta.collaborators,
     currentUsername: state.auth.user.username,
     userId: state.auth.user.id,
     focusedTrack: state.pianoroll.currentTrack,
