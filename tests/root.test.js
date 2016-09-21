@@ -115,7 +115,6 @@ async function runTests () {
 
   loadUserPhrases({ domain, user: alice })
 
-<<<<<<< HEAD
   let { phraseId: publicPhraseId } = await save({ domain, user: alice, token: alice.token })
   let { phraseId: unlistedPhraseId } = await save({ domain, user: alice, token: alice.token })
   let { phraseId: privatePhraseId } = await save({ domain, user: alice, token: alice.token })
