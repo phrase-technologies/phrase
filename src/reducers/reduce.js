@@ -23,6 +23,7 @@ import reduceNotification from './reduceNotification'
 import reduceMIDI from './reduceMIDI'
 import reduceSamples from './reduceSamples'
 import reduceQuantizer from './reduceQuantizer'
+import reducePresence from './reducePresence'
 
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
@@ -49,6 +50,7 @@ let baseReducers = {
   phraseMeta: reducePhraseMeta,
   pianoroll: reducePianoroll,
   quantizer: reduceQuantizer,
+  presence: reducePresence,
 }
 
 let reducerSpec = {

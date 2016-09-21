@@ -298,7 +298,7 @@ let intialState = {
   loggedIn: !!localStorage.token,
   requestingAuth: false,
   user: {
-    id: localStorage.id,
+    id: localStorage.userId,
     email: localStorage.email,
     password: localStorage.password,
     username: localStorage.username,

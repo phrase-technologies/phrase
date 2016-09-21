@@ -4,7 +4,7 @@ import { withRouter } from 'react-router'
 import Helmet from "react-helmet"
 
 import diffProps from 'helpers/diffProps'
-import { phrase } from 'actions/actions'
+import { phrase, presence } from 'actions/actions'
 
 import {
   phraseLoadFromDb,
@@ -36,22 +36,36 @@ export class Workstation extends Component {
   componentDidMount() {
     let {
       dispatch,
-      params,
       loading,
       socket,
       route,
       router,
-      authorUsername,
-      currentUsername,
     } = this.props
 
     // Put the page into "app-mode" to prevent inertia scroll
     document.documentElement.style.overflow = "hidden"
     document.body.style.overflow = "hidden"
 
+    socket.on(`reconnect`, () => {
+      if (this.props.params.phraseId) {
+        socket.emit(`client::joinRoom`, {
+          phraseId: this.props.params.phraseId,
+          username: this.props.currentUsername,
+          userId: this.props.userId,
+        })
+      }
+    })
+
     // Subscribe to socket updates for the lifetime of the component
     socket.on(`server::updatePhrase`, this.receiveSocketUpdate)
-    socket.on(`server::updatePresence`, room => console.log("ROOM:", room))
+
+    socket.on(`server::updatePresence`, users => {
+      dispatch({
+        type: presence.UPDATE_USERS,
+        payload: { users },
+      })
+    })
+
     socket.on(`server::privacySettingChanged`, socketData => {
       if (socketData.phraseId === this.props.params.phraseId) {
         dispatch({
@@ -68,15 +82,25 @@ export class Workstation extends Component {
         // `notFound` must be referenced inside this socket handler.
         // If we destructure it at top with the rest of the props
         // `notFound` will always be the value at mounting time.
+
         if (this.props.notFound && socketData.privacySetting === terms.PUBLIC) {
           dispatch(phraseLoadFromDb(this.props.params.phraseId))
+
+          socket.emit(`client::joinRoom`, {
+            phraseId: this.props.params.phraseId,
+            username: this.props.currentUsername,
+            userId: this.props.userId,
+          })
         }
 
         // This goes both ways.. if an observer is on a phrase that change to
         // private, they should no longer have access it, and see `Not found`.
 
         // TODO: collaborators should be able to stay
-        else if (socketData.privacySetting === terms.PRIVATE && authorUsername !== currentUsername) {
+        else if (
+          socketData.privacySetting === terms.PRIVATE &&
+          this.props.authorUsername !== this.props.currentUsername
+        ) {
           dispatch(phraseNotFound())
         }
       }
@@ -108,7 +132,8 @@ export class Workstation extends Component {
 
       socket.emit(`client::joinRoom`, {
         phraseId: this.props.params.phraseId,
-        username: this.props.currentUsername
+        username: this.props.currentUsername,
+        userId: this.props.userId,
       })
     }
 
@@ -369,8 +394,15 @@ export class Workstation extends Component {
     // Switch session connection
     if (nextProps.phraseId !== this.props.phraseId) {
       this.props.socket.emit(`disconnect`, { phraseId: this.props.phraseId })
-      if (nextProps.phraseId)
-        this.props.socket.emit(`client::joinRoom`, { phraseId: nextProps.phraseId })
+
+      // Don't join in props changes if not coming from another phrase
+      if (this.props.phraseId && nextProps.phraseId) {
+        this.props.socket.emit(`client::joinRoom`, {
+          phraseId: nextProps.phraseId,
+          username: nextProps.currentUsername,
+          userId: nextProps.userId,
+        })
+      }
     }
 
     // Ensure all canvases are re-rendered upon clip editor being shown
@@ -396,6 +428,7 @@ function mapStateToProps(state) {
     phraseName: state.phraseMeta.phraseName,
     authorUsername: state.phraseMeta.authorUsername,
     currentUsername: state.auth.user.username,
+    userId: state.auth.user.id,
     focusedTrack: state.pianoroll.currentTrack,
     consoleEmbedded:   state.navigation.consoleEmbedded,
     consoleSplitRatio: 0,//state.navigation.consoleSplitRatio,

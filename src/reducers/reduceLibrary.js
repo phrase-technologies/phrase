@@ -19,19 +19,22 @@ export const librarySaveNew = () => {
             phraseName: state.phraseMeta.phraseName,
           },
         })
+
+        let { username, id: userId } = getState().auth.user
+
         if (phraseId) {
           dispatch({
             type: library.SAVE_NEW,
             payload: {
               phraseId,
-              authorUsername: getState().auth.user.username,
+              authorUsername: username,
               dateCreated: Date.now(),
               dateModified: Date.now(),
             }
           })
           dispatch(push(`/phrase/${localStorage.username}/${phraseId}`))
           dispatch({ type: phrase.SAVE_FINISH, payload: { timestamp: Date.now() } })
-          socket.emit(`client::joinRoom`, { phraseId })
+          socket.emit(`client::joinRoom`, { phraseId, username, userId })
         }
       },
       callback: () => dispatch({ type: phrase.SAVE_FAIL })

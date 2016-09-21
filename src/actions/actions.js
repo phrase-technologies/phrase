@@ -92,6 +92,14 @@ export const phrase = namespaceActions(
   ]
 )
 
+export const presence = namespaceActions(
+  `presence`,
+  [
+    'UPDATE_USERS',
+    'USER_TYPING',
+  ]
+)
+
 export const quantizer = namespaceActions(
   `quantizer`,
   [

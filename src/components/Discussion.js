@@ -28,9 +28,24 @@ export class Discussion extends Component {
           <div className="discussion-presence-all">
             In this session:
           </div>
-          {/* <UserBubble initials="PB" online={true} />
-          <UserBubble initials="AK" />
-          <UserBubble initials="ZZ" /> */}
+          {this.props.collaborators.map(x =>
+            <UserBubble
+              key={`collab-${x.userId}`}
+              initials={x.username.substr(0, 2).toUpperCase()}
+              online={this.props.users.find(user => user.userId === x.userId)}
+            />
+          )}
+          {this.props.users
+          .filter(x => !this.props.collaborators
+            .find(c => c.userId === x.userId)
+          )
+          .map(x =>
+            <UserBubble
+              key={`observer-${x.userId}`}
+              initials={x.username.substr(0, 2).toUpperCase()}
+              online
+            />
+          )}
           <button
             disabled={!this.props.phraseId || (this.props.currentUsername !== this.props.authorUsername)}
             className="btn btn-primary btn-sm discussion-invite"
@@ -108,5 +123,7 @@ export class Discussion extends Component {
 export default connect(state => ({
   phraseId: state.phraseMeta.phraseId,
   authorUsername: state.phraseMeta.authorUsername,
+  collaborators: state.phraseMeta.collaborators,
   currentUsername: state.auth.user.username,
+  users: state.presence.users,
 }))(Discussion)
