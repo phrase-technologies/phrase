@@ -29,6 +29,7 @@ import setPrivacySetting from './routes/authorized/setPrivacySetting'
 import masterControl from './routes/authorized/masterControl'
 import searchUsers from './routes/authorized/searchUsers'
 import collab from './routes/authorized/collab'
+import uploadProfilePic from './routes/authorized/uploadProfilePic'
 
 /*----------------------------------------------------------------------------*/
 
@@ -114,6 +115,7 @@ async function runTests () {
 
   loadUserPhrases({ domain, user: alice })
 
+<<<<<<< HEAD
   let { phraseId: publicPhraseId } = await save({ domain, user: alice, token: alice.token })
   let { phraseId: unlistedPhraseId } = await save({ domain, user: alice, token: alice.token })
   let { phraseId: privatePhraseId } = await save({ domain, user: alice, token: alice.token })
@@ -143,6 +145,11 @@ async function runTests () {
   masterControl({ domain, author: alice, observer: bob, phraseId: publicPhraseId })
 
   deletePhrase({ domain, author: alice, observer: bob, phraseId: publicPhraseId })
+
+  // Authorized
+  let { phraseId } = await save({ domain, user: alice, token: alice.token })
+  deletePhrase({ domain, author: alice, observer: bob, phraseId })
+  uploadProfilePic({ domain, user: alice })
 
 /*----------------------------------------------------------------------------*/
 
