@@ -30,12 +30,3 @@ export let api = async ({ endpoint, body }) => {
   })
   return response
 }
-
-export let formDataApi = async ({ endpoint, formData }) => {
-  let response = await fetch(`${API_URL}/api/${endpoint}`, {
-    method: `POST`,
-    body: formData,
-  })
-  if (response.ok) return await response.json()
-  throw response
-}

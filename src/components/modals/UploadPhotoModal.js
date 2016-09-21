@@ -6,7 +6,7 @@ import path from 'path'
 
 import { catchAndToastException } from 'reducers/reduceNotification'
 import { modalClose } from 'reducers/reduceModal'
-import { formDataApi } from 'helpers/ajaxHelpers'
+import { api } from 'helpers/ajaxHelpers'
 
 export class UploadPhotoModal extends Component {
   state = {
@@ -51,33 +51,44 @@ export class UploadPhotoModal extends Component {
     this.setState({ uploading: true })
     let photo = this.profilePhoto.files[0]
     if (!photo) {
-      this.setState({ errorMessage: `Please select a photo.` })
+      this.setState({ errorMessage: `Please select a photo.`, uploading: false })
     } else {
-      let ext = path.extname(photo.name)
-      if (!['.jpg', '.jpeg', '.gif', '.png'].includes(ext)) {
-        this.setState({ errorMessage: `Invalid file type, please upload an image file.` })
-      }
-      else if (photo.size > 1000000) {
-        this.setState({ errorMessage: `File is too large, please select a file under 1Mb` })
+      if (photo.size > 1000000) {
+        this.setState({
+          errorMessage: `File is too large, please select a file under 1Mb`,
+          uploading: false,
+        })
       } else {
         let self = this
-        let formData = new FormData()
-        formData.append('profilePhoto', photo, photo.name)
-        formData.append('token', localStorage.token)
-        catchAndToastException({
-          dispatch: this.props.dispatch,
-          toCatch: async () => {
-            let response = await formDataApi({
-              endpoint: `uploadProfilePic`,
-              formData,
-            })
-            if (response.success) self.closeModal()
-            else self.setState({ errorMessage: response.message})
-          }
-        })
+        let fileReader = new FileReader()
+        let img = new Image()
+        let _URL = window.URL || window.webkitURL
+        img.src = _URL.createObjectURL(photo)
+
+        fileReader.onload = (event) => {
+          let dataUrl = event.target.result
+          catchAndToastException({
+            dispatch: this.props.dispatch,
+            toCatch: async () => {
+              let response = await api({
+                endpoint: `uploadProfilePic`,
+                body: { base64: dataUrl },
+              })
+              if (response.success) {
+                localStorage.picture = response.picture
+                self.closeModal()
+              }
+              else self.setState({
+                errorMessage: response.message,
+                uploading: false,
+              })
+            },
+            callback: () => { self.setState({ uploading: false }) }
+          })
+        }
+        fileReader.readAsDataURL(photo)
       }
     }
-    this.setState({ uploading: false })
   }
 
   closeModal = () => {
