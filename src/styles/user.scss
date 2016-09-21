@@ -75,6 +75,22 @@
     right: -2px;
     margin: 0;
   }
+
+  &.author {
+    background: #2b3fa8;
+  }
+
+  &.observer {
+    background: #838866;
+  }
+
+  & .master-control-icon {
+    color: #cbd41f;
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    margin: 0;
+  }
 }
 .user-username {
   padding-right: 5px;

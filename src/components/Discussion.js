@@ -28,11 +28,25 @@ export class Discussion extends Component {
           <div className="discussion-presence-all">
             In this session:
           </div>
+          {this.props.authorUserId === this.props.userId &&
+            <UserBubble
+              type="author"
+              key={`collab-${this.props.userId}`}
+              initials={this.props.currentUsername.substr(0, 2).toUpperCase()}
+              masterControl={this.props.masterControl.includes(this.props.userId)}
+              online
+            />
+          }
           {this.props.collaborators.map(x =>
             <UserBubble
+              type="collaborator"
               key={`collab-${x.userId}`}
               initials={x.username.substr(0, 2).toUpperCase()}
-              online={this.props.users.find(user => user.userId === x.userId)}
+              masterControl={this.props.masterControl.includes(x.userId)}
+              online={
+                x.userId === this.props.userId ||
+                this.props.users.find(user => user.userId === x.userId)
+              }
             />
           )}
           {this.props.users
@@ -41,8 +55,10 @@ export class Discussion extends Component {
           )
           .map(x =>
             <UserBubble
+              type={this.props.authorUserId === x.userId ? `author` : `observer`}
               key={`observer-${x.userId}`}
               initials={x.username.substr(0, 2).toUpperCase()}
+              masterControl={this.props.masterControl.includes(x.userId)}
               online
             />
           )}
@@ -123,7 +139,10 @@ export class Discussion extends Component {
 export default connect(state => ({
   phraseId: state.phraseMeta.phraseId,
   authorUsername: state.phraseMeta.authorUsername,
+  authorUserId: state.phraseMeta.userId,
   collaborators: state.phraseMeta.collaborators,
+  masterControl: state.phraseMeta.masterControl,
   currentUsername: state.auth.user.username,
+  userId: state.auth.user.id,
   users: state.presence.users,
 }))(Discussion)
