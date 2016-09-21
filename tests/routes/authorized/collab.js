@@ -82,7 +82,7 @@ export default ({
       expect(message).to.eq(`Target user does not exist.`)
     })
 
-    it(`should allow the author to remove a callobartor`, async function() {
+    it(`should allow the author to remove a collabartor`, async function() {
       this.timeout(100000)
 
       let response = await ajax({
@@ -102,6 +102,16 @@ export default ({
     it(`should allow collaborator to leave`, async function() {
       this.timeout(100000)
 
+      await ajax({
+        url: addUrl,
+        body: {
+          userId: author.id,
+          token: author.token,
+          phraseId,
+          targetUserId: collaborator.id,
+        },
+      })
+
       let response = await ajax({
         url: removeUrl,
         body: {
@@ -117,6 +127,16 @@ export default ({
 
     it(`should notify others that collaborater has left`, async function() {
       this.timeout(100000)
+
+      await ajax({
+        url: addUrl,
+        body: {
+          userId: author.id,
+          token: author.token,
+          phraseId,
+          targetUserId: collaborator.id,
+        },
+      })
 
       let response = await ajax({
         url: removeUrl,

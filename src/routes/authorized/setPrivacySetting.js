@@ -35,7 +35,7 @@ export default ({ api, db, io }) => {
         }))
       )
 
-      io.in(phraseId).emit(`server::privacySettingChanged`, { phraseId, privacySetting })
+      io.emit(`server::privacySettingChanged`, { phraseId, privacySetting })
 
       io.in(phraseId).emit(
         `server::updatePresence`,

@@ -53,7 +53,10 @@ export default ({ api, db, io }) => {
           .append(author),
       })).run(db)
 
-      io.emit(`server::masterControlChanged`, { phraseId, targetUserId: author })
+      io.emit(`server::masterControlChanged`, {
+        phraseId,
+        targetUserId: author === userId ? author : userId,
+      })
 
       res.json({ message: `User removed from master control.` })
     }

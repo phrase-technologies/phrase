@@ -78,6 +78,7 @@ export default ({
       })
 
       let { message } = await response.json()
+
       expect(message).to.eq(`User removed from master control.`)
     })
   })
