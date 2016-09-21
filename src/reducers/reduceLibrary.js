@@ -27,6 +27,8 @@ export const librarySaveNew = () => {
             type: library.SAVE_NEW,
             payload: {
               phraseId,
+              userId,
+              masterControl: [userId],
               authorUsername: username,
               dateCreated: Date.now(),
               dateModified: Date.now(),

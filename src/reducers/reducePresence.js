@@ -1,4 +1,4 @@
-import { presence } from 'actions/actions'
+import { presence, phrase } from 'actions/actions'
 
 let initialState = {
   users: [],
@@ -18,6 +18,9 @@ export default (state = initialState, action) => {
         ...state,
         usersTyping: action.payload.usersTyping.slice()
       }
+
+    case phrase.NEW_PHRASE:
+      return initialState
 
     default:
       return state

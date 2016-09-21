@@ -110,6 +110,12 @@ export class Workstation extends Component {
       if (socketData.phraseId === this.props.params.phraseId) {
         if (this.props.notFound) {
           dispatch(phraseLoadFromDb(this.props.params.phraseId))
+
+          socket.emit(`client::joinRoom`, {
+            phraseId: this.props.params.phraseId,
+            username: this.props.currentUsername,
+            userId: this.props.userId,
+          })
         }
 
         dispatch({

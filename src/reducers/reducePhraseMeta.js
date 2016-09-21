@@ -96,11 +96,8 @@ export default function reducePhraseMeta(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case library.SAVE_NEW:
       return u({
+        ...action.payload,
         saving: "DO_NOT_RELOAD",
-        phraseId: action.payload.phraseId,
-        authorUsername: action.payload.authorUsername,
-        dateCreated: action.payload.dateCreated,
-        dateModified: action.payload.dateModified,
       }, state)
 
     // ------------------------------------------------------------------------
