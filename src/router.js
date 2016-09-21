@@ -7,7 +7,7 @@ export default ({ app, db, io }) => {
 
   let api = express.Router()
 
-  unauthorizedRoutes.forEach(route => route({ api, db, io, app }))
+  unauthorizedRoutes.forEach(route => route({ api, db, io }))
 
   auth({ app, api, db, io })
 
