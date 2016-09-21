@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import r from 'rethinkdb'
 import chalk from 'chalk'
 
@@ -5,11 +6,17 @@ import chalk from 'chalk'
 // instead of this array at a later point, if we find a reason (eg analysis)
 let users = []
 
+export let getUsers = () => users
+export let setUsers = nextUsers => {
+  users = nextUsers
+  return users
+}
+
 export default async ({ io, db }) => {
 
   io.on(`connection`, async (socket) => {
 
-    users.push({ socketId: socket.id })
+    users.push({ socketId: socket.id, username: null, userId: null, room: null })
 
     socket.on(`client::joinRoom`, async ({ phraseId, username, userId }) => {
       let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
@@ -29,7 +36,7 @@ export default async ({ io, db }) => {
       if (
         loadedPhrase.userId === userId ||
         loadedPhrase.privacySetting === `public` ||
-        loadedPhrase.collaborators.find(x => x.userId === userId)
+        loadedPhrase.collaborators.find(id => id === userId)
       ) {
         socket.join(phraseId)
         user.room = phraseId
@@ -39,23 +46,28 @@ export default async ({ io, db }) => {
         ))
       }
 
-      console.log('>>>', users)
-
-      // Indicate Presence
       io.in(phraseId).emit(
         `server::updatePresence`,
-        users.map(x => ({ username: x.username, userId: x.userId })),
+        _.uniqBy(users, `userId`)
+          .filter(x => x.room === phraseId)
+          .map(x => ({ username: x.username, userId: x.userId })),
       )
+
     })
 
-    socket.on(`disconnect`, async () => {
+    socket.on(`disconnect`, () => {
+      let user = users.find(x => x.socketId === socket.id)
       users = users.filter(x => x.socketId !== socket.id)
 
       // Indicate Presence
-      io.in(phraseId).emit(
-        `server::updatePresence`,
-        users.map(x => ({ username: x.username, userId: x.userId })),
-      )
+      if (user.room) {
+        io.in(user.room).emit(
+          `server::updatePresence`,
+          _.uniqBy(users, `userId`)
+            .filter(x => x.room === user.room)
+            .map(x => ({ username: x.username, userId: x.userId })),
+        )
+      }
 
       console.log(chalk.magenta(
         `⚡ Disconnection! Number of open connections: ${users.length}`
