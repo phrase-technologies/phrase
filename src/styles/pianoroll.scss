@@ -478,6 +478,9 @@ $key-thickness-margin: percentage(1/$total-keys * 12.5); // Used for margins, wh
     left: 0 !important;
     right: 0 !important;
 
+    > .timeline-comment-range-window {
+      left: $pianoroll-keyboard-width-mobile;
+    }
     > .timeline-cursor-window {
       display: none;
     }

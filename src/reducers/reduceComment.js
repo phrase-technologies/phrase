@@ -6,15 +6,16 @@ import { comment } from 'actions/actions'
 // ============================================================================
 export const commentSelectionStart = ({ start, trackID }) => ({ type: comment.SELECTION_START, payload: { start, trackID } })
 export const commentSelectionEnd = ({ end }) => ({ type: comment.SELECTION_END, payload: { end } })
+export const commentSelectionClear = () => ({ type: comment.SELECTION_CLEAR })
 
 // ============================================================================
 // Comment Selection
 // ============================================================================
 export const defaultState = {
-  selectionCommentId: null,
-  selectionTrackID: null,
-  selectionStart: null,
-  selectionEnd: null,
+  commentId: null,
+  commentTrackID: null,
+  commentRangeStart: null,
+  commentRangeEnd: null,
 }
 
 export default function reduceComment(state = defaultState, action) {
@@ -23,23 +24,16 @@ export default function reduceComment(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case comment.SELECTION_START:
       return u({
-        selectionStart: action.payload.start,
+        commentRangeStart: 0.25*Math.round(4*action.payload.start),
+        commentRangeEnd: null,
       }, state)
 
     // ------------------------------------------------------------------------
-    case comment.SELECTION_END: {
-      let end = action.payload.end
-      if (end < state.selectionStart) {
-        return u({
-          selectionStart: end,
-          selectionEnd: state.selectionStart,
-        }, state)
-      }
-
+    case comment.SELECTION_END:
       return u({
-        selectionEnd: action.payload.end,
+        commentRangeEnd: 0.25*Math.round(4*action.payload.end),
       }, state)
-    }
+
     // ------------------------------------------------------------------------
     case comment.SELECTION_CLEAR:
       return defaultState

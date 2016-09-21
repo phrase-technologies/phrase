@@ -34,9 +34,15 @@ export function getOffsetedTrackID(currentTrackID, offset, allTracks) {
   if (!offset)
     return currentTrackID
 
-  var originalIndex = allTracks.findIndex(track => track.id == currentTrackID)
-  var offsetedIndex = originalIndex + offset
+  let originalIndex = allTracks.findIndex(track => track.id == currentTrackID) // This should stay as ==, not ===. Casting string to int.
+  let offsetedIndex = originalIndex + offset
   return allTracks[offsetedIndex].id
+}
+
+export function barToString(bar, majorIncrement = 1.0) {
+  let barNumber = Math.floor(bar + 1)
+  let barBeat = ((bar + 1) % 1) * 4 + 1
+  return (majorIncrement < 1.0) ? (barNumber + '.' + barBeat) : barNumber
 }
 
 export function getDarkenedColor(color, shadeFactor, alpha = 1.0) {

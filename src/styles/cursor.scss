@@ -197,7 +197,9 @@
   bottom: 0;
 
   pointer-events: none;
+  border-radius: 0 4px 4px 0;
   overflow: hidden;
+  z-index: 5;
 }
 .timeline-comment-range-grid {
   position: absolute;
@@ -210,9 +212,78 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  z-index: 2;   // Above notes
+  z-index: 3;   // Above notes
 
   border-left: 1px solid #0FF;
   border-right: 1px solid #0FF;
   background: rgba(#0FF,0.125);
+  box-shadow:
+    0 0 5px #000;
+
+  animation-name: comment-range-throb;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes comment-range-throb {
+  0% {
+    background: rgba(#0FF,0.125);
+  }
+  50% {
+    background: rgba(#0FF,0.250);
+  }
+  100% {
+    background: rgba(#0FF,0.1250);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// HINT RING (Tour Indicator)
+// ----------------------------------------------------------------------------
+.hint-ring {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+
+  pointer-events: none;
+
+  .hint-ring-a,
+  .hint-ring-b,
+  .hint-ring-c,
+  .hint-ring-d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 38px;
+    width: 38px;
+
+    border: 3px solid hsl(180, 100%, 50%);
+    border-radius: 100%;
+    animation-name: hint-ring-throb;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+  }
+  .hint-ring-a { animation-delay: 1000ms; }
+  .hint-ring-b { animation-delay:  200ms; }
+  .hint-ring-c { animation-delay:  400ms; }
+  .hint-ring-d { animation-delay:  600ms; }
+}
+
+@keyframes hint-ring-throb {
+  0% {
+    transform: scale(0.4, 0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.0, 1.0);
+    opacity: 0;
+  }
 }

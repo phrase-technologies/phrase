@@ -268,9 +268,6 @@ export class PianorollWindowControl extends Component {
   mouseMoveEvent(e) {
     let { dispatch, arrangeTool } = this.props
 
-    if (arrangeTool === 'comment')
-      return this.commentDragEvent(e)
-
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     let key = this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange()) * this.props.keyCount + 8
 
@@ -278,6 +275,7 @@ export class PianorollWindowControl extends Component {
     if (this.lastEvent &&
        (this.lastEvent.action === SELECT_NOTE ||
         this.lastEvent.action === DRAG_NOTE ||
+        this.lastEvent.action === COMMENT_GRIP ||
         this.lastEvent.action === CHANGE_NOTE_VELOCITY)) {
 
         switch (arrangeTool) {
@@ -361,6 +359,9 @@ export class PianorollWindowControl extends Component {
 
             this.lastEvent.action = CHANGE_NOTE_VELOCITY
             return
+
+          case 'comment':
+            return this.commentDragEvent(e)
         }
     }
 

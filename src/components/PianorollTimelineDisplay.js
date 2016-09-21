@@ -2,9 +2,14 @@ import React, { Component } from 'react'
 import provideGridSystem from './GridSystemProvider'
 import provideTween from './TweenProvider.js'
 
-import { closestHalfPixel,
-         drawLine } from '../helpers/canvasHelpers.js'
-import { getDarkenedColor } from '../helpers/trackHelpers.js'
+import {
+  closestHalfPixel,
+  drawLine,
+} from '../helpers/canvasHelpers.js'
+import {
+  getDarkenedColor,
+  barToString,
+} from '../helpers/trackHelpers.js'
 
 import CanvasComponent from './CanvasComponent'
 
@@ -65,10 +70,7 @@ export class PianorollTimelineDisplay extends Component {
       {
         // Bar Number
         let leftEdge =  4*this.props.grid.pixelScale + xPosition
-        let barNumber = Math.floor(bar + 1)
-        let barBeat = ((bar + 1) % 1) * 4 + 1
-        let outputText = (majorIncrement < 1.0) ? (barNumber + '.' + barBeat) : barNumber
-        canvasContext.fillText(outputText, leftEdge, fontTop)
+        canvasContext.fillText(barToString(bar, majorIncrement), leftEdge, fontTop)
 
         // Bar line style
         canvasContext.strokeStyle = '#555555'

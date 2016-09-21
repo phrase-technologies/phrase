@@ -292,8 +292,7 @@ export const mapPianorollToProps = createSelector(
       barCount,
       playhead,
       recording,
-      commentRangeStart: comment.selectionStart,
-      commentRangeEnd: comment.selectionEnd,
+      ...comment,
     }
   }
 )

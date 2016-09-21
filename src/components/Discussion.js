@@ -7,6 +7,9 @@ import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
 
 import { modalOpen } from 'reducers/reduceModal'
 import { addMasterControl, removeMasterControl } from 'reducers/reducePhraseMeta'
+import { commentSelectionClear } from 'reducers/reduceComment.js'
+import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
+import { barToString } from '../helpers/trackHelpers.js'
 
 export class Discussion extends Component {
   state = {
@@ -37,6 +40,11 @@ export class Discussion extends Component {
     // This override adjusts form height based on textarea content
     let discussionFormStyles = { height: this.state.formHeight }
     let discussionFormClasses = `discussion-form ${this.state.formMobileOpen ? '' : 'hidden-xs'}`
+
+    let discussionFormInputClasses = "discussion-form-input form-control form-control-dark"
+        discussionFormInputClasses += this.state.formFocused || this.props.arrangeTool === "comment" ? " focused" : ''
+    let discussionFormAttachmentClasses = "form-control form-control-dark discussion-form-attachment"
+        discussionFormAttachmentClasses += this.state.formFocused || this.props.arrangeTool === "comment" ? ' focused' : ''
 
     return (
       <div className="workstation-discussion">
@@ -170,28 +178,55 @@ export class Discussion extends Component {
             &times;
           </button>
           <TextareaAuto
-            className="discussion-form-input form-control form-control-dark"
+            className={discussionFormInputClasses}
             placeholder="Leave a comment..." ref={ref => this.textarea = ref}
-            onKeyDown={this.keyDownHandler} minRows={2} maxRows={6}
-            onHeightChange={this.handleHeightChange}
-            onFocus={() => this.setState({ formFocused: true })}
-            onBlur={() => this.setState({ formFocused: false })}
+            onKeyDown={this.keyDownHandler} minRows={2} maxRows={5}
+            onHeightChange={(height) => this.handleHeightChange({ inputHeight: height })}
+            onFocus={this.formFocus}
+            onBlur={this.formBlur}
           />
-          <div className={`form-control form-control-dark discussion-form-attachment ${this.state.formFocused ? 'focused' : ''}`}>
-            <span className="fa fa-clock-o" />
-            <span> General comment. </span>
-            <a>Tag specific timestamp/region</a>
+          <div className={discussionFormAttachmentClasses}>
+            { this.renderCommentTag() }
           </div>
           <div className="text-right" style={{ marginTop: 8 }}>
             <button className="btn btn-dark btn-sm visible-xs-inline-block" style={{ marginRight: 5 }}>
               Cancel
             </button>
-            <button className="btn btn-bright btn-sm">
+            <button className="btn btn-bright btn-sm visible-xs-inline-block">
               Comment
             </button>
           </div>
         </div>
       </div>
+    )
+  }
+
+  renderCommentTag() {
+    if (this.props.commentRangeStart) {
+      return (
+        <span>
+          <span> Commenting on region from </span>
+          <span className="fa fa-clock-o" />
+          <span> { barToString(this.props.commentRangeStart, 0.25) }</span>
+          <span> to </span>
+          <span className="fa fa-clock-o" />
+          <span> { barToString(this.props.commentRangeEnd, 0.25) } </span>
+          <a onClick={() => this.props.dispatch(commentSelectionClear())}>
+            <span className="fa fa-remove" />
+            <span> Clear</span>
+          </a>
+        </span>
+      )
+    }
+
+    return (
+      <span>
+        <span> Nothing selected on the timeline. </span>
+        <a onClick={() => this.props.dispatch(arrangeToolSelect(`comment`))}>
+          <span className="fa fa-sort fa-rotate-90" />
+          <span> Select a region</span>
+        </a>
+      </span>
     )
   }
 
@@ -217,20 +252,55 @@ export class Discussion extends Component {
     this.props.dispatch(modalOpen({ modalComponent: 'PermissionsModal' }))
   }
 
-  handleHeightChange = (height) => {
-    this.setState({ formHeight: height + 82 })
+  formFocus = () => {
+    this.handleHeightChange({ focus: true })
+  }
+  formBlur = () => {
+    // Delay blur to a later tick so that click events get caught
+    setTimeout(() => { this.handleHeightChange({ focus: false }) }, 250)
+  }
+
+  handleHeightChange = ({ inputHeight = null, focus = null, commentMode = null }) => {
+    inputHeight = inputHeight || this.state.formInputHeight
+    focus = (focus === null) ? this.state.formFocused : focus
+    commentMode = (commentMode === null) ? (this.props.arrangeTool === "comment") : commentMode
+
+    let attachmentHeight = (focus || commentMode) ? 24 : 0
+
+    this.setState({
+      formFocused: focus,
+      formInputHeight: inputHeight,
+      formHeight: inputHeight + attachmentHeight + 23,
+    })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.arrangeTool !== this.props.arrangeTool &&
+        nextProps.arrangeTool === 'comment' ||
+        this.props.arrangeTool === 'comment'
+    ) {
+      let commentMode = nextProps.arrangeTool === 'comment'
+      this.handleHeightChange({ commentMode })
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Focus the textarea if newly opened!
+    // Focus the textarea if newly opened on mobile!
     if (this.state.formMobileOpen && !prevState.formMobileOpen) {
       this.textarea.focus()
+    }
+
+    // If being focused, clear comment selection range
+    if (this.state.formFocused && !prevState.formFocused && this.props.arrangeTool !== 'comment') {
+      this.props.dispatch(commentSelectionClear())
     }
   }
 
 }
 
 export default connect(state => ({
+  ...state.comment,
+  arrangeTool: state.arrangeTool,
   phraseId: state.phraseMeta.phraseId,
   authorUsername: state.phraseMeta.authorUsername,
   authorUserId: state.phraseMeta.userId,

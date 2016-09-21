@@ -57,8 +57,6 @@ export class Pianoroll extends Component {
       barCount: this.props.barCount,
       xMin: this.props.xMin,
       xMax: this.props.xMax,
-      commentRangeStart: this.props.commentRangeStart,
-      commentRangeEnd: this.props.commentRangeEnd,
     }
     let playheadProps = {
       ...timelineProps,
@@ -154,8 +152,6 @@ Pianoroll.propTypes = {
   selectionStartY: React.PropTypes.number,
   selectionEndX: React.PropTypes.number,
   selectionEndY: React.PropTypes.number,
-  commentRangeStart: React.PropTypes.number,
-  commentRangeEnd: React.PropTypes.number,
   maximize: React.PropTypes.func.isRequired,
 }
 Pianoroll.defaultProps = {

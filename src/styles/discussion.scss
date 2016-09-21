@@ -48,6 +48,8 @@ $discussion-form-height: 90px;
   border-top: 1px solid #000;
   overflow: hidden;
 
+  transition: bottom 0.25s;
+
   // Timeline - vertical line
   &::before {
     content: '';
@@ -166,17 +168,24 @@ $discussion-form-height: 90px;
   background: #555;
   background-image: linear-gradient(180deg, #707070, #484848);
 
+  transition: height 0.25s;
+
   > .close {
     left: 10px;
     right: none;
   }
 }
 .discussion-form-input {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
   box-shadow: inset 0px 2px 1px #000; // Remove outer shadow which causes gap on mobile safari
 
+  transition: height 0.25s;
+
+  &.focused,
   &:focus {
+    border-color: hsl(180,100%,50%);
+    box-shadow: 0 0 8px hsla(180,100%,50%, 0.5);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     border-bottom-style: dashed;
   }
 }
@@ -185,19 +194,30 @@ $discussion-form-height: 90px;
   border-top-right-radius: 0;
   border-color: #000;
   border-top: 0;
+  border-bottom-width: 0;
   background: #282828;
   box-shadow: none;
-  padding-top: 3px;
-  height: 24px;
+  height: 0;
   color: #888;
   font-size: 12px;
 
+  transition: height 0.25s, padding 0.25s;
+  overflow: hidden;
+
   &.focused {
+    border-bottom-width: 1px;
+    padding-top: 3px;
+    height: 24px;
     border-color: hsl(180,100%,50%) !important;
-    box-shadow:
-      0 0 8px hsla(180,100%,50%, 0.5),
-      inset 0 1px 1px rgba(0, 0, 0, 0.075) !important;
+    box-shadow: 0 0 8px hsla(180,100%,50%, 0.5) !important;
   }
+}
+.discussion-form-tag {
+  border: 1px solid #0FF;
+  border-radius: 3px;
+  padding: 1px 4px;
+  background: #088;
+  color: #0FF;
 }
 
 // ============================================================================
@@ -317,5 +337,19 @@ $discussion-form-height: 90px;
     border-radius: 0;
     padding: 45px 15px;
     background: #444;
+  }
+  .discussion-form-input {
+    border-color: hsl(180,100%,50%);
+    box-shadow: 0 0 8px hsla(180,100%,50%, 0.5);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-style: dashed;
+  }
+  .discussion-form-attachment {
+    border-bottom-width: 1px;
+    padding-top: 3px;
+    height: 24px;
+    border-color: hsl(180,100%,50%) !important;
+    box-shadow: 0 0 8px hsla(180,100%,50%, 0.5) !important;
   }
 }
