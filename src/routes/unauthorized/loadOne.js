@@ -5,6 +5,9 @@ export default ({ api, db }) => {
   api.post(`/loadOne`, async (req, res) => {
     let { phraseId, userId } = req.body
 
+    if (!phraseId)
+      return res.json({ success: false, message: `Missing phraseId.`})
+
     try {
       let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
 
