@@ -41,11 +41,13 @@ export let handleOAuth = async ({ profile, done, db }) => {
       picture,
     })
 
-    if (user) // If user exists update their info
+    // Manually uploaded images include the user ID, don't overwrite manually uploaded image
+    if (user && (!user.picture || !user.picture.includes(user.id))) {
       await rUserUpdate(db, {
         id: user.id,
         update: { picture },
       })
+    }
 
     done(null, {
       success: true,
