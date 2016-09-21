@@ -27,7 +27,7 @@ let autosave = store => next => action => {
 
   let existingPhrase = newState.phraseMeta.phraseId
   let loggedIn = localStorage.userId && localStorage.userId !== 'undefined'
-  let writePermission = localStorage.username === newState.phraseMeta.authorUsername
+  let writePermission = newState.phraseMeta.masterControl.includes(localStorage.userId)
 
   // Phrase Changes?
   if (hasPhraseBeenModified({ oldState, newState })) {

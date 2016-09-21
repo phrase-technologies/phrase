@@ -49,6 +49,28 @@ export let removeCollaborator = ({ targetUserId }) => {
   }
 }
 
+export let addMasterControl = ({ targetUserId }) => {
+  return (dispatch, getState) => {
+    let { phraseId } = getState().phraseMeta
+
+    api({
+      endpoint: `masterControl/add`,
+      body: { phraseId, targetUserId },
+    })
+  }
+}
+
+export let removeMasterControl = () => {
+  return (dispatch, getState) => {
+    let { phraseId } = getState().phraseMeta
+
+    api({
+      endpoint: `masterControl/remove`,
+      body: { phraseId },
+    })
+  }
+}
+
 export const defaultState = {
   loading: true,
   notFound: false, // this value is used to display a message when loadOne fails
@@ -437,6 +459,12 @@ export default function reducePhraseMeta(state = defaultState, action) {
     case phrase.REMOVE_COLLABORATOR:
       return u({
         collaborators: state.collaborators.filter(user => user.userId !== action.payload.userId)
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case phrase.GIVE_MASTER_CONTROL:
+      return u({
+        masterControl: [action.payload.userId]
       }, state)
 
     // ------------------------------------------------------------------------

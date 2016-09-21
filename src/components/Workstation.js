@@ -139,6 +139,15 @@ export class Workstation extends Component {
       }
     })
 
+    socket.on(`server::masterControlChanged`, socketData => {
+      if (socketData.phraseId === this.props.params.phraseId) {
+        dispatch({
+          type: phrase.GIVE_MASTER_CONTROL,
+          payload: { userId: socketData.targetUserId },
+        })
+      }
+    })
+
     // Load existing phrase from URL param
     if (this.props.params.phraseId) {
       if (loading !== phrase.REPHRASE) {
@@ -343,7 +352,7 @@ export class Workstation extends Component {
   receiveSocketUpdate = (loadedPhrase) => {
     // Only if it's the correct phrase!
     let correctPhrase = loadedPhrase.id === this.props.phraseId
-    let ownerOfPhrase = this.props.authorUsername === this.props.currentUsername
+    let ownerOfPhrase = loadedPhrase.masterControl.includes(this.props.userId)
     if (correctPhrase && !ownerOfPhrase) {
       this.props.dispatch({
         type: phrase.LOAD_FINISH,
@@ -411,7 +420,7 @@ export class Workstation extends Component {
     if (nextProps.phraseId !== this.props.phraseId) {
       this.props.socket.emit(`disconnect`, { phraseId: this.props.phraseId })
 
-      // Don't join in props changes if not coming from another phrase
+      // Don't join the room again 
       if (this.props.phraseId && nextProps.phraseId) {
         this.props.socket.emit(`client::joinRoom`, {
           phraseId: nextProps.phraseId,

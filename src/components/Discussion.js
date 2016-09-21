@@ -4,11 +4,19 @@ import { connect } from 'react-redux'
 import UserBubble from 'components/UserBubble'
 import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
 
-import { modalOpen } from 'reducers/reduceModal.js'
+import { modalOpen } from 'reducers/reduceModal'
+import { addMasterControl, removeMasterControl } from 'reducers/reducePhraseMeta'
 
 export class Discussion extends Component {
   state = {
     fullscreenReply: false,
+    loadingMasterControl: false
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.masterControl[0] !== nextProps.masterControl[0]) {
+      this.setState({ loadingMasterControl: false })
+    }
   }
 
   render() {
@@ -37,7 +45,19 @@ export class Discussion extends Component {
                   : `observer`
             }
             key={`collab-${this.props.userId}`}
+            handleClick={
+              () => {
+                if (
+                  this.props.authorUserId === this.props.userId &&
+                  !this.props.masterControl.includes(this.props.userId)
+                ) {
+                  this.props.dispatch(addMasterControl({ targetUserId: this.props.userId }))
+                  this.setState({ loadingMasterControl: this.props.userId })
+                }
+              }
+            }
             initials={this.props.currentUsername.substr(0, 2).toUpperCase()}
+            loadingMasterControl={this.state.loadingMasterControl === this.props.userId}
             masterControl={this.props.masterControl.includes(this.props.userId)}
             online
           />
@@ -47,7 +67,20 @@ export class Discussion extends Component {
             <UserBubble
               type="collaborator"
               key={`collab-${x.userId}`}
+              handleClick={
+                () => {
+                  if (this.props.authorUserId === this.props.userId) {
+                    if (this.props.masterControl.includes(x.userId)) {
+                      this.props.dispatch(removeMasterControl())
+                    } else {
+                      this.props.dispatch(addMasterControl({ targetUserId: x.userId }))
+                      this.setState({ loadingMasterControl: x.userId })
+                    }
+                  }
+                }
+              }
               initials={x.username.substr(0, 2).toUpperCase()}
+              loadingMasterControl={this.state.loadingMasterControl === x.userId}
               masterControl={this.props.masterControl.includes(x.userId)}
               online={
                 x.userId === this.props.userId ||

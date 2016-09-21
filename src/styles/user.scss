@@ -69,6 +69,8 @@
 
   margin-right: 4px;
 
+  cursor: pointer;
+
   .signal {
     position: absolute;
     top: -2px;
@@ -86,6 +88,14 @@
 
   & .master-control-icon {
     color: #cbd41f;
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    margin: 0;
+  }
+
+  & .master-control-loading {
+    color: #cbebe5;
     position: absolute;
     top: -2px;
     left: -2px;

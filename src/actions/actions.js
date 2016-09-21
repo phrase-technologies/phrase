@@ -88,7 +88,7 @@ export const phrase = namespaceActions(
     'NOT_FOUND',
     'ADD_COLLABORATOR',
     'REMOVE_COLLABORATOR',
-    'GIVE_CONTROL',
+    'GIVE_MASTER_CONTROL',
   ]
 )
 
