@@ -25,17 +25,3 @@ export let generateAPIToken = async (user, app) => {
     expiresIn: `365d`, // expires in a year
   })
 }
-
-export let validateAPIToken = async ({ token, app }) => {
-  let decoded
-  if (token) {
-    try {
-      decoded = await jwt.verify(token, app.get(`superSecret`))
-    }
-    catch(e) {
-      return { success: false, message: `Failed to authenticate token.` }
-    }
-  }
-  else return { success: false, message: `No token provided.` }
-  return { success: true, decoded }
-}
