@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken'
 import authRoutes from './routes'
 import passport from 'passport'
 import strategies from './strategies'
+import { validateAPIToken } from '../helpers/token'
 
 export default ({
   api,
