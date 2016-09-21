@@ -1,4 +1,6 @@
+import _ from 'lodash'
 import r from 'rethinkdb'
+import { getUsers, setUsers } from '../../setup/setupSocketConnection'
 
 export default ({ api, db, io }) => {
   api.post(`/collab/add`, async (req, res) => {
@@ -33,6 +35,23 @@ export default ({ api, db, io }) => {
         username: targetUser.username,
       })
 
+      let users = getUsers()
+      let userInSocketArray = users.find(x => x.userId === targetUserId)
+
+      if (userInSocketArray) {
+        let nextUsers = setUsers([
+          ...users.filter(x => x.userId !== targetUserId),
+          { ...userInSocketArray, room: phraseId },
+        ])
+
+        io.in(phraseId).emit(
+          `server::updatePresence`,
+          _.uniqBy(nextUsers, `userId`)
+            .filter(x => x.room === phraseId)
+            .map(x => ({ username: x.username, userId: x.userId })),
+        )
+      }
+
       res.json({ message: `Collaborator added!` })
     }
     catch (error) {
@@ -48,17 +67,40 @@ export default ({ api, db, io }) => {
       let phrase = await r.table(`phrases`).get(phraseId)
       let author = await phrase.getField(`userId`).run(db)
       let collaborators = await phrase.getField(`collaborators`).run(db)
+      let privacySetting = await phrase.getField(`privacySetting`).run(db)
 
       // Only author or can remove or collaborator can remove themselves.
       if (author !== userId && !collaborators.includes(userId)) {
         throw Error(`You do not have permission to change this setting.`)
       }
 
-      await phrase.update(row => ({
-        collaborators: row(`collaborators`).filter(userId => userId !== targetUserId),
-      })).run(db)
+      await phrase.update({
+        collaborators: collaborators.filter(id => id !== targetUserId),
+      }).run(db)
 
-      io.emit(`server::collaboratorLeft`, { phraseId, userId: targetUserId })
+      let users = getUsers()
+
+      let nextUsers = setUsers(
+        users.map(x => ({
+          ...x,
+          room: privacySetting === `public` || author === userId
+            ? phraseId
+            : null,
+        }))
+      )
+
+      io.in(phraseId).emit(`server::collaboratorLeft`, {
+        phraseId,
+        userId: targetUserId,
+        privacySetting,
+      })
+
+      io.in(phraseId).emit(
+        `server::updatePresence`,
+        _.uniqBy(nextUsers, `userId`)
+          .filter(x => x.room === phraseId)
+          .map(x => ({ username: x.username, userId: x.userId })),
+      )
 
       if (userId === author) {
         res.json({ success: true, message: `Collaborator removed.` })

@@ -24,7 +24,7 @@ export default ({ api, db, io }) => {
           .append(targetUserId),
       })).run(db)
 
-      io.emit(`server::masterControlChanged`, { phraseId, targetUserId })
+      io.in(phraseId).emit(`server::masterControlChanged`, { phraseId, targetUserId })
 
       res.json({ message: `User added to master control.` })
     }
