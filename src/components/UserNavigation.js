@@ -66,12 +66,21 @@ let notLoggedIn = ({ dispatch }) => {
   )
 }
 
+let openPhotoUpload = ({ e, dispatch}) => {
+  e.preventDefault()
+  dispatch(modalOpen({ modalComponent: `UploadPhotoModal` }))
+}
+
 let loggedIn = ({ user, dispatch, userPicture }) => {
 
   return (
     <Dropdown id="header-user-navigation-dropdown" pullRight className="dropdown-arrow" style={{ marginTop: 7 }}>
+      <a onClick={e => openPhotoUpload({ e, dispatch })}>
+        <div className="header-user-profile-pic">
+          <img src={userPicture} />
+        </div>
+      </a>
       <a className="dropdown-toggle" bsRole="toggle">
-        <img className="header-user-profile-pic" src={userPicture} />
         <span className="header-user-name">{user.username || user.email} <span className="caret" /></span>
       </a>
       <Dropdown.Menu>

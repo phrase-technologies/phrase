@@ -95,10 +95,34 @@ body {
   color: #CCC;
 }
 .header-user-profile-pic {
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
+  position: relative;
+  display: inline-block;
   margin-right: 5px;
+
+  > img {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+  }
+
+  &:hover:after {
+    opacity: 1;
+  }
+
+  &:after {
+    content: '\f030';
+    font-family: FontAwesome;
+    color: white;
+    text-align: center;
+    line-height: 25px;
+    position: absolute;
+    width: 100%; height:100%;
+    top:0; left:0;
+    background: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.5s;
+  }
 }
 .header-user-name {
   font-size: 14px;

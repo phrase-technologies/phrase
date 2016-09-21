@@ -4,11 +4,10 @@
 .user-profile-pic {
   float: left;
   position: relative;
-  cursor: pointer;
   margin-left: 10px;
   top: -12px;
 
-  img {
+  > img {
     border-radius: 50%;
     height: 45px;
     width: 45px;
