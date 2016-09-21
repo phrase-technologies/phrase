@@ -20,6 +20,14 @@ export default ({ api, db }) => {
 
       let phraseAuthor = await r.table(`users`).get(loadedPhrase.userId).run(db)
       loadedPhrase.username = phraseAuthor.username
+
+      let cursor = await r.table(`users`).run(db)
+      let users = await cursor.toArray()
+
+      loadedPhrase.collaborators = users
+        .filter(x => loadedPhrase.collaborators.includes(x.id))
+        .map(x => ({ username: x.username, userId: x.id }))
+
       res.json({ loadedPhrase })
 
       console.log(chalk.cyan(

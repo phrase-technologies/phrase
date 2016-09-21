@@ -1,53 +1,69 @@
 import r from 'rethinkdb'
 import chalk from 'chalk'
 
-export default async ({ io, db }) => {
+// We have a connections table, and maybe we should switch to using that
+// instead of this array at a later point, if we find a reason (eg analysis)
+let users = []
 
-  // Clear existing socket connections upon startup
-  await r.table(`connections`).delete().run(db)
+export default async ({ io, db }) => {
 
   io.on(`connection`, async (socket) => {
 
-    socket.on(`client::joinRoom`, ({ phraseId, username }) => {
-      // Leave all other rooms first
+    users.push({ socketId: socket.id })
+
+    socket.on(`client::joinRoom`, async ({ phraseId, username, userId }) => {
+      let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
+
+      let user = users.find(x => x.socketId === socket.id)
+      user.username = username
+      user.userId = userId
+
+            // Leave all other rooms first
       Object.keys(socket.rooms).forEach(room => {
-        if (room !== phraseId)
+        if (room !== phraseId) {
           socket.leave(room)
+        }
       })
 
-      // Then join this room
-      socket.join(phraseId)
+      // Then join this room if user has access
+      if (
+        loadedPhrase.userId === userId ||
+        loadedPhrase.privacySetting === `public` ||
+        loadedPhrase.collaborators.find(x => x.userId === userId)
+      ) {
+        socket.join(phraseId)
+        user.room = phraseId
+
+        console.log(chalk.yellow(
+          `⚡ Someone joined ${phraseId}!`
+        ))
+      }
+
+      console.log('>>>', users)
 
       // Indicate Presence
-      let room = io.sockets.adapter.rooms[phraseId]
-      socket.username = username // TODO... track which user for presence
-      socket.broadcast.emit(`server::updatePresence`, room) // TODO... not properly implemented
-
-      console.log(chalk.yellow(
-        `⚡ Someone joined ${phraseId}!`
-      ))
+      io.in(phraseId).emit(
+        `server::updatePresence`,
+        users.map(x => ({ username: x.username, userId: x.userId })),
+      )
     })
 
     socket.on(`disconnect`, async () => {
-      try { await r.table(`connections`).get(socket.id).delete().run(db) }
-      catch (e) { console.log(chalk.magenta(e)) }
+      users = users.filter(x => x.socketId !== socket.id)
 
-      let count = await r.table(`connections`).count().run(db)
+      // Indicate Presence
+      io.in(phraseId).emit(
+        `server::updatePresence`,
+        users.map(x => ({ username: x.username, userId: x.userId })),
+      )
 
       console.log(chalk.magenta(
-        `⚡ Disconnection! Number of open connections: ${count}`
+        `⚡ Disconnection! Number of open connections: ${users.length}`
       ))
     })
 
-    // Setup `on` handlers synchronously in order for tests to work. 
-
-    try { await r.table(`connections`).insert({ id: socket.id }).run(db) }
-    catch (e) { console.log(chalk.white(e)) }
-
-    let count = await r.table(`connections`).count().run(db)
-
     console.log(chalk.yellow(
-      `⚡ New connection! Number of open connections: ${count}`
+      `⚡ New connection! Number of open connections: ${users.length}`
     ))
 
   })
