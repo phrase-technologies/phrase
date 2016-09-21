@@ -15,7 +15,7 @@ export default ({ api, db }) => {
 
       let users = await userCursor.toArray()
       let user = users[0]
-      
+
       if (!user) {
         return res.status(404).json({ message: `User not found.` })
       }
@@ -29,7 +29,7 @@ export default ({ api, db }) => {
         .run(db)
 
       let phrases = await phraseCursor.toArray()
-      res.json({ phrases })
+      res.json({ phrases, picture: user.picture })
     } catch (error) {
       console.log(`/loadUserPhrases:`, chalk.magenta(error))
       res.json({ error })
