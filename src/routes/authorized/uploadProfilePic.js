@@ -23,7 +23,12 @@ export default ({ api, db }) => {
 
     // Save base64 data as file
     base64 = base64.replace(/^data:image\/[a-z]+;base64,/, ``)
-    fs.writeFileSync(tempPath, base64, 'base64')
+    try {
+      fs.writeFileSync(tempPath, base64, 'base64')
+    }
+    catch(e) {
+      return res.status(500).end()
+    }
 
     try { // Perform image verification / manipulation / get file extension
       let info = await easyImage.info(tempPath)
