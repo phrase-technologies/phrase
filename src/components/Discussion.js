@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import TextareaAuto from 'react-textarea-autosize'
 
 import UserBubble from 'components/UserBubble'
-import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
+import DiscussionTimeline from 'components/DiscussionTimeline'
 
 import { modalOpen } from 'reducers/reduceModal'
 import { addMasterControl, removeMasterControl } from 'reducers/reducePhraseMeta'
@@ -131,36 +131,7 @@ export class Discussion extends Component {
             className={"discussion-timeline-gutter" + fullscreenOverride}
             ref={ref => this.scrollWindow = ref}
           >
-            <ul className="discussion-timeline">
-              {/* <DiscussionTimelineItem
-                tick={ "4.1.1" }
-                user={{ initials: "ZZ", username: "zavoshz" }}
-                timestamp={"11:32 AM"}
-                comment="You've built a nice full-screen mobile webapp, complete with scrollable elements using the -webkit-overflow-scrolling property. Everything is great, however, when you scroll to the top or bottom of your scrollable element, the window exhibits rubber band-like behavior, revealing a gray tweed pattern. Sometimes, your scrollable element doesn't scroll at all, but the window still insists on bouncing around."
-                setFullscreenReply={this.setFullscreenReply}
-              />
-              <DiscussionTimelineItem
-                tick={ "5.1.1" }
-                user={{ initials: "AK", username: "ProfessorAnson" }}
-                timestamp={"12:05 PM"}
-                comment="Anson, whoa... built a nice full-screen mobile webapp."
-                setFullscreenReply={this.setFullscreenReply}
-              />
-              <DiscussionTimelineItem
-                tick={ "5.1.2" }
-                user={{ initials: "ZZ", username: "zavoshz" }}
-                timestamp={"1:47 PM"}
-                comment="Complete with scrollable elements using the -webkit-overflow-scrolling property. Everything is great, however, when you scroll to the top or bottom of your scrollable element, the window exhibits rubber band-like behavior, revealing a gray tweed pattern. Sometimes, your scrollable element doesn't scroll at all, but the window still insists on bouncing around."
-                setFullscreenReply={this.setFullscreenReply}
-              />
-              <DiscussionTimelineItem
-                tick={ "216.3.1" }
-                user={{ initials: "AK", username: "ProfessorAnson" }}
-                timestamp={"Saturday"}
-                comment="Cool."
-                setFullscreenReply={this.setFullscreenReply}
-              /> */}
-            </ul>
+            <DiscussionTimeline setFullscreenReply={this.setFullscreenReply} />
           </div>
         </div>
         <button
@@ -202,15 +173,31 @@ export class Discussion extends Component {
   }
 
   renderCommentTag() {
-    if (this.props.commentRangeStart) {
+    if (this.props.commentRangeEnd !== null && this.props.commentRangeStart !== this.props.commentRangeEnd) {
+      let rangeLeft  = Math.min(this.props.commentRangeStart, this.props.commentRangeEnd)
+      let rangeRight = Math.max(this.props.commentRangeStart, this.props.commentRangeEnd)
       return (
         <span>
           <span> Commenting on region from </span>
           <span className="fa fa-clock-o" />
-          <span> { barToString(this.props.commentRangeStart, 0.25) }</span>
+          <span> { barToString(rangeLeft, 0.25) }</span>
           <span> to </span>
           <span className="fa fa-clock-o" />
-          <span> { barToString(this.props.commentRangeEnd, 0.25) } </span>
+          <span> { barToString(rangeRight, 0.25) } </span>
+          <a onClick={() => this.props.dispatch(commentSelectionClear())}>
+            <span className="fa fa-remove" />
+            <span> Clear</span>
+          </a>
+        </span>
+      )
+    }
+
+    if (this.props.commentRangeStart !== null) {
+      return (
+        <span>
+          <span> Commenting at </span>
+          <span className="fa fa-clock-o" />
+          <span> { barToString(this.props.commentRangeStart, 0.25) } </span>
           <a onClick={() => this.props.dispatch(commentSelectionClear())}>
             <span className="fa fa-remove" />
             <span> Clear</span>
