@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import withSocket from 'components/withSocket'
 
 import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
+import { commentCreate } from 'reducers/reduceComment'
 
 export class DiscussionTimeline extends Component {
 
@@ -9,15 +11,18 @@ export class DiscussionTimeline extends Component {
     return (
       <ul className="discussion-timeline">
         {
-          (
-          <DiscussionTimelineItem
-            tick={ "4.1.1" }
-            user={{ initials: "ZZ", username: "zavoshz" }}
-            timestamp={"11:32 AM"}
-            comment="You've built a nice full-screen mobile webapp, complete with scrollable elements using the -webkit-overflow-scrolling property. Everything is great, however, when you scroll to the top or bottom of your scrollable element, the window exhibits rubber band-like behavior, revealing a gray tweed pattern. Sometimes, your scrollable element doesn't scroll at all, but the window still insists on bouncing around."
-            setFullscreenReply={this.props.setFullscreenReply}
-          />
-          )
+          this.props.comments.map((comment) => {
+            return (
+              <DiscussionTimelineItem
+                key={comment.id}
+                tick={ "4.1.1" }
+                user={{ initials: "ZZ", username: "zavoshz" }}
+                timestamp={"11:32 AM"}
+                comment={comment.comment}
+                setFullscreenReply={this.props.setFullscreenReply}
+              />
+            )
+          })
         }
       </ul>
     )
@@ -28,10 +33,9 @@ export class DiscussionTimeline extends Component {
 
     // Subscribe to socket updates for the lifetime of the component
     socket.on(`server::commentsChangeFeed`, ({ action, state }) => {
-      console.log( "A", action, state )
       switch(action) {
         case "insert":
-          console.log( "B", action, state )
+          this.props.dispatch(commentCreate(state))
           break
         case "delete":
         case "update":
@@ -43,4 +47,6 @@ export class DiscussionTimeline extends Component {
 
 }
 
-export default withSocket(DiscussionTimeline)
+export default withSocket(connect((state) => ({
+  comments: state.comment.comments,
+}))(DiscussionTimeline))

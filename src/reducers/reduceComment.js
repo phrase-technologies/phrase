@@ -1,5 +1,6 @@
 import u from 'updeep'
 import { comment } from 'actions/actions'
+import { uAppend } from 'helpers/arrayHelpers'
 
 // ============================================================================
 // Comment Action Creators
@@ -7,6 +8,7 @@ import { comment } from 'actions/actions'
 export const commentSelectionStart = ({ start, trackID }) => ({ type: comment.SELECTION_START, payload: { start, trackID } })
 export const commentSelectionEnd = ({ end }) => ({ type: comment.SELECTION_END, payload: { end } })
 export const commentSelectionClear = () => ({ type: comment.SELECTION_CLEAR })
+export const commentCreate = (commentState) => ({ type: comment.COMMENT_CREATE, payload: commentState })
 
 // ============================================================================
 // Comment Selection
@@ -16,6 +18,7 @@ export const defaultState = {
   commentTrackID: null,
   commentRangeStart: null,
   commentRangeEnd: null,
+  comments: [],
 }
 
 export default function reduceComment(state = defaultState, action) {
@@ -37,6 +40,13 @@ export default function reduceComment(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case comment.SELECTION_CLEAR:
       return defaultState
+
+    // ------------------------------------------------------------------------
+    case comment.COMMENT_CREATE:
+      return u({
+        commentId: action.payload.id,
+        comments: uAppend(action.payload)
+      }, state)
 
     // ------------------------------------------------------------------------
     default:

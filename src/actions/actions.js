@@ -232,5 +232,6 @@ export const comment = namespaceActions(
     'SELECTION_START',
     'SELECTION_END',
     'SELECTION_CLEAR',
+    'COMMENT_CREATE',
   ]
 )
