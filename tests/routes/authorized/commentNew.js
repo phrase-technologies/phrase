@@ -98,27 +98,29 @@ export default ({ globals, author, observer, phraseId }) => {
       expect(response.status).to.eq(200)
     })
 
-    it(`should result in changefeed update`, async function() {
+    it(`should result in changefeed update`, (done) => {
       let comment = "Will the real Slim Shady please stand up?!"
+
       let socket = socketClientIO.connect(`http://localhost:9999`)
-
       socket.emit(`client::joinRoom`, { phraseId, username: author.username })
-
       socket.on(`server::commentsChangeFeed`, data => {
-        expect(data.new_val.comment).to.eq(comment)
+        expect(data.state.comment).to.eq(comment)
         socket.disconnect()
+        done()
       })
 
-      ajax({
-        url,
-        body: {
-          token: author.token,
-          userId: author.id,
-          comment,
-          phraseId,
-          trackId: 0,
-        },
-      })
+      setTimeout(() => { // Avoid race condition where room is joined after the change is emitted
+        ajax({
+          url,
+          body: {
+            token: author.token,
+            userId: author.id,
+            comment,
+            phraseId,
+            trackId: 0,
+          },
+        })
+      }, 64)
     })
 
   })

@@ -29,7 +29,7 @@ export default ({
       expect(message).to.eq(`Autosave success.`)
     })
 
-    it(`sockets should receive the updated phrase`, () => {
+    it(`sockets should receive the updated phrase`, (done) => {
       let socket = socketClientIO.connect(`http://localhost:9999`)
 
       socket.emit(`client::joinRoom`, { phraseId, username: author.username })
@@ -37,18 +37,21 @@ export default ({
       socket.on(`server::updatePhrase`, data => {
         expect(data.id).to.eq(phraseId)
         socket.disconnect()
+        done()
       })
 
-      ajax({
-        url,
-        body: {
-          userId: author.id,
-          token: author.token,
-          phraseId,
-          phraseName: ``,
-          phraseState: {},
-        },
-      })
+      setTimeout(() => { // Avoid race condition where room is joined after the change is emitted
+        ajax({
+          url,
+          body: {
+            userId: author.id,
+            token: author.token,
+            phraseId,
+            phraseName: ``,
+            phraseState: {},
+          },
+        })
+      }, 64)
     })
 
     it(`should only allow user with master control to update`, async function() {

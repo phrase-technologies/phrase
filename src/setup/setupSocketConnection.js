@@ -78,13 +78,18 @@ export default async ({ io, db }) => {
       `⚡ New connection! Number of open connections: ${users.length}`
     ))
 
-    // Subscribe to changefeeds
-    r.table('comments')
-      .getAll(phraseId, { index: `phraseId` })
-      .changes()
-      .run(db, (err, cursor) => {
-        socket.broadcast.emit(`server::commentsChangeFeed`, cursor)
-      })
+  })
 
+  // Subscribe to changefeeds
+  r.table('comments').changes().run(db, (err, cursor) => {
+    cursor.each((err, { old_val, new_val }) => {
+      let phraseId = old_val && old_val.phraseId || new_val && new_val.phraseId
+
+      let action = "insert"
+      if (old_val && new_val) action = "update"
+      else if (old_val) action = "delete"
+
+      io.to(phraseId).emit(`server::commentsChangeFeed`, { action, state: new_val || old_val })
+    })
   })
 }
