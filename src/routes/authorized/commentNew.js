@@ -6,6 +6,7 @@ export default ({ api, db }) => {
       phraseId,
       trackId,
       comment,
+      tempKey,
       start = null,
       end = null,
     } = req.body
@@ -15,6 +16,7 @@ export default ({ api, db }) => {
     if (!comment)        return res.json({ success: false, message: `Invalid comment` })
     if (!isInt(trackId)) return res.json({ success: false, message: `Must provide trackId` })
     if (!phraseId)       return res.json({ success: false, message: `Must provide a phraseId` })
+    if (!tempKey)        return res.json({ success: false, message: `Must provide a tempKey` })
 
     try {
       let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
@@ -32,6 +34,7 @@ export default ({ api, db }) => {
         end,
         phraseId,
         authorId: id,
+        tempKey,
         dateCreated: timestamp,
         dateModified: timestamp,
       }).run(db)

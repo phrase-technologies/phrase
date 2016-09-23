@@ -21,14 +21,14 @@ export default ({ globals, author, observer, phraseId }) => {
     })
 
     it(`should require phraseId`, async function() {
-      let comment = "Where's my snare?"
       let response = await ajax({
         url,
         body: {
           token: author.token,
           userId: author.id,
           trackId: 123,
-          comment,
+          comment: "Where's my snare?",
+          tempKey: "DJ Khaled",
         },
       })
       let { success, message } = await response.json()
@@ -37,19 +37,36 @@ export default ({ globals, author, observer, phraseId }) => {
     })
 
     it(`should require trackId`, async function() {
-      let comment = "Where's my snare?"
       let response = await ajax({
         url,
         body: {
           token: author.token,
           userId: author.id,
           phraseId,
-          comment,
+          comment: "Where's my snare?",
+          tempKey: "DJ Khaled",
         },
       })
       let { success, message } = await response.json()
       expect(success).to.eq(false)
       expect(message).to.eq("Must provide trackId")
+    })
+
+    it(`should require tempKey`, async function() {
+      let response = await ajax({
+        url,
+        body: {
+          token: author.token,
+          userId: author.id,
+          comment: "Will the real Slim Shady please stand up?!",
+          phraseId,
+          trackId: 0,
+        },
+      })
+
+      let { success, message } = await response.json()
+      expect(success).to.eq(false)
+      expect(message).to.eq("Must provide a tempKey")
     })
 
     it(`should reject empty comments`, async function() {
@@ -60,6 +77,7 @@ export default ({ globals, author, observer, phraseId }) => {
           userId: author.id,
           trackId: 123,
           phraseId,
+          tempKey: "DJ Khaled",
         },
       })
       let { success, message } = await response.json()
@@ -75,6 +93,7 @@ export default ({ globals, author, observer, phraseId }) => {
           comment: "Hide yo wife!",
           userId: observer.id,
           phraseId,
+          tempKey: "DJ Khaled",
         },
       })
       expect(response.status).to.eq(403)
@@ -89,6 +108,7 @@ export default ({ globals, author, observer, phraseId }) => {
           comment: "Will the real Slim Shady please stand up?!",
           phraseId,
           trackId: 0,
+          tempKey: "DJ Khaled",
         },
       })
 
@@ -102,7 +122,7 @@ export default ({ globals, author, observer, phraseId }) => {
       let comment = "Will the real Slim Shady please stand up?!"
 
       let socket = socketClientIO.connect(`http://localhost:9999`)
-      socket.emit(`client::joinRoom`, { phraseId, username: author.username })
+      socket.emit(`client::joinRoom`, { phraseId, username: author.username, userId: author.id })
       socket.on(`server::commentsChangeFeed`, data => {
         expect(data.state.comment).to.eq(comment)
         socket.disconnect()
@@ -118,6 +138,7 @@ export default ({ globals, author, observer, phraseId }) => {
             comment,
             phraseId,
             trackId: 0,
+            tempKey: "DJ Khaled",
           },
         })
       }, 64)

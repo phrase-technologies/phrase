@@ -25,7 +25,7 @@ export default async ({ io, db }) => {
       user.username = username
       user.userId = userId
 
-            // Leave all other rooms first
+      // Leave all other rooms first
       Object.keys(socket.rooms).forEach(room => {
         if (room !== phraseId) {
           socket.leave(room)
