@@ -2,11 +2,15 @@ import 'whatwg-fetch' // `fetch` polyfill for Safari
 
 import { phraseFetch } from 'helpers/ajaxHelpers'
 
+export let defaultPic = '/img/piano.jpg'
+
 function setUserLocalStorage({ token, user }) {
   localStorage.token = token
   localStorage.userId = user.id
   localStorage.email = user.email
   localStorage.username = user.username
+  if (!user.picture) localStorage.picture = defaultPic
+  else localStorage.picture = user.picture
 }
 
 export let signup = async ({ body, callback }) => {

@@ -4,6 +4,7 @@ import Helmet from 'react-helmet'
 import Numeral from 'numeral'
 
 import { api } from 'helpers/ajaxHelpers'
+import { defaultPic } from 'helpers/authHelpers'
 import { catchAndToastException } from 'reducers/reduceNotification'
 import LibraryPhrases from 'components/LibraryPhrases'
 
@@ -11,15 +12,18 @@ export class UserProfile extends Component {
 
   state = {
     phrases: null,
+    userPicture: null,
   }
 
   loadUserPhrases() {
     let { dispatch } = this.props
     catchAndToastException({ dispatch, toCatch: async() => {
-      let { phrases } = await api({
+      let { phrases, picture: userPicture } = await api({
         endpoint: `loadUserPhrases`,
         body: { username: this.props.routeParams.username },
       })
+      if (userPicture) this.setState({ userPicture })
+      else this.setState({ userPicture: defaultPic })
       if (phrases) this.setState({ phrases })
     }})
   }
@@ -37,9 +41,10 @@ export class UserProfile extends Component {
   }
 
   render() {
+    let username = this.props.routeParams.username
     let user = {
-      username: this.props.routeParams.username,
-      //image: deadmau5Image,
+      username,
+      image: (username === localStorage.username) ? this.props.userPicture : this.state.userPicture,
       //followers: 28751,
       //verified: true,
     }
@@ -49,7 +54,11 @@ export class UserProfile extends Component {
         <Helmet title={`${user.username} - Phrase.fm`} />
         <div className="user-profile-header page-header library-header">
           <div className="container">
-            <h1>
+            <div className="user-profile-pic">
+              { user.image && <img src={user.image} /> }
+              { this.renderVerified({ user }) }
+            </div>
+            <h1 style={{ display: `inline-block` }}>
               {user.username}
             </h1>
           </div>
@@ -96,4 +105,4 @@ export class UserProfile extends Component {
   }
 }
 
-export default connect(null)(UserProfile)
+export default connect(() => { return { userPicture: localStorage.picture }})(UserProfile)
