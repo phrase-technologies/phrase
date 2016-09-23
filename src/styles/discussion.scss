@@ -107,7 +107,7 @@ $discussion-form-height: 90px;
   position: absolute;
   top: 0;
   left: 0;
-  width: 30px;
+  width: 27px;
   height: 28px;
 
   padding: 6px 0;
@@ -115,6 +115,10 @@ $discussion-form-height: 90px;
   color: #FFF;
   text-align: right;
   background: #282828;
+
+  > .fa {
+    margin-right: 2px;
+  }
 }
 .discussion-timeline-meta {
   position: absolute;
@@ -335,7 +339,7 @@ $discussion-form-height: 90px;
 
     border: 0;
     border-radius: 0;
-    padding: 45px 15px;
+    padding: 55px 15px 0;
     background: #444;
   }
   .discussion-form-input {
@@ -351,5 +355,10 @@ $discussion-form-height: 90px;
     height: 24px;
     border-color: hsl(180,100%,50%) !important;
     box-shadow: 0 0 8px hsla(180,100%,50%, 0.5) !important;
+  }
+  .discussion-form-submit {
+    position: absolute;
+    top: 15px;
+    right: 15px;
   }
 }

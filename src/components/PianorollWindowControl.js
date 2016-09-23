@@ -598,7 +598,7 @@ export default
 connect(state => ({
   existingPhrase: state.phraseMeta.phraseId,
   ownerOfPhrase: state.phraseMeta.authorUsername === state.auth.user.username,
-  arrangeTool: state.arrangeTool,
+  arrangeTool: state.arrangeTool.currentTool,
   mouse: state.mouse,
 }))(
   connectEngine(

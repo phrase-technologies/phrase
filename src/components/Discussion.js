@@ -10,11 +10,13 @@ import { addMasterControl, removeMasterControl } from 'reducers/reducePhraseMeta
 import { commentSelectionClear } from 'reducers/reduceComment.js'
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 import { barToString } from '../helpers/trackHelpers.js'
+import { commentCreate } from 'reducers/reduceComment'
 
 export class Discussion extends Component {
   state = {
     fullscreenReply: false,
     formHeight: 90,
+    formValue: "",
     formFocused: false,
     formMobileOpen: false,
     loadingMasterControl: false
@@ -136,7 +138,7 @@ export class Discussion extends Component {
         </div>
         <button
           className="discussion-form-mobile-trigger btn btn-bright btn-sm visible-xs-inline-block"
-          onClick={() => this.setState({ formMobileOpen: true })}
+          onClick={this.replyOpen}
         >
           <span className="fa fa-comment-o fa-flip-horizontal" />
           <span> Leave a comment</span>
@@ -144,7 +146,7 @@ export class Discussion extends Component {
         <div className={discussionFormClasses} style={discussionFormStyles}>
           <button
             className="close close-dark visible-xs-inline-block"
-            onClick={() => this.setState({ formMobileOpen: false })}
+            onClick={this.replyClose}
           >
             &times;
           </button>
@@ -153,20 +155,18 @@ export class Discussion extends Component {
             placeholder="Leave a comment..." ref={ref => this.textarea = ref}
             onKeyDown={this.keyDownHandler} minRows={2} maxRows={5}
             onHeightChange={(height) => this.handleHeightChange({ inputHeight: height })}
-            onFocus={this.formFocus}
-            onBlur={this.formBlur}
+            onFocus={this.formFocus} value={this.state.formValue}
+            onBlur={this.formBlur} onChange={this.handleInputChange}
           />
           <div className={discussionFormAttachmentClasses}>
             { this.renderCommentTag() }
           </div>
-          <div className="text-right" style={{ marginTop: 8 }}>
-            <button className="btn btn-dark btn-sm visible-xs-inline-block" style={{ marginRight: 5 }}>
-              Cancel
-            </button>
-            <button className="btn btn-bright btn-sm visible-xs-inline-block">
-              Comment
-            </button>
-          </div>
+          <button
+            className="discussion-form-submit btn btn-primary btn-sm visible-xs-inline-block"
+            ref={ref => this.submitButton = ref}
+          >
+            Comment
+          </button>
         </div>
       </div>
     )
@@ -244,7 +244,7 @@ export class Discussion extends Component {
   }
   formBlur = () => {
     // Delay blur to a later tick so that click events get caught
-    setTimeout(() => { this.handleHeightChange({ focus: false }) }, 250)
+    setTimeout(() => { this.handleHeightChange({ focus: false }) }, 125)
   }
 
   handleHeightChange = ({ inputHeight = null, focus = null, commentMode = null }) => {
@@ -259,6 +259,44 @@ export class Discussion extends Component {
       formInputHeight: inputHeight,
       formHeight: inputHeight + attachmentHeight + 23,
     })
+  }
+
+  replyOpen = () => {
+    this.setState({ formMobileOpen: true })
+  }
+
+  replyClose = () => {
+    this.setState({ formMobileOpen: false })
+  }
+
+  handleInputChange = (e) => {
+    this.setState({ formValue: e.target.value })
+  }
+
+  keyDownHandler = (e) => {
+    // Only submit on regular Enter (SHIFT+Enter reserved for newlines)
+    if (e.keyCode === 13 && !e.shiftKey) {
+      // On Mobile, force user to tap the submit button
+      if (!this.isMobile()) {
+        e.preventDefault()
+        this.submitReply()
+      }
+    }
+  }
+
+  isMobile() {
+    let style = window.getComputedStyle(this.submitButton)
+    return style.display !== 'none'
+  }
+
+  submitReply = () => {
+    if (!this.state.formValue) // Cannot be empty comment
+      return
+
+    this.textarea.blur()
+    this.props.dispatch(commentCreate(this.state.formValue))
+    this.setState({ formValue: "" })
+    this.replyClose()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -287,7 +325,7 @@ export class Discussion extends Component {
 
 export default connect(state => ({
   ...state.comment,
-  arrangeTool: state.arrangeTool,
+  arrangeTool: state.arrangeTool.currentTool,
   phraseId: state.phraseMeta.phraseId,
   authorUsername: state.phraseMeta.authorUsername,
   authorUserId: state.phraseMeta.userId,

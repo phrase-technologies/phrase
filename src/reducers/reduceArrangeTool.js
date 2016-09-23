@@ -1,4 +1,8 @@
-import { arrangeTool } from 'actions/actions'
+import u from 'updeep'
+import {
+  arrangeTool,
+  comment,
+} from 'actions/actions'
 import { tryAnalyticsEvent } from 'helpers/tryAnalytics'
 
 export let arrangeToolSelect = tool => {
@@ -10,12 +14,27 @@ export let arrangeToolSelect = tool => {
   return { type: arrangeTool.SELECT, payload: tool }
 }
 
-let defaultState = `pencil`
+let defaultState = {
+  currentTool: `pencil`,
+  lastTool: `pencil`, // Keep track of any tool that's not the comment tool so we can revert back to it when a user is done commenting.
+}
 
 export default function reduceArrangeTool(state = defaultState, action) {
   switch (action.type) {
+    // ------------------------------------------------------------------------
     case arrangeTool.SELECT:
-      return action.payload
+      return u({
+        currentTool: action.payload,
+        lastTool: state.currentTool === 'comment' ? state.lastTool : state.currentTool,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case comment.COMMENT_CREATE:
+      return u({
+        currentTool: state.lastTool,
+      }, state)
+
+    // ------------------------------------------------------------------------
     default:
       return state
   }

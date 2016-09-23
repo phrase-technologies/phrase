@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import TextareaAuto from 'react-textarea-autosize'
 import UserBubble from 'components/UserBubble'
+import { barToString } from 'helpers/trackHelpers'
 
 export default class DiscussionTimelineItem extends Component {
 
@@ -12,22 +13,30 @@ export default class DiscussionTimelineItem extends Component {
   }
 
   render() {
+    let tick = this.props.comment.start === null
+      ? (<span className="fa fa-globe fa-lg" />)
+      : barToString(this.props.start, 0.25)
+
+    let user = this.props.user
+    let initials = user.username.substring(0,2).toUpperCase()
+    
+
     return (
       <li className="discussion-timeline-item">
         <div className="discussion-timeline-tick">
-          { this.props.tick }
+          { tick }
         </div>
         <div className="discussion-timeline-meta">
-          <UserBubble initials={this.props.user.initials} />
+          <UserBubble initials={initials} />
           <span className="user-username">
             { this.props.user.username }
           </span>
           <span className="discussion-timeline-timestamp">
-            { this.props.timestamp }
+            { this.props.comment.dateCreated }
           </span>
         </div>
         <div className="discussion-timeline-content enable-select">
-          { this.props.comment }
+          { this.props.comment.comment }
         </div>
         <div className="discussion-timeline-actions">
           <a>

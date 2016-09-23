@@ -303,7 +303,7 @@ function mapStateToProps(state) {
     lastSavedTimestamp: state.phraseMeta.dateModified,
     loginReminder: state.phraseMeta.loginReminder,
     rephraseReminder: state.phraseMeta.rephraseReminder,
-    arrangeTool: state.arrangeTool,
+    arrangeTool: state.arrangeTool.currentTool,
     quantizeDivision: state.quantizer.division,
     inputMethodsTour: state.navigation.inputMethodsTour,
     ownerOfPhrase: state.phraseMeta.authorUsername === state.auth.user.username,

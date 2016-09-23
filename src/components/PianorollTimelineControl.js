@@ -338,7 +338,7 @@ PianorollTimelineControl.propTypes = {
 }
 
 export default
-connect(state => ({ arrangeTool: state.arrangeTool }))(
+connect(state => ({ arrangeTool: state.arrangeTool.currentTool }))(
   provideGridSystem(
     provideGridScroll(
       PianorollTimelineControl,

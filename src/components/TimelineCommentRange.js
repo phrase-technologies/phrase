@@ -48,7 +48,7 @@ TimelineCommentRange.propTypes = {
 function mapStateToProps(state) {
   return {
     ...state.comment,
-    arrangeTool: state.arrangeTool,
+    arrangeTool: state.arrangeTool.currentTool,
   }
 }
 
