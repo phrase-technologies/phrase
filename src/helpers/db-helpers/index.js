@@ -1,4 +1,5 @@
 
+export rUserGet                   from './r-user-get'
 export rUserGetFromUsername       from './r-user-get-from-username'
 export rUserGetFromEmail          from './r-user-get-from-email'
 export rUserInsert                from './r-user-insert'

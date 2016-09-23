@@ -1,6 +1,7 @@
-import jwt from 'jsonwebtoken'
-import authRoutes from './routes'
 import passport from 'passport'
+import jwt from 'jsonwebtoken'
+
+import authRoutes from './routes'
 import strategies from './strategies'
 
 export default ({

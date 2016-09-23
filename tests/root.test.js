@@ -30,6 +30,7 @@ import setPrivacySetting from './routes/authorized/setPrivacySetting'
 import masterControl from './routes/authorized/masterControl'
 import searchUsers from './routes/authorized/searchUsers'
 import collab from './routes/authorized/collab'
+import uploadProfilePic from './routes/authorized/uploadProfilePic'
 
 /*----------------------------------------------------------------------------*/
 
@@ -89,7 +90,6 @@ async function runTests () {
 /*---Test order matters!------------------------------------------------------*/
   // Get oAuth out of the way, other tests don't depend on it
   oAuthLogin({ globals })
-
 
   await signup({ globals, user: alice })
   await signup({ globals, user: bob })
@@ -152,6 +152,8 @@ async function runTests () {
   masterControl({ globals, author: alice, observer: bob, phraseId: publicPhraseId })
 
   deletePhrase({ globals, author: alice, observer: bob, phraseId: publicPhraseId })
+
+  uploadProfilePic({ globals, user: alice })
 
 /*----------------------------------------------------------------------------*/
 

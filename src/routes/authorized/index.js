@@ -5,6 +5,7 @@ import setPrivacySetting from './setPrivacySetting'
 import masterControl from './masterControl'
 import searchUsers from './searchUsers'
 import collab from './collab'
+import uploadProfilePic from './uploadProfilePic'
 
 export default [
   save,
@@ -14,4 +15,5 @@ export default [
   masterControl,
   searchUsers,
   collab,
+  uploadProfilePic,
 ]
