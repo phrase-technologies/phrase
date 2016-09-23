@@ -1,6 +1,7 @@
 import r from 'rethinkdb'
 import chalk from 'chalk'
 import { generateUniqueToken } from '../helpers/token'
+import createMigrations from './createMigrations'
 
 export default async ({ name, db }) => {
   console.log(chalk.yellow(
@@ -38,6 +39,8 @@ export default async ({ name, db }) => {
       used: false,
     }).run(db)
   }
+
+  await createMigrations({ db })
 
   console.log(chalk.cyan(
     `Database setup complete!`
