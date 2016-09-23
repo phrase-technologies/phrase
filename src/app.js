@@ -9,7 +9,7 @@ import { secret } from './config'
 import socketIO from 'socket.io'
 import { Server } from 'http'
 import router from './router'
-import { setupDatabase, setupSocketConnection } from './setup'
+import { setupDatabase, setupSocketConnection, getNewMigrations } from './setup'
 
 async function bootstrap () {
   try {
@@ -18,7 +18,21 @@ async function bootstrap () {
     let db = await r.connect({ host: `localhost`, db: `phrase`, port: 28015 })
 
     try { await setupDatabase({ name: `phrase`, db }) }
-    catch (err) { console.log("❌", chalk.red(err.msg || err)) }
+    catch (err) {
+      let msg = err.msg || err
+      console.log("❌", chalk.red(msg))
+      if (msg !== `Database \`phrase\` already exists.`)
+        process.exit() // Can't continue if we couldn't set up the database
+      else {
+        let migrations = await getNewMigrations({ db })
+        if (migrations.length) {
+          console.log("❌", chalk.red(
+            `There are pending migrations, please use 'npm run migrate' and try again.`
+          ))
+          process.exit() // Don't continue if there are pending migrations
+        }
+      }
+    }
 
     let app = express()
     let server = Server(app)

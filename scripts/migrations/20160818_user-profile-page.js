@@ -1,7 +1,5 @@
+import r from 'rethinkdb'
 
-r = require(`rethinkdb`)
-
-r.connect({ host: `localhost`, db: `phrase`, port: 28015 }, (err, conn) => {
-  r.table(`phrases`).indexCreate(`userId`).run(conn)
-  process.exit()
-})
+export default async ({ db }) => {
+  await r.table(`phrases`).indexCreate(`userId`).run(db)
+}
