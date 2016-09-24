@@ -15,7 +15,7 @@ export default class UserBubble extends Component {
           <i className="master-control-icon fa fa-bolt" />
         }
         { this.props.online && <div className="user-bubble-online signal signal-green" /> }
-        { this.props.initials }
+        { this.props.initials || <span className="fa fa-spinner fa-pulse" /> }
       </div>
     )
   }

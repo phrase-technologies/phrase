@@ -13,6 +13,16 @@ import { catchAndToastException } from 'reducers/reduceNotification'
 export const commentSelectionStart = ({ start, trackID }) => ({ type: comment.SELECTION_START, payload: { start, trackID } })
 export const commentSelectionEnd = ({ end }) => ({ type: comment.SELECTION_END, payload: { end } })
 export const commentSelectionClear = () => ({ type: comment.SELECTION_CLEAR })
+export const commentLoadAll = ({ phraseId }) => {
+  return (dispatch) => {
+    dispatch({ type: comment.REQUEST_EXISTING })
+
+    catchAndToastException({ dispatch, toCatch: async () => {
+      let result = await api({ endpoint: `commentExisting`, body: { phraseId } })
+      dispatch({ type: comment.RECEIVE_EXISTING, payload: result.comments })
+    }})
+  }
+}
 export const commentCreate = (commentText) => {
   if (!commentText)
     return { type: "DUMMY ACTION" }
@@ -40,12 +50,13 @@ export const commentCreate = (commentText) => {
       start,
       end,
       phraseId,
+      authorId,
       tempKey: `${authorId}-${+new Date()}`,
     }
 
     catchAndToastException({ dispatch, toCatch: () => {
-      api({ endpoint: `commentNew`, body: payload })
       dispatch({ type: comment.COMMENT_CREATE, payload })
+      api({ endpoint: `commentNew`, body: payload })
     }})
   }
 }
@@ -85,10 +96,22 @@ export default function reduceComment(state = defaultState, action) {
       }, defaultState)
 
     // ------------------------------------------------------------------------
+    case comment.REQUEST_EXISTING:
+      return u({
+        comments: null,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case comment.RECEIVE_EXISTING:
+      return u({
+        comments: action.payload,
+      }, state)
+
+    // ------------------------------------------------------------------------
     case comment.COMMENT_CREATE:
       return u({
         commentId: action.payload.tempKey,
-        comments: uAppend(action.payload)
+        comments: uAppend(action.payload, (a, b) => a.start > b.start)
       }, state)
 
     // ------------------------------------------------------------------------
@@ -106,7 +129,7 @@ export default function reduceComment(state = defaultState, action) {
 
       // New comment from someone else, append
       return u({
-        comments: uAppend(action.payload)
+        comments: uAppend(action.payload, (a, b) => a.start > b.start)
       }, state)
 
     // ------------------------------------------------------------------------

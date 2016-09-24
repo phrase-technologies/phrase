@@ -103,6 +103,17 @@ $discussion-form-height: 90px;
   position: relative;
   padding: 25px 0 15px 75px;
 }
+.discussion-timeline-item-pending {
+  > .discussion-timeline-tick > *,
+  > .discussion-timeline-meta,
+  > .discussion-timeline-timestamp,
+  > .discussion-timeline-content {
+    opacity: 0.25;
+  }
+  > .discussion-timeline-actions {
+    visibility: hidden;
+  }
+}
 .discussion-timeline-tick {
   position: absolute;
   top: 0;

@@ -34,7 +34,7 @@ export const catchAndToastException = async ({ dispatch, toCatch, callback }) =>
   catch(e) {
     if(e.statusText) {
       switch(e.status) {
-        case 403: // Invalid token / unauthorized errors
+        case 401: // Invalid token / unauthorized errors
           dispatch(addNotification({
             title: `Token expired`,
             message: `Please log back in to continue making awesome music!`,
@@ -52,6 +52,7 @@ export const catchAndToastException = async ({ dispatch, toCatch, callback }) =>
       }
     }
     else // Non fetch errors
+      console.error(e)
       dispatch(addNotification({
         title: `System Error`,
         message: `Please try again later`,

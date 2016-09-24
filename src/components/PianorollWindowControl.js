@@ -112,12 +112,13 @@ export class PianorollWindowControl extends Component {
   }
 
   leftClickEvent(e) {
+    if (this.props.arrangeTool === "comment")
+      return this.commentGripEvent(e)
+
+    // Everything except comments requires edit permissions
     let editable = !this.props.existingPhrase || this.props.ownerOfPhrase
     if (!editable)
       return
-
-    if (this.props.arrangeTool === "comment")
-      return this.commentGripEvent(e)
 
     let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
     let key = (this.props.keyCount - (this.props.yMin + this.props.grid.getMouseYPercent(e)*this.props.grid.getKeyRange()) * this.props.keyCount + 8)

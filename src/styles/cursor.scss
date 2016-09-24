@@ -214,9 +214,9 @@
   bottom: 0;
   z-index: 3;   // Above notes
 
-  border-left: 1px solid #0FF;
-  border-right: 1px solid #0FF;
-  background: rgba(#0FF,0.125);
+  border-left: 1px solid #FFF;
+  border-right: 1px solid #FFF;
+  background: rgba(#FFF,0.125);
   box-shadow:
     0 0 5px #000;
 
@@ -228,13 +228,13 @@
 
 @keyframes comment-range-throb {
   0% {
-    background: rgba(#0FF,0.125);
+    background: rgba(#FFF,0.125);
   }
   50% {
-    background: rgba(#0FF,0.250);
+    background: rgba(#FFF,0.250);
   }
   100% {
-    background: rgba(#0FF,0.1250);
+    background: rgba(#FFF,0.1250);
   }
 }
 

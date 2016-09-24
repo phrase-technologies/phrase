@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import TextareaAuto from 'react-textarea-autosize'
+import Moment from 'moment'
+
 import UserBubble from 'components/UserBubble'
 import { barToString } from 'helpers/trackHelpers'
+import { userRequestProfile } from 'reducers/reduceUserProfile'
 
 export default class DiscussionTimelineItem extends Component {
 
@@ -13,26 +16,30 @@ export default class DiscussionTimelineItem extends Component {
   }
 
   render() {
-    let tick = this.props.comment.start === null
-      ? (<span className="fa fa-globe fa-lg" />)
-      : barToString(this.props.start, 0.25)
+    let discussionTimelineItemClasses = "discussion-timeline-item"
+        discussionTimelineItemClasses += this.props.comment.id ? "" : " discussion-timeline-item-pending"
 
     let user = this.props.user
+    if (!user || user.pending) {
+      user = {
+        username: ""
+      }
+    }
     let initials = user.username.substring(0,2).toUpperCase()
-    
+    let timestamp = Moment(this.props.comment.dateCreated).calendar().toString()
 
     return (
-      <li className="discussion-timeline-item">
+      <li className={discussionTimelineItemClasses}>
         <div className="discussion-timeline-tick">
-          { tick }
+          { this.getTick(this.props.comment.start) }
         </div>
         <div className="discussion-timeline-meta">
           <UserBubble initials={initials} />
           <span className="user-username">
-            { this.props.user.username }
+            { user.username || <span className="fa fa-spinner fa-pulse" /> }
           </span>
           <span className="discussion-timeline-timestamp">
-            { this.props.comment.dateCreated }
+            { timestamp }
           </span>
         </div>
         <div className="discussion-timeline-content enable-select">
@@ -47,13 +54,13 @@ export default class DiscussionTimelineItem extends Component {
             Reply
           </a>
 
-          { this.renderReply() }
+          { this.renderReply(user) }
         </div>
       </li>
     )
   }
 
-  renderReply() {
+  renderReply(user) {
     if (this.state.replying) {
       return (
         <div className="discussion-fullscreen">
@@ -77,11 +84,11 @@ export default class DiscussionTimelineItem extends Component {
             <span className="fa fa-level-up fa-flip-horizontal" />
             <span> in reply to </span>
             <span className="discussion-timeline-username">
-              { this.props.user.username }
+              { user.username }
             </span>
             <p style={{ marginTop: 5 }}>
               <span className="fa fa-quote-left" />
-              <span> { this.props.comment } </span>
+              <span> { this.props.comment.comment } </span>
               <span className="fa fa-quote-right" />
             </p>
           </div>
@@ -128,10 +135,30 @@ export default class DiscussionTimelineItem extends Component {
     this.closeReply()
   }
 
+  getTick(bar) {
+    return bar === null
+      ? (<span className="fa fa-globe fa-lg" />)
+      : (<span>{ barToString(bar, 0.25) }</span>)
+  }
+
   componentDidUpdate(prevProps, prevState) {
     // Focus the textarea if newly opened!
     if (this.state.replying && !prevState.replying) {
       this.textarea.focus()
+    }
+  }
+
+  componentWillMount() {
+    this.requireUserProfile(this.props.user)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.requireUserProfile(nextProps.user)
+  }
+
+  requireUserProfile(user) {
+    if (!user) {
+      this.props.dispatch(userRequestProfile({ userId: this.props.comment.authorId }))
     }
   }
 

@@ -25,6 +25,7 @@ import reduceSamples from './reduceSamples'
 import reduceQuantizer from './reduceQuantizer'
 import reducePresence from './reducePresence'
 import reduceComment from './reduceComment'
+import reduceUserProfile from './reduceUserProfile'
 
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
@@ -70,6 +71,7 @@ let reducerSpec = {
   midi: reduceMIDI,
   samples: reduceSamples,
   comment: reduceComment,
+  userProfile: reduceUserProfile,
 }
 
 export let testReducer = combineReducers(baseReducers)

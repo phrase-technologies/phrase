@@ -4,7 +4,10 @@ import withSocket from 'components/withSocket'
 import _ from 'lodash'
 
 import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
-import { commentReceive } from 'reducers/reduceComment'
+import {
+  commentReceive,
+  commentLoadAll,
+} from 'reducers/reduceComment'
 
 export class DiscussionTimeline extends Component {
 
@@ -12,14 +15,18 @@ export class DiscussionTimeline extends Component {
     return (
       <ul className="discussion-timeline">
         {
-          this.props.comments.map((comment) => {
-            console.log( this.props.collaborators )
-            let user = this.props.collaborators.find(x => x.id === comment.authorId) || this.props.author
+          // Loading status
+          this.props.comments === null
+          && <span>Loading comments...</span>
+        }
+        {
+          // Timeline
+          this.props.comments !== null && this.props.comments.map((comment) => {
+            let user = this.props.users.find(x => x.id === comment.authorId)
             return (
               <DiscussionTimelineItem
                 key={comment.id || comment.tempKey}
-                user={user}
-                comment={comment}
+                user={user} comment={comment} dispatch={this.props.dispatch}
                 setFullscreenReply={this.props.setFullscreenReply}
               />
             )
@@ -27,6 +34,18 @@ export class DiscussionTimeline extends Component {
         }
       </ul>
     )
+  }
+
+  componentWillMount() {
+    if (this.props.phraseId) {
+      this.props.dispatch(commentLoadAll({ phraseId: this.props.phraseId }))
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.phraseId !== this.props.phraseId && nextProps.phraseId) {
+      this.props.dispatch(commentLoadAll({ phraseId: nextProps.phraseId }))
+    }
   }
 
   componentDidMount() {
@@ -48,6 +67,11 @@ export class DiscussionTimeline extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    // Nothing to check if we are in a loading state
+    if (prevProps.comments === null || this.props.comments === null)
+      return
+
+    // Scroll to any newly just submitted comment!
     if (prevProps.comments.length !== this.props.comments.length) {
       let newComment = _.difference(this.props, prevProps)
       if (!newComment.id) {
@@ -59,7 +83,8 @@ export class DiscussionTimeline extends Component {
 }
 
 export default withSocket(connect((state) => ({
+  phraseId: state.phraseMeta.phraseId,
   author: state.phraseMeta.userId,
-  collaborators: state.phraseMeta.collaborators,
+  users: state.userProfile.users,
   comments: state.comment.comments,
 }))(DiscussionTimeline))
