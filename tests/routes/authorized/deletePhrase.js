@@ -15,7 +15,7 @@ export default ({ globals, author, observer, phraseId }) => {
     it(`should reject unauthenticated attempts`, async function() {
       this.timeout(100000)
       let response = await ajax({ url })
-      expect(response.status).to.eq(403)
+      expect(response.status).to.eq(401)
     })
 
     it(`should warn about missing phraseId`, async function() {

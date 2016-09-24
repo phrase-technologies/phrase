@@ -21,9 +21,11 @@ export default ({ api, db }) => {
     try {
       let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
 
-      // TODO - all collaborators should be allowed (once Alex's branch merged in), not just author
-      if (loadedPhrase.userId !== id) {
-        return res.status(403).end()
+      let privatePhrase = loadedPhrase.privacySetting === "private"
+      let isCollaborator = loadedPhrase.collaborators.includes(id)
+      let isAuthor = loadedPhrase.userId === id
+      if (privatePhrase && !isCollaborator && !isAuthor) {
+        return res.status(403).json({ message: `You do not have permission to comment.` })
       }
 
       let timestamp = +new Date()

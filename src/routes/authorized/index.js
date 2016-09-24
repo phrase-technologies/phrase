@@ -7,6 +7,7 @@ import searchUsers from './searchUsers'
 import collab from './collab'
 import uploadProfilePic from './uploadProfilePic'
 import commentNew from './commentNew'
+import commentExisting from './commentExisting'
 
 export default [
   save,
@@ -18,4 +19,5 @@ export default [
   collab,
   uploadProfilePic,
   commentNew,
+  commentExisting,
 ]

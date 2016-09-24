@@ -23,7 +23,7 @@ export default ({
     if (token) {
       jwt.verify(token, app.get(`superSecret`), (err, decoded) => {
         if (err) {
-          return res.status(403).json({ message: `Failed to authenticate token.` })
+          return res.status(401).json({ message: `Failed to authenticate token.` })
         }
 
         if (decoded.id !== userId) {
@@ -37,7 +37,7 @@ export default ({
 
     } else {
 
-      return res.status(403).send({
+      return res.status(401).send({
         success: false,
         message: `No token provided.`,
       })

@@ -11,7 +11,7 @@ import router from '../src/router'
 import { setupDatabase, setupSocketConnection } from '../src/setup'
 import { secret } from '../src/config'
 
-/*----------------------------------------------------------------------------*/
+// ----------------------------------------------------------------------------
 
 // Auth
 import oAuthLogin from './auth/routes/oauth-login'
@@ -33,8 +33,9 @@ import searchUsers from './routes/authorized/searchUsers'
 import collab from './routes/authorized/collab'
 import uploadProfilePic from './routes/authorized/uploadProfilePic'
 import commentNew from './routes/authorized/commentNew'
+import commentExisting from './routes/authorized/commentExisting'
 
-/*----------------------------------------------------------------------------*/
+// ----------------------------------------------------------------------------
 
 let globals = { domain: `http://localhost:9999` }
 
@@ -56,7 +57,7 @@ let chris = {
   password: `chris_password`,
 }
 
-/*----------------------------------------------------------------------------*/
+// ----------------------------------------------------------------------------
 
 async function runTests () {
 
@@ -89,7 +90,8 @@ async function runTests () {
     globals.server = server
   })
 
-/*---Test order matters!------------------------------------------------------*/
+  // --------------------------------------------------------------------------
+  // ---Test order matters!----------------------------------------------------
   // Get oAuth out of the way, other tests don't depend on it
   oAuthLogin({ globals })
 
@@ -164,16 +166,26 @@ async function runTests () {
     author: alice,
     collaborator: chris,
     observer: bob,
-    phraseId: privatePhraseId,
+    privatePhraseId,
+    publicPhraseId,
   })
 
-/*----------------------------------------------------------------------------*/
+  commentExisting({
+    globals,
+    author: alice,
+    collaborator: chris,
+    observer: bob,
+    privatePhraseId,
+    publicPhraseId,
+  })
+
+  // --------------------------------------------------------------------------
 
   after(() => {
     globals.server.close()
   })
 }
 
-/*----------------------------------------------------------------------------*/
+// ----------------------------------------------------------------------------
 
 runTests()

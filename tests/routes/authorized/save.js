@@ -9,10 +9,10 @@ export default ({ globals, user, token }) => {
 
   return new Promise(resolve => {
     describe(`save`, () => {
-      it(`returns 403 without valid credentials`, async function() {
+      it(`returns 401 without valid credentials`, async function() {
         this.timeout(100000)
         let response = await ajax({ url })
-        expect(response.status).to.eq(403)
+        expect(response.status).to.eq(401)
       })
 
       it(`should complain if no phraseState provided`, async function() {

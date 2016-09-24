@@ -1,10 +1,8 @@
-// Subscribe to changefeeds
-import r from 'rethinkdb'
 import { expect } from 'chai'
 import ajax from '../../../src/helpers/ajax'
 import socketClientIO from 'socket.io-client'
 
-export default ({ globals, author, observer, phraseId }) => {
+export default ({ globals, author, collaborator, observer, privatePhraseId, publicPhraseId }) => {
   let url = `${globals.domain}/api/commentNew`
 
   describe(`commentNew`, () => {
@@ -17,7 +15,7 @@ export default ({ globals, author, observer, phraseId }) => {
     it(`should reject unauthenticated attempts`, async function() {
       this.timeout(100000)
       let response = await ajax({ url })
-      expect(response.status).to.eq(403)
+      expect(response.status).to.eq(401)
     })
 
     it(`should require phraseId`, async function() {
@@ -42,7 +40,7 @@ export default ({ globals, author, observer, phraseId }) => {
         body: {
           token: author.token,
           userId: author.id,
-          phraseId,
+          phraseId: privatePhraseId,
           comment: "Where's my snare?",
           tempKey: "DJ Khaled",
         },
@@ -59,7 +57,7 @@ export default ({ globals, author, observer, phraseId }) => {
           token: author.token,
           userId: author.id,
           comment: "Will the real Slim Shady please stand up?!",
-          phraseId,
+          phraseId: privatePhraseId,
           trackId: 0,
         },
       })
@@ -76,7 +74,7 @@ export default ({ globals, author, observer, phraseId }) => {
           token: author.token,
           userId: author.id,
           trackId: 123,
-          phraseId,
+          phraseId: privatePhraseId,
           tempKey: "DJ Khaled",
         },
       })
@@ -85,18 +83,52 @@ export default ({ globals, author, observer, phraseId }) => {
       expect(message).to.eq("Invalid comment")
     })
 
-    it(`should reject unauthorized comments`, async function() {
+    it(`should reject unauthorized comments to private phrases`, async function() {
       this.timeout(100000)
       let response = await ajax({
         url,
         body: {
-          comment: "Hide yo wife!",
+          token: observer.token,
           userId: observer.id,
-          phraseId,
+          trackId: 123,
+          comment: "Hide yo wife!",
+          phraseId: privatePhraseId,
           tempKey: "DJ Khaled",
         },
       })
       expect(response.status).to.eq(403)
+    })
+
+    it(`should allow collaborator comments to private phrases`, async function() {
+      this.timeout(100000)
+      let response = await ajax({
+        url,
+        body: {
+          token: collaborator.token,
+          userId: collaborator.id,
+          trackId: 123,
+          comment: "Hide yo wife!",
+          phraseId: privatePhraseId,
+          tempKey: "DJ Khaled",
+        },
+      })
+      expect(response.status).to.eq(200)
+    })
+
+    it(`should allow comments from random observers to public phrases`, async function() {
+      this.timeout(100000)
+      let response = await ajax({
+        url,
+        body: {
+          token: observer.token,
+          userId: observer.id,
+          trackId: 123,
+          comment: "Hide yo wife!",
+          phraseId: publicPhraseId,
+          tempKey: "DJ Khaled",
+        },
+      })
+      expect(response.status).to.eq(200)
     })
 
     it(`should save successfully`, async function() {
@@ -106,15 +138,15 @@ export default ({ globals, author, observer, phraseId }) => {
           token: author.token,
           userId: author.id,
           comment: "Will the real Slim Shady please stand up?!",
-          phraseId,
+          phraseId: privatePhraseId,
           trackId: 0,
           tempKey: "DJ Khaled",
         },
       })
 
       let { success, message } = await response.json()
-      expect(success).to.eq(true)
       expect(message).to.eq("Comment added!")
+      expect(success).to.eq(true)
       expect(response.status).to.eq(200)
     })
 
@@ -122,7 +154,11 @@ export default ({ globals, author, observer, phraseId }) => {
       let comment = "Will the real Slim Shady please stand up?!"
 
       let socket = socketClientIO.connect(`http://localhost:9999`)
-      socket.emit(`client::joinRoom`, { phraseId, username: author.username, userId: author.id })
+      socket.emit(`client::joinRoom`, {
+        phraseId: privatePhraseId,
+        username: author.username,
+        userId: author.id,
+      })
       socket.on(`server::commentsChangeFeed`, data => {
         expect(data.state.comment).to.eq(comment)
         socket.disconnect()
@@ -136,7 +172,7 @@ export default ({ globals, author, observer, phraseId }) => {
             token: author.token,
             userId: author.id,
             comment,
-            phraseId,
+            phraseId: privatePhraseId,
             trackId: 0,
             tempKey: "DJ Khaled",
           },
