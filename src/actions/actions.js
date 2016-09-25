@@ -234,6 +234,7 @@ export const comment = namespaceActions(
     'SELECTION_CLEAR',
     'REQUEST_EXISTING',
     'RECEIVE_EXISTING',
+    'CLEAR_EXISTING',
     'COMMENT_CREATE',
     'COMMENT_RECEIVE',
   ]

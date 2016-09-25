@@ -6,7 +6,8 @@ import _ from 'lodash'
 import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
 import {
   commentReceive,
-  commentLoadAll,
+  commentLoadExisting,
+  commentClearExisting,
 } from 'reducers/reduceComment'
 
 export class DiscussionTimeline extends Component {
@@ -17,10 +18,21 @@ export class DiscussionTimeline extends Component {
         {
           // Loading status
           this.props.comments === null
-          && <span>Loading comments...</span>
+          && <li className="discussion-timeline-notification">
+            <span className="fa fa-spinner fa-pulse" />
+            <span> Loading comments...</span>
+          </li>
         }
         {
-          // Timeline
+          // Timeline Empty
+          this.props.comments !== null && this.props.comments.length === 0
+          && <li className="discussion-timeline-notification">
+            <span className="fa fa-comment fa-flip-horizontal" />
+            <span> &nbsp; Be the first to leave a comment!</span>
+          </li>
+        }
+        {
+          // Timeline Has Content
           this.props.comments !== null && this.props.comments.map((comment) => {
             let user = this.props.users.find(x => x.id === comment.authorId)
             return (
@@ -38,13 +50,19 @@ export class DiscussionTimeline extends Component {
 
   componentWillMount() {
     if (this.props.phraseId) {
-      this.props.dispatch(commentLoadAll({ phraseId: this.props.phraseId }))
+      this.props.dispatch(commentLoadExisting({ phraseId: this.props.phraseId }))
+    } else {
+      this.props.dispatch(commentClearExisting())
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.phraseId !== this.props.phraseId && nextProps.phraseId) {
-      this.props.dispatch(commentLoadAll({ phraseId: nextProps.phraseId }))
+    if (nextProps.phraseId !== this.props.phraseId) {
+      if (nextProps.phraseId) {
+        this.props.dispatch(commentLoadExisting({ phraseId: nextProps.phraseId }))
+      } else {
+        this.props.dispatch(commentClearExisting())
+      }
     }
   }
 

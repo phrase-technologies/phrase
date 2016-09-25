@@ -13,7 +13,7 @@ import { catchAndToastException } from 'reducers/reduceNotification'
 export const commentSelectionStart = ({ start, trackID }) => ({ type: comment.SELECTION_START, payload: { start, trackID } })
 export const commentSelectionEnd = ({ end }) => ({ type: comment.SELECTION_END, payload: { end } })
 export const commentSelectionClear = () => ({ type: comment.SELECTION_CLEAR })
-export const commentLoadAll = ({ phraseId }) => {
+export const commentLoadExisting = ({ phraseId }) => {
   return (dispatch) => {
     dispatch({ type: comment.REQUEST_EXISTING })
 
@@ -23,6 +23,7 @@ export const commentLoadAll = ({ phraseId }) => {
     }})
   }
 }
+export const commentClearExisting = () => ({ type: comment.CLEAR_EXISTING })
 export const commentCreate = (commentText) => {
   if (!commentText)
     return { type: "DUMMY ACTION" }
@@ -105,6 +106,12 @@ export default function reduceComment(state = defaultState, action) {
     case comment.RECEIVE_EXISTING:
       return u({
         comments: action.payload,
+      }, state)
+
+    // ------------------------------------------------------------------------
+    case comment.CLEAR_EXISTING:
+      return u({
+        comments: [],
       }, state)
 
     // ------------------------------------------------------------------------
