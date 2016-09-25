@@ -20,6 +20,7 @@ export default ({ api, db }) => {
       let commentsCursor = await r
         .table(`comments`)
         .getAll(phraseId, { index: `phraseId` })
+        .orderBy('start')
         .run(db)
       let comments = await commentsCursor.toArray()
 
