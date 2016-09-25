@@ -6,6 +6,7 @@ import {
 } from 'helpers/arrayHelpers'
 import { api } from 'helpers/ajaxHelpers'
 import { catchAndToastException } from 'reducers/reduceNotification'
+import { transportMovePlayhead } from 'reducers/reduceTransport'
 
 // ============================================================================
 // Comment Action Creators
@@ -13,6 +14,17 @@ import { catchAndToastException } from 'reducers/reduceNotification'
 export const commentSelectionStart = ({ start, trackID }) => ({ type: comment.SELECTION_START, payload: { start, trackID } })
 export const commentSelectionEnd = ({ end }) => ({ type: comment.SELECTION_END, payload: { end } })
 export const commentSelectionClear = () => ({ type: comment.SELECTION_CLEAR })
+export const commentSetFocus = ({ commentId }) => {
+  return (dispatch, getState) => {
+    let existingComment = getState().comment.comments.find(comment => {
+      return comment.id === commentId
+    })
+    if (existingComment) {
+      dispatch(transportMovePlayhead(existingComment.start))
+      dispatch({ type: comment.SET_FOCUS, payload: existingComment })
+    }
+  }
+}
 export const commentLoadExisting = ({ phraseId }) => {
   return (dispatch) => {
     dispatch({ type: comment.REQUEST_EXISTING })
@@ -67,6 +79,7 @@ export const commentReceive = (commentState) => ({ type: comment.COMMENT_RECEIVE
 // Comment Selection
 // ============================================================================
 export const defaultState = {
+  comment: null,
   commentId: null,
   commentTrackID: null,
   commentRangeStart: null,
@@ -96,6 +109,16 @@ export default function reduceComment(state = defaultState, action) {
         comments: state.comments,
       }, defaultState)
 
+    // ------------------------------------------------------------------------
+    case comment.SET_FOCUS: {
+      return u({
+        comment: action.payload.comment,
+        commentId: action.payload.id,
+        commentTrackId: action.payload.trackId,
+        commentRangeStart: action.payload.start,
+        commentRangeEnd: action.payload.end,
+      }, state)
+    }
     // ------------------------------------------------------------------------
     case comment.REQUEST_EXISTING:
       return u({

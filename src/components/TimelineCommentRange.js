@@ -20,8 +20,10 @@ export let TimelineCommentRange = (props) => {
     [left, right] = [right, left]
   }
 
+  let isVisible = props.arrangeTool === "comment" || props.commentId
+
   let commentRangeStyles = {
-    display: props.arrangeTool === "comment" ? 'block' : 'none',
+    display: isVisible ? 'block' : 'none',
     left:     left   * 100 + '%',
     right: (1-right) * 100 + '%',
   }
@@ -40,6 +42,8 @@ TimelineCommentRange.propTypes = {
   barCount: React.PropTypes.number,
   xMin: React.PropTypes.number,
   xMax: React.PropTypes.number,
+  comment: React.PropTypes.string,
+  commentId: React.PropTypes.string,
   commentRangeStart: React.PropTypes.number,
   commentRangeEnd: React.PropTypes.number,
   arrangeTool: React.PropTypes.string,

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import withSocket from 'components/withSocket'
 import _ from 'lodash'
@@ -11,6 +12,8 @@ import {
 } from 'reducers/reduceComment'
 
 export class DiscussionTimeline extends Component {
+
+  list = {}
 
   render() {
     return (
@@ -35,9 +38,10 @@ export class DiscussionTimeline extends Component {
           // Timeline Has Content
           this.props.comments !== null && this.props.comments.map((comment) => {
             let user = this.props.users.find(x => x.id === comment.authorId)
+            let key = comment.id || comment.tempKey
             return (
               <DiscussionTimelineItem
-                key={comment.id || comment.tempKey}
+                key={key} ref={ref => this.list[key] = ref}
                 user={user} comment={comment} dispatch={this.props.dispatch}
                 setFullscreenReply={this.props.setFullscreenReply}
               />
@@ -91,9 +95,11 @@ export class DiscussionTimeline extends Component {
 
     // Scroll to any newly just submitted comment!
     if (prevProps.comments.length !== this.props.comments.length) {
-      let newComment = _.difference(this.props, prevProps)
-      if (!newComment.id) {
-
+      let newComments = _.difference(this.props.comments, prevProps.comments)
+      let newComment = newComments.length ? newComments[0] : null
+      if (newComment && !newComment.id) {
+        let element = ReactDOM.findDOMNode(this.list[newComment.tempKey])
+        this.props.scrollTimeline(element.offsetTop)
       }
     }
   }
@@ -105,4 +111,5 @@ export default withSocket(connect((state) => ({
   author: state.phraseMeta.userId,
   users: state.userProfile.users,
   comments: state.comment.comments,
+  selectedCommentId: state.comment.commentId,
 }))(DiscussionTimeline))

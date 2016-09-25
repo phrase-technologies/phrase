@@ -232,6 +232,7 @@ export const comment = namespaceActions(
     'SELECTION_START',
     'SELECTION_END',
     'SELECTION_CLEAR',
+    'SET_FOCUS',
     'REQUEST_EXISTING',
     'RECEIVE_EXISTING',
     'CLEAR_EXISTING',

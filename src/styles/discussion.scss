@@ -107,6 +107,10 @@ $discussion-form-height: 90px;
 .discussion-timeline-item {
   position: relative;
   padding: 25px 0 15px 75px;
+
+  > * {
+    transition: opacity 1s;
+  }
 }
 .discussion-timeline-item-pending {
   > .discussion-timeline-tick > *,

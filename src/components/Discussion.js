@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import TextareaAuto from 'react-textarea-autosize'
 
@@ -131,9 +132,12 @@ export class Discussion extends Component {
         <div className="discussion-body" style={{ bottom: this.state.formHeight }}>
           <div
             className={"discussion-timeline-gutter" + fullscreenOverride}
-            ref={ref => this.scrollWindow = ref}
+            ref={this.saveScrollWindowRef}
           >
-            <DiscussionTimeline setFullscreenReply={this.setFullscreenReply} />
+            <DiscussionTimeline
+              setFullscreenReply={this.setFullscreenReply}
+              scrollTimeline={this.scrollTimeline}
+            />
           </div>
         </div>
         <button
@@ -284,6 +288,23 @@ export class Discussion extends Component {
     }
   }
 
+  saveScrollWindowRef = (ref) => {
+    this.scrollWindow = ReactDOM.findDOMNode(ref)
+  }
+
+  scrollTimeline = (newPosition) => {
+    let oldPosition = this.scrollWindow.scrollTop
+    let totalDelta = newPosition - oldPosition
+    let count = 10
+    let delta = Math.ceil(totalDelta * 0.10)
+    let animationInterval = setInterval(() => {
+      count--
+      this.scrollWindow.scrollTop = this.scrollWindow.scrollTop + delta
+      if (count <= 0)
+        clearInterval(animationInterval)
+    }, 16)
+  }
+
   isMobile() {
     let style = window.getComputedStyle(this.submitButton)
     return style.display !== 'none'
@@ -291,6 +312,9 @@ export class Discussion extends Component {
 
   submitReply = () => {
     if (!this.state.formValue) // Cannot be empty comment
+      return
+
+    if (!this.props.phraseId) // Cannot comment on blank phrases
       return
 
     this.textarea.blur()

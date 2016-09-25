@@ -5,6 +5,7 @@ import Moment from 'moment'
 import UserBubble from 'components/UserBubble'
 import { barToString } from 'helpers/trackHelpers'
 import { userRequestProfile } from 'reducers/reduceUserProfile'
+import { commentSetFocus } from 'reducers/reduceComment'
 
 export default class DiscussionTimelineItem extends Component {
 
@@ -29,7 +30,7 @@ export default class DiscussionTimelineItem extends Component {
     let timestamp = Moment(this.props.comment.dateCreated).calendar().toString()
 
     return (
-      <li className={discussionTimelineItemClasses}>
+      <li className={discussionTimelineItemClasses} onClick={this.handleClick}>
         <div className="discussion-timeline-tick">
           { this.getTick(this.props.comment.start) }
         </div>
@@ -43,7 +44,14 @@ export default class DiscussionTimelineItem extends Component {
           </span>
         </div>
         <div className="discussion-timeline-content enable-select">
-          { this.props.comment.comment }
+          { this.props.comment.comment.split("\n").map((sentence, i) => {
+            return (
+              <span key={i}>
+                {sentence}
+                <br/>
+              </span>
+            )
+          })}
         </div>
         <div className="discussion-timeline-actions">
           <a>
@@ -97,6 +105,10 @@ export default class DiscussionTimelineItem extends Component {
     }
 
     return null
+  }
+
+  handleClick = () => {
+    this.props.dispatch(commentSetFocus({ commentId: this.props.comment.id }))
   }
 
   openReply = () => {
