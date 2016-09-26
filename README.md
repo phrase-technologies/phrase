@@ -35,10 +35,6 @@ If you add a new route or socket event handler, please write a test for it.
 See [full deployment docs here](DEVOPS.md)
 
 ### Database Migrations
-Certain migrations need babel transpilation to work, in those cases use this command:
+All migrations need babel transpilation to work, in those cases use this command:
 
-    npm run migrate -- scripts/migrations/2016....
-
-Otherwise, you can just do:
-
-    node scripts/migrations/2016...
+    npm run migrate scripts/migrations/2016....
