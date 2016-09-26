@@ -147,6 +147,11 @@ deploy the codebase (we want to listen to port 80). There's a handy trick to cir
 
 Source: [http://stackoverflow.com/a/23281417/476426](http://stackoverflow.com/a/23281417/476426)
 
+The codebase requires that `imagemagick` be installed on the server hosting the API. 
+Install `imagemagick` using the following command:
+
+    $ sudo apt-get install imagemagick
+
 ### Initial Client Build
 Now, to deploy to production, we use a different process than the `npm start` that we would use for
 the local development environment. Starting with the client. First we build to optimize the 
@@ -255,11 +260,13 @@ Make sure the crontab is working by checking after an hour.
 ✅ Automatic Database Backup!
 
 
-### Migratations (TODO)
-TODO: Automigration checks.
-Next person who writes a migration must build the automigration feature.
+### Migratations
+The API server checks for new migration scripts on launch. If a new script is found its name is printed to the console
+and server launch is aborted. Run the following command once for each pending script, then try launching the server again.
 
-☑️ Automatic Database Migration (TODO)
+    $ npm run migrate <<script>>
+
+✅ Automatic Database Backup!
 
 
 ### Automatic Client/API Reboot (TODO)
