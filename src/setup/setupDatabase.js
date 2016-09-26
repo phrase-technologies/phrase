@@ -1,7 +1,6 @@
 import r from 'rethinkdb'
 import fs from 'fs'
 import chalk from 'chalk'
-import path from 'path'
 import { generateUniqueToken } from '../helpers/token'
 
 export default async ({ name, db }) => {
