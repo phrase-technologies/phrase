@@ -1,7 +1,8 @@
 import r from 'rethinkdb'
+import fs from 'fs'
 import chalk from 'chalk'
+import path from 'path'
 import { generateUniqueToken } from '../helpers/token'
-import createMigrations from './createMigrations'
 
 export default async ({ name, db }) => {
   console.log(chalk.yellow(
@@ -40,7 +41,13 @@ export default async ({ name, db }) => {
     }).run(db)
   }
 
-  await createMigrations({ db })
+  await r.tableCreate(`migrations`).run(db)
+  await r.table(`migrations`).indexCreate(`script`).run(db)
+  let migrationScripts = fs.readdirSync(`scripts/migrations`).reduce((arr, script) => ([
+    ...arr,
+    { script },
+  ]), [])
+  await r.table(`migrations`).insert(migrationScripts).run(db)
 
   console.log(chalk.cyan(
     `Database setup complete!`

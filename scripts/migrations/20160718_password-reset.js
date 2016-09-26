@@ -1,5 +1,8 @@
 import r from 'rethinkdb'
+import runMigration from '../runMigration.js'
 
-export default async ({ db }) => {
+let migration = async ({ db }) => {
   await r.table(`users`).indexCreate(`resetToken`).run(db)
 }
+
+runMigration({ migration })

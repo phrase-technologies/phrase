@@ -1,7 +1,8 @@
 import r from 'rethinkdb'
+import runMigration from '../runMigration'
 import { generateUniqueToken } from '../../src/helpers/token'
 
-export default async ({ db }) => {
+let migration = async ({ db }) => {
   for(let i = 0; i < 1000; i++) {
     let token = await generateUniqueToken({
       table: `inviteCodes`,
@@ -14,3 +15,5 @@ export default async ({ db }) => {
     }).run(db)
   }
 }
+
+runMigration({ migration })

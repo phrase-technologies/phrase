@@ -1,6 +1,7 @@
 import r from 'rethinkdb'
+import runMigration from '../runMigration'
 
-export default async ({ db }) => {
+let migration = async ({ db }) => {
   await r.table(`phrases`).replace(r.row.without(`public`)).run(db)
   await r.table(`phrases`).update(row => ({
     masterControl: [row(`userId`)],
@@ -8,3 +9,5 @@ export default async ({ db }) => {
     collaborators: [],
   })).run(db)
 }
+
+runMigration({ migration })
