@@ -27,8 +27,11 @@ async function bootstrap () {
         let migrations = await getNewMigrations({ db })
         if (migrations.length) {
           console.log("❌", chalk.red(
-            `There are pending migrations, please use 'npm run migrate' and try again.`
+            `There are pending migrations, please use 'npm run migrate <<script>>' and try again.`
           ))
+          await migrations.forEach(scriptName => {
+            console.log(chalk.red(`  - ${scriptName}`))
+          })
           process.exit() // Don't continue if there are pending migrations
         }
       }
