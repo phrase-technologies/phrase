@@ -11,7 +11,12 @@ export default async ({ migration }) => {
     let script = path.basename(process.argv[1])
     let db = await r.connect({ host: `localhost`, db: `phrase`, port: 28015 })
     await migration({ db })
-    await r.table('migrations').insert({ script }).run(db)
+    let isEmpty = await r.table(`migrations`)
+      .getAll(script, { index: `script` })
+      .isEmpty()
+      .run(db)
+    if (isEmpty)
+      await r.table('migrations').insert({ script }).run(db)
   }
   catch (e) {
     console.log(`Migration failed: ${e}`)
