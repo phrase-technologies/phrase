@@ -6,6 +6,7 @@ import masterControl from './masterControl'
 import searchUsers from './searchUsers'
 import collab from './collab'
 import uploadProfilePic from './uploadProfilePic'
+import commentNew from './commentNew'
 
 export default [
   save,
@@ -16,4 +17,5 @@ export default [
   searchUsers,
   collab,
   uploadProfilePic,
+  commentNew,
 ]

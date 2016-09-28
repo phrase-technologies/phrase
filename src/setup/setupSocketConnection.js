@@ -78,5 +78,13 @@ export default async ({ io, db }) => {
       `⚡ New connection! Number of open connections: ${users.length}`
     ))
 
+    // Subscribe to changefeeds
+    r.table('comments')
+      .getAll(phraseId, { index: `phraseId` })
+      .changes()
+      .run(db, (err, cursor) => {
+        socket.broadcast.emit(`server::commentsChangeFeed`, cursor)
+      })
+
   })
 }

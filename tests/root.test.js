@@ -31,6 +31,7 @@ import masterControl from './routes/authorized/masterControl'
 import searchUsers from './routes/authorized/searchUsers'
 import collab from './routes/authorized/collab'
 import uploadProfilePic from './routes/authorized/uploadProfilePic'
+import commentNew from './routes/authorized/commentNew'
 
 /*----------------------------------------------------------------------------*/
 
@@ -154,6 +155,14 @@ async function runTests () {
   deletePhrase({ globals, author: alice, observer: bob, phraseId: publicPhraseId })
 
   uploadProfilePic({ globals, user: alice })
+
+  commentNew({
+    globals,
+    author: alice,
+    collaborator: chris,
+    observer: bob,
+    phraseId: privatePhraseId,
+  })
 
 /*----------------------------------------------------------------------------*/
 

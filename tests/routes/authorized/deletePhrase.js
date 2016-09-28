@@ -8,8 +8,14 @@ export default ({ globals, author, observer, phraseId }) => {
   describe(`deletePhrase`, () => {
     it(`endpoint should exist`, async function() {
       this.timeout(100000)
-      let response = await ajax({ url })
+      let response = await ajax({ url, body: { token: author.token, userId: author.id } })
       expect(response.status).to.not.eq(404)
+    })
+
+    it(`should reject unauthenticated attempts`, async function() {
+      this.timeout(100000)
+      let response = await ajax({ url })
+      expect(response.status).to.eq(403)
     })
 
     it(`should warn about missing phraseId`, async function() {
