@@ -8,7 +8,7 @@ export const librarySaveNew = () => {
   return async (dispatch, getState, { socket }) => {
     dispatch({ type: phrase.SAVE_START })
     let state = getState()
-    catchAndToastException({
+    return await catchAndToastException({
       dispatch,
       toCatch: async () => {
         let { phraseId } = await api({

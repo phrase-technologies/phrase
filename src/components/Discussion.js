@@ -8,9 +8,9 @@ import DiscussionTimeline from 'components/DiscussionTimeline'
 
 import { modalOpen } from 'reducers/reduceModal'
 import { addMasterControl, removeMasterControl } from 'reducers/reducePhraseMeta'
-import { commentSelectionClear } from 'reducers/reduceComment.js'
+import { commentSelectionClear } from 'reducers/reduceComment'
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
-import { barToString } from '../helpers/trackHelpers.js'
+import { barToString } from 'helpers/trackHelpers'
 import { commentCreate } from 'reducers/reduceComment'
 
 export class Discussion extends Component {
@@ -247,7 +247,7 @@ export class Discussion extends Component {
   formFocus = () => {
     if (this.props.commentId)
       this.props.dispatch(commentSelectionClear())
-    setTimeout(() => this.handleHeightChange({ focus: true }), 125)
+    this.handleHeightChange({ focus: true })
   }
   formBlur = () => {
     // Delay blur to a later tick so that clear/select range click events get caught before closing due to blur
@@ -315,9 +315,6 @@ export class Discussion extends Component {
 
   submitReply = () => {
     if (!this.state.formValue) // Cannot be empty comment
-      return
-
-    if (!this.props.phraseId) // Cannot comment on blank phrases
       return
 
     this.textarea.blur()

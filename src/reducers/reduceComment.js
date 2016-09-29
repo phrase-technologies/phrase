@@ -7,6 +7,7 @@ import {
 import { api } from 'helpers/ajaxHelpers'
 import { catchAndToastException } from 'reducers/reduceNotification'
 import { transportMovePlayhead } from 'reducers/reduceTransport'
+import { librarySaveNew } from 'reducers/reduceLibrary'
 
 // ============================================================================
 // Comment Action Creators
@@ -40,7 +41,11 @@ export const commentCreate = (commentText) => {
   if (!commentText)
     return { type: "DUMMY ACTION" }
 
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
+    if (!phraseId) {
+      await dispatch(librarySaveNew())
+    }
+
     let {
       comment: {
         commentRangeStart: start,
@@ -143,10 +148,11 @@ export default function reduceComment(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case comment.COMMENT_CREATE:
-      return u({
+      let result = u({
         commentId: action.payload.tempKey,
         comments: uAppend(action.payload, (a, b) => a.start > b.start || a.dateCreated > b.dateCreated),
       }, state)
+      return result
 
     // ------------------------------------------------------------------------
     case comment.COMMENT_RECEIVE:

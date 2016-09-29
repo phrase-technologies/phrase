@@ -16,6 +16,7 @@ export function uIncrement(increment) {
 
 export function uAppend(element, sortComparison = undefined) {
   return (array) => {
+    array = array || []
     let result = [...array, element]
 
     if (typeof sortComparison === 'function')

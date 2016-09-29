@@ -34,7 +34,7 @@ export function getOffsetedTrackID(currentTrackID, offset, allTracks) {
   if (!offset)
     return currentTrackID
 
-  let originalIndex = allTracks.findIndex(track => track.id == currentTrackID) // This should stay as ==, not ===. Casting string to int.
+  let originalIndex = allTracks.findIndex(track => +track.id === +currentTrackID) // Casting string to int
   let offsetedIndex = originalIndex + offset
   return allTracks[offsetedIndex].id
 }
