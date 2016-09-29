@@ -31,13 +31,14 @@ export class AudioRoll extends Component {
       return (
         <div className="audioroll-empty">
           <div className="text-center">
-            <button className="btn btn-bright" onClick={this.openUploadDialog}>
-              <span className="fa fa-download" />
+            <label className="btn btn-bright" htmlFor="upload-input">
+              <span className="fa fa-upload" />
               <span> Upload audio file</span>
-            </button>
-            <input type="file" ref={ref => this.uploadInput = ref} />
-            <br/>
-            <p>Or Drag and Drop into this box</p>
+              <input id="upload-input" type="file" style={{ display: 'none' }} />
+            </label>
+            <p style={{ marginTop: 10 }}>
+              Or Drag and Drop into this box
+            </p>
           </div>
         </div>
       )
@@ -116,11 +117,6 @@ export class AudioRoll extends Component {
         <TimelinePlayhead {...playheadProps} />
       </div>
     )
-  }
-
-  openUploadDialog = () => {
-    let event = new Event('click', { bubbles: true })
-    ReactDOM.findDOMNode(this.uploadInput).dispatchEvent(event)
   }
 
 }
