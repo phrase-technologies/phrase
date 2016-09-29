@@ -4,7 +4,7 @@ import { withRouter } from 'react-router'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
 import { isModifierOn } from 'helpers/compatibilityHelpers'
-import { zoomInterval } from 'helpers/intervalHelpers'
+import { shiftInterval } from 'helpers/intervalHelpers'
 
 import {
   midiIncrementOctave,
@@ -70,7 +70,7 @@ class HotkeyProvider extends Component {
     let { dispatch, ENGINE } = this.props
 =======
     let { dispatch, show: modalShowing, ENGINE } = this.props
-console.log(e)
+    
     if (modalShowing) {
       if (e.keyCode === 27) { // 'escape' - close modals
         return dispatch(modalClose())
@@ -176,14 +176,16 @@ console.log(e)
     switch(e.keyCode) {
       case 189: // '-' - Zoom Out
         if (e.shiftKey) {
-          console.log(this.props.xMin)
-          console.log(this.props.xMax)
-          dispatch(pianorollScrollX({max: this.props.xMax + 0.1}))
+          let newMax = Math.min(this.props.xMax + 0.1, 1.0)
+          console.log(newMax)
+          dispatch(pianorollScrollX({max: newMax}))
         }
         break
       case 187: // '+' - Zoom in
         if (e.shiftKey) {
-          dispatch(pianorollScrollX({max: this.props.xMax - 0.1}))
+          let newMax = Math.max(this.props.xMax - 0.1, 0.001)
+          console.log(newMax)
+          dispatch(pianorollScrollX({max: newMax}))
         }
         break
       // ----------------------------------------------------------------------

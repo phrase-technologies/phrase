@@ -64,3 +64,9 @@ export function restrictTimelineZoom(state, barCount) {
 export function negativeModulus(dividend, modulus) {
   return ((dividend % modulus) - modulus) % modulus
 }
+
+// ----------------------------------------------------------------------------
+// Proportionally scale zoom as it reaches lower than 1 bar on screen width for easier microadjustments
+export function microZoomScaling(state, limit) {
+  // See how this would work in conjunction with restrictTimelineZoom
+}
