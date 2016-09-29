@@ -21,7 +21,7 @@ export class WorkstationHeaderTitle extends Component {
       return (
         <div className="workstation-header-title-wrapper">
           <AutosizeInput inputClassName="form-control form-control-glow workstation-header-title"
-            name="project-name" value={this.state.title}
+            name="project-name" value={this.state.title || ""}
             placeholder="Untitled Phrase" inputStyle={{ textOverflow: 'ellipsis' }}
             onChange={this.handleChange} onBlur={this.handleBlur}
             onKeyDown={this.handleKeyDown}

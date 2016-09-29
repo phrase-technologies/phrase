@@ -616,7 +616,7 @@ const TRACK_COLORS = [
   '#0C8',
 ]
 
-export const defaultState = reduceCreateTrack({
+export const defaultState = {
   barCount: 16.00,
   tempo: 120,
   tracks: [],
@@ -628,7 +628,7 @@ export const defaultState = reduceCreateTrack({
   noteAutoIncrement:  0,
   clipAutoIncrement:  0,
   noteLengthLast: 0.25,
-}, {})
+}
 
 export default function reducePhrase(state = defaultState, action) {
   switch (action.type)
@@ -991,11 +991,14 @@ function reduceCreateTrack(state, action) {
     DEFAULT_INSTRUMENT
   ]
 
+  let type = action.trackType || 'MIDI'
+
   return u({
     tracks: uAppend(
       {
         id: state.trackAutoIncrement,
-        name: action.name || 'MIDI Track '+(state.trackAutoIncrement + 1),
+        type,
+        name: action.name || `${type} Track ${state.trackAutoIncrement + 1}`,
         color: TRACK_COLORS[state.colorAutoIncrement%TRACK_COLORS.length],
         rack: action.rack || DEFAULT_RACK,
         mute: false,

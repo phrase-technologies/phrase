@@ -12,6 +12,7 @@ import {
   phraseLoginReminder,
   phraseRephraseReminder,
   phraseNotFound,
+  phraseCreateTrack,
 } from 'reducers/reducePhrase'
 
 import { layoutConsoleSplit } from 'reducers/reduceNavigation'
@@ -26,7 +27,7 @@ import WorkstationHeader from 'components/WorkstationHeader'
 // import WorkstationSplit from 'components/WorkstationSplit'
 import WorkstationFooter from 'components/WorkstationFooter'
 import Mixer from 'components/Mixer'
-import Pianoroll from 'components/Pianoroll'
+import TrackEditor from 'components/TrackEditor'
 import Rack from 'components/Rack'
 import Discussion from 'components/Discussion'
 import terms from 'constants/terms'
@@ -232,6 +233,43 @@ export class Workstation extends Component {
       )
     }
 
+    // Blank Phrase, choose track type screen
+    if (!this.props.tracks.length) {
+      let midiOptionStyle = {
+        backgroundImage: `url(${require('../img/midi-track.png')})`
+      }
+      return (
+        <div className="workstation-background">
+          <div className="workstation-container">
+            <Helmet title={`New Phrase - Phrase.fm`} />
+            <div className="workstation-loading text-center">
+              <h2 style={{ marginBottom: 20 }}>
+                Choosing a starting point:
+              </h2>
+              <div className="row">
+                <div className="col-sm-6">
+                  <div
+                    className="workstation-option"
+                    style={midiOptionStyle} onClick={this.createMidiTrack}
+                  >
+                    <h3>MIDI Track</h3>
+                  </div>
+                </div>
+                <div className="col-sm-6">
+                  <div
+                    className="workstation-option"
+                    style={midiOptionStyle} onClick={this.createAudioTrack}
+                  >
+                    <h3>Audio Track</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     let rackProps = {
       rackOpen: this.props.rackOpen,
       track: this.props.selectedTrack,
@@ -268,7 +306,10 @@ export class Workstation extends Component {
                         <WorkstationSplit splitRatio={this.props.consoleSplitRatio} setRatio={this.setConsoleSplit} />
                         */}
                         <div className="workstation-clip" style={this.getClipSplit()}>
-                          <Pianoroll minimized={minimizeClipEditor} maximize={() => this.setConsoleSplit(0.5)} />
+                          <TrackEditor
+                            minimized={minimizeClipEditor} selectedTrack={this.props.selectedTrack}
+                            maximize={() => this.setConsoleSplit(0.5)}
+                          />
                         </div>
                       </div>
                       <WorkstationFooter {...footerProps} />
@@ -396,6 +437,18 @@ export class Workstation extends Component {
     return { right: this.props.discussionOpen ? 365 : 0 }
   }
 
+  createMidiTrack = () => {
+    this.props.dispatch(phraseCreateTrack({
+      trackType: 'MIDI',
+    }))
+  }
+
+  createAudioTrack = () => {
+    this.props.dispatch(phraseCreateTrack({
+      trackType: 'AUDIO',
+    }))
+  }
+
   shouldComponentUpdate(nextProps) {
     let shouldChange = diffProps(nextProps, this.props, [
       'loading',
@@ -420,7 +473,7 @@ export class Workstation extends Component {
     if (nextProps.phraseId !== this.props.phraseId) {
       this.props.socket.emit(`disconnect`, { phraseId: this.props.phraseId })
 
-      // Don't join the room again 
+      // Don't join the room again
       if (this.props.phraseId && nextProps.phraseId) {
         this.props.socket.emit(`client::joinRoom`, {
           phraseId: nextProps.phraseId,
@@ -463,6 +516,7 @@ function mapStateToProps(state) {
     samples: state.samples,
     inputMethodsTour: state.navigation.inputMethodsTour,
     selectedTrack,
+    tracks: state.phrase.present.tracks,
   }
 }
 

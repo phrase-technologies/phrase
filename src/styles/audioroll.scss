@@ -1,0 +1,24 @@
+
+// ----------------------------------------------------------------------------
+// Piano Roll
+// ----------------------------------------------------------------------------
+.audioroll-empty {
+  position: absolute;
+  top: 7px;
+  left: 15px;
+  right: 15px;
+  bottom: 7px;
+
+  border: 2px dashed #FFF;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ============================================================================
+// Mobile
+// ============================================================================
+@media (max-width: $screen-sm-max) {
+}
