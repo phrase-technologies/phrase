@@ -487,6 +487,13 @@ export class PianorollWindowControl extends Component {
       this.lastEvent = null
     }
 
+    // Comment Range Selection End
+    if (this.lastEvent &&
+        this.lastEvent.action === COMMENT_GRIP) {
+      let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
+      this.props.dispatch(commentSelectionEnd({ end: bar }))
+    }
+
     // No Action - Clear the queue
     this.lastEvent = null
   }
@@ -507,10 +514,7 @@ export class PianorollWindowControl extends Component {
   commentDragEvent(e) {
     if (this.lastEvent && this.lastEvent.action === COMMENT_GRIP) {
       let bar = (this.props.xMin + this.props.grid.getMouseXPercent(e)*this.props.grid.getBarRange()) * this.props.barCount
-
-      this.props.dispatch(commentSelectionEnd({
-        end: bar,
-      }))
+      this.props.dispatch(commentSelectionEnd({ end: bar }))
     }
   }
 

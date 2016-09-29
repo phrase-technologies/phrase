@@ -44,10 +44,11 @@ export class Discussion extends Component {
     let discussionFormStyles = { height: this.state.formHeight }
     let discussionFormClasses = `discussion-form ${this.state.formMobileOpen ? '' : 'hidden-xs'}`
 
+    let formFocused = (this.state.formFocused || this.props.arrangeTool === 'comment') && !this.props.commentId
     let discussionFormInputClasses = "discussion-form-input form-control form-control-dark"
-        discussionFormInputClasses += this.state.formFocused || this.props.arrangeTool === "comment" ? " focused" : ''
+        discussionFormInputClasses += formFocused ? " focused" : ''
     let discussionFormAttachmentClasses = "form-control form-control-dark discussion-form-attachment"
-        discussionFormAttachmentClasses += this.state.formFocused || this.props.arrangeTool === "comment" ? ' focused' : ''
+        discussionFormAttachmentClasses += formFocused ? ' focused' : ''
 
     return (
       <div className="workstation-discussion">
@@ -244,17 +245,19 @@ export class Discussion extends Component {
   }
 
   formFocus = () => {
-    this.handleHeightChange({ focus: true })
+    if (this.props.commentId)
+      this.props.dispatch(commentSelectionClear())
+    setTimeout(() => this.handleHeightChange({ focus: true }), 125)
   }
   formBlur = () => {
-    // Delay blur to a later tick so that click events get caught
-    setTimeout(() => { this.handleHeightChange({ focus: false }) }, 125)
+    // Delay blur to a later tick so that clear/select range click events get caught before closing due to blur
+    setTimeout(() => this.handleHeightChange({ focus: false }), 125)
   }
 
   handleHeightChange = ({ inputHeight = null, focus = null, commentMode = null }) => {
     inputHeight = inputHeight || this.state.formInputHeight
     focus = (focus === null) ? this.state.formFocused : focus
-    commentMode = (commentMode === null) ? (this.props.arrangeTool === "comment") : commentMode
+    commentMode = (commentMode === null) ? (this.props.arrangeTool === "comment" && !this.props.commentId) : commentMode
 
     let attachmentHeight = (focus || commentMode) ? 24 : 0
 
@@ -328,7 +331,7 @@ export class Discussion extends Component {
         nextProps.arrangeTool === 'comment' ||
         this.props.arrangeTool === 'comment'
     ) {
-      let commentMode = nextProps.arrangeTool === 'comment'
+      let commentMode = nextProps.arrangeTool === 'comment' && !nextProps.commentId
       this.handleHeightChange({ commentMode })
     }
   }
@@ -336,6 +339,11 @@ export class Discussion extends Component {
   componentDidUpdate(prevProps, prevState) {
     // Focus the textarea if newly opened on mobile!
     if (this.state.formMobileOpen && !prevState.formMobileOpen) {
+      this.textarea.focus()
+    }
+
+    // Focus the textarea if we just finished selecting a new comment range
+    if (!prevProps.commentReady && this.props.commentReady) {
       this.textarea.focus()
     }
 
@@ -358,4 +366,6 @@ export default connect(state => ({
   currentUsername: state.auth.user.username,
   userId: state.auth.user.id,
   users: state.presence.users,
+  commentId: state.comment.commentId,
+  commentReady: state.comment.commentReady,
 }))(Discussion)

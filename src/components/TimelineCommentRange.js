@@ -20,7 +20,7 @@ export let TimelineCommentRange = (props) => {
     [left, right] = [right, left]
   }
 
-  let isVisible = props.arrangeTool === "comment" || props.commentId
+  let isVisible = props.arrangeTool === "comment"// || props.commentId
 
   let commentRangeStyles = {
     display: isVisible ? 'block' : 'none',

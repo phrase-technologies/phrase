@@ -84,6 +84,7 @@ export const defaultState = {
   commentTrackID: null,
   commentRangeStart: null,
   commentRangeEnd: null,
+  commentReady: false,
   comments: [],
 }
 
@@ -95,12 +96,14 @@ export default function reduceComment(state = defaultState, action) {
       return u({
         commentRangeStart: 0.25*Math.round(4*action.payload.start),
         commentRangeEnd: null,
+        commentReady: false,
       }, state)
 
     // ------------------------------------------------------------------------
     case comment.SELECTION_END:
       return u({
         commentRangeEnd: 0.25*Math.round(4*action.payload.end),
+        commentReady: true,
       }, state)
 
     // ------------------------------------------------------------------------
@@ -117,6 +120,7 @@ export default function reduceComment(state = defaultState, action) {
         commentTrackId: action.payload.trackId,
         commentRangeStart: action.payload.start,
         commentRangeEnd: action.payload.end,
+        commentReady: false,
       }, state)
     }
     // ------------------------------------------------------------------------
@@ -128,7 +132,7 @@ export default function reduceComment(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case comment.RECEIVE_EXISTING:
       return u({
-        comments: action.payload,
+        comments: action.payload.sort((a, b) => a.start > b.start || a.dateCreated > b.dateCreated),
       }, state)
 
     // ------------------------------------------------------------------------
@@ -141,7 +145,7 @@ export default function reduceComment(state = defaultState, action) {
     case comment.COMMENT_CREATE:
       return u({
         commentId: action.payload.tempKey,
-        comments: uAppend(action.payload, (a, b) => a.start > b.start)
+        comments: uAppend(action.payload, (a, b) => a.start > b.start || a.dateCreated > b.dateCreated),
       }, state)
 
     // ------------------------------------------------------------------------

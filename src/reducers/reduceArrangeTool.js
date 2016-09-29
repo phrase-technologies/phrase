@@ -29,6 +29,13 @@ export default function reduceArrangeTool(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
+    case comment.SET_FOCUS:
+      return u({
+        currentTool: 'comment',
+        lastTool: state.currentTool === 'comment' ? state.lastTool : state.currentTool,
+      }, state)
+
+    // ------------------------------------------------------------------------
     case comment.COMMENT_CREATE:
       return u({
         currentTool: state.lastTool,
