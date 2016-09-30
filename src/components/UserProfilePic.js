@@ -20,10 +20,22 @@ export class UserProfilePic extends Component {
       if (u && !u.pending)
         image = u.picture ? u.picture : defaultPic
     }
+
+    let pic
+    if (!image || this.state.uploading)
+      pic =
+        <span
+          className="fa fa-spinner fa-pulse fa-2x"
+          style={{position: `relative`, top: 18}}
+        />
+    else
+      pic = <img src={image} />
+
     let ownerStyle = this.props.isCurrentUser ? `user-profile-pic-owner` : ``
+
     return (
       <div className={`user-profile-pic ${ownerStyle}`} onClick={this.triggerDialog}>
-        <img src={image} />
+        { pic }
         { this.renderVerified() }
         { this.props.isCurrentUser && (
           <div className="user-profile-upload">
