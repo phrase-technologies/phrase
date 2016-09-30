@@ -7,9 +7,10 @@
   margin-left: 10px;
   top: -12px;
 
+  border: 1px solid #000;
+  border-radius: 50%;
   height: 100px;
   width: 100px;
-  border-radius: 50%;
   overflow: hidden;
 
   text-align: center;
@@ -29,6 +30,13 @@
     height: 100px;
     width: 100px;
   }
+}
+.user-profile-pic-initials {
+  margin-top: 25px;
+  display: inline-block;
+}
+.user-profile-pic-loading {
+  margin-top: 18px;
 }
 .user-profile-pic-owner {
   cursor: pointer;

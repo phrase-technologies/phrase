@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { api } from 'helpers/ajaxHelpers'
-import { defaultPic } from 'helpers/authHelpers'
 
 import { userRequestProfile } from 'reducers/reduceUserProfile'
 import { addNotification, catchAndToastException } from 'reducers/reduceNotification'
@@ -15,29 +14,32 @@ export class UserProfilePic extends Component {
   render() {
     let image = null
     let { userId } = this.props
+    let user
     if (userId) {
-      let u = this.props.users[userId]
-      if (u && !u.pending)
-        image = u.picture ? u.picture : defaultPic
+      user = this.props.users[userId]
+      if (user && !user.pending)
+        image = user.picture
     }
 
-    let pic
-    if (!image || this.state.uploading)
-      pic =
-        <span
-          className="fa fa-spinner fa-pulse fa-2x"
-          style={{position: `relative`, top: 18}}
-        />
-    else
-      pic = <img src={image} />
+    let isLoading = this.state.uploading
+    let bubble
+    if (user && user.picture)
+      bubble = <img src={image} />
+    else if (user && user.username)
+      bubble = <span className="user-profile-pic-initials">{ user.username.substring(0, 2).toUpperCase() }</span>
+    else {
+      isLoading = true
+      bubble =
+        <span className="user-profile-pic-loading fa fa-spinner fa-pulse fa-2x" />
+    }
 
     let ownerStyle = this.props.isCurrentUser ? `user-profile-pic-owner` : ``
 
     return (
       <div className={`user-profile-pic ${ownerStyle}`} onClick={this.triggerDialog}>
-        { pic }
+        { bubble }
         { this.renderVerified() }
-        { this.props.isCurrentUser && (
+        { this.props.isCurrentUser && !isLoading && (
           <div className="user-profile-upload">
             <span className="fa fa-camera" />
             <span> Upload</span>
