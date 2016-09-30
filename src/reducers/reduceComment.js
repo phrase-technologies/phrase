@@ -42,10 +42,6 @@ export const commentCreate = (commentText) => {
     return { type: "DUMMY ACTION" }
 
   return async (dispatch, getState) => {
-    if (!phraseId) {
-      await dispatch(librarySaveNew())
-    }
-
     let {
       comment: {
         commentRangeStart: start,
@@ -61,6 +57,11 @@ export const commentCreate = (commentText) => {
         }
       }
     } = getState()
+
+    if (!phraseId) {
+      await dispatch(librarySaveNew())
+      phraseId = getState().phraseMeta.phraseId
+    }
 
     let payload = {
       comment: commentText,
