@@ -21,8 +21,8 @@ export default ({ globals, user }) => {
     it(`should reject a request missing base64 parameter`, async function() {
       this.timeout(10000)
       let response = await ajax({ url, body: { token: user.token, userId: user.id } })
-      let { message } = await response.json()
-      expect(message).to.eq(`Missing base64 data url.`)
+      let { title } = await response.json()
+      expect(title).to.eq(`Missing base64 data url.`)
     })
 
     it(`should reject any file that is not an image`, async function() {
@@ -32,18 +32,19 @@ export default ({ globals, user }) => {
         userId: user.id,
         base64: invalidBase64,
       }})
-      let { message } = await response.json()
-      expect(message).to.eq(`Not a valid image file, please try again.`)
+      let { title } = await response.json()
+      expect(title).to.eq(`Not a valid image file`)
     })
 
-    it(`should accept and return an image url`, async function() {
+    it(`should accept a valid image url`, async function() {
       this.timeout(10000)
       let response = await ajax({ url, body: {
         token: user.token,
         userId: user.id,
         base64: validBase64,
       }})
-      let { picture } = await response.json()
+      let { success, picture } = await response.json()
+      expect(success).to.eq(true)
       let validPic = picture.includes(user.id)
       expect(validPic).to.eq(true)
 

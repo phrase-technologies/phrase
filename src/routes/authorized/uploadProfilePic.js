@@ -15,7 +15,7 @@ export default ({ api, db }) => {
     let { id: userId } = req.decoded
     let { base64 } = req.body
 
-    if (!base64) return res.json({ success: false, message: `Missing base64 data url.` })
+    if (!base64) return res.json({ title: `Missing base64 data url.`, message: `` })
 
     let extension
     let fileName = `${Date.now()}_${userId}`
@@ -40,7 +40,10 @@ export default ({ api, db }) => {
 
       if (![`jpeg`, `gif`, `bmp`, `png`].includes(extension)) {
         fs.unlinkSync(tempPath)
-        return res.json({ success: false, message: `Please upload a .jpeg, .gif, .bmp, or .png` })
+        return res.json({
+          title: `Wrong file type.`,
+          message: `Please upload a .jpeg, .gif, .bmp, or .png`,
+        })
       }
 
       if (info.width > 500 || info.height > 500)
@@ -48,7 +51,7 @@ export default ({ api, db }) => {
     }
     catch (e) {
       if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath)
-      return res.json({ success: false, message: `Not a valid image file, please try again.` })
+      return res.json({ title: `Not a valid image file`, message: `Please try again.` })
     }
 
     fileName = `${fileName}.${extension}`
