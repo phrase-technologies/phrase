@@ -1,17 +1,18 @@
 import r from 'rethinkdb'
 import chalk from 'chalk'
 
-import { rUserGet } from '../../helpers/db-helpers'
+import { rUserGetFromUsername } from '../../helpers/db-helpers'
 import { formatLoadedUser } from '../../helpers/user'
 
 export default ({ api, db }) => {
-  api.post(`/loadUser`, async (req, res) => {
-    let { userId } = req.body
-    if (!userId)
-      return res.json({ success: false, message: `Must supply a userId` })
+  api.post(`/loadUserByUsername`, async (req, res) => {
+    let { theUsername } = req.body // theUsername because username is populated by localStorage
+    console.log(theUsername)
+    if (!theUsername)
+      return res.json({ success: false, message: `Must supply a username` })
 
     try {
-      let loadedUser = await rUserGet(db, { id: userId })
+      let loadedUser = await rUserGetFromUsername(db, { username: theUsername })
 
       if (!loadedUser)
         return res.json({ success: false, message: `User not found!` })
