@@ -11,12 +11,14 @@ import LibraryPhrases from 'components/LibraryPhrases'
 import UserProfilePic from 'components/UserProfilePic'
 
 import { catchAndToastException } from 'reducers/reduceNotification'
+import { userRequestProfileIfNotExisting } from 'reducers/reduceUserProfile'
 
 export class UserProfile extends Component {
 
   state = {
     phrases: null,
     userId: null,
+    isCurrentUser: this.props.routeParams.username !== localStorage.username,
   }
 
   componentWillMount() {
@@ -26,16 +28,24 @@ export class UserProfile extends Component {
 
   loadUser() {
     let { dispatch } = this.props
-    catchAndToastException({ dispatch, toCatch: async () => {
-      let { loadedUser } = await api({
-        endpoint: `loadUserByUsername`,
-        body: { theUsername: this.props.routeParams.username }
-      })
-      if (loadedUser) {
-        this.setState({ userId: loadedUser.id })
-        dispatch({ type: userProfile.RECEIVE_USER, payload: loadedUser })
-      }
-    }})
+    if (this.state.isCurrentUser) {
+      catchAndToastException({ dispatch, toCatch: async () => {
+        let { loadedUser } = await api({
+          endpoint: `loadUserByUsername`,
+          body: { theUsername: this.props.routeParams.username }
+        })
+        if (loadedUser) {
+          this.setState({ userId: loadedUser.id })
+          dispatch({ type: userProfile.RECEIVE_USER, payload: loadedUser })
+        }
+      }})
+    }
+    else {
+      // The user is logged in, don't hit the api if we don't have to
+      let userId = localStorage.userId
+      this.setState({ userId })
+      dispatch(userRequestProfileIfNotExisting({ userId }))
+    }
   }
 
   loadUserPhrases() {
@@ -67,7 +77,7 @@ export class UserProfile extends Component {
           <div className="container">
             <UserProfilePic
               userId={this.state.userId}
-              isCurrentUser={this.props.routeParams.username === localStorage.username}
+              isCurrentUser={this.state.isCurrentUser}
             />
             <h1>
               {username}
