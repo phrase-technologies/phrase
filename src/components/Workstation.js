@@ -172,20 +172,7 @@ export class Workstation extends Component {
   }
 
   render() {
-    // Drag and drop
-    if (0) {
-      return (
-        <div className="workstation workstation-maximized disable-select text-center workstation-drop-target">
-          <div className="workstation-loading text-center">
-            <span className="fa fa-download fa-3x" />
-            <p style={{ marginTop: 15 }}>
-              Drag and drop any MIDI file (.mid)
-            </p>
-          </div>
-        </div>
-      )
-    }
-
+    // 404/403
     if (this.props.notFound) {
       return (
         <div className="workstation-background">
