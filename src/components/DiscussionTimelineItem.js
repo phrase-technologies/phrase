@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import TextareaAuto from 'react-textarea-autosize'
 import Moment from 'moment'
 
 import UserBubble from 'components/UserBubble'
 import { barToString } from 'helpers/trackHelpers'
-import { userRequestProfile } from 'reducers/reduceUserProfile'
+import { userRequestProfileIfNotExisting } from 'reducers/reduceUserProfile'
 import { commentSetFocus } from 'reducers/reduceComment'
 
 export default class DiscussionTimelineItem extends Component {
@@ -16,12 +17,12 @@ export default class DiscussionTimelineItem extends Component {
     let discussionTimelineItemClasses = "discussion-timeline-item"
         discussionTimelineItemClasses += this.props.comment.id ? "" : " discussion-timeline-item-pending"
 
-    let user = this.props.user
-    if (!user || user.pending) {
-      user = {
-        username: ""
-      }
-    }
+    let user = this.props.users[this.props.comment.authorId]
+    let username
+    if (!user || user.pending)
+      username = <span className="fa fa-spinner fa-pulse" />
+    else
+      username = user.username
     let timestamp = Moment(this.props.comment.dateCreated).calendar().toString()
 
     return (
@@ -30,9 +31,9 @@ export default class DiscussionTimelineItem extends Component {
           { this.getTick(this.props.comment.start) }
         </div>
         <div className="discussion-timeline-meta">
-          <UserBubble userId={user.id} />
+          <UserBubble userId={this.props.comment.authorId} />
           <span className="user-username">
-            { user.username || <span className="fa fa-spinner fa-pulse" /> }
+            { username }
           </span>
           <span className="discussion-timeline-timestamp">
             { timestamp }
@@ -156,17 +157,8 @@ export default class DiscussionTimelineItem extends Component {
   }
 
   componentWillMount() {
-    this.requireUserProfile(this.props.user)
+    this.props.dispatch(userRequestProfileIfNotExisting({ userId: this.props.comment.authorId }))
   }
-
-  componentWillReceiveProps(nextProps) {
-    this.requireUserProfile(nextProps.user)
-  }
-
-  requireUserProfile(user) {
-    if (!user) {
-      this.props.dispatch(userRequestProfile({ userId: this.props.comment.authorId }))
-    }
-  }
-
 }
+
+export default connect(state => ({ users: state.userProfile.users }))(DiscussionTimelineItem)

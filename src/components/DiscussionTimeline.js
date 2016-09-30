@@ -37,12 +37,11 @@ export class DiscussionTimeline extends Component {
         {
           // Timeline Has Content
           this.props.comments !== null && this.props.comments.map((comment) => {
-            let user = this.props.users[comment.authorId]
             let key = comment.id || comment.tempKey
             return (
               <DiscussionTimelineItem
                 key={key} ref={ref => this.list[key] = ref}
-                user={user} comment={comment} dispatch={this.props.dispatch}
+                comment={comment}
                 setFullscreenReply={this.props.setFullscreenReply}
               />
             )
@@ -109,7 +108,6 @@ export class DiscussionTimeline extends Component {
 export default withSocket(connect((state) => ({
   phraseId: state.phraseMeta.phraseId,
   author: state.phraseMeta.userId,
-  users: state.userProfile.users,
   comments: state.comment.comments,
   selectedCommentId: state.comment.commentId,
 }))(DiscussionTimeline))
