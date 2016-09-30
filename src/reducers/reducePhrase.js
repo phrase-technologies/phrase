@@ -953,7 +953,7 @@ export default function reducePhrase(state = defaultState, action) {
           let start = note.start
           let end = note.end
           let length = note.end - note.start
-          if (noteIDs.find(noteID => { return noteID == note.id })) {
+          if (noteIDs.find(noteID => { return +noteID === note.id })) {
             start = Math.round(note.start / division) * division
             end = start + length
           }
