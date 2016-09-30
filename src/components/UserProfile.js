@@ -6,11 +6,10 @@ import Numeral from 'numeral'
 import { userProfile } from 'actions/actions'
 
 import { api } from 'helpers/ajaxHelpers'
-import { defaultPic } from 'helpers/authHelpers'
 
 import LibraryPhrases from 'components/LibraryPhrases'
+import UserProfilePic from 'components/UserProfilePic'
 
-import { modalOpen } from 'reducers/reduceModal'
 import { catchAndToastException } from 'reducers/reduceNotification'
 
 export class UserProfile extends Component {
@@ -18,7 +17,6 @@ export class UserProfile extends Component {
   state = {
     phrases: null,
     userId: null,
-    isOwner: this.props.routeParams.username === localStorage.username,
   }
 
   componentWillMount() {
@@ -59,48 +57,20 @@ export class UserProfile extends Component {
     }
   }
 
-  openPhotoUpload = (e) => {
-    e.preventDefault()
-    if (this.state.isOwner)
-      this.props.dispatch(modalOpen({ modalComponent: `UploadPhotoModal` }))
-  }
-
   render() {
-    let image = null
-    let userId = this.state.userId
-    if (userId) {
-      let u = this.props.users[userId]
-      if (u && !u.pending)
-        image = u.picture ? u.picture : defaultPic
-    }
-    let user = {
-      username: this.props.routeParams.username,
-      image,
-      //followers: 28751,
-      //verified: true,
-    }
-    let ownerStyle = this.state.isOwner ? `user-profile-pic-owner` : ``
+    let username = this.props.routeParams.username
 
     return (
       <div className="user-profile">
-        <Helmet title={`${user.username} - Phrase.fm`} />
+        <Helmet title={`${username} - Phrase.fm`} />
         <div className="user-profile-header page-header library-header">
           <div className="container">
-            <div className={`user-profile-pic ${ownerStyle}`} onClick={this.openPhotoUpload}>
-              <img src={user.image} />
-              { this.renderVerified({ user }) }
-              {
-                isCurrentUser && (
-                  <div className="user-profile-upload">
-                    <span className="fa fa-camera" />
-                    <span> Upload</span>
-                    <input id="upload-input" type="file" style={{ display: 'none' }} />
-                  </div>
-                )
-              }
-            </div>
+            <UserProfilePic
+              userId={this.state.userId}
+              isCurrentUser={this.props.routeParams.username === localStorage.username}
+            />
             <h1>
-              {user.username}
+              {username}
             </h1>
             {/*
             <div>
@@ -119,15 +89,6 @@ export class UserProfile extends Component {
     )
   }
 
-  renderVerified({ user }) {
-    if (!user.verified)
-      return null
-
-    return (
-      <span className="fa fa-check user-profile-pic-verified" />
-    )
-  }
-
   renderFollowerCount({ user }) {
     if (!user.followers)
       return null
@@ -139,4 +100,4 @@ export class UserProfile extends Component {
   }
 }
 
-export default connect(state => ({ users: state.userProfile.users }))(UserProfile)
+export default connect(null)(UserProfile)
