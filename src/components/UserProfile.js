@@ -18,7 +18,7 @@ export class UserProfile extends Component {
   state = {
     phrases: null,
     userId: null,
-    isCurrentUser: this.props.routeParams.username !== localStorage.username,
+    isCurrentUser: this.props.routeParams.username === localStorage.username,
   }
 
   componentWillMount() {
@@ -29,6 +29,10 @@ export class UserProfile extends Component {
   loadUser() {
     let { dispatch } = this.props
     if (this.state.isCurrentUser) {
+      let userId = localStorage.userId
+      this.setState({ userId })
+      dispatch(userRequestProfileIfNotExisting({ userId }))
+    } else {
       catchAndToastException({ dispatch, toCatch: async () => {
         let { loadedUser } = await api({
           endpoint: `loadUserByUsername`,
@@ -39,12 +43,6 @@ export class UserProfile extends Component {
           dispatch({ type: userProfile.RECEIVE_USER, payload: loadedUser })
         }
       }})
-    }
-    else {
-      // The user is logged in, don't hit the api if we don't have to
-      let userId = localStorage.userId
-      this.setState({ userId })
-      dispatch(userRequestProfileIfNotExisting({ userId }))
     }
   }
 
