@@ -37,7 +37,7 @@ export class DiscussionTimeline extends Component {
         {
           // Timeline Has Content
           this.props.comments !== null && this.props.comments.map((comment) => {
-            let user = this.props.users.find(x => x.id === comment.authorId)
+            let user = this.props.users[comment.authorId]
             let key = comment.id || comment.tempKey
             return (
               <DiscussionTimelineItem

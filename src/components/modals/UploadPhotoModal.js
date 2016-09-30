@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import LaddaButton from 'react-ladda'
-import path from 'path'
 
-import { catchAndToastException } from 'reducers/reduceNotification'
-import { modalClose } from 'reducers/reduceModal'
 import { api } from 'helpers/ajaxHelpers'
+
+import { modalClose } from 'reducers/reduceModal'
+import { catchAndToastException } from 'reducers/reduceNotification'
+import { userRequestProfile } from 'reducers/reduceUserProfile'
 
 export class UploadPhotoModal extends Component {
   state = {
@@ -75,7 +76,7 @@ export class UploadPhotoModal extends Component {
                 body: { base64: dataUrl },
               })
               if (response.success) {
-                localStorage.picture = response.picture
+                this.props.dispatch(userRequestProfile({ userId: localStorage.userId }))
                 self.closeModal()
               }
               else self.setState({

@@ -1,15 +1,20 @@
 import u from 'updeep'
 import { userProfile } from 'actions/actions'
-import {
-  uAppend,
-  uReplace,
-} from 'helpers/arrayHelpers'
 import { api } from 'helpers/ajaxHelpers'
 import { catchAndToastException } from 'reducers/reduceNotification'
 
 // ============================================================================
 // User Profiles Action Creators
 // ============================================================================
+export const userRequestProfileIfNotExisting = ({ userId }) => {
+  return (dispatch, getState) => {
+    let state = getState()
+    let { users } = state.userProfile
+    if(!users[userId])
+      dispatch(userRequestProfile({ userId }))
+  }
+}
+
 export const userRequestProfile = ({ userId }) => {
   return (dispatch) => {
     dispatch({ type: userProfile.REQUEST_USER, payload: { id: userId } })
@@ -25,7 +30,7 @@ export const userRequestProfile = ({ userId }) => {
 // User Profiles
 // ============================================================================
 export const defaultState = {
-  users: [],
+  users: {},
 }
 
 export default function reduceUserProfile(state = defaultState, action) {
@@ -33,37 +38,29 @@ export default function reduceUserProfile(state = defaultState, action) {
   {
     // ------------------------------------------------------------------------
     case userProfile.REQUEST_USER: {
-      let existingUser = state.users.find(user => {
-        return user.id === action.payload.id
-      })
-
-      // Requesting update of existing user
-      if (existingUser) {
-        let pendingUser = u({
-          pending: true,
-        }, existingUser)
-        return u({
-          users: uReplace(existingUser, pendingUser)
-        }, state)
-      }
-
-      // Requesting new user
+      let userId = action.payload.id
       return u({
-        users: uAppend({
-          id: action.payload.id,
-          pending: true,
-        })
+        users: {
+          [userId]: {
+            id: userId,
+            pending: true,
+          },
+        },
       }, state)
     }
+
     // ------------------------------------------------------------------------
     case userProfile.RECEIVE_USER: {
-      let existingUser = state.users.find(user => {
-        return user.id === action.payload.id
-      })
-
-      return u({
-        users: uReplace(existingUser, action.payload)
+      let userId = action.payload.id
+      let newState = u({
+        users: {
+          [userId]: {
+            ...action.payload,
+            pending: false,
+          },
+        },
       }, state)
+      return newState
     }
     // ------------------------------------------------------------------------
     default:

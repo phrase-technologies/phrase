@@ -8,12 +8,8 @@ import { userRequestProfile } from 'reducers/reduceUserProfile'
 import { commentSetFocus } from 'reducers/reduceComment'
 
 export default class DiscussionTimelineItem extends Component {
-
-  constructor() {
-    super()
-    this.state = {
-      replying: false,
-    }
+  state = {
+    replying: false,
   }
 
   render() {
@@ -26,7 +22,6 @@ export default class DiscussionTimelineItem extends Component {
         username: ""
       }
     }
-    let initials = user.username.substring(0,2).toUpperCase()
     let timestamp = Moment(this.props.comment.dateCreated).calendar().toString()
 
     return (
@@ -35,7 +30,7 @@ export default class DiscussionTimelineItem extends Component {
           { this.getTick(this.props.comment.start) }
         </div>
         <div className="discussion-timeline-meta">
-          <UserBubble initials={initials} />
+          <UserBubble userId={user.id} />
           <span className="user-username">
             { user.username || <span className="fa fa-spinner fa-pulse" /> }
           </span>

@@ -3,33 +3,52 @@ import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import Numeral from 'numeral'
 
+import { userProfile } from 'actions/actions'
+
 import { api } from 'helpers/ajaxHelpers'
 import { defaultPic } from 'helpers/authHelpers'
-import { catchAndToastException } from 'reducers/reduceNotification'
+
 import LibraryPhrases from 'components/LibraryPhrases'
+
+import { modalOpen } from 'reducers/reduceModal'
+import { catchAndToastException } from 'reducers/reduceNotification'
 
 export class UserProfile extends Component {
 
   state = {
     phrases: null,
-    userPicture: null,
+    userId: null,
+    isOwner: this.props.routeParams.username === localStorage.username,
+  }
+
+  componentWillMount() {
+    this.loadUserPhrases()
+    this.loadUser()
+  }
+
+  loadUser() {
+    let { dispatch } = this.props
+    catchAndToastException({ dispatch, toCatch: async () => {
+      let { loadedUser } = await api({
+        endpoint: `loadUserByUsername`,
+        body: { theUsername: this.props.routeParams.username }
+      })
+      if (loadedUser) {
+        this.setState({ userId: loadedUser.id })
+        dispatch({ type: userProfile.RECEIVE_USER, payload: loadedUser })
+      }
+    }})
   }
 
   loadUserPhrases() {
     let { dispatch } = this.props
     catchAndToastException({ dispatch, toCatch: async() => {
-      let { phrases, picture: userPicture } = await api({
+      let { phrases } = await api({
         endpoint: `loadUserPhrases`,
         body: { username: this.props.routeParams.username },
       })
-      if (userPicture) this.setState({ userPicture })
-      else this.setState({ userPicture: defaultPic })
       if (phrases) this.setState({ phrases })
     }})
-  }
-
-  componentDidMount() {
-    this.loadUserPhrases()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -40,25 +59,35 @@ export class UserProfile extends Component {
     }
   }
 
+  openPhotoUpload = (e) => {
+    e.preventDefault()
+    if (this.state.isOwner)
+      this.props.dispatch(modalOpen({ modalComponent: `UploadPhotoModal` }))
+  }
+
   render() {
-    let username = this.props.routeParams.username
-    let isCurrentUser = username === localStorage.username
-    let user = {
-      username,
-      // image: (username === localStorage.username) ? this.props.userPicture : this.state.userPicture,
-      // followers: 28751,
-      // verified: true,
+    let image = null
+    let userId = this.state.userId
+    if (userId) {
+      let u = this.props.users[userId]
+      if (u && !u.pending)
+        image = u.picture ? u.picture : defaultPic
     }
+    let user = {
+      username: this.props.routeParams.username,
+      image,
+      //followers: 28751,
+      //verified: true,
+    }
+    let ownerStyle = this.state.isOwner ? `user-profile-pic-owner` : ``
 
     return (
       <div className="user-profile">
         <Helmet title={`${user.username} - Phrase.fm`} />
         <div className="user-profile-header page-header library-header">
           <div className="container">
-            <label className="user-profile-pic" htmlFor="upload-input" style={{ cursor: isCurrentUser ? 'pointer' : 'default' }}>
-              { (user.image && <img src={user.image} />)
-                || <span className="user-profile-initials">{ user.username.substring(0, 2).toUpperCase() }</span>
-              }
+            <div className={`user-profile-pic ${ownerStyle}`} onClick={this.openPhotoUpload}>
+              <img src={user.image} />
               { this.renderVerified({ user }) }
               {
                 isCurrentUser && (
@@ -69,7 +98,7 @@ export class UserProfile extends Component {
                   </div>
                 )
               }
-            </label>
+            </div>
             <h1>
               {user.username}
             </h1>
@@ -110,4 +139,4 @@ export class UserProfile extends Component {
   }
 }
 
-export default connect(() => { return { userPicture: localStorage.picture }})(UserProfile)
+export default connect(state => ({ users: state.userProfile.users }))(UserProfile)

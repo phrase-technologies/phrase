@@ -5,9 +5,11 @@ import Modal from 'react-bootstrap/lib/Modal'
 import ReactSelect from 'react-select'
 
 import { api } from 'helpers/ajaxHelpers'
+
 import PermissionsOption from 'components/PermissionsOption'
 import UserBubble from 'components/UserBubble'
 import LinkShare from 'components/LinkShare'
+
 import { modalClose } from 'reducers/reduceModal.js'
 import { setPrivacySetting, addCollaborator, removeCollaborator } from 'reducers/reducePhraseMeta'
 
@@ -86,14 +88,14 @@ export class PermissionsModal extends Component {
 
           <ul className="user-collaborator-list">
             <li>
-              <UserBubble initials={this.props.phraseMeta.authorUsername.substr(0, 2).toUpperCase()} />
+              <UserBubble userId={this.props.phraseMeta.userId} />
               <span className="user-username">
                 {this.props.phraseMeta.authorUsername} <strong>(Owner)</strong>
               </span>
             </li>
             {this.props.phraseMeta.collaborators.map(user =>
               <li key={user.userId}>
-                <UserBubble initials={user.username.substr(0, 2).toUpperCase()} />
+                <UserBubble userId={user.userId} />
                 <span className="user-username">
                   {user.username}
                   <a

@@ -4,7 +4,7 @@ import { MenuItem } from 'react-bootstrap'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 import { push } from 'react-router-redux'
 
-import { modalOpen } from 'reducers/reduceModal'
+import UserBubble from 'components/UserBubble'
 import { logout } from 'reducers/reduceAuth'
 
 export let UserNavigation = (props) => {
@@ -66,20 +66,13 @@ let notLoggedIn = ({ dispatch }) => {
   )
 }
 
-let openPhotoUpload = ({ e, dispatch}) => {
-  e.preventDefault()
-  dispatch(modalOpen({ modalComponent: `UploadPhotoModal` }))
-}
-
-let loggedIn = ({ user, dispatch, userPicture }) => {
+let loggedIn = ({ user, dispatch }) => {
 
   return (
     <Dropdown id="header-user-navigation-dropdown" pullRight className="dropdown-arrow" style={{ marginTop: 7 }}>
-      <a onClick={e => openPhotoUpload({ e, dispatch })}>
-        <div className="header-user-profile-pic">
-          <img src={userPicture} />
-        </div>
-      </a>
+      <div className="header-user-profile-pic">
+        <UserBubble userId={user.id} />
+      </div>
       <a className="dropdown-toggle" bsRole="toggle">
         <span className="header-user-name">{user.username || user.email} <span className="caret" /></span>
       </a>
@@ -92,11 +85,4 @@ let loggedIn = ({ user, dispatch, userPicture }) => {
   )
 }
 
-function mapStateToProps(state) {
-  return {
-    ...state.auth,
-    userPicture: localStorage.picture,
-  }
-}
-
-export default connect(mapStateToProps)(UserNavigation)
+export default connect(state => ({ ...state.auth }))(UserNavigation)

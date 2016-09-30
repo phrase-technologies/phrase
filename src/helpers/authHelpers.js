@@ -9,8 +9,6 @@ function setUserLocalStorage({ token, user }) {
   localStorage.userId = user.id
   localStorage.email = user.email
   localStorage.username = user.username
-  if (!user.picture) localStorage.picture = defaultPic
-  else localStorage.picture = user.picture
 }
 
 export let signup = async ({ body, callback }) => {

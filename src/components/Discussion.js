@@ -76,7 +76,7 @@ export class Discussion extends Component {
                 }
               }
             }
-            initials={this.props.currentUsername.substr(0, 2).toUpperCase()}
+            userId={this.props.userId}
             loadingMasterControl={this.state.loadingMasterControl === this.props.userId}
             masterControl={this.props.masterControl.includes(this.props.userId)}
             online
@@ -99,7 +99,7 @@ export class Discussion extends Component {
                   }
                 }
               }
-              initials={x.username.substr(0, 2).toUpperCase()}
+              userId={x.userId}
               loadingMasterControl={this.state.loadingMasterControl === x.userId}
               masterControl={this.props.masterControl.includes(x.userId)}
               online={
@@ -116,7 +116,7 @@ export class Discussion extends Component {
             <UserBubble
               type={this.props.authorUserId === x.userId ? `author` : `observer`}
               key={`observer-${x.userId}`}
-              initials={x.username.substr(0, 2).toUpperCase()}
+              userId={x.userId}
               masterControl={this.props.masterControl.includes(x.userId)}
               online
             />
