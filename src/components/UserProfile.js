@@ -42,11 +42,12 @@ export class UserProfile extends Component {
 
   render() {
     let username = this.props.routeParams.username
+    let isCurrentUser = username === localStorage.username
     let user = {
       username,
-      image: (username === localStorage.username) ? this.props.userPicture : this.state.userPicture,
-      //followers: 28751,
-      //verified: true,
+      // image: (username === localStorage.username) ? this.props.userPicture : this.state.userPicture,
+      // followers: 28751,
+      // verified: true,
     }
 
     return (
@@ -54,33 +55,37 @@ export class UserProfile extends Component {
         <Helmet title={`${user.username} - Phrase.fm`} />
         <div className="user-profile-header page-header library-header">
           <div className="container">
-            <div className="user-profile-pic">
-              { user.image && <img src={user.image} /> }
+            <label className="user-profile-pic" htmlFor="upload-input" style={{ cursor: isCurrentUser ? 'pointer' : 'default' }}>
+              { (user.image && <img src={user.image} />)
+                || <span className="user-profile-initials">{ user.username.substring(0, 2).toUpperCase() }</span>
+              }
               { this.renderVerified({ user }) }
-            </div>
-            <h1 style={{ display: `inline-block` }}>
+              {
+                isCurrentUser && (
+                  <div className="user-profile-upload">
+                    <span className="fa fa-camera" />
+                    <span> Upload</span>
+                    <input id="upload-input" type="file" style={{ display: 'none' }} />
+                  </div>
+                )
+              }
+            </label>
+            <h1>
               {user.username}
             </h1>
+            {/*
+            <div>
+              <button className="btn btn-bright btn-light-bg user-profile-action">
+                <span>Follow</span>
+                { this.renderFollowerCount({ user }) }
+              </button>
+            </div>
+            */}
           </div>
         </div>
         <div className="library">
           <LibraryPhrases phrases={this.state.phrases} />
         </div>
-      </div>
-    )
-  }
-
-  renderUserProfileDetails({ user }) {
-    return (
-      <div>
-        <div className="user-profile-pic">
-          <img src={user.image} />
-          { this.renderVerified({ user }) }
-        </div>
-        <button className="btn btn-bright btn-light-bg user-profile-action">
-          <span>Follow</span>
-          { this.renderFollowerCount({ user }) }
-        </button>
       </div>
     )
   }

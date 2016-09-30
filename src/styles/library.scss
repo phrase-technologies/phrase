@@ -1,7 +1,7 @@
 // ============================================================================
 // Phrase Library
 // ============================================================================
-$library-header-height: 60px;
+$library-header-height: 120px;
 .library {
   height: 100%;
 }
@@ -10,9 +10,10 @@ $library-header-height: 60px;
   box-sizing: border-box;
 
   h1 {
-    font-size: 18px;
+    display: inline-block;
+    font-size: 24px;
     padding-left: 15px;
-    margin: 0;
+    margin: 24px 0 0;
   }
 }
 .library-body {
