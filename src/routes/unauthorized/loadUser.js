@@ -1,4 +1,3 @@
-import r from 'rethinkdb'
 import chalk from 'chalk'
 
 import { rUserGet } from '../../helpers/db-helpers'

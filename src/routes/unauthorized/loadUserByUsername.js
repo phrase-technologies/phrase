@@ -1,4 +1,3 @@
-import r from 'rethinkdb'
 import chalk from 'chalk'
 
 import { rUserGetFromUsername } from '../../helpers/db-helpers'
@@ -7,7 +6,6 @@ import { formatLoadedUser } from '../../helpers/user'
 export default ({ api, db }) => {
   api.post(`/loadUserByUsername`, async (req, res) => {
     let { theUsername } = req.body // theUsername because username is populated by localStorage
-    console.log(theUsername)
     if (!theUsername)
       return res.json({ success: false, message: `Must supply a username` })
 
@@ -20,7 +18,7 @@ export default ({ api, db }) => {
       res.json({ loadedUser: formatLoadedUser({ loadedUser }) })
 
       console.log(chalk.cyan(
-        `User ${userId} loaded!`
+        `User ${loadedUser.id} loaded!`
       ))
 
     } catch (error) {
