@@ -2,7 +2,6 @@ import u from 'updeep'
 import { notification } from 'actions/actions'
 import { modalOpen } from 'reducers/reduceModal'
 import { logout } from 'reducers/reduceAuth'
-import { push } from 'react-router-redux'
 
 // ============================================================================
 // Notification Action Creators
