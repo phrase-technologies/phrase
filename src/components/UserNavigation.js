@@ -69,7 +69,7 @@ let notLoggedIn = ({ dispatch }) => {
 let loggedIn = ({ user, dispatch }) => {
 
   return (
-    <Dropdown id="header-user-navigation-dropdown" pullRight className="dropdown-arrow" style={{ marginTop: 7 }}>
+    <Dropdown id="header-user-navigation-dropdown" pullRight className="dropdown-arrow" style={{ marginTop: 3 }}>
       <div className="header-user-profile-pic">
         <UserBubble userId={user.id} />
       </div>

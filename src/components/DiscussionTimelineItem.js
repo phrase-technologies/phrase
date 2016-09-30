@@ -8,7 +8,7 @@ import { barToString } from 'helpers/trackHelpers'
 import { userRequestProfileIfNotExisting } from 'reducers/reduceUserProfile'
 import { commentSetFocus } from 'reducers/reduceComment'
 
-export default class DiscussionTimelineItem extends Component {
+export class DiscussionTimelineItem extends Component {
   state = {
     replying: false,
   }
