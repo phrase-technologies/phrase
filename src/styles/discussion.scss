@@ -22,6 +22,10 @@ $discussion-form-height: 90px;
   background: #555;
   background-image: linear-gradient(180deg, #666, #555);
   padding: 6px 5px;
+
+  .user-bubble {
+    cursor: pointer;
+  }
 }
 .discussion-presence-all {
   position: relative;
