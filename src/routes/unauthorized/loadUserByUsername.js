@@ -13,7 +13,7 @@ export default ({ api, db }) => {
       let loadedUser = await rUserGetFromUsername(db, { username: theUsername })
 
       if (!loadedUser)
-        return res.json({ success: false, message: `User not found!` })
+        return res.status(404).json({ success: false, message: `User not found!` })
 
       res.json({ loadedUser: formatLoadedUser({ loadedUser }) })
 

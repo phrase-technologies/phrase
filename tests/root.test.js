@@ -20,6 +20,7 @@ import login from './auth/routes/login'
 
 // Unauthorized
 import loadUserPhrases from './routes/unauthorized/loadUserPhrases'
+import loadUserByUsername from './routes/unauthorized/loadUserByUsername'
 import loadUser from './routes/unauthorized/loadUser'
 import loadOne from './routes/unauthorized/loadOne'
 
@@ -149,7 +150,9 @@ async function runTests () {
 
   loadOne({ globals, author: alice, observer: bob, publicPhraseId, privatePhraseId })
 
-  loadUser({ globals, author: alice, collaborator: chris, observer: bob })
+  loadUser({ globals, observer: bob })
+
+  loadUserByUsername({ globals, observer: bob })
 
   collab({ globals, author: alice, collaborator: chris, phraseId: privatePhraseId })
 
