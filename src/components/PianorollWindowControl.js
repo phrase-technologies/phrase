@@ -132,6 +132,9 @@ export class PianorollWindowControl extends Component {
   }
 
   noteEvent(e, bar, key, foundNote) {
+    if (this.props.currentTrack.type === "AUDIO")
+      return
+
     // Play the sound
     this.previewNoteSound([key], foundNote.velocity)
 
@@ -225,7 +228,8 @@ export class PianorollWindowControl extends Component {
   emptyAreaEvent(e, bar, key) {
     // Second Click - Empty Area
     if (this.lastEvent &&
-        this.lastEvent.action === CLICK_EMPTY_AREA) {
+        this.lastEvent.action === CLICK_EMPTY_AREA &&
+        this.props.currentTrack.type !== "AUDIO") {
       // Double click - Create Note
       if (this.props.arrangeTool === `pointer` &&
         Date.now() - this.lastEvent.time < DOUBLECLICK_DELAY
@@ -246,6 +250,8 @@ export class PianorollWindowControl extends Component {
     if (!this.lastEvent) {
       switch(this.props.arrangeTool) {
         case `pencil`:
+          if (this.props.currentTrack.type === "AUDIO")
+            return
           this.previewNoteSound([Math.ceil(key)], 127)
           this.props.dispatch(phraseCreateNote({ trackID: this.props.currentTrack.id, start: bar, key }))
           break

@@ -65,6 +65,16 @@ export default class PianoSource {
         })
       })
     )
+
+    STORE.dispatch({
+      type: samplesActions.LOADING,
+      payload: {
+        id: 'Piano',
+        totalSamples: samplesToLoadByKey.length * 4,
+        samplesLoaded: 0,
+        bufferMap: this.bufferMap,
+      }
+    })
   }
 
   connect(target) {

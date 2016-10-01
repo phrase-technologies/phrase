@@ -69,6 +69,8 @@ export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ign
     let state = getState()
     let clips = state.phrase.present.clips
     let newClip = clips[clips.length - 1]
+    if (!newClip)
+      return
     dispatch({ type: phrase.SELECT_CLIP, payload: { clipID: newClip.id, union: false }, ignore })
   }
 }
@@ -976,22 +978,31 @@ export default function reducePhrase(state = defaultState, action) {
 }
 
 function reduceCreateTrack(state, action) {
-
-  // for testing
-
-  let DEFAULT_INSTRUMENT = {
-    id: `Piano`,
-    config: {
-      // polyphony: 32,
-      // oscillatorType: `square`
-    }
-  }
-
-  let DEFAULT_RACK = [
-    DEFAULT_INSTRUMENT
-  ]
-
   let type = action.trackType || 'MIDI'
+  let DEFAULT_RACK
+
+  if (type === 'MIDI') {
+    let DEFAULT_INSTRUMENT = {
+      id: `Piano`,
+      config: {
+        // polyphony: 32,
+        // oscillatorType: `square`
+      }
+    }
+
+    DEFAULT_RACK = [
+      DEFAULT_INSTRUMENT
+    ]
+  } else {
+    let AUDIO_LINE_IN = {
+      id: `Audio Line In`,
+      config: {},
+    }
+
+    DEFAULT_RACK = [
+      AUDIO_LINE_IN,
+    ]
+  }
 
   return u({
     tracks: uAppend(
@@ -1023,10 +1034,16 @@ function reduceCreateClip(state, action) {
   if (!action.payload.newRecording && getClipAtBar(state, action.payload.start, action.payload.trackID))
     return state
 
+  // Cannot create notes in audio tracks, ignore
+  let foundTrack = state.tracks.find(track => track.id === action.payload.trackID)
+  if (foundTrack.type === "AUDIO")
+    return state
+
   // Create new clip
   let snappedClipStart = action.payload.snapStart ? Math.floor(action.payload.start) + 0.00 : action.payload.start
   let newClip = u.freeze({
     id:         state.clipAutoIncrement,
+    type:       foundTrack.type,
     trackID:    action.payload.trackID,
     start:      snappedClipStart,
     end:        snappedClipStart + (action.payload.length || 1.00),
@@ -1069,6 +1086,13 @@ function reduceCreateNote(state, action) {
     state = reduceCreateClip(state, action)
     foundClip = getClipAtBar(state, action.payload.start, action.payload.trackID)
   }
+
+  // Cannot create notes in audio tracks, ignore
+  if (!foundClip)
+    return state
+  let foundTrack = state.tracks.find(track => track.id === foundClip.trackID)
+  if (foundTrack.type === "AUDIO")
+    return state
 
   // Insert note, snap to same length as most previously created note
   let snapGrid = 0.125 // TODO: Make this adjust based on zoom

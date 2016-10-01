@@ -1,6 +1,6 @@
 
 // ----------------------------------------------------------------------------
-// Piano Roll
+// Audio Roll
 // ----------------------------------------------------------------------------
 .audioroll-empty {
   position: absolute;
@@ -15,6 +15,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.audioroll {
+  > .timeline-cursor-window { left: 0; }
+  > .timeline-playhead-window { left: 0; }
+  > .timeline-selection-window { left: 0; }
+  > .timeline-comment-range-window { left: 0; }
+  > .pianoroll-timeline-control { left: 0; }
+  > .pianoroll-timeline-display { left: 0; border-top-left-radius: 4px; }
+  > .pianoroll-window-control { left: 0; }
+  > .pianoroll-window-display { left: 0; border-bottom-left-radius: 4px; }
+  .pianoroll-scrollbar-horizontal { right: 8px; }
 }
 
 // ============================================================================

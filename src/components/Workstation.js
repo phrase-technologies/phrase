@@ -272,9 +272,11 @@ export class Workstation extends Component {
       openInputMethod: this.props.inputMethodsTour,
     }
 
+    let isMidi = this.props.selectedTrack && this.props.selectedTrack.type !== "AUDIO"
+
     return (
       <CursorProvider>
-        <HotkeyProvider>
+        <HotkeyProvider midi={isMidi}>
           <MouseEventProvider>
 
             <div className="workstation-background">

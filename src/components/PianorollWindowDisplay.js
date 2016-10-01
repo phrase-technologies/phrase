@@ -50,7 +50,8 @@ export class PianorollWindowDisplay extends Component {
     return function(canvasContext) {
       canvasContext.clearRect(0, 0, this.props.grid.width, this.props.grid.height)
       this.props.grid.calculateZoomThreshold()
-      this.renderKeyLines(canvasContext, this.props.yMin, this.props.yMax)
+      if (this.props.currentTrack.type !== "AUDIO")
+        this.renderKeyLines(canvasContext, this.props.yMin, this.props.yMax)
       this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax)
       this.renderClips(canvasContext,
         this.props.xMin,

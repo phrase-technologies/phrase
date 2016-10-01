@@ -9,7 +9,6 @@ import {
   midiIncrementOctave,
   midiDecrementOctave,
 } from 'reducers/reduceMIDI'
-import { modalClose } from 'reducers/reduceModal'
 import connectEngine from '../audio/AudioEngineConnect.js'
 import {
   transportRecord,
@@ -48,6 +47,16 @@ class HotkeyProvider extends Component {
     document.addEventListener('keyup', this.handleKeyUp)
   }
 
+  componentDidUpdate() {
+    document.addEventListener('keydown', this.handleKeyDown)
+    document.addEventListener('keyup', this.handleKeyUp)
+  }
+
+  componentWillReceiveProps() {
+    document.removeEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('keyup', this.handleKeyUp)
+  }
+
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown)
     document.removeEventListener('keyup', this.handleKeyUp)
@@ -77,49 +86,56 @@ class HotkeyProvider extends Component {
     // Musical Typing
     // ----------------------------------------------------------------------
     // Musical Typing Settings (do this before to avoid conflicts with CMD+Z for undo)
-    switch(e.keyCode) {
-      case 16: // shift - sustain on
-        ENGINE.sendMidiEvent({ trackID: 0, key: 0, type: 176, velocity: 127 })
-        break
-      case 90:   // Z - decrement current octave
-        if (!e.metaKey && !e.ctrlKey)
-          dispatch(midiDecrementOctave())
-        break
-      case 88:   // X - increment current octave
-        if (!e.metaKey && !e.ctrlKey)
-          dispatch(midiIncrementOctave())
-        break
+    if (this.props.midi) {
+      switch(e.keyCode) {
+        case 16: // shift - sustain on
+          ENGINE.sendMidiEvent({ trackID: 0, key: 0, type: 176, velocity: 127 })
+          break
+        case 90:   // Z - decrement current octave
+          if (!e.metaKey && !e.ctrlKey)
+            dispatch(midiDecrementOctave())
+          break
+        case 88:   // X - increment current octave
+          if (!e.metaKey && !e.ctrlKey)
+            dispatch(midiIncrementOctave())
+          break
+      }
+      let note = this.getNoteFromKeyCode(e.keyCode)
+      if (!e.metaKey && !e.ctrlKey && note) {
+        ENGINE.fireNote({ trackID: 0, keyNum: note, velocity: 127 })
+        e.preventDefault()
+        return
+      }
     }
-    let note = this.getNoteFromKeyCode(e.keyCode)
-    if (!e.metaKey && !e.ctrlKey && note) {
-      ENGINE.fireNote({ trackID: 0, keyNum: note, velocity: 127 })
-      e.preventDefault()
-      return
+
+    if (this.props.midi) {
+      switch(e.keyCode) {
+        // ----------------------------------------------------------------------
+        // Undo History
+        case 90:  // CTRL/CMD+Z - Undo last action
+          if (isModifierOn(e) && e.shiftKey) {
+            dispatch(UndoActions.redo())
+            e.preventDefault()
+          } else if (isModifierOn(e)) {
+            dispatch(UndoActions.undo())
+            e.preventDefault()
+          }
+          break
+        case 89:  // CTRL/CMD+Y - Redo last action
+          if (isModifierOn(e)) {
+            dispatch(UndoActions.redo())
+            e.preventDefault()
+          }
+          break
+        // ----------------------------------------------------------------------
+        // Transport Controls
+        case 82:  // R - Record
+          if (!isModifierOn(e)) dispatch(transportRecord())
+          break
+      }
     }
 
     switch(e.keyCode) {
-      // ----------------------------------------------------------------------
-      // Undo History
-      case 90:  // CTRL/CMD+Z - Undo last action
-        if (isModifierOn(e) && e.shiftKey) {
-          dispatch(UndoActions.redo())
-          e.preventDefault()
-        } else if (isModifierOn(e)) {
-          dispatch(UndoActions.undo())
-          e.preventDefault()
-        }
-        break
-      case 89:  // CTRL/CMD+Y - Redo last action
-        if (isModifierOn(e)) {
-          dispatch(UndoActions.redo())
-          e.preventDefault()
-        }
-        break
-      // ----------------------------------------------------------------------
-      // Transport Controls
-      case 82:  // R - Record
-        if (!isModifierOn(e)) dispatch(transportRecord())
-        break
       case 32:  // Space - Toggle Playback
         dispatch(transportPlayToggle())
         e.preventDefault()
@@ -141,6 +157,10 @@ class HotkeyProvider extends Component {
           dispatch(transportMetronome())
         e.preventDefault()
         break
+    }
+
+
+    switch(e.keyCode) {
       // ----------------------------------------------------------------------
       // Editing
       case 8:   // Backspace - Delete Selection
