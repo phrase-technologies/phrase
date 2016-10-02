@@ -4,7 +4,7 @@ import { withRouter } from 'react-router'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
 import { isModifierOn } from 'helpers/compatibilityHelpers'
-import { shiftInterval } from 'helpers/intervalHelpers'
+import { microZoomScaling } from 'helpers/intervalHelpers'
 
 import {
   midiIncrementOctave,
@@ -175,18 +175,29 @@ class HotkeyProvider extends Component {
 
     switch(e.keyCode) {
       case 189: // '-' - Zoom Out
+        let newMax2
         if (e.shiftKey) {
-          let newMax = Math.min(this.props.xMax + 0.1, 1.0)
-          console.log(newMax)
-          dispatch(pianorollScrollX({max: newMax}))
+          // Zoom Y-Axis
+          newMax2 = Math.min(this.props.yMax - 0.05, 1.0)
+          console.log(newMax2)
+          dispatch(pianorollScrollY({max: newMax2}))
+        } else {
+          // Zoom X-Axis
+          if (this.props.xMax - this.props.xMin <= 0.1) {
+            let { newMin, newMax } = microZoomScaling(this.props.xMin, this.props.xMax)
+            newMax2 = newMax
+          } else {          
+            newMax2 = Math.min(this.props.xMax - 0.05, 1.0)
+          }
+          console.log(newMax2)
+          dispatch(pianorollScrollX({max: newMax2}))
+          
         }
         break
       case 187: // '+' - Zoom in
-        if (e.shiftKey) {
-          let newMax = Math.max(this.props.xMax - 0.1, 0.001)
-          console.log(newMax)
-          dispatch(pianorollScrollX({max: newMax}))
-        }
+        let newMax = Math.min(this.props.xMax + 0.05, 1.0)
+        console.log(newMax)
+        dispatch(pianorollScrollX({max: newMax}))
         break
       // ----------------------------------------------------------------------
       // Editing

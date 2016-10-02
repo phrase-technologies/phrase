@@ -100,7 +100,7 @@ export default function reducePianoroll(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_X:
       // Zoom X
-      console.log(action)
+      console.log(state)
       if (action.fulcrum !== undefined) {
         let zoomFactor = (action.delta + 500) / 500
         let [newMin, newMax] = zoomInterval([state.xMin, state.xMax], zoomFactor, action.fulcrum)
