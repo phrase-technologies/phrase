@@ -183,14 +183,6 @@ class HotkeyProvider extends Component {
           dispatch(pianorollScrollY({max: newMax2}))
         } else {
           // Zoom X-Axis
-          if (this.props.xMax - this.props.xMin <= 0.1) {
-            let { newMin, newMax } = microZoomScaling(this.props.xMin, this.props.xMax)
-            newMax2 = newMax
-          } else {          
-            newMax2 = Math.min(this.props.xMax - 0.05, 1.0)
-          }
-          console.log(newMax2)
-          dispatch(pianorollScrollX({max: newMax2}))
           
         }
         break

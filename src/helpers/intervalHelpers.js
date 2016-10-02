@@ -64,22 +64,3 @@ export function restrictTimelineZoom(state, barCount) {
 export function negativeModulus(dividend, modulus) {
   return ((dividend % modulus) - modulus) % modulus
 }
-
-// ----------------------------------------------------------------------------
-// Proportionally zoom as it reaches lower than 1 bar on screen width for easier microadjustments
-export function microZoomScaling(min, max, zoomPct = 0.25, zoomLimit = 0.005) {
-  // See how this would work in conjunction with restrictTimelineZoom
-  let newMax = max * (1 - zoomPct)
-  let range = max - min
-  if (range <= 0.005) {
-    return {
-      newMax: min + 0.005,
-      newMin: min
-    }
-  } else {
-    return {
-      newMax: newMax,
-      newMin: min
-    }
-  }
-}
