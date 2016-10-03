@@ -7,7 +7,9 @@ import {
   fireNote,
   killNote,
   sendMidiEvent,
-  updateMidiCommands
+  updateAudioCommands,
+  updateMidiCommands,
+  loadSample,
 } from './AudioEngineMidiTriggers'
 import {
   startPlayback,
@@ -23,7 +25,7 @@ let AudioContext = window.AudioContext || window.webkitAudioContext || false
 // This is the universal glue of the application. In this engine, each track
 // is given a `trackModule` with a `gain`, a `pan`, `mute`/`solo` functionality,
 // an `effectsChain`, and is routed into a `masterGain`.
-export default function createAudioEngine(STORE) {
+export default function initializeAudioEngine(ENGINE, STORE) {
 
   // --------------------------------------------------------------------------
   // Initialize Internals
@@ -48,6 +50,7 @@ export default function createAudioEngine(STORE) {
     playStartTime: null,
     playheadPositionBars: null,
     stopQueued: false,
+    bufferMap: {},
     unsubscribeStoreChanges: null,
     lastState: {
       tracks: null,
@@ -70,8 +73,10 @@ export default function createAudioEngine(STORE) {
       updateNodes(engine, STORE)
 
     // Notes + Tempo
-    if (state.phrase !== engine.lastState.phrase)
+    if (state.phrase !== engine.lastState.phrase) {
       updateMidiCommands(engine, state)
+      updateAudioCommands(engine, STORE)
+    }
 
     // Keep track of last state to avoid duplicated updates
     engine.lastState = state
@@ -83,7 +88,7 @@ export default function createAudioEngine(STORE) {
     }
     // STOP Playback state
     else if (!state.transport.playing && engine.isPlaying) {
-      stopPlayback(engine)
+      stopPlayback(engine, state)
     }
 
     // RECORD start during existing playback
@@ -112,22 +117,23 @@ export default function createAudioEngine(STORE) {
   // --------------------------------------------------------------------------
   // Expose the API
   // --------------------------------------------------------------------------
-  return {
-    fireNote: ({ trackID, keyNum, velocity, disableRecording }) => {
-      fireNote({ engine, trackID, keyNum, velocity, disableRecording })
-    },
-    killNote: ({ trackID, keyNum, disableRecording }) => {
-      killNote({ engine, trackID, keyNum, disableRecording })
-    },
-    sendMidiEvent: ({ trackID, key, type, velocity, disableRecording }) => {
-      sendMidiEvent({ engine, trackID, key, type, velocity, disableRecording })
-    },
-    getTrackOutputDecibels: (trackID) => {
-      return getTrackOutputDecibels(engine, trackID)
-    },
-    destroy: () => {
-      engine.unsubscribeStoreChanges()
-      engine.ctx.close()
-    }
+  ENGINE.fireNote = ({ trackID, keyNum, velocity, disableRecording }) => {
+    fireNote({ engine, trackID, keyNum, velocity, disableRecording })
+  }
+  ENGINE.killNote = ({ trackID, keyNum, disableRecording }) => {
+    killNote({ engine, trackID, keyNum, disableRecording })
+  }
+  ENGINE.sendMidiEvent = ({ trackID, key, type, velocity, disableRecording }) => {
+    sendMidiEvent({ engine, trackID, key, type, velocity, disableRecording })
+  }
+  ENGINE.getTrackOutputDecibels = (trackID) => {
+    return getTrackOutputDecibels(engine, trackID)
+  }
+  ENGINE.loadSample = (url) => {
+    loadSample(engine, url)
+  }
+  ENGINE.destroy = () => {
+    engine.unsubscribeStoreChanges()
+    engine.ctx.close()
   }
 }

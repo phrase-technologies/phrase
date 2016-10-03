@@ -8,6 +8,8 @@ import {
 import {
   fireNote,
   killNote,
+  fireAudio,
+  killAudio,
   sendMidiEvent,
 } from './AudioEngineMidiTriggers.js'
 
@@ -55,9 +57,24 @@ export function startPlayback(engine, dispatch) {
     // Schedule up to the next few milliseconds worth of notes
     while (currentCommandTime <= engine.ctx.currentTime + 0.10) {
 
+      // Play current Audio Clips
+      let currentAudioClips = engine.audioClips.filter(clip => {
+        return clip.start <= engine.playheadPositionBars &&
+          clip.end > engine.playheadPositionBars
+      })
+
       // Empty section at end of song (no more commands) - escape
-      if (engine.iCommand < 0 || engine.iCommand >= engine.midiCommands.length)
+      let noMoreNotes = engine.iCommand < 0 || engine.iCommand >= engine.midiCommands.length
+      let noMoreAudio = engine.iClip < 0 || engine.iClip >= engine.audioClips.length
+      if (noMoreNotes && noMoreAudio)
         break
+
+      currentAudioClips.forEach(clip => {
+        fireAudio({
+          engine,
+          clip,
+        })
+      })
 
       if (currentCommand && [`addNoteOn`, `addNoteOff`].some(t => currentCommand.type === t)) {
         fireNote({
@@ -125,19 +142,25 @@ export function startPlayback(engine, dispatch) {
 // This function kills all active sounds and cancels the playback setInterval
 // loop. It also clears flags that are used to queue up other behaviours where
 // necessary
-export function stopPlayback(engine) {
+export function stopPlayback(engine, state) {
 
   console.log('stopPlayback()', engine.ctx.currentTime)
 
   // Kill all active sounds
-  _.forOwn(engine.trackModules, (track, trackID) => {
-    for (let keyNum = 1; keyNum <= 128; keyNum++)
-      killNote({
-        engine,
-        trackID,
-        keyNum,
-        disableRecording: true,
-      })
+  _.forOwn(engine.trackModules, (trackModule, trackID) => {
+    let track = state.phrase.present.tracks.find(track => +track.id === +trackID)
+    if (track.type === "AUDIO") {
+      killAudio({engine, trackID })
+    } else {
+      for (let keyNum = 1; keyNum <= 128; keyNum++) {
+        killNote({
+          engine,
+          trackID,
+          keyNum,
+          disableRecording: true,
+        })
+      }
+    }
   })
 
   // Cancel the playback setInterval loop

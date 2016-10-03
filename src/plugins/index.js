@@ -1,3 +1,6 @@
+import AudioSource from './Audio/AudioSource'
+import AudioInterface from './Audio/AudioInterface'
+import AudioMeta from './Audio/AudioMeta'
 import PollySource from './Polly/PollySource'
 import PollyInterface from './Polly/PollyInterface'
 import PollyMeta from './Polly/PollyMeta'
@@ -12,6 +15,11 @@ import DelayInterface from './Delay/DelayInterface'
 import DelayMeta from './Delay/DelayMeta'
 
 export default {
+  Audio: {
+    Source: AudioSource,
+    Interface: AudioInterface,
+    Meta: AudioMeta,
+  },
   Polly: {
     Source: PollySource,
     Interface: PollyInterface,

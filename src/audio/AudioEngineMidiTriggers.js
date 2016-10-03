@@ -1,4 +1,8 @@
-import { phraseMidiSelector } from 'selectors/selectorTransport'
+import load from 'audio-loader'
+import {
+  phraseMidiSelector,
+  phraseAudioSelector,
+} from 'selectors/selectorTransport'
 import { midiNoteOn, midiEvent } from 'reducers/reduceMIDI'
 
 import {
@@ -29,6 +33,32 @@ export function updateMidiCommands(engine, state) {
     engine.playStartTime = engine.ctx.currentTime - engine.playheadPositionBars * BEATS_PER_BAR * SECONDS_PER_MINUTE / state.phrase.present.tempo
   }
 
+}
+
+// ============================================================================
+// CONVERT AUDIO CLIPS TO PLAYBACK COMAMNDS
+// ============================================================================
+// This converts audio clips into playback commands
+export function updateAudioCommands(engine, STORE) {
+
+  // Playing, ensure latest notes are played next
+  let audioClips = phraseAudioSelector(STORE.getState())
+
+  if (audioClips !== engine.audioCommands) {
+    engine.audioClips = audioClips
+    engine.iClip = engine.audioClips.findIndex(clip => {
+      return clip.start >= engine.playheadPositionBars
+    })
+  }
+
+}
+
+export function loadSample(engine, url) {
+  if (!engine.bufferMap[url]) {
+    load(engine.ctx, url).then(result => {
+      engine.bufferMap[url] = result
+    })
+  }
 }
 
 // TODO REFACTOR AS VIRTUAL AUDIO GRAPH STYLE
@@ -66,6 +96,31 @@ export function fireNote({
       start: velocity && (time || playTimeToBar(engine.ctx.currentTime, engine)),
       end: !velocity && (time || playTimeToBar(engine.ctx.currentTime, engine)),
     }))
+  }
+}
+
+export function killAudio({
+  engine,
+  trackID,
+}) {
+  let trackModule = engine.trackModules[trackID]
+  let audioIn = trackModule.effectsChain[0]
+
+  audioIn.killAudio()
+}
+export function fireAudio({
+  engine,
+  clip,
+}) {
+  let buffer = engine.bufferMap[clip.audioUrl]
+  let trackModule = engine.trackModules[clip.trackID]
+  let audioIn = trackModule.effectsChain[0]
+  let currentPosition = engine.playheadPositionBars - clip.start
+  let duration = clip.end - engine.playheadPositionBars
+  let id = `${clip.id}-${clip.url}`
+
+  if (buffer && trackModule && audioIn && duration > 0) {
+    audioIn.fireAudio({ id, buffer, currentPosition, duration })
   }
 }
 

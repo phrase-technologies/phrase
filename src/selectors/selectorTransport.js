@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 import { createLargeCacheSelector } from '../helpers/arrayHelpers.js'
 import { loopedNoteSelector } from './selectorPianoroll.js'
 
+const tracksSelector = (state) => (state.phrase.present.tracks)
 const clipsSelector = (state) => (state.phrase.present.clips)
 const notesSelector = (state) => (state.phrase.present.notes)
 const midiEventsSelector = (state) => (state.phrase.present.midiEvents)
@@ -46,5 +47,21 @@ export const phraseMidiSelector = createSelector(
       .sort((a, b) => a.bar - b.bar)
 
     return midiCommands
+  }
+)
+
+export const phraseAudioSelector = createSelector(
+  tracksSelector,
+  clipsSelector,
+  (tracks, clips) => {
+
+    let audioTrackIds = tracks
+      .filter(track => track.type === "AUDIO")
+      .map(track => track.id)
+    let audioClips = clips
+      .filter(clip => audioTrackIds.includes(clip.trackID))
+      .sort((a, b) => a.start > b.start)
+
+    return audioClips
   }
 )

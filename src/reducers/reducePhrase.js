@@ -50,12 +50,22 @@ export const phraseMuteTrack = (trackID) => ({type: phrase.MUTE_TRACK, trackID})
 export const phraseSoloTrack = (trackID) => ({type: phrase.SOLO_TRACK, trackID})
 export const phraseSetTempo = (tempo) => ({type: phrase.SET_TEMPO, tempo})
 
-export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ignore, newRecording, recordingTargetClipID }) => {
-  return (dispatch, getState) => {
+export const phraseCreateClip = ({
+  trackID,
+  start,
+  length,
+  snapStart = true,
+  ignore,
+  newRecording,
+  recordingTargetClipID,
+  audioUrl,
+}) => {
+  return (dispatch, getState, { ENGINE }) => {
     dispatch({
       type: phrase.CREATE_CLIP,
       payload: {
         trackID,
+        audioUrl,
         start,
         length,
         snapStart,
@@ -72,6 +82,10 @@ export const phraseCreateClip = ({ trackID, start, length, snapStart = true, ign
     if (!newClip)
       return
     dispatch({ type: phrase.SELECT_CLIP, payload: { clipID: newClip.id, union: false }, ignore })
+
+    // Load the corresponding audio file (if audio)
+    if (audioUrl)
+      ENGINE.loadSample(audioUrl)
   }
 }
 
@@ -991,11 +1005,11 @@ function reduceCreateTrack(state, action) {
     }
 
     DEFAULT_RACK = [
-      DEFAULT_INSTRUMENT
+      DEFAULT_INSTRUMENT,
     ]
   } else {
     let AUDIO_LINE_IN = {
-      id: `Audio Line In`,
+      id: `Audio`,
       config: {},
     }
 
@@ -1036,7 +1050,7 @@ function reduceCreateClip(state, action) {
 
   // Cannot create notes in audio tracks, ignore
   let foundTrack = state.tracks.find(track => track.id === action.payload.trackID)
-  if (foundTrack.type === "AUDIO")
+  if (foundTrack.type === "AUDIO" && !action.payload.audioUrl)
     return state
 
   // Create new clip
@@ -1050,6 +1064,7 @@ function reduceCreateClip(state, action) {
     offset:     0.00,
     loopLength: 1.00,
     recording:  action.payload.newRecording,
+    audioUrl:   action.payload.audioUrl,
   })
 
   // Insert

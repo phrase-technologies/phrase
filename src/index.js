@@ -37,10 +37,11 @@ import autosave from 'middleware/autosave'
 // Socket stuff!
 import io from 'socket.io-client'
 const SOCKET = io(API_URL)
+const ENGINE = {}
 
 const finalCreateStore = compose(
   applyMiddleware(
-    thunk.withExtraArgument({ socket: SOCKET }),
+    thunk.withExtraArgument({ socket: SOCKET, ENGINE }),
     routerMiddleware(browserHistory),
     autosave,
   ),
@@ -64,7 +65,7 @@ persistStore(STORE, persistConfig, () => {
 
 const HISTORY = syncHistoryWithStore(browserHistory, STORE)
 
-import createAudioEngine from 'audio/AudioEngine.js'
+import initializeAudioEngine from 'audio/AudioEngine.js'
 import Routes from 'components/Routes.js'
 import ErrorBrowserNotSupported from 'components/ErrorBrowserNotSupported'
 
@@ -84,7 +85,7 @@ else {
   // ============================================================================
   // Setup Audio Engine god object
   // ============================================================================
-  const ENGINE = createAudioEngine(STORE)
+  initializeAudioEngine(ENGINE, STORE)
 
   // ============================================================================
   // APPLICATION ENTRY POINT

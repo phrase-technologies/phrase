@@ -130,6 +130,10 @@ export default function reducePhraseMeta(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case phrase.LOAD_FINISH:
+      let trackSelectionID = action.payload.state.present.tracks[0]
+        ? action.payload.state.present.tracks[0].id
+        : 0
+
       return u({
         loading: false,
         ...action.payload, // lots of key conversions, maybe try and consolidate
@@ -139,7 +143,7 @@ export default function reducePhraseMeta(state = defaultState, action) {
         authorUsername: action.payload.username,
         dateCreated: action.payload.dateCreated,
         dateModified: action.payload.dateModified,
-        trackSelectionID: action.payload.state.present.tracks[0].id,
+        trackSelectionID,
       }, action.retainNoteSelection ? state : defaultState)  // Clear everything else to default!
 
     // ------------------------------------------------------------------------
