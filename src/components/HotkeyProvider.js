@@ -177,7 +177,7 @@ class HotkeyProvider extends Component {
       case 189: // '-' - Zoom Out
         if (e.shiftKey) {
           // Zoom Y-Axis
-          dispatch(pianorollScrollY({max: Math.min(this.props.yMax + 0.05, 1.0)}))
+          dispatch(pianorollScrollY({min: this.props.yMin, max: Math.min(this.props.yMax + 0.05, 1.0)}))
         } else {
           // Zoom X-Axis
           var newXMax = zoomOutScaling(
@@ -190,7 +190,8 @@ class HotkeyProvider extends Component {
         break
       case 187: // '+' - Zoom in
         if (e.shiftKey) {
-          dispatch(pianorollScrollY({max: Math.max(this.props.yMax - 0.05, 0.01)}))
+          // debugger
+          dispatch(pianorollScrollY({min: this.props.yMin, max: Math.max(this.props.yMax - 0.05, 0.01)}))
         } else {
           // Zoom X-Axis
           var newXMax = zoomInScaling(
@@ -198,6 +199,7 @@ class HotkeyProvider extends Component {
             this.props.xMax, 
             {normal: 0.05, scaling: 0.01}
           )
+          console.log(this.props.xMin)
           dispatch(pianorollScrollX({max: newXMax}))
         }
         break
@@ -310,7 +312,9 @@ function mapStateToProps(state) {
     ...state.modal,
     currentOctave: state.midi.currentOctave,
     xMin: state.pianoroll.xMin,
-    xMax: state.pianoroll.xMax
+    xMax: state.pianoroll.xMax,
+    yMin: state.pianoroll.yMin,
+    yMax: state.pianoroll.yMax
   }
 }
 

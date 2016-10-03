@@ -54,7 +54,9 @@ export function restrictTimelineZoom(state, barCount) {
       xMin,
       xMax
     }
+  console.log(xMin)
   }
+  console.log(state)
   return state
 }
 
@@ -66,7 +68,7 @@ export function negativeModulus(dividend, modulus) {
 }
 
 // ----------------------------------------------------------------------------
-// Proportionally scales zooming when it reaches below a range threshold between min and max x scroll values. Useful for fine tuning positional adjustments of notes
+// Proportionally scales zooming in when it reaches below a range threshold between min and max x scroll values. Useful for fine tuning positional adjustments of notes
 // Returns a new max value
 export function zoomInScaling(min, max, increments = {normal: 0.05, scaling: 0.01}, threshold = 0.1) {
   // Round Number to 4 decimal places to deal with floating point errors
@@ -76,7 +78,7 @@ export function zoomInScaling(min, max, increments = {normal: 0.05, scaling: 0.0
 
   // Case: Zooming in when approaching the threshold value 
   if (range > threshold && (range - threshold) <= increments.normal) {
-    return threshold
+    return roundedMin + threshold
   } else if (range <= threshold) {
     return Math.max(0.01, roundedMax - increments.scaling)
   } else {
@@ -84,14 +86,18 @@ export function zoomInScaling(min, max, increments = {normal: 0.05, scaling: 0.0
   }
 }
 
+// ----------------------------------------------------------------------------
+// Same as above for zooming out
+// Returns a new max value
 export function zoomOutScaling(min, max, increments = {normal: 0.05, scaling: 0.01}, threshold = 0.1) {
   // Round Number to 4 decimal places to deal with floating point errors
   let roundedMin = parseFloat(min.toFixed(4))
   let roundedMax = parseFloat(max.toFixed(4))
   let range = roundedMax - roundedMin
+
   // Case: Zooming Out when approaching the threshold value
   if (range < threshold && (range + increments.scaling) >= threshold) {
-    return threshold
+    return roundedMin + threshold
   } else if (range < threshold) {
     return Math.min(1.0, roundedMax + increments.scaling)
   } else {
