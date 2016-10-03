@@ -65,7 +65,7 @@ export function startPlayback(engine, dispatch) {
 
       // Empty section at end of song (no more commands) - escape
       let noMoreNotes = engine.iCommand < 0 || engine.iCommand >= engine.midiCommands.length
-      let noMoreAudio = engine.iClip < 0 || engine.iClip >= engine.audioClips.length
+      let noMoreAudio = currentAudioClips.length === 0
       if (noMoreNotes && noMoreAudio)
         break
 

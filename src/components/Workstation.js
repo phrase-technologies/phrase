@@ -210,7 +210,7 @@ export class Workstation extends Component {
           <div className="workstation-container">
             <Helmet title={`${loadingMessage} - Phrase.fm`} />
             <div className="workstation-loading text-center">
-              <span className="fa fa-music fa-2x" />
+              <span className="fa fa-spinner fa-pulse fa-2x" />
               <p style={{ marginTop: 15 }}>
                 { loadingMessage }
               </p>
@@ -384,20 +384,11 @@ export class Workstation extends Component {
     let correctPhrase = loadedPhrase.id === this.props.phraseId
     let ownerOfPhrase = loadedPhrase.masterControl.includes(this.props.userId)
     if (correctPhrase && !ownerOfPhrase) {
-      this.props.dispatch({
-        type: phrase.LOAD_FINISH,
+      this.props.dispatch(phraseLoadFinish({
         ignoreAutosave: true,
         retainNoteSelection: true,
-        payload: {
-          parentId: loadedPhrase.parentId,
-          id: loadedPhrase.id,
-          name: loadedPhrase.phrasename,
-          username: loadedPhrase.username,
-          dateCreated: loadedPhrase.dateCreated,
-          dateModified: loadedPhrase.dateModified,
-          state: loadedPhrase.state,
-        }
-      })
+        loadedPhrase,
+      }))
     } else {
       console.warn(`Received redundant socket update for ${loadedPhrase.id}`)
     }

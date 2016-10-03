@@ -500,21 +500,10 @@ export const phraseQuantizeSelection = () => {
   }
 }
 
-export const phraseLoadFromMemory = ({ parentId, id, name, username, dateCreated, dateModified, state }) => {
+export const phraseLoadFromMemory = (payload) => {
   return (dispatch) => {
     dispatch({ type: phrase.LOAD_START })
-    dispatch({
-      type: phrase.LOAD_FINISH,
-      payload: {
-        parentId,
-        id,
-        name,
-        username,
-        dateCreated,
-        dateModified,
-        state,
-      }
-    })
+    dispatch(phraseLoadFinish({ loadedPhrase: payload }))
   }
 }
 
@@ -530,18 +519,36 @@ export const phraseLoadFromDb = phraseId => {
       })
 
       if (loadedPhrase) {
-        dispatch({
-          type: phrase.LOAD_FINISH,
-          payload: {
-            ...loadedPhrase,
-            name: loadedPhrase.phrasename, // should probably make these the same
-          }
-        })
+        dispatch(phraseLoadFinish({ loadedPhrase }))
       } else if (message === `Phrase not found!`) {
         dispatch(phraseNotFound())
       }
 
     }})
+  }
+}
+
+export const phraseLoadFinish = ({
+  loadedPhrase,
+  ignoreAutosave = false,
+  retainNoteSelection = false,
+}) => {
+  return (dispatch, getState, { ENGINE }) => {
+    loadedPhrase.state.present.clips.forEach(async clip => {
+      if (clip.audioUrl) {
+        await ENGINE.loadSample(clip.audioUrl)
+      }
+    })
+
+    dispatch({
+      type: phrase.LOAD_FINISH,
+      ignoreAutosave,
+      retainNoteSelection,
+      payload: {
+        ...loadedPhrase,
+        name: loadedPhrase.phrasename, // should probably make these the same
+      }
+    })
   }
 }
 

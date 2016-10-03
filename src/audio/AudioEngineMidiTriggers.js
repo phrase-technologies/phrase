@@ -46,9 +46,6 @@ export function updateAudioCommands(engine, STORE) {
 
   if (audioClips !== engine.audioCommands) {
     engine.audioClips = audioClips
-    engine.iClip = engine.audioClips.findIndex(clip => {
-      return clip.start >= engine.playheadPositionBars
-    })
   }
 
 }
@@ -123,7 +120,7 @@ export function fireAudio({
   let audioIn = trackModule.effectsChain[0]
   let currentPosition = engine.playheadPositionBars - clip.start
   let duration = clip.end - engine.playheadPositionBars
-  let id = `${clip.id}-${clip.url}`
+  let id = `${clip.id}-${clip.audioUrl}`
 
   if (buffer && trackModule && audioIn && duration > 0) {
     audioIn.fireAudio({ id, buffer, currentPosition, duration })
