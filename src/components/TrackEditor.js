@@ -28,7 +28,20 @@ export class TrackEditor extends Component {
 
     let isMidi = this.props.currentTrack.type !== "AUDIO"
 
-    if (!isMidi && 0) {
+    if (!isMidi && !this.props.clips.length) {
+      if (!"UPLOAD IN PROGRESS") {
+        return (
+          <div className="audioroll-empty">
+            <div className="text-center">
+              <span className="fa fa-spinner fa-pulse fa-2x" />
+              <p style={{ marginTop: 10 }}>
+                Uploading...
+              </p>
+            </div>
+          </div>
+        )
+      }
+
       return (
         <div className="audioroll-empty">
           <div className="text-center">
