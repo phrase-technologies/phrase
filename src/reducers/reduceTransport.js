@@ -82,10 +82,22 @@ export const transportMovePlayhead = (bar, snap = false, dragging = false) => {
   // We need to know the length of the phrase - use a thunk to access other state branches
   return (dispatch, getState) => {
     let state = getState()
-    bar = snap ? Math.round(bar * 8) * 0.125 : bar
+    let playing = state.transport.playing
+
+    // Pause playback for scrubbing
+    if (playing && dragging)
+      dispatch({ type: transport.STOP })
+
+    bar = snap ? Math.round(bar * 4) * 0.25 : bar
     let barCount = state.phrase.present.barCount
     dispatch({ type: transport.MOVE_PLAYHEAD, bar, barCount })
-    if (!dragging) dispatch(transportAdjustPianoMixerScroll())
+
+    if (!dragging)
+      dispatch(transportAdjustPianoMixerScroll())
+
+    // Resume playback
+    if (playing && dragging)
+      dispatch({ type: transport.PLAY_TOGGLE })
   }
 }
 export const transportAdvancePlayhead = (bar) => {
@@ -184,7 +196,7 @@ export default function reduceTransport(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case transport.ADVANCE_PLAYHEAD:
       return u({
-        playhead: Math.min(action.barCount, Math.floor(state.playhead) + 1.0)
+        playhead: Math.min(action.barCount, Math.floor(state.playhead + 0.05) + 1.0)
       }, state)
 
     // ------------------------------------------------------------------------

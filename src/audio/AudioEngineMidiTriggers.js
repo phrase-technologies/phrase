@@ -53,11 +53,17 @@ export function updateAudioCommands(engine, STORE) {
 
 }
 
-export function loadSample(engine, url) {
+export async function loadSample(engine, url) {
   if (!engine.bufferMap[url]) {
-    load(engine.ctx, url).then(result => {
-      engine.bufferMap[url] = result
-    })
+    let result = await load(engine.ctx, url)
+    engine.bufferMap[url] = result
+    return {
+      duration: result.duration
+    }
+  }
+
+  return {
+    duration: null
   }
 }
 

@@ -50,6 +50,7 @@ export const phrase = namespaceActions(
   [
     'RENAME',
     'CREATE_TRACK',
+    'CHANGE_PHRASE_LENGTH',
     'MUTE_TRACK',
     'SOLO_TRACK',
     'UPDATE_PLUGIN_CONFIG',

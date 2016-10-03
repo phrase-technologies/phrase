@@ -129,8 +129,8 @@ export default function initializeAudioEngine(ENGINE, STORE) {
   ENGINE.getTrackOutputDecibels = (trackID) => {
     return getTrackOutputDecibels(engine, trackID)
   }
-  ENGINE.loadSample = (url) => {
-    loadSample(engine, url)
+  ENGINE.loadSample = async (url) => {
+    return await loadSample(engine, url)
   }
   ENGINE.destroy = () => {
     engine.unsubscribeStoreChanges()

@@ -60,14 +60,30 @@ export const phraseCreateClip = ({
   recordingTargetClipID,
   audioUrl,
 }) => {
-  return (dispatch, getState, { ENGINE }) => {
+  return async (dispatch, getState, { ENGINE }) => {
+    // Load the corresponding audio file (if audio)
+    let result
+    if (audioUrl) {
+      result = await ENGINE.loadSample(audioUrl)
+    }
+
+    let finalLength = audioUrl ? Math.ceil(result.duration) : length
+    let phraseLength = getState().phrase.present.barCount
+    if (start + finalLength >= phraseLength) {
+      dispatch({
+        type: phrase.CHANGE_PHRASE_LENGTH,
+        payload: { barCount: start + finalLength }
+      })
+    }
+
     dispatch({
       type: phrase.CREATE_CLIP,
       payload: {
         trackID,
         audioUrl,
         start,
-        length,
+        length: finalLength,
+        loopLength: finalLength,
         snapStart,
         newRecording,
         recordingTargetClipID,
@@ -82,10 +98,6 @@ export const phraseCreateClip = ({
     if (!newClip)
       return
     dispatch({ type: phrase.SELECT_CLIP, payload: { clipID: newClip.id, union: false }, ignore })
-
-    // Load the corresponding audio file (if audio)
-    if (audioUrl)
-      ENGINE.loadSample(audioUrl)
   }
 }
 
@@ -654,6 +666,12 @@ export default function reducePhrase(state = defaultState, action) {
       return reduceCreateTrack(state, action)
 
     // ------------------------------------------------------------------------
+    case phrase.CHANGE_PHRASE_LENGTH:
+      return u({
+        barCount: action.payload.barCount,
+      }, state)
+
+    // ------------------------------------------------------------------------
     case phrase.MUTE_TRACK:
       return u({
         tracks: u.updateIn(['*'], u.if(
@@ -1062,7 +1080,7 @@ function reduceCreateClip(state, action) {
     start:      snappedClipStart,
     end:        snappedClipStart + (action.payload.length || 1.00),
     offset:     0.00,
-    loopLength: 1.00,
+    loopLength: action.payload.loopLength || 1.00,
     recording:  action.payload.newRecording,
     audioUrl:   action.payload.audioUrl,
   })
