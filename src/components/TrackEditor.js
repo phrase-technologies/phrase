@@ -28,7 +28,7 @@ export class TrackEditor extends Component {
 
     let isMidi = this.props.currentTrack.type !== "AUDIO"
 
-    if (!isMidi && !this.props.clips.length) {
+    if (0 && !isMidi && !this.props.clips.length) {
       if (!"UPLOAD IN PROGRESS") {
         return (
           <div className="audioroll-empty">

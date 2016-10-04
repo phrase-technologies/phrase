@@ -26,7 +26,7 @@ let TransportControls = (props) => {
 
   return (
     <div className="btn-toolbar transport">
-      <TransportTempo editable={editable} />
+      <TransportTempo editable={editable} isAudio={props.isAudio} />
       <div className="btn-group hidden-xs">
         <TransportButton
           onButtonClick={() => dispatch(transportRewindPlayhead())}
@@ -55,28 +55,30 @@ let TransportControls = (props) => {
         <TransportButton
           onButtonClick={() => dispatch(transportRecord())}
           toggle={recording} color="red" tooltip="Record (R)"
-          disabled={!editable}
+          disabled={!editable || props.isAudio}
         >
           <i className="fa fa-fw fa-circle" />
         </TransportButton>
       </div>
-      <div className="btn-group hidden-xs">
-        <TransportButton
-          onButtonClick={() => dispatch(transportCountIn())}
-          toggle={countIn} tooltip="Count In (⇧M)" narrow={true} link={true}
-        >
-          <span style={{ fontSize:  8 }}>1</span>
-          <span style={{ fontSize: 10 }}>2</span>
-          <span style={{ fontSize: 12 }}>3</span>
-          <span style={{ fontSize: 14 }}>4</span>
-        </TransportButton>
-        <TransportButton
-          onButtonClick={() => dispatch(transportMetronome())}
-          toggle={metronome} tooltip='Metronome (M)' narrow={true} link={true}
-        >
-          <i className="phrase-icon-metronome" />
-        </TransportButton>
-      </div>
+      { props.isAudio ||
+        <div className="btn-group hidden-xs">
+          <TransportButton
+            onButtonClick={() => dispatch(transportCountIn())}
+            toggle={countIn} tooltip="Count In (⇧M)" narrow={true} link={true}
+          >
+            <span style={{ fontSize:  8 }}>1</span>
+            <span style={{ fontSize: 10 }}>2</span>
+            <span style={{ fontSize: 12 }}>3</span>
+            <span style={{ fontSize: 14 }}>4</span>
+          </TransportButton>
+          <TransportButton
+            onButtonClick={() => dispatch(transportMetronome())}
+            toggle={metronome} tooltip='Metronome (M)' narrow={true} link={true}
+          >
+            <i className="phrase-icon-metronome" />
+          </TransportButton>
+        </div>
+      }
       { mobilePlayButton(props) }
     </div>
   )
@@ -109,10 +111,13 @@ function mobilePlayButton({ dispatch, playing, playhead }) {
 }
 
 function mapStateToProps(state) {
+  let selectedTrack = state.phrase.present.tracks.find(x => x.id === state.phraseMeta.trackSelectionID)
+
   return {
     ...state.transport,
     existingPhrase: state.phraseMeta.phraseId,
     ownerOfPhrase: state.phraseMeta.authorUsername === state.auth.user.username,
+    isAudio: selectedTrack.type === "AUDIO",
   }
 }
 

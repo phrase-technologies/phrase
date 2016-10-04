@@ -8,10 +8,13 @@ import {
 import {
   fireNote,
   killNote,
-  fireAudio,
-  killAudio,
   sendMidiEvent,
 } from './AudioEngineMidiTriggers.js'
+
+import {
+  fireAudio,
+  killAudio,
+} from './AudioEngineAudioTriggers.js'
 
 import {
   BEATS_PER_BAR,
@@ -132,7 +135,7 @@ export function startPlayback(engine, dispatch) {
 
   // BEGIN!!!
   playBackLoop()
-  engine.scheduleLooper = setInterval(playBackLoop, 5)
+  engine.scheduleLooper = setInterval(playBackLoop, 25)
 
 }
 

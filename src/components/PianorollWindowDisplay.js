@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import connectEngine from '../audio/AudioEngineConnect.js'
 import provideGridSystem from './GridSystemProvider'
 import provideTween from './TweenProvider'
 import { getNoteMap } from 'helpers/notes'
@@ -165,6 +166,26 @@ export class PianorollWindowDisplay extends Component {
       canvasContext.closePath()
       canvasContext.stroke()
 
+      // Audio only
+      if (clip.audioUrl) {
+        // Waveform
+        let waveform = this.props.ENGINE.getSampleWaveform(clip.audioUrl)
+        if (waveform) {
+          canvasContext.drawImage(
+            waveform,
+            0, 0, waveform.width, waveform.height,
+            left, 0, right - left, this.props.grid.height
+          )
+        }
+
+        // Centerline
+        let center = closestHalfPixel(0.5 * this.props.grid.height, this.props.grid.pixelScale)
+        canvasContext.beginPath()
+        drawLine(canvasContext, left, center, right, center)
+        canvasContext.closePath()
+        canvasContext.stroke()
+      }
+
       // Loop Lines
       let currentLoopStart = clip.start + clip.offset + clip.loopLength
       let currentLoopStartCutoff = clip.start - currentLoopStart // Used to check if a note is cut off at the beginning of the current loop iteration
@@ -307,12 +328,15 @@ PianorollWindowDisplay.propTypes = {
   yMin:         React.PropTypes.number.isRequired,
   yMax:         React.PropTypes.number.isRequired,
   clips:        React.PropTypes.array.isRequired,
-  notes:        React.PropTypes.array.isRequired
+  notes:        React.PropTypes.array.isRequired,
+  ENGINE:       React.PropTypes.object.isRequired,
 }
 
-export default provideTween(
+export default  provideTween(
   ['xMin', 'xMax'],
   provideGridSystem(
-    PianorollWindowDisplay
+    connectEngine(
+      PianorollWindowDisplay
+    )
   )
 )

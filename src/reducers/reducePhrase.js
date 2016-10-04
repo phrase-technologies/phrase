@@ -67,7 +67,7 @@ export const phraseCreateClip = ({
       result = await ENGINE.loadSample(audioUrl)
     }
 
-    let finalLength = audioUrl ? Math.ceil(result.duration) : length
+    let finalLength = audioUrl ? result.duration : length
     let phraseLength = getState().phrase.present.barCount
     if (start + finalLength >= phraseLength) {
       dispatch({
@@ -533,12 +533,13 @@ export const phraseLoadFinish = ({
   ignoreAutosave = false,
   retainNoteSelection = false,
 }) => {
-  return (dispatch, getState, { ENGINE }) => {
-    loadedPhrase.state.present.clips.forEach(async clip => {
+  return async (dispatch, getState, { ENGINE }) => {
+    for (let i in loadedPhrase.state.present.clips) {
+      let clip = loadedPhrase.state.present.clips[i]
       if (clip.audioUrl) {
         await ENGINE.loadSample(clip.audioUrl)
       }
-    })
+    }
 
     dispatch({
       type: phrase.LOAD_FINISH,
@@ -1055,6 +1056,7 @@ function reduceCreateTrack(state, action) {
         solo: false
       }
     ),
+    tempo: type === 'MIDI' ? state.tempo : 240,
     trackAutoIncrement: state.trackAutoIncrement + 1,
     colorAutoIncrement: state.colorAutoIncrement + 1
   }, state)

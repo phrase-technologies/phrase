@@ -16,6 +16,10 @@ class TransportTempo extends Component {
   }
 
   render() {
+    if (this.props.isAudio) {
+      return null
+    }
+
     return (
       <div className="btn-group hidden-xs">
         <div className="transport-tempo-container">

@@ -7,10 +7,13 @@ import {
   fireNote,
   killNote,
   sendMidiEvent,
-  updateAudioCommands,
   updateMidiCommands,
-  loadSample,
 } from './AudioEngineMidiTriggers'
+import {
+  updateAudioCommands,
+  loadSample,
+  getSampleWaveform,
+} from './AudioEngineAudioTriggers'
 import {
   startPlayback,
   stopPlayback,
@@ -50,7 +53,8 @@ export default function initializeAudioEngine(ENGINE, STORE) {
     playStartTime: null,
     playheadPositionBars: null,
     stopQueued: false,
-    bufferMap: {},
+    bufferMap: {},    // Storing audio samples
+    waveformMap: {},  // Storing visual waveform data corresponding to each buffer
     unsubscribeStoreChanges: null,
     lastState: {
       tracks: null,
@@ -131,6 +135,9 @@ export default function initializeAudioEngine(ENGINE, STORE) {
   }
   ENGINE.loadSample = async (url) => {
     return await loadSample(engine, url)
+  }
+  ENGINE.getSampleWaveform = (url) => {
+    return getSampleWaveform(engine, url)
   }
   ENGINE.destroy = () => {
     engine.unsubscribeStoreChanges()

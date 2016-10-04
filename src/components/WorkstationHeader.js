@@ -72,7 +72,7 @@ export class WorkstationHeader extends Component {
           </div>
           <div className="btn-toolbar workstation-header-social">
             <div className="btn-group">
-              { this.renderMIDIExportButton() }
+              { this.props.isAudio || this.renderMIDIExportButton() }
             </div>
           </div>
         </div>
@@ -166,6 +166,10 @@ export class WorkstationHeader extends Component {
   }
 
   renderQuantizeTool() {
+    if (this.props.isAudio) {
+      return null
+    }
+
     let { dispatch } = this.props
     let QuantizeDivision = <Tooltip id="tooltip-quantize-division">Quantize Division</Tooltip>
     let QuantizeTooltip = <Tooltip id="tooltip-quantize-tool">Quantize Tool (Q)</Tooltip>
@@ -294,6 +298,8 @@ export class WorkstationHeader extends Component {
 }
 
 function mapStateToProps(state) {
+  let selectedTrack = state.phrase.present.tracks.find(x => x.id === state.phraseMeta.trackSelectionID)
+
   return {
     undoable: state.phrase.past.length,
     redoable: state.phrase.future.length,
@@ -307,6 +313,7 @@ function mapStateToProps(state) {
     quantizeDivision: state.quantizer.division,
     inputMethodsTour: state.navigation.inputMethodsTour,
     ownerOfPhrase: state.phraseMeta.authorUsername === state.auth.user.username,
+    isAudio: selectedTrack.type === "AUDIO",
   }
 }
 
