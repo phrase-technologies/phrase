@@ -26,7 +26,7 @@ export class TrackEditor extends Component {
       return null
     }
 
-    let isMidi = this.props.currentTrack.type !== "AUDIO"
+    let isMidi = this.props.currentTrack && this.props.currentTrack.type !== "AUDIO"
 
     if (0 && !isMidi && !this.props.clips.length) {
       if (!"UPLOAD IN PROGRESS") {

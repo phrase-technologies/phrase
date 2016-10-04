@@ -225,6 +225,9 @@ export class Workstation extends Component {
       let midiOptionStyle = {
         backgroundImage: `url(${require('../img/midi-track.png')})`
       }
+      let audioOptionStyle = {
+        backgroundImage: `url(${require('../img/audio-track.png')})`
+      }
       return (
         <div className="workstation-background">
           <div className="workstation-container">
@@ -245,7 +248,7 @@ export class Workstation extends Component {
                 <div className="col-sm-6">
                   <div
                     className="workstation-option"
-                    style={midiOptionStyle} onClick={this.createAudioTrack}
+                    style={audioOptionStyle} onClick={this.createAudioTrack}
                   >
                     <h3>Audio Track</h3>
                   </div>

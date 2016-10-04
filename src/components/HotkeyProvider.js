@@ -86,7 +86,7 @@ class HotkeyProvider extends Component {
     // Musical Typing
     // ----------------------------------------------------------------------
     // Musical Typing Settings (do this before to avoid conflicts with CMD+Z for undo)
-    if (this.props.midi) {
+    if (this.props.midi) { // TODO - abstract midi toggle into an array or object layer?
       switch(e.keyCode) {
         case 16: // shift - sustain on
           ENGINE.sendMidiEvent({ trackID: 0, key: 0, type: 176, velocity: 127 })

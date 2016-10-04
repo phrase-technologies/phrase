@@ -78,10 +78,9 @@ $workstation-discussion-z-index: 500;     // Above.... TODO: Obsolete after remo
 
   > h3 {
     margin: 0;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.5);
-    box-shadow: 0 0 50px 10px rgba(0,0,0,0.5);
-    text-shadow: 0 0 25px #000;
+    text-shadow:
+      0 0 25px #000,
+      0 0 25px #000;
     color: #FFF;
   }
 }
