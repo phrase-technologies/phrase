@@ -21,3 +21,7 @@ export let googleAppID = isProd() ?
 export let googleAppSecret = isProd() ?
   `x4TqOFs1p1R3dHmGLbLNq6n8` :
   `ZtB-78up4C72El69lJJwyKfj`
+
+export let fileWhiteList = {
+  [`/api/uploadTrackAudio`]: [`audioFile`],
+}

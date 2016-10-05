@@ -8,3 +8,5 @@ logs/*
 !logs/LOGS.md
 public/profile/*
 !public/profile/PROFILE_PICTURE_UPLOADS.md
+public/audio-tracks/*
+!public/profile/AUDIO_TRACKS_UPLOADS.md

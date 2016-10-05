@@ -8,6 +8,7 @@ import collab from './collab'
 import uploadProfilePic from './uploadProfilePic'
 import commentNew from './commentNew'
 import commentExisting from './commentExisting'
+import uploadTrackAudio from './uploadTrackAudio'
 
 export default [
   save,
@@ -20,4 +21,5 @@ export default [
   uploadProfilePic,
   commentNew,
   commentExisting,
+  uploadTrackAudio,
 ]
