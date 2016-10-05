@@ -1,23 +1,24 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { mapPianorollToProps } from '../selectors/selectorPianoroll.js'
+import { mapPianorollToProps } from '../selectors/selectorPianoroll'
 import {
   pianorollScrollX,
   pianorollScrollY,
-} from '../reducers/reducePianoroll.js'
-import { getDarkenedColor } from '../helpers/trackHelpers.js'
+} from 'reducers/reducePianoroll'
+import { getDarkenedColor } from 'helpers/trackHelpers'
 
-import PianorollTimelineDisplay from './PianorollTimelineDisplay.js'
-import PianorollTimelineControl from './PianorollTimelineControl.js'
-import PianorollWindowDisplay from './PianorollWindowDisplay.js'
-import PianorollWindowControl from './PianorollWindowControl.js'
-import PianorollKeyboard      from './PianorollKeyboard.js'
-import Scrollbar              from './Scrollbar.js'
-import TimelineCursor         from './TimelineCursor.js'
-import TimelineSelectionBox   from './TimelineSelectionBox.js'
-import TimelinePlayhead       from './TimelinePlayhead.js'
-import TimelineCommentRange   from './TimelineCommentRange.js'
+import AudioRollEmpty from './AudioRollEmpty'
+import PianorollTimelineDisplay from './PianorollTimelineDisplay'
+import PianorollTimelineControl from './PianorollTimelineControl'
+import PianorollWindowDisplay from './PianorollWindowDisplay'
+import PianorollWindowControl from './PianorollWindowControl'
+import PianorollKeyboard      from './PianorollKeyboard'
+import Scrollbar              from './Scrollbar'
+import TimelineCursor         from './TimelineCursor'
+import TimelineSelectionBox   from './TimelineSelectionBox'
+import TimelinePlayhead       from './TimelinePlayhead'
+import TimelineCommentRange   from './TimelineCommentRange'
 
 export class TrackEditor extends Component {
 
@@ -28,34 +29,8 @@ export class TrackEditor extends Component {
 
     let isMidi = this.props.currentTrack && this.props.currentTrack.type !== "AUDIO"
 
-    if (0 && !isMidi && !this.props.clips.length) {
-      if (!"UPLOAD IN PROGRESS") {
-        return (
-          <div className="audioroll-empty">
-            <div className="text-center">
-              <span className="fa fa-spinner fa-pulse fa-2x" />
-              <p style={{ marginTop: 10 }}>
-                Uploading...
-              </p>
-            </div>
-          </div>
-        )
-      }
-
-      return (
-        <div className="audioroll-empty">
-          <div className="text-center">
-            <label className="btn btn-bright" htmlFor="upload-input">
-              <span className="fa fa-upload" />
-              <span> Upload audio file</span>
-              <input id="upload-input" type="file" style={{ display: 'none' }} />
-            </label>
-            <p style={{ marginTop: 10 }}>
-              Or Drag and Drop into this box
-            </p>
-          </div>
-        </div>
-      )
+    if (!isMidi && !this.props.clips.length) {
+      return <AudioRollEmpty />
     }
 
     let dispatchProp = {
@@ -110,36 +85,36 @@ export class TrackEditor extends Component {
     return (
       <div className={`pianoroll ${isMidi ? '' : 'audioroll'}`}>
         { isMidi && (
-        <div className="pianoroll-settings" style={settingsStyle}>
-          <div className="pianoroll-sound-name">{"Grand Piano" || this.props.currentTrack.name}</div>
-          <div className="pianoroll-sound-thumbnail" style={thumbnailStyle} />
-          {/*
-          <div className="pianoroll-sound-menu btn-group-vertical">
-            <div
-              className="btn btn-xs btn-bright"
-              onClick={this.clickPreset} {...makeButtonUnfocusable}
-            >
-              <span className="fa fa-caret-left" />
-              <span> Preset </span>
-              <span className="fa fa-caret-right" />
+          <div className="pianoroll-settings" style={settingsStyle}>
+            <div className="pianoroll-sound-name">{"Grand Piano" || this.props.currentTrack.name}</div>
+            <div className="pianoroll-sound-thumbnail" style={thumbnailStyle} />
+            {/*
+            <div className="pianoroll-sound-menu btn-group-vertical">
+              <div
+                className="btn btn-xs btn-bright"
+                onClick={this.clickPreset} {...makeButtonUnfocusable}
+              >
+                <span className="fa fa-caret-left" />
+                <span> Preset </span>
+                <span className="fa fa-caret-right" />
+              </div>
+              <div
+                className="btn btn-xs btn-bright"
+                onClick={this.clickRack} {...makeButtonUnfocusable}
+              >
+                <span className="fa fa-wrench" />
+                <span> Edit</span>
+              </div>
             </div>
-            <div
-              className="btn btn-xs btn-bright"
-              onClick={this.clickRack} {...makeButtonUnfocusable}
-            >
-              <span className="fa fa-wrench" />
-              <span> Edit</span>
-            </div>
+            */}
           </div>
-          */}
-        </div>
         )}
         { isMidi && (
-        <div className="pianoroll-chunk">
-        </div>
+          <div className="pianoroll-chunk">
+          </div>
         )}
         { isMidi && (
-        <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
+          <PianorollKeyboard {...dispatchProp} {...keyboardProps} />
         )}
         <PianorollTimelineDisplay {...dispatchProp} {...timelineProps} clips={this.props.clips} />
         <PianorollTimelineControl {...dispatchProp} {...timelineProps} clips={this.props.clips} />
@@ -152,12 +127,12 @@ export class TrackEditor extends Component {
             />
           </div>
           { isMidi && (
-          <div className="pianoroll-scrollbar-vertical">
-            <Scrollbar vertical
-              min={this.props.yMin} setScroll={(min,max) => this.props.dispatch(pianorollScrollY(min,max))}
-              max={this.props.yMax}
-            />
-          </div>
+            <div className="pianoroll-scrollbar-vertical">
+              <Scrollbar vertical
+                min={this.props.yMin} setScroll={(min,max) => this.props.dispatch(pianorollScrollY(min,max))}
+                max={this.props.yMax}
+              />
+            </div>
           )}
         </PianorollWindowControl>
         <TimelineCommentRange {...commentRangeProps} />
