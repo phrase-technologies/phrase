@@ -1,5 +1,8 @@
 import u from 'updeep'
-import { comment } from 'actions/actions'
+import {
+  arrangeTool,
+  comment,
+} from 'actions/actions'
 import {
   uAppend,
   uReplace,
@@ -12,8 +15,19 @@ import { librarySaveNew } from 'reducers/reduceLibrary'
 // ============================================================================
 // Comment Action Creators
 // ============================================================================
-export const commentSelectionStart = ({ start, trackID }) => ({ type: comment.SELECTION_START, payload: { start, trackID } })
-export const commentSelectionEnd = ({ end }) => ({ type: comment.SELECTION_END, payload: { end } })
+export const commentSelectionStart = ({ start, trackID }) => {
+  return (dispatch) => {
+    dispatch(transportMovePlayhead(start, true, true))
+    dispatch({ type: comment.SELECTION_START, payload: { start, trackID } })
+  }
+}
+export const commentSelectionEnd = ({ end }) => {
+  return (dispatch, getState) => {
+    if (end < getState().comment.commentRangeStart)
+      dispatch(transportMovePlayhead(end, true, true))
+    dispatch({ type: comment.SELECTION_END, payload: { end } })
+  }
+}
 export const commentSelectionClear = () => ({ type: comment.SELECTION_CLEAR })
 export const commentSetFocus = ({ commentId }) => {
   return (dispatch, getState) => {
@@ -37,7 +51,7 @@ export const commentLoadExisting = ({ phraseId }) => {
   }
 }
 export const commentClearExisting = () => ({ type: comment.CLEAR_EXISTING })
-export const commentCreate = (commentText) => {
+export const commentCreate = ({ commentText, parentId = null }) => {
   if (!commentText)
     return { type: "DUMMY ACTION" }
 
@@ -63,12 +77,18 @@ export const commentCreate = (commentText) => {
       phraseId = getState().phraseMeta.phraseId
     }
 
+    // Flip start/end if necessary
+    if (start !== null && end !== null && end < start) {
+      [start, end] = [end, start]
+    }
+
     let payload = {
       comment: commentText,
       trackId,
-      start,
-      end,
+      start: parentId ? null : start,
+      end: parentId ? null : end,
       phraseId,
+      parentId,
       authorId,
       tempKey: `${authorId}-${+new Date()}`,
     }
@@ -100,6 +120,7 @@ export default function reduceComment(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case comment.SELECTION_START:
       return u({
+        commentId: null,
         commentRangeStart: 0.25*Math.round(4*action.payload.start),
         commentRangeEnd: null,
         commentReady: false,
@@ -138,7 +159,7 @@ export default function reduceComment(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case comment.RECEIVE_EXISTING:
       return u({
-        comments: action.payload.sort((a, b) => a.start > b.start || a.dateCreated > b.dateCreated),
+        comments: action.payload.sort(commentSort),
       }, state)
 
     // ------------------------------------------------------------------------
@@ -150,8 +171,8 @@ export default function reduceComment(state = defaultState, action) {
     // ------------------------------------------------------------------------
     case comment.COMMENT_CREATE:
       let result = u({
-        commentId: action.payload.tempKey,
-        comments: uAppend(action.payload, (a, b) => a.start > b.start || a.dateCreated > b.dateCreated),
+        commentId: action.payload.parentId ? state.commentId : action.payload.tempKey,
+        comments: uAppend(action.payload, commentSort),
       }, state)
       return result
 
@@ -164,6 +185,7 @@ export default function reduceComment(state = defaultState, action) {
       // If we just submitted this comment, replace the temporary one
       if (existingComment) {
         return u({
+          commentId: action.payload.id,
           comments: uReplace(existingComment, action.payload)
         }, state)
       }
@@ -174,7 +196,23 @@ export default function reduceComment(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
+    case arrangeTool.SELECT:
+      return u({
+        commentRangeStart: null,
+        commentRangeEnd: null,
+      }, state)
+
+    // ------------------------------------------------------------------------
     default:
       return state
   }
+}
+
+export function commentSort(a, b) {
+  if (a.start > b.start)
+    return 1
+  if (a.start === b.start)
+    return a.dateCreated > b.dateCreated
+
+  return -1
 }

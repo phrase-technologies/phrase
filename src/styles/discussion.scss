@@ -110,12 +110,49 @@ $discussion-form-height: 90px;
 }
 .discussion-timeline-item {
   position: relative;
-  padding: 25px 0 15px 75px;
+  padding: 25px 10px 15px 75px;
 
   > * {
     transition: opacity 1s;
   }
+
+  &.discussion-timeline-item-selected {
+    > * {
+      z-index: 2;
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 35px;
+      right: 0;
+      bottom: 10px;
+      pointer-events: none;
+
+      border: 1px solid hsla(0, 100, 100%, 0.25);
+      border-radius: 10px;
+      background: hsla(0, 100, 100%, 0.100);
+
+      animation-name: comment-selected-throb;
+      animation-duration: 1s;
+      animation-timing-function: ease-out;
+      animation-iteration-count: 1;
+    }
+  }
 }
+
+@keyframes comment-selected-throb {
+  0% {
+    background: rgba(#FFF,0.100);
+  }
+  50% {
+    background: rgba(#FFF,0.150);
+  }
+  100% {
+    background: rgba(#FFF,0.100);
+  }
+}
+
 .discussion-timeline-item-pending {
   > .discussion-timeline-tick > *,
   > .discussion-timeline-meta,
@@ -154,14 +191,14 @@ $discussion-form-height: 90px;
   padding-top: 3px;
   padding-left: 35px;
 
-  .user-bubble {
+  > .user-bubble {
     position: absolute;
     top: 0;
     left: 0;
   }
 }
 .discussion-timeline-timestamp {
-  color: #888;
+  color: #777;
   font-size: 11px;
 }
 .discussion-timeline-content {
@@ -176,7 +213,30 @@ $discussion-form-height: 90px;
   }
 }
 .discussion-timeline-reply {
-  margin-top: 5px;
+  position: relative;
+  margin: 10px 0;
+  padding-left: 25px;
+  padding-top: 20px;
+
+  > .discussion-timeline-meta {
+    left: 0;
+    padding-left: 25px;
+    padding-top: 0;
+    height: 20px;
+
+    > .user-bubble {
+      width: 20px;
+      height: 20px;
+
+      > img {
+        width: 18px;
+        height: 18px;
+      }
+    }
+    > .user-username {
+      font-size: 11px;
+    }
+  }
 }
 
 // ============================================================================

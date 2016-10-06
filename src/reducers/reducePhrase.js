@@ -17,6 +17,7 @@ import {
 } from 'selectors/selectorPianoroll'
 
 import { phraseMidiSelector } from 'selectors/selectorTransport'
+import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 
 import {
   getOffsetedTrackID,
@@ -37,6 +38,9 @@ export const phraseRename = (name) => ({ type: phrase.RENAME, name })
 export const phraseCreateTrack = (actionConfig) => {
   return (dispatch, getState) => {
     dispatch({ type: phrase.CREATE_TRACK, ...actionConfig })
+    if (actionConfig.trackType === "AUDIO") {
+      dispatch(arrangeToolSelect(`pointer`))
+    }
 
     // Take measurements after the new track is created, adjust height
     let state = getState()

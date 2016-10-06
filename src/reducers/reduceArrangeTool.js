@@ -15,8 +15,8 @@ export let arrangeToolSelect = tool => {
 }
 
 let defaultState = {
-  currentTool: `pencil`,
-  lastTool: `pencil`, // Keep track of any tool that's not the comment tool so we can revert back to it when a user is done commenting.
+  currentTool: `pointer`,
+  lastTool: `pointer`, // Keep track of any tool that's not the comment tool so we can revert back to it when a user is done commenting.
 }
 
 export default function reduceArrangeTool(state = defaultState, action) {
@@ -36,10 +36,10 @@ export default function reduceArrangeTool(state = defaultState, action) {
       }, state)
 
     // ------------------------------------------------------------------------
-    case comment.COMMENT_CREATE:
-      return u({
-        currentTool: state.lastTool,
-      }, state)
+    // case comment.COMMENT_CREATE:
+    //   return u({
+    //     currentTool: state.lastTool,
+    //   }, state)
 
     // ------------------------------------------------------------------------
     default:

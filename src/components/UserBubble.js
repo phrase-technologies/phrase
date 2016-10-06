@@ -27,7 +27,7 @@ export class UserBubble extends Component {
           <i className="master-control-loading fa fa-spinner fa-spin" />}
         { this.props.masterControl &&
           !this.props.loadingMasterControl &&
-          <i className="master-control-icon fa fa-bolt" />
+          <i className="master-control-icon fa fa-star" />
         }
         { this.props.online && <div className="user-bubble-online signal signal-green" /> }
         { bubble }

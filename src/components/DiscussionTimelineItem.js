@@ -6,16 +6,21 @@ import Moment from 'moment'
 import UserBubble from 'components/UserBubble'
 import { barToString } from 'helpers/trackHelpers'
 import { userRequestProfileIfNotExisting } from 'reducers/reduceUserProfile'
-import { commentSetFocus } from 'reducers/reduceComment'
+import {
+  commentSetFocus,
+  commentCreate,
+} from 'reducers/reduceComment'
 
 export class DiscussionTimelineItem extends Component {
   state = {
     replying: false,
+    formValue: "",
   }
 
   render() {
     let discussionTimelineItemClasses = "discussion-timeline-item"
         discussionTimelineItemClasses += this.props.comment.id ? "" : " discussion-timeline-item-pending"
+        discussionTimelineItemClasses += this.props.selected ? " discussion-timeline-item-selected" : ""
 
     let user = this.props.users[this.props.comment.authorId]
     let username
@@ -35,9 +40,6 @@ export class DiscussionTimelineItem extends Component {
           <span className="user-username">
             { username }
           </span>
-          <span className="discussion-timeline-timestamp">
-            { timestamp }
-          </span>
         </div>
         <div className="discussion-timeline-content enable-select">
           { this.props.comment.comment.split("\n").map((sentence, i) => {
@@ -50,14 +52,57 @@ export class DiscussionTimelineItem extends Component {
           })}
         </div>
         <div className="discussion-timeline-actions">
-          <a>
-            Like
-          </a>
+          <span className="discussion-timeline-timestamp">
+            { timestamp }
+          </span>
           <span> &middot; </span>
           <a onClick={this.openReply}>
             Reply
           </a>
+        </div>
+        <div className="discussion-timeline-replies">
+          {
+            this.props.replies.map(reply => {
+              let key = reply.id || reply.tempKey
+              let timestamp = Moment(reply.dateCreated).calendar().toString()
+              let user = this.props.users[this.props.comment.authorId]
+              let username
+              if (!user || user.pending)
+                username = <span className="fa fa-spinner fa-pulse" />
+              else
+                username = user.username
 
+              return (
+                <div className="discussion-timeline-reply" key={key}>
+                  <div className="discussion-timeline-meta">
+                    <UserBubble userId={reply.authorId} />
+                    <span className="user-username">
+                      { username }
+                    </span>
+                  </div>
+                  <div className="discussion-timeline-content enable-select">
+                    { reply.comment.split("\n").map((sentence, i) => {
+                      return (
+                        <span key={i}>
+                          {sentence}
+                          <br/>
+                        </span>
+                      )
+                    })}
+                  </div>
+                  <div className="discussion-timeline-actions">
+                    <span className="discussion-timeline-timestamp">
+                      { timestamp }
+                    </span>
+                    <span> &middot; </span>
+                    <a onClick={this.openReply}>
+                      Reply
+                    </a>
+                  </div>
+                </div>
+              )
+            })
+          }
           { this.renderReply(user) }
         </div>
       </li>
@@ -83,6 +128,7 @@ export class DiscussionTimelineItem extends Component {
             className="discussion-timeline-reply form-control form-control-dark"
             placeholder="Write a reply..." ref={ref => this.textarea = ref}
             onKeyDown={this.keyDownHandler} maxRows={5}
+            onChange={this.handleInputChange}
           />
           <div className="discussion-fullscreen-context visible-xs-block">
             <span className="fa fa-level-up fa-flip-horizontal" />
@@ -134,12 +180,20 @@ export class DiscussionTimelineItem extends Component {
     }
   }
 
+  handleInputChange = (e) => {
+    this.setState({ formValue: e.target.value })
+  }
+
   isMobile() {
     let style = window.getComputedStyle(this.submitButton)
     return style.display !== 'none'
   }
 
   submitReply = () => {
+    this.props.dispatch(commentCreate({
+      commentText: this.state.formValue,
+      parentId: this.props.comment.id,
+    }))
     this.closeReply()
   }
 
@@ -159,6 +213,7 @@ export class DiscussionTimelineItem extends Component {
   componentWillMount() {
     this.props.dispatch(userRequestProfileIfNotExisting({ userId: this.props.comment.authorId }))
   }
+
 }
 
 export default connect(state => ({ users: state.userProfile.users }))(DiscussionTimelineItem)

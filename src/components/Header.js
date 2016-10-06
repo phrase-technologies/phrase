@@ -13,9 +13,9 @@ let handleNewPhraseClick = ({
 }) => {
   if (existingPhrase) {
     dispatch(push('/phrase/new'))
-  } else if (confirm("Are you sure you want to discard your changes?")) {
-    dispatch(phraseNewPhrase())
   }
+
+  dispatch(phraseNewPhrase())
 }
 
 let Header = ({

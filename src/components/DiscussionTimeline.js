@@ -16,6 +16,8 @@ export class DiscussionTimeline extends Component {
   list = {}
 
   render() {
+    let [ replyComments, originalComments ] = _.partition(this.props.comments, comment => comment.parentId)
+
     return (
       <ul className="discussion-timeline">
         {
@@ -36,13 +38,17 @@ export class DiscussionTimeline extends Component {
         }
         {
           // Timeline Has Content
-          this.props.comments !== null && this.props.comments.map((comment) => {
+          originalComments !== null &&
+          originalComments.map((comment) => {
             let key = comment.id || comment.tempKey
+            let currentReplies = replyComments.filter(reply => reply.parentId === comment.id)
+            let selected = comment.id === this.props.selectedCommentId
             return (
               <DiscussionTimelineItem
                 key={key} ref={ref => this.list[key] = ref}
-                comment={comment}
+                comment={comment} replies={currentReplies}
                 setFullscreenReply={this.props.setFullscreenReply}
+                selected={selected}
               />
             )
           })
@@ -96,7 +102,7 @@ export class DiscussionTimeline extends Component {
     if (prevProps.comments.length !== this.props.comments.length) {
       let newComments = _.difference(this.props.comments, prevProps.comments)
       let newComment = newComments.length ? newComments[0] : null
-      if (newComment && !newComment.id) {
+      if (newComment && !newComment.id && !newComment.parentId) {
         let element = ReactDOM.findDOMNode(this.list[newComment.tempKey])
         this.props.scrollTimeline(element.offsetTop)
       }

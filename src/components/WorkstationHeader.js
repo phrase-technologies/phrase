@@ -60,8 +60,8 @@ export class WorkstationHeader extends Component {
                 </Dropdown.Menu>
               </Dropdown>
             }
-            { this.renderRephraseButton() }
-            { this.renderRephraseReminder() }
+            { this.props.isAudio || this.renderRephraseButton() }
+            { this.props.isAudio || this.renderRephraseReminder() }
           </div>
           <div className="text-center">
             { this.renderLoginReminder() }
@@ -237,6 +237,7 @@ export class WorkstationHeader extends Component {
             <span className="fa fa-fw fa-mouse-pointer" />
           </button>
         </OverlayTrigger>
+        { this.props.isAudio ||
         <OverlayTrigger placement="top" overlay={PencilTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `pencil` ? `active` : ``}` }
@@ -245,6 +246,8 @@ export class WorkstationHeader extends Component {
             <span className="fa fa-fw fa-pencil" />
           </button>
         </OverlayTrigger>
+        }
+        { this.props.isAudio ||
         <OverlayTrigger placement="top" overlay={EraserTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `eraser` ? `active` : ``}` }
@@ -253,6 +256,7 @@ export class WorkstationHeader extends Component {
             <span className="fa fa-fw fa-eraser" />
           </button>
         </OverlayTrigger>
+        }
         {/* // TEMPORARILY DISABLE UNTIL WE FIX SLICE (TODO)
         <OverlayTrigger placement="top" overlay={SliceTooltip} delayShow={250}>
           <button
@@ -263,6 +267,7 @@ export class WorkstationHeader extends Component {
           </button>
         </OverlayTrigger>
         */}
+        { this.props.isAudio ||
         <OverlayTrigger placement="top" overlay={VelocityTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `velocity` ? `active` : ``}` }
@@ -271,6 +276,7 @@ export class WorkstationHeader extends Component {
             <span style={{ padding: `0 0.45rem` }}>V</span>
           </button>
         </OverlayTrigger>
+        }
         <OverlayTrigger placement="top" overlay={CommentTooltip} delayShow={250}>
           <button
             className={ `btn btn-dark btn-narrow ${arrangeTool === `comment` ? `active` : ``}` }

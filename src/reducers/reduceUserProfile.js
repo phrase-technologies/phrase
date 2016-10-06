@@ -10,7 +10,7 @@ export const userRequestProfileIfNotExisting = ({ userId }) => {
   return (dispatch, getState) => {
     let state = getState()
     let { users } = state.userProfile
-    if(!users[userId])
+    if (!users[userId])
       dispatch(userRequestProfile({ userId }))
   }
 }

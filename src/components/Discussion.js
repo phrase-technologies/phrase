@@ -318,7 +318,7 @@ export class Discussion extends Component {
       return
 
     this.textarea.blur()
-    this.props.dispatch(commentCreate(this.state.formValue))
+    this.props.dispatch(commentCreate({ commentText: this.state.formValue }))
     this.setState({ formValue: "" })
     this.replyClose()
   }
