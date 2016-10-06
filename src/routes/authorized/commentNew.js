@@ -5,6 +5,7 @@ export default ({ api, db }) => {
     let {
       phraseId,
       trackId,
+      parentId,
       comment,
       tempKey,
       start = null,
@@ -17,6 +18,11 @@ export default ({ api, db }) => {
     if (!isInt(trackId)) return res.json({ success: false, message: `Must provide trackId` })
     if (!phraseId)       return res.json({ success: false, message: `Must provide a phraseId` })
     if (!tempKey)        return res.json({ success: false, message: `Must provide a tempKey` })
+
+    // Flip start/end if necessary
+    if (start !== null && end !== null && end < start) {
+      [start, end] = [end, start]
+    }
 
     try {
       let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
@@ -35,6 +41,7 @@ export default ({ api, db }) => {
         start,
         end,
         phraseId,
+        parentId,
         authorId: id,
         tempKey,
         dateCreated: timestamp,
