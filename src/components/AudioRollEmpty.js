@@ -24,12 +24,15 @@ export class AudioRollEmpty extends Component {
     if (oEvent.lengthComputable) {
       let percentComplete = (oEvent.loaded / oEvent.total) * 100
       this.setState({ percentComplete })
-    } else {
-      console.log(oEvent)
     }
   }
 
-  uploadDone (response) {
+  uploadDone = (response) => {
+    if (!response) {
+      this.setState({ percentComplete: null })
+      return
+    }
+
     if (response.success) {
       this.props.dispatch(phraseCreateClip({
         trackID: this.props.currentTrack,
@@ -37,12 +40,15 @@ export class AudioRollEmpty extends Component {
         audioUrl: `${API_URL}/audio-tracks/${response.audioFile}`,
       }))
     } else {
-      console.log(response)
+      this.setState({ percentComplete: null })
+      this.props.dispatch(addNotification({
+        title: response.title,
+        message: response.message,
+      }))
     }
   }
 
   onDrop = async (files) => {
-    let fileTypes = [ `mp3` ]
     if (!files || !files[0]) {
       this.props.dispatch(addNotification({
         title: `Please choose a file.`,
@@ -50,31 +56,14 @@ export class AudioRollEmpty extends Component {
       }))
       return
     }
-    let file = files[0]
-    let type = file.type.replace(`audio/`, ``)
-
-    if (!file.type.includes(`audio/`) || !fileTypes.includes(type)) {
-      this.props.dispatch(addNotification({
-        title: `Invalid file type`,
-        message: `Please choose one of the following: ${fileTypes.join(`,`)}`,
-      }))
-      return
-    }
-
     if (!this.props.phraseId) {
       await dispatch(librarySaveNew())
     }
-
-    // TODO: create the clip like anson said to
-    let clipId = 0
-
-    await xhrApi({
+    xhrApi({
       endpoint: `uploadTrackAudio`,
       body: {
-        audioFile: file,
+        audioFile: files[0],
         phraseId: this.props.phraseId,
-        clipId,
-        authorId: this.props.authorId,
       },
       onProgress: this.updateProgress,
       onLoad: this.uploadDone,
@@ -126,7 +115,6 @@ export class AudioRollEmpty extends Component {
 function mapStateToProps(state) {
   return {
     phraseId: state.phraseMeta.phraseId,
-    authorId: state.phraseMeta.userId,
     currentTrack: state.pianoroll.currentTrack,
   }
 }

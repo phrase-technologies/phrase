@@ -45,18 +45,27 @@ export let xhrApi = async ({ endpoint, body, onProgress, onLoad, dispatch }) => 
 
   let req = new XMLHttpRequest()
   req.upload.onprogress = onProgress
+  req.timeout = 5000
+  req.ontimeout = () => {
+    dispatch(addNotification({
+      title: `504`,
+      message: `Connection Failure`
+    }))
+    onLoad()
+  }
   req.onload = async () => {
     if (req.status !== 200) {
       dispatch(addNotification({
         title: req.status.toString(),
         message: req.statusText
       }))
+      onLoad()
     }
     else {
       let json = await JSON.parse(req.responseText)
       onLoad(json)
     }
-  },
+  }
   req.open(`post`, `${API_URL}/api/${endpoint}`)
   req.send(fd)
 }
