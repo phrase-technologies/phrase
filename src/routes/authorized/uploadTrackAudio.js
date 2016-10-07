@@ -10,6 +10,7 @@ export default ({ api }) => {
     let extensions = [ `mp3` ]
     let extension = file.mimetype.replace(`audio/`, ``)
     if (!extensions.includes(extension)) {
+      fs.unlink(file.path)
       return res.status(500).json({ error: `Invalid audio file` })
     }
     let { phraseId, authorId, clipId } = req.body
@@ -19,6 +20,8 @@ export default ({ api }) => {
     try {
       fs.renameSync(file.path, filePath)
     } catch(error) {
+      if (fs.existsSync(file.path))
+        fs.unlink(file.path)
       console.log(error)
       return res.status(500).json({ error })
     }
