@@ -20,7 +20,7 @@ export class AudioRollEmpty extends Component {
     this.uploadDone = this.uploadDone.bind(this)
   }
 
-  updateProgress (oEvent) {
+  updateProgress = (oEvent) => {
     if (oEvent.lengthComputable) {
       let percentComplete = (oEvent.loaded / oEvent.total) * 100
       this.setState({ percentComplete })
@@ -93,10 +93,10 @@ export class AudioRollEmpty extends Component {
     return (
       <div className="audioroll-empty">
         <div className="text-center">
-          <label className="btn btn-bright" htmlFor="upload-input">
+          <button className="btn btn-bright">
             <span className="fa fa-upload" />
             <span> Upload audio file</span>
-          </label>
+          </button>
           <p style={{ marginTop: 10 }}>
             Or Drag and Drop into this box
           </p>
