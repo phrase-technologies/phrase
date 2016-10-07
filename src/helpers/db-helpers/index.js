@@ -12,3 +12,5 @@ export rInviteCodeGetFromCode     from './r-invite-code-get-from-code'
 export rOAuthInsert               from './r-oauth-insert'
 export rOAuthDeleteFromEmail      from './r-oauth-delete-from-email'
 export rOAuthGetFromEmail         from './r-oauth-get-from-email'
+
+export rPhraseGet                 from './r-phrase-get'
