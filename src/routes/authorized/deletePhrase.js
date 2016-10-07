@@ -1,4 +1,6 @@
 import r from 'rethinkdb'
+import fs from 'fs'
+import glob from 'glob'
 
 export default ({ api, db }) => {
   api.post(`/deletePhrase`, async (req, res) => {
@@ -19,6 +21,13 @@ export default ({ api, db }) => {
 
       if (result.errors.length) {
         res.json({ success: false, message: result.first_error })
+      }
+
+      let phraseFiles = glob.sync(`public/audio-tracks/${phraseId}*`)
+      if (phraseFiles.length) {
+        phraseFiles.forEach(filePath => {
+          fs.unlink(filePath)
+        })
       }
 
       res.json({ success: true, message: `Phrase deleted!` })
