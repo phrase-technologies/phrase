@@ -37,7 +37,7 @@ export default ({ api, db }) => {
         return res.status(403).json({ message: `You do not have permission to edit this phrase` })
       }
 
-      let extensions = [ `mp3` ]
+      let extensions = [ `mp3`, `wav`, `ogg` ]
       let extension
       try {
         let buffer = readChunk.sync(file.path, 0, 262)
