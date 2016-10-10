@@ -4,7 +4,6 @@ import { withRouter } from 'react-router'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
 import { isModifierOn } from 'helpers/compatibilityHelpers'
-import { zoomInScaling, zoomOutScaling } from 'helpers/intervalHelpers'
 
 import {
   midiIncrementOctave,
@@ -26,10 +25,11 @@ import {
   phraseQuantizeSelection,
   phraseSelectAll,
 } from 'reducers/reducePhrase'
-
-import { pianorollScrollX, pianorollScrollY } from 'reducers/reducePianoroll'
-
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
+import { 
+  pianorollZoomX, 
+  pianorollZoomY 
+} from 'reducers/reducePianoroll'
 
 // ============================================================================
 // Hotkey Provider
@@ -175,32 +175,45 @@ class HotkeyProvider extends Component {
 
     switch(e.keyCode) {
       case 189: // '-' - Zoom Out
+        // if (e.shiftKey) {
+        //   // Zoom Y-Axis
+        //   dispatch(pianorollScrollY({min: this.props.yMin, max: Math.min(this.props.yMax + 0.05, 1.0)}))
+        // } else {
+        //   // Zoom X-Axis
+        //   var newXMax = zoomOutScaling(
+        //     this.props.xMin, 
+        //     this.props.xMax, 
+        //     {normal: 0.05, scaling: 0.01}
+        //   )
+        //   dispatch(pianorollScrollX({max: newXMax}))
+        // }
         if (e.shiftKey) {
           // Zoom Y-Axis
-          dispatch(pianorollScrollY({min: this.props.yMin, max: Math.min(this.props.yMax + 0.05, 1.0)}))
+          dispatch(pianorollZoomY('OUT'))
         } else {
           // Zoom X-Axis
-          var newXMax = zoomOutScaling(
-            this.props.xMin, 
-            this.props.xMax, 
-            {normal: 0.05, scaling: 0.01}
-          )
-          dispatch(pianorollScrollX({max: newXMax}))
+          dispatch(pianorollZoomX('OUT'))
         }
         break
       case 187: // '+' - Zoom in
+        // if (e.shiftKey) {
+        //   // debugger
+        //   dispatch(pianorollScrollY({min: this.props.yMin, max: Math.max(this.props.yMax - 0.05, 0.01)}))
+        // } else {
+        //   // Zoom X-Axis
+        //   var newXMax = zoomInScaling(
+        //     this.props.xMin, 
+        //     this.props.xMax, 
+        //     {normal: 0.05, scaling: 0.01}
+        //   )
+        //   dispatch(pianorollScrollX({max: newXMax}))
+        // }
         if (e.shiftKey) {
-          // debugger
-          dispatch(pianorollScrollY({min: this.props.yMin, max: Math.max(this.props.yMax - 0.05, 0.01)}))
+          // Zoom Y-Axis
+          dispatch(pianorollZoomY('IN'))
         } else {
           // Zoom X-Axis
-          var newXMax = zoomInScaling(
-            this.props.xMin, 
-            this.props.xMax, 
-            {normal: 0.05, scaling: 0.01}
-          )
-          console.log(this.props.xMin)
-          dispatch(pianorollScrollX({max: newXMax}))
+          dispatch(pianorollZoomX('IN'))
         }
         break
       // ----------------------------------------------------------------------
@@ -310,11 +323,7 @@ class HotkeyProvider extends Component {
 function mapStateToProps(state) {
   return {
     ...state.modal,
-    currentOctave: state.midi.currentOctave,
-    xMin: state.pianoroll.xMin,
-    xMax: state.pianoroll.xMax,
-    yMin: state.pianoroll.yMin,
-    yMax: state.pianoroll.yMax
+    currentOctave: state.midi.currentOctave
   }
 }
 

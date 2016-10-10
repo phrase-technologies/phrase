@@ -4,6 +4,8 @@ import {
   shiftInterval,
   restrictTimelineZoom,
   maxBarWidth,
+  zoomInScaling,
+  zoomOutScaling
 } from 'helpers/intervalHelpers'
 
 import { pianoroll, phrase, transport } from 'actions/actions'
@@ -21,6 +23,53 @@ export const pianorollScrollX = ({ min, max, delta, fulcrum, isAuto }) => {
     dispatch({ type: pianoroll.SCROLL_X, min, max, delta, fulcrum, barCount})
     if (state.pianoroll.autoScroll && state.transport.playing && !isAuto)
       dispatch({ type: pianoroll.DISABLE_AUTOSCROLL })
+  }
+}
+export const pianorollZoomX = (zoom, increments, threshold) => {
+  return (dispatch, getState) => {
+    let state = getState()
+    let min = state.pianoroll.xMin
+    let max = state.pianoroll.xMax
+    var newMax
+    if (zoom.toUpperCase() === 'IN') {
+      newMax = zoomInScaling(
+        min,
+        max,
+        increments,
+        threshold
+      )
+    } else if (zoom.toUpperCase() === 'OUT') {
+      newMax = zoomOutScaling(
+        min,
+        max,
+        increments,
+        threshold
+      )
+    }
+    console.log(newMax)
+    dispatch({ 
+      type: pianoroll.SCROLL_X,
+      zoom,
+      newMax,
+      increments,
+      threshold
+    })
+  }
+}
+export const pianorollZoomY = (zoom, increments, threshold) => {
+  return (dispatch, getState) => {
+    let state = getState()
+    let min = state.pianoroll.yMin
+    let max = state.pianoroll.yMax
+
+    dispatch({ 
+      type: pianoroll.SCROLL_Y, 
+      zoom, 
+      min, 
+      max, 
+      increments, 
+      threshold
+    })
   }
 }
 
@@ -99,7 +148,7 @@ export default function reducePianoroll(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_X:
-      console.log(state)
+      // console.log(state)
       // Zoom X
       if (action.fulcrum !== undefined) {
         let zoomFactor = (action.delta + 500) / 500
@@ -117,6 +166,13 @@ export default function reducePianoroll(state = defaultState, action) {
         return restrictTimelineZoom(state, action.barCount)
       }
 
+      // Zooming with Hoykeys
+      if (action.zoom !== undefined) {
+        return state = u({
+          xMax: action.newMax === undefined ? state.xMax : Math.min(1.0, action.newMax)
+        }, state)
+      }
+
       // Regular Scroll X
       if (action.delta !== undefined) {
         let barWindow = state.xMax - state.xMin
@@ -132,6 +188,7 @@ export default function reducePianoroll(state = defaultState, action) {
           xMax: action.max === undefined ? state.xMax : Math.min(1.0, action.max)
         }, state)
       }
+
 
       return restrictTimelineZoom(state, action.barCount)
 

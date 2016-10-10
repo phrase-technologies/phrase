@@ -23,6 +23,7 @@ export function shiftInterval(interval, shift, limit = [0.0, 1.0]) {
 // Expands or contracts an interval, e.g. [0.4, 0.6], without exceeding a specified limit
 export function zoomInterval(interval, zoom, fulcrum = undefined, limit = [0.0, 1.0]) {
   let [newMin, newMax] = interval
+  console.log(newMin)
   let range = newMax - newMin
   if (fulcrum === undefined)
     fulcrum = 0.5 * (newMin + newMax)
@@ -38,6 +39,7 @@ export function zoomInterval(interval, zoom, fulcrum = undefined, limit = [0.0, 
     newMin -= (newMax - limit[1])
     newMax = limit[1]
   }
+  console.log(newMin)
   return [newMin, newMax]
 }
 
@@ -54,9 +56,7 @@ export function restrictTimelineZoom(state, barCount) {
       xMin,
       xMax
     }
-  console.log(xMin)
   }
-  console.log(state)
   return state
 }
 
