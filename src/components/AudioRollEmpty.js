@@ -60,6 +60,7 @@ export class AudioRollEmpty extends Component {
       },
       onProgress: this.updateProgress,
       onLoad: this.uploadDone,
+      timeout: 30000,
       dispatch: this.props.dispatch,
     })
   }

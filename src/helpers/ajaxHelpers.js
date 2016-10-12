@@ -33,7 +33,7 @@ export let api = async ({ endpoint, body }) => {
   return response
 }
 
-export let xhrApi = async ({ endpoint, body, onProgress, onLoad, dispatch }) => {
+export let xhrApi = async ({ endpoint, body, onProgress, onLoad, timeout, dispatch }) => {
   let fd = new FormData()
   await Object.keys(body).forEach(key => {
     fd.append(key, body[key])
@@ -46,7 +46,7 @@ export let xhrApi = async ({ endpoint, body, onProgress, onLoad, dispatch }) => 
   let req = new XMLHttpRequest()
   if (onProgress)
     req.upload.onprogress = onProgress
-  req.timeout = 5000
+  req.timeout = timeout ? timeout : 5000
   req.ontimeout = () => {
     dispatch(addNotification({
       title: `504`,
