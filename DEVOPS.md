@@ -152,6 +152,11 @@ Install `imagemagick` using the following command:
 
     $ sudo apt-get install imagemagick
 
+The codebase also requires that `ffmpeg` be installed on the server hosting the API. 
+Install `ffmpeg` using the following command:
+
+    $ sudo apt-get install ffmpeg
+
 ### Initial Client Build
 Now, to deploy to production, we use a different process than the `npm start` that we would use for
 the local development environment. Starting with the client. First we build to optimize the 
