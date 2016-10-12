@@ -60,7 +60,7 @@ export default async ({ io, db }) => {
       users = users.filter(x => x.socketId !== socket.id)
 
       // Indicate Presence
-      if (user.room) {
+      if (user && user.room) {
         io.in(user.room).emit(
           `server::updatePresence`,
           _.uniqBy(users, `userId`)
