@@ -13,13 +13,6 @@ export class AudioRollEmpty extends Component {
     percentComplete: null,
   }
 
-  constructor() {
-    super()
-    this.onDrop = this.onDrop.bind(this)
-    this.updateProgress = this.updateProgress.bind(this)
-    this.uploadDone = this.uploadDone.bind(this)
-  }
-
   updateProgress = (oEvent) => {
     if (oEvent.lengthComputable) {
       let percentComplete = (oEvent.loaded / oEvent.total) * 100
