@@ -452,17 +452,14 @@ export default function reducePhraseMeta(state = defaultState, action) {
       return u({
         collaborators: [
           ...state.collaborators,
-          {
-            username: action.payload.username,
-            userId: action.payload.userId
-          }
+          action.payload.userId,
         ]
       }, state)
 
     // ------------------------------------------------------------------------
     case phrase.REMOVE_COLLABORATOR:
       return u({
-        collaborators: state.collaborators.filter(user => user.userId !== action.payload.userId)
+        collaborators: state.collaborators.filter(user => user !== action.payload.userId)
       }, state)
 
     // ------------------------------------------------------------------------

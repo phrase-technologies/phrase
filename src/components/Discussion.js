@@ -60,7 +60,7 @@ export class Discussion extends Component {
             type={
               this.props.authorUserId === this.props.userId
                 ? `author`
-                : this.props.collaborators.find(x => x.userId === this.props.userId)
+                : this.props.collaborators.find(x => x === this.props.userId)
                   ? `collaborator`
                   : `observer`
             }
@@ -82,35 +82,38 @@ export class Discussion extends Component {
             online
           />
           {this.props.collaborators
-          .filter(x => x.userId !== this.props.userId)
-          .map(x =>
+          .filter(x => x !== this.props.userId)
+          .map(x => {
+            console.log("collaborator", x)
+            return (
             <UserBubble
               type="collaborator"
-              key={`collab-${x.userId}`}
+              key={`collab-${x}`}
               handleClick={
                 () => {
                   if (this.props.authorUserId === this.props.userId) {
-                    if (this.props.masterControl.includes(x.userId)) {
+                    if (this.props.masterControl.includes(x)) {
                       this.props.dispatch(removeMasterControl())
                     } else {
-                      this.props.dispatch(addMasterControl({ targetUserId: x.userId }))
-                      this.setState({ loadingMasterControl: x.userId })
+                      this.props.dispatch(addMasterControl({ targetUserId: x }))
+                      this.setState({ loadingMasterControl: x })
                     }
                   }
                 }
               }
-              userId={x.userId}
-              loadingMasterControl={this.state.loadingMasterControl === x.userId}
-              masterControl={this.props.masterControl.includes(x.userId)}
+              userId={x}
+              loadingMasterControl={this.state.loadingMasterControl === x}
+              masterControl={this.props.masterControl.includes(x)}
               online={
-                x.userId === this.props.userId ||
-                this.props.users.find(user => user.userId === x.userId)
+                x === this.props.userId ||
+                this.props.users.find(user => user.userId === x)
               }
             />
           )}
+          )}
           {this.props.users
           .filter(x =>
-            !this.props.collaborators.find(c => c.userId === x.userId)
+            !this.props.collaborators.find(c => c === x.userId)
           )
           .map(x =>
             <UserBubble

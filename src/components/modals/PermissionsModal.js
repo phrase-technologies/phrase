@@ -93,19 +93,26 @@ export class PermissionsModal extends Component {
                 {this.props.phraseMeta.authorUsername} <strong>(Owner)</strong>
               </span>
             </li>
-            {this.props.phraseMeta.collaborators.map(user =>
-              <li key={user.userId}>
-                <UserBubble userId={user.userId} />
-                <span className="user-username">
-                  {user.username}
-                  <a
-                    style={{ marginLeft: `0.5rem` }}
-                    onClick={() => this.props.dispatch(removeCollaborator({ targetUserId: user.userId }))}
-                  >
-                    <strong>Remove</strong>
-                  </a>
-                </span>
-              </li>
+            {this.props.phraseMeta.collaborators
+              .map(user => {
+                let username = this.props.users[user]
+                  ? this.props.users[user].username
+                  : <span className="fa fa-spinner fa-pulse" />
+                return (
+                  <li key={user}>
+                    <UserBubble userId={user} />
+                    <span className="user-username">
+                      {username}
+                      <a
+                        style={{ marginLeft: `0.5rem` }}
+                        onClick={() => this.props.dispatch(removeCollaborator({ targetUserId: user }))}
+                      >
+                        <strong>Remove</strong>
+                      </a>
+                    </span>
+                  </li>
+                )
+              }
             )}
           </ul>
 
@@ -222,4 +229,11 @@ export class PermissionsModal extends Component {
 
 }
 
-export default connect(state => ({ phraseMeta: state.phraseMeta }))(PermissionsModal)
+function mapStateToProps(state) {
+  return {
+    phraseMeta: state.phraseMeta,
+    users: state.userProfile.users,
+  }
+}
+
+export default connect(mapStateToProps)(PermissionsModal)

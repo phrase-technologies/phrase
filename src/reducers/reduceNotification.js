@@ -27,37 +27,37 @@ export let addNotification = ({ title, message }) => {
 }
 
 export const catchAndToastException = async ({ dispatch, toCatch, callback }) => {
-  try {
+  // try {
     await toCatch()
-  }
-  catch(e) {
-    if(e.statusText) {
-      switch(e.status) {
-        case 401: // Invalid token / unauthorized errors
-          dispatch(addNotification({
-            title: `Token expired`,
-            message: `Please log back in to continue making awesome music!`,
-          }))
-          dispatch(modalOpen({ modalComponent: 'LoginModal' }))
-          dispatch(logout())
-          break
-        case 404: // Don't display 404 as notification
-          break
-        default: // Other fetch errors
-          dispatch(addNotification({
-            title: e.status.toString(),
-            message: e.statusText,
-          }))
-      }
-    }
-    else // Non fetch errors
-      console.error(e)
-      dispatch(addNotification({
-        title: `System Error`,
-        message: `Please try again later`,
-      }))
-    if (callback) callback()
-  }
+  // }
+  // catch(e) {
+  //   if(e.statusText) {
+  //     switch(e.status) {
+  //       case 401: // Invalid token / unauthorized errors
+  //         dispatch(addNotification({
+  //           title: `Token expired`,
+  //           message: `Please log back in to continue making awesome music!`,
+  //         }))
+  //         dispatch(modalOpen({ modalComponent: 'LoginModal' }))
+  //         dispatch(logout())
+  //         break
+  //       case 404: // Don't display 404 as notification
+  //         break
+  //       default: // Other fetch errors
+  //         dispatch(addNotification({
+  //           title: e.status.toString(),
+  //           message: e.statusText,
+  //         }))
+  //     }
+  //   }
+  //   else // Non fetch errors
+  //     console.error(e)
+  //     dispatch(addNotification({
+  //       title: `System Error`,
+  //       message: `Please try again later`,
+  //     }))
+  //   if (callback) callback()
+  // }
 }
 
 export let dismissNotification = ({ key }) => {

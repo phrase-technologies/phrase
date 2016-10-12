@@ -8,6 +8,7 @@ import { phrase, presence } from 'actions/actions'
 
 import {
   phraseLoadFromDb,
+  phraseLoadFinish,
   phraseNewPhrase,
   phraseLoginReminder,
   phraseRephraseReminder,
@@ -100,7 +101,7 @@ export class Workstation extends Component {
         else if (
           socketData.privacySetting === terms.PRIVATE &&
           this.props.authorUsername !== this.props.currentUsername &&
-          !this.props.collaborators.find(x => x.userId === this.props.userId)
+          !this.props.collaborators.find(x => x === this.props.userId)
         ) {
           dispatch(phraseNotFound())
         }
