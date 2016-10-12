@@ -83,9 +83,7 @@ export class Discussion extends Component {
           />
           {this.props.collaborators
           .filter(x => x !== this.props.userId)
-          .map(x => {
-            console.log("collaborator", x)
-            return (
+          .map(x =>
             <UserBubble
               type="collaborator"
               key={`collab-${x}`}
@@ -109,7 +107,6 @@ export class Discussion extends Component {
                 this.props.users.find(user => user.userId === x)
               }
             />
-          )}
           )}
           {this.props.users
           .filter(x =>
