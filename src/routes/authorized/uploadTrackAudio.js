@@ -62,24 +62,22 @@ export default ({ api, db }) => {
       if (extension === `m4a`) {
         let output = `${file.path}.mp3`
         let source = path.resolve(file.path)
-        await Promise.all([
-          new Promise((resolve, reject) => {
-            ffmpeg({ source })
-              .output(output)
-              .audioChannels(2)
-              .format(`mp3`)
-              .on(`error`, (error) => {
-                reject(error)
-              })
-              .on(`end`, () => {
-                fs.unlinkSync(inputPath)
-                inputPath = output
-                extension = `mp3`
-                resolve()
-              })
-              .run()
-          }),
-        ])
+        await new Promise((resolve, reject) => {
+          ffmpeg({ source })
+            .output(output)
+            .audioChannels(2)
+            .format(`mp3`)
+            .on(`error`, (error) => {
+              reject(error)
+            })
+            .on(`end`, () => {
+              fs.unlinkSync(inputPath)
+              inputPath = output
+              extension = `mp3`
+              resolve()
+            })
+            .run()
+        })
       }
 
 
