@@ -26,6 +26,7 @@ export default ({ globals, author, collaborator, observer, privatePhraseId, publ
           userId: author.id,
           trackId: 123,
           comment: "Where's my snare?",
+          parentId: null,
           tempKey: "DJ Khaled",
         },
       })
@@ -41,6 +42,7 @@ export default ({ globals, author, collaborator, observer, privatePhraseId, publ
           token: author.token,
           userId: author.id,
           phraseId: privatePhraseId,
+          parentId: null,
           comment: "Where's my snare?",
           tempKey: "DJ Khaled",
         },
@@ -58,6 +60,7 @@ export default ({ globals, author, collaborator, observer, privatePhraseId, publ
           userId: author.id,
           comment: "Will the real Slim Shady please stand up?!",
           phraseId: privatePhraseId,
+          parentId: null,
           trackId: 0,
         },
       })
@@ -75,6 +78,7 @@ export default ({ globals, author, collaborator, observer, privatePhraseId, publ
           userId: author.id,
           trackId: 123,
           phraseId: privatePhraseId,
+          parentId: null,
           tempKey: "DJ Khaled",
         },
       })
@@ -93,6 +97,7 @@ export default ({ globals, author, collaborator, observer, privatePhraseId, publ
           trackId: 123,
           comment: "Hide yo wife!",
           phraseId: privatePhraseId,
+          parentId: null,
           tempKey: "DJ Khaled",
         },
       })
@@ -109,6 +114,7 @@ export default ({ globals, author, collaborator, observer, privatePhraseId, publ
           trackId: 123,
           comment: "Hide yo wife!",
           phraseId: privatePhraseId,
+          parentId: null,
           tempKey: "DJ Khaled",
         },
       })
@@ -125,6 +131,7 @@ export default ({ globals, author, collaborator, observer, privatePhraseId, publ
           trackId: 123,
           comment: "Hide yo wife!",
           phraseId: publicPhraseId,
+          parentId: null,
           tempKey: "DJ Khaled",
         },
       })
@@ -139,6 +146,7 @@ export default ({ globals, author, collaborator, observer, privatePhraseId, publ
           userId: author.id,
           comment: "Will the real Slim Shady please stand up?!",
           phraseId: privatePhraseId,
+          parentId: null,
           trackId: 0,
           tempKey: "DJ Khaled",
         },
@@ -173,6 +181,7 @@ export default ({ globals, author, collaborator, observer, privatePhraseId, publ
             userId: author.id,
             comment,
             phraseId: privatePhraseId,
+            parentId: null,
             trackId: 0,
             tempKey: "DJ Khaled",
           },
