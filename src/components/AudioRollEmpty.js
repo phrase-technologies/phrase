@@ -15,7 +15,7 @@ export class AudioRollEmpty extends Component {
 
   updateProgress = (oEvent) => {
     if (oEvent.lengthComputable) {
-      let percentComplete = (oEvent.loaded / oEvent.total) * 100
+      let percentComplete = (oEvent.loaded / oEvent.total) * 100 * 0.9
       this.setState({ percentComplete })
     }
   }
