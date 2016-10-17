@@ -138,7 +138,6 @@ export default function reducePianoroll(state = defaultState, action) {
 
     // ------------------------------------------------------------------------
     case pianoroll.SCROLL_X:
-      // console.log(state)
       // Zoom X
       if (action.fulcrum !== undefined) {
         let zoomFactor = (action.delta + 500) / 500
@@ -180,7 +179,6 @@ export default function reducePianoroll(state = defaultState, action) {
           xMax: action.max === undefined ? state.xMax : Math.min(1.0, action.max)
         }, state)
       }
-
 
       return restrictTimelineZoom(state, action.barCount)
 

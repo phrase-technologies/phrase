@@ -175,18 +175,6 @@ class HotkeyProvider extends Component {
 
     switch(e.keyCode) {
       case 189: // '-' - Zoom Out
-        // if (e.shiftKey) {
-        //   // Zoom Y-Axis
-        //   dispatch(pianorollScrollY({min: this.props.yMin, max: Math.min(this.props.yMax + 0.05, 1.0)}))
-        // } else {
-        //   // Zoom X-Axis
-        //   var newXMax = zoomOutScaling(
-        //     this.props.xMin, 
-        //     this.props.xMax, 
-        //     {normal: 0.05, scaling: 0.01}
-        //   )
-        //   dispatch(pianorollScrollX({max: newXMax}))
-        // }
         if (e.shiftKey) {
           // Zoom Y-Axis
           dispatch(pianorollZoomY('OUT'))
@@ -196,18 +184,6 @@ class HotkeyProvider extends Component {
         }
         break
       case 187: // '+' - Zoom in
-        // if (e.shiftKey) {
-        //   // debugger
-        //   dispatch(pianorollScrollY({min: this.props.yMin, max: Math.max(this.props.yMax - 0.05, 0.01)}))
-        // } else {
-        //   // Zoom X-Axis
-        //   var newXMax = zoomInScaling(
-        //     this.props.xMin, 
-        //     this.props.xMax, 
-        //     {normal: 0.05, scaling: 0.01}
-        //   )
-        //   dispatch(pianorollScrollX({max: newXMax}))
-        // }
         if (e.shiftKey) {
           // Zoom Y-Axis
           dispatch(pianorollZoomY('IN'))
