@@ -23,7 +23,6 @@ export function shiftInterval(interval, shift, limit = [0.0, 1.0]) {
 // Expands or contracts an interval, e.g. [0.4, 0.6], without exceeding a specified limit
 export function zoomInterval(interval, zoom, fulcrum = undefined, limit = [0.0, 1.0]) {
   let [newMin, newMax] = interval
-  console.log(newMin)
   let range = newMax - newMin
   if (fulcrum === undefined)
     fulcrum = 0.5 * (newMin + newMax)
@@ -39,7 +38,6 @@ export function zoomInterval(interval, zoom, fulcrum = undefined, limit = [0.0, 
     newMin -= (newMax - limit[1])
     newMax = limit[1]
   }
-  console.log(newMin)
   return [newMin, newMax]
 }
 
@@ -80,9 +78,9 @@ export function zoomInScaling(min, max, increments = {normal: 0.05, scaling: 0.0
   if (range > threshold && (range - threshold) <= increments.normal) {
     return roundedMin + threshold
   } else if (range <= threshold) {
-    return Math.max(0.01, roundedMax - increments.scaling)
+    return Math.max(roundedMin + 0.01, roundedMax - increments.scaling)
   } else {
-    return Math.max(0.01, roundedMax - increments.normal)
+    return roundedMax - increments.normal
   }
 }
 

@@ -32,19 +32,9 @@ export const pianorollZoomX = (zoom, increments, threshold) => {
     let max = state.pianoroll.xMax
     var newMax
     if (zoom.toUpperCase() === 'IN') {
-      newMax = zoomInScaling(
-        min,
-        max,
-        increments,
-        threshold
-      )
+      newMax = zoomInScaling(min, max, increments, threshold)
     } else if (zoom.toUpperCase() === 'OUT') {
-      newMax = zoomOutScaling(
-        min,
-        max,
-        increments,
-        threshold
-      )
+      newMax = zoomOutScaling(min, max, increments, threshold)
     }
     console.log(newMax)
     dispatch({ 
@@ -52,7 +42,7 @@ export const pianorollZoomX = (zoom, increments, threshold) => {
       zoom,
       newMax,
       increments,
-      threshold
+      threshold,
     })
   }
 }
