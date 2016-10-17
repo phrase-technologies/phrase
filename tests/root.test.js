@@ -35,6 +35,7 @@ import collab from './routes/authorized/collab'
 import uploadProfilePic from './routes/authorized/uploadProfilePic'
 import commentNew from './routes/authorized/commentNew'
 import commentExisting from './routes/authorized/commentExisting'
+import uploadTrackAudio from './routes/authorized/uploadTrackAudio'
 
 // ----------------------------------------------------------------------------
 
@@ -181,6 +182,8 @@ async function runTests () {
     privatePhraseId,
     publicPhraseId,
   })
+
+  uploadTrackAudio({ globals, author: alice, observer: bob, phraseId: privatePhraseId })
 
   // --------------------------------------------------------------------------
 

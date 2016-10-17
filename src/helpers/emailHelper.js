@@ -1,7 +1,11 @@
 import request from 'request'
 import { clientURL, sendInBlueApi, sendInBlueKey } from '../config'
 
-let api = ({ endpoint, method, body }) => {
+let sendInBlueApiRequest = ({ endpoint, method, body }) => {
+  if (process.env.NODE_ENV === `test`) {
+    return
+  }
+
   return request({
     url: `${sendInBlueApi}/${endpoint}`,
     method,
@@ -13,16 +17,8 @@ let api = ({ endpoint, method, body }) => {
   })
 }
 
-let sendEmail = (template, to, attr) => {
-  return api({
-    endpoint: `template/${template}`,
-    method: `PUT`,
-    body: { to, attr },
-  })
-}
-
 export let createEmailContact = ({ email, username, userId }) => {
-  return api({
+  return sendInBlueApiRequest({
     endpoint: `/user/createdituser`,
     method: `POST`,
     body: {
@@ -35,8 +31,16 @@ export let createEmailContact = ({ email, username, userId }) => {
   })
 }
 
+let sendEmail = (template, to, attr) => {
+  return sendInBlueApiRequest({
+    endpoint: `template/${template}`,
+    method: `PUT`,
+    body: { to, attr },
+  })
+}
+
 export let addToMicrophoneLineInList = ({ email }) => {
-  return api({
+  return sendInBlueApiRequest({
     endpoint: `list/4/users`,
     method: `POST`,
     body: {

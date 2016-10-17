@@ -68,6 +68,7 @@ export default ({ api, db }) => {
             .audioChannels(2)
             .format(`mp3`)
             .on(`error`, (error) => {
+              console.log(error)
               reject(error)
             })
             .on(`end`, () => {
