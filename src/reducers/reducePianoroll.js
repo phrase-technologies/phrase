@@ -169,7 +169,9 @@ export default function reducePianoroll(state = defaultState, action) {
       // Zooming with Hoykeys
       if (action.zoom !== undefined) {
         return state = u({
-          xMax: action.newMax === undefined ? state.xMax : Math.min(1.0, action.newMax)
+          xMax: action.newMax === undefined 
+            ? state.xMax 
+            : Math.min(1.0, action.newMax)
         }, state)
       }
 
