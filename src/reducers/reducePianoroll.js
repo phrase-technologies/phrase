@@ -25,40 +25,41 @@ export const pianorollScrollX = ({ min, max, delta, fulcrum, isAuto }) => {
       dispatch({ type: pianoroll.DISABLE_AUTOSCROLL })
   }
 }
-export const pianorollZoomX = (zoom, increments, threshold) => {
+export const pianorollZoomX = (zoomType) => {
   return (dispatch, getState) => {
     let state = getState()
     let min = state.pianoroll.xMin
     let max = state.pianoroll.xMax
     var newMax
-    if (zoom.toUpperCase() === 'IN') {
-      newMax = zoomInScaling(min, max, increments, threshold)
-    } else if (zoom.toUpperCase() === 'OUT') {
-      newMax = zoomOutScaling(min, max, increments, threshold)
+    if (zoomType.toUpperCase() === 'IN') {
+      newMax = zoomInScaling(min, max)
+    } else if (zoomType.toUpperCase() === 'OUT') {
+      newMax = zoomOutScaling(min, max)
     }
     console.log(newMax)
     dispatch({ 
       type: pianoroll.SCROLL_X,
-      zoom,
-      newMax,
-      increments,
-      threshold,
+      zoomType,
+      newMax
     })
   }
 }
-export const pianorollZoomY = (zoom, increments, threshold) => {
+export const pianorollZoomY = (zoomType) => {
   return (dispatch, getState) => {
     let state = getState()
     let min = state.pianoroll.yMin
     let max = state.pianoroll.yMax
-
+    var newMax
+    if (zoomType.toUpperCase() === 'IN') {
+      newMax = zoomInScaling(min, max, {normal: 0.05, scaling: 0.025}, 0.5, 0.2)
+    } else if (zoomType.toUpperCase() === 'OUT') {
+      newMax = zoomOutScaling(min, max)
+    }
+    console.log(newMax)
     dispatch({ 
       type: pianoroll.SCROLL_Y, 
-      zoom, 
-      min, 
-      max, 
-      increments, 
-      threshold
+      zoomType,
+      newMax
     })
   }
 }
@@ -156,7 +157,7 @@ export default function reducePianoroll(state = defaultState, action) {
       }
 
       // Zooming with Hoykeys
-      if (action.zoom !== undefined) {
+      if (action.zoomType !== undefined) {
         return state = u({
           xMax: action.newMax === undefined 
             ? state.xMax 
@@ -200,6 +201,17 @@ export default function reducePianoroll(state = defaultState, action) {
           yMin: newMin,
           yMax: newMax,
         }, state)
+      }
+
+      // Zooming with Hoykeys
+      if (action.zoomType !== undefined) {
+        // debugger
+        state = u({
+          yMax: action.newMax === undefined 
+            ? state.yMax 
+            : Math.min(1.0, action.newMax)
+        }, state)
+        return restrictKeyboardZoom(state, true)
       }
 
       // Regular Scroll Y
@@ -332,15 +344,22 @@ export default function reducePianoroll(state = defaultState, action) {
 // Restrict min/max zoom against the pianoroll's height (ensure keyboard doesn't get too small or large)
 const minKeyboardHeight =  400
 const maxKeyboardHeight = 1275 + 300
-function restrictKeyboardZoom(state) {
+function restrictKeyboardZoom(state, maxOnly) {
   let yMin = state.yMin
   let yMax = state.yMax
   let keyboardHeight = state.height / (state.yMax - state.yMin)
   if (keyboardHeight <= 0 || isNaN(keyboardHeight)) return state // Do nothing if keyboard is not shown
   if (keyboardHeight < minKeyboardHeight) [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/minKeyboardHeight)
   if (keyboardHeight > maxKeyboardHeight) [yMin, yMax] = zoomInterval([state.yMin, state.yMax], keyboardHeight/maxKeyboardHeight)
-  return u({
-    yMin,
-    yMax
-  }, state)
+  // Prevent scroll from shifting when using hotkey zoom
+  if (maxOnly) {
+    return u({
+      yMax
+    }, state)
+  } else { 
+    return u({
+      yMin,
+      yMax
+    }, state)
+  }
 }

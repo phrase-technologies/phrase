@@ -68,7 +68,7 @@ export function negativeModulus(dividend, modulus) {
 // ----------------------------------------------------------------------------
 // Proportionally scales zooming in when it reaches below a range threshold between min and max x scroll values. Useful for fine tuning positional adjustments of notes
 // Returns a new max value
-export function zoomInScaling(min, max, increments = {normal: 0.05, scaling: 0.01}, threshold = 0.1) {
+export function zoomInScaling(min, max, increments = {normal: 0.05, scaling: 0.01}, threshold = 0.1, limit = 0.01) {
   // Round Number to 4 decimal places to deal with floating point errors
   let roundedMin = parseFloat(min.toFixed(4))
   let roundedMax = parseFloat(max.toFixed(4))
@@ -78,7 +78,7 @@ export function zoomInScaling(min, max, increments = {normal: 0.05, scaling: 0.0
   if (range > threshold && (range - threshold) <= increments.normal) {
     return roundedMin + threshold
   } else if (range <= threshold) {
-    return Math.max(roundedMin + 0.01, roundedMax - increments.scaling)
+    return Math.max(roundedMin + limit, roundedMax - increments.scaling)
   } else {
     return roundedMax - increments.normal
   }
@@ -92,12 +92,11 @@ export function zoomOutScaling(min, max, increments = {normal: 0.05, scaling: 0.
   let roundedMin = parseFloat(min.toFixed(4))
   let roundedMax = parseFloat(max.toFixed(4))
   let range = roundedMax - roundedMin
-
   // Case: Zooming Out when approaching the threshold value
   if (range < threshold && (range + increments.scaling) >= threshold) {
     return roundedMin + threshold
   } else if (range < threshold) {
-    return Math.min(1.0, roundedMax + increments.scaling)
+    return roundedMax + increments.scaling
   } else {
     return Math.min(1.0, roundedMax + increments.normal)
   }
