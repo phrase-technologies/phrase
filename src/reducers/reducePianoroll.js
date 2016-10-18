@@ -36,7 +36,6 @@ export const pianorollZoomX = (zoomType) => {
     } else if (zoomType.toUpperCase() === 'OUT') {
       newMax = zoomOutScaling(min, max)
     }
-    console.log(newMax)
     dispatch({ 
       type: pianoroll.SCROLL_X,
       zoomType,
@@ -55,7 +54,6 @@ export const pianorollZoomY = (zoomType) => {
     } else if (zoomType.toUpperCase() === 'OUT') {
       newMax = zoomOutScaling(min, max)
     }
-    console.log(newMax)
     dispatch({ 
       type: pianoroll.SCROLL_Y, 
       zoomType,
