@@ -1,6 +1,6 @@
 import r from 'rethinkdb'
 import { generateUniqueToken } from '../../helpers/token'
-import { sendWelcomeEmail } from '../../helpers/emailHelper'
+import { welcome as sendWelcomeEmail } from '../../helpers/email-helpers'
 
 export default ({ app, db }) => {
   app.post(`/retry-confirm-user`, async (req, res) => {

@@ -1,0 +1,10 @@
+
+<% include ../layout/header.ejs %>
+  <div class="welcome-email">
+    <p>Hi <%= user.username %></p>
+    <p>Thank you for signing up at Phrase.fm! We are excited to welcome you to a community centered around creating and sharing music.</p>
+    <p>Here is your confirmation code: <%= confirmToken %>.</p>
+    <p>or</p>
+    <% include ../partials/callToAction %>
+  </div>
+<% include ../layout/footer.ejs %>

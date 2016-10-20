@@ -1,6 +1,6 @@
 import r from 'rethinkdb'
 import { generateAPIToken } from '../../helpers/token'
-import { createEmailContact } from '../../helpers/emailHelper'
+import { createEmailContact } from '../../helpers/sendInBlue'
 
 export default ({ app, db }) => {
   app.post(`/confirm-user`, async (req, res) => {

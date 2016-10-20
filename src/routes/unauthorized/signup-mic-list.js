@@ -1,6 +1,6 @@
 import r from 'rethinkdb'
 import isValidEmail from '../../helpers/isEmail'
-import { createEmailContact, addToMicrophoneLineInList } from '../../helpers/emailHelper'
+import { createEmailContact, addToMicrophoneLineInList } from '../../helpers/sendInBlue'
 
 export default ({ api, db }) => {
   api.post(`/signup-mic-list`, async (req, res) => {

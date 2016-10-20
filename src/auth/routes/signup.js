@@ -13,7 +13,7 @@ import { generateUniqueToken } from '../../helpers/token'
 import isValidEmail from '../../helpers/isEmail'
 import isValidUsername from '../../helpers/isUsername'
 import isValidPassword from '../../helpers/isPassword'
-import { sendWelcomeEmail } from '../../helpers/emailHelper'
+import { welcome as sendWelcomeEmail } from '../../helpers/email-helpers'
 import doubleHash from '../../helpers/doubleHash'
 
 export default ({ app, db }) => {

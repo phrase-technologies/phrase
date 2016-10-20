@@ -1,6 +1,6 @@
 import r from 'rethinkdb'
 import chalk from 'chalk'
-import { sendRephraseEmail } from '../../helpers/emailHelper'
+import { rePhrase as sendRephraseEmail } from '../../helpers/email-helpers'
 
 export default ({ api, db }) => {
   api.post(`/save`, async (req, res) => {

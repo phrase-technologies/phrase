@@ -1,0 +1,8 @@
+
+<% include ../layout/header.ejs %>
+  <div class="rephrase-notification">
+    <p>Hi <%= user.username %>,</p>
+    <p><%= rePhraser.username %> just rephrase'd your phrase!</p>
+    <% include ../partials/callToAction %>
+  </div>
+<% include ../layout/footer.ejs %>

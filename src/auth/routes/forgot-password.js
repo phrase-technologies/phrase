@@ -1,5 +1,5 @@
 import r from 'rethinkdb'
-import { sendPasswordResetEmail } from '../../helpers/emailHelper'
+import { resetPassword as sendPasswordResetEmail } from '../../helpers/email-helpers'
 import { generateUniqueToken } from '../../helpers/token'
 
 export default ({ app, db }) => {
