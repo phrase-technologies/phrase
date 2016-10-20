@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Modal from 'react-bootstrap/lib/Modal'
 import ReactSelect from 'react-select'
 
+import isEmail from 'helpers/isEmail'
 import { api } from 'helpers/ajaxHelpers'
 
 import PermissionsOption from 'components/PermissionsOption'
@@ -60,7 +61,7 @@ export class PermissionsModal extends Component {
     }).then(({ users = [] }) => {
       callback(null, {
         options: users
-          .filter(x => x.userId !== localStorage.userId) // could extend endpoint for this but nbd
+          // .filter(x => x.userId !== localStorage.userId) // could extend endpoint for this but nbd
           .map(x => ({ value: x.userId, label: x.username }))
       })
     }).catch((error) => {
@@ -77,12 +78,17 @@ export class PermissionsModal extends Component {
             <label htmlFor="collaborator-input">
               Invite Collaborators
             </label>
-            <ReactSelect.Async
+            <ReactSelect.AsyncCreatable
               name="collaborator-input"
               placeholder="Email or Username"
               loadOptions={this.autocompleteUsers}
               onChange={({ value }) => this.props.dispatch(addCollaborator({ targetUserId: value }))}
-              autoload={false}
+              autoload={false} ignoreCase={true}
+              isValidNewOption={params => isEmail(params.label)}
+              promptTextCreator={label => `Send invitation to ${label}`}
+              filterOptions={options => options.filter(option => !option.className)}
+              selectValue={value => console.log( value )}
+              onInputChange={false}
             />
           </div>
 
