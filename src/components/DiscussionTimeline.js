@@ -18,7 +18,8 @@ export class DiscussionTimeline extends Component {
 
   handleClick = (e) => {
     if(e.target.className === `discussion-timeline`) {
-      this.props.dispatch(commentClearFocus())
+      if (this.props.currentTool === `comment` && this.props.selectedCommentId)
+        this.props.dispatch(commentClearFocus())
     }
   }
 
@@ -123,4 +124,5 @@ export default withSocket(connect((state) => ({
   author: state.phraseMeta.userId,
   comments: state.comment.comments,
   selectedCommentId: state.comment.commentId,
+  currentTool: state.arrangeTool.currentTool,
 }))(DiscussionTimeline))

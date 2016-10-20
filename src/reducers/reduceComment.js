@@ -41,12 +41,7 @@ export const commentSetFocus = ({ commentId }) => {
   }
 }
 export const commentClearFocus = () => {
-  return (dispatch, getState) => {
-    let {
-      arrangeTool: { currentTool },
-      comment: { commentId }
-    } = getState()
-    if (currentTool === `comment` && commentId)
+  return (dispatch) => {
       dispatch({ type: comment.CLEAR_FOCUS })
   }
 }
