@@ -4,7 +4,6 @@ import {
   comment,
 } from 'actions/actions'
 import { tryAnalyticsEvent } from 'helpers/tryAnalytics'
-import { commentClearFocus } from './reduceComment'
 
 export const arrangeToolSelect = tool => {
   return (dispatch) => {
@@ -13,7 +12,6 @@ export const arrangeToolSelect = tool => {
       location: "PIANOROLL",
       selectedTool: tool.toUpperCase(),
     })
-    dispatch(commentClearFocus())
     dispatch({ type: arrangeTool.SELECT, payload: tool })
   }
 }

@@ -41,8 +41,13 @@ export const commentSetFocus = ({ commentId }) => {
   }
 }
 export const commentClearFocus = () => {
-  return (dispatch) => {
-    dispatch({ type: comment.CLEAR_FOCUS })
+  return (dispatch, getState) => {
+    let {
+      arrangeTool: { currentTool },
+      comment: { commentId }
+    } = getState()
+    if (currentTool === `comment` && commentId)
+      dispatch({ type: comment.CLEAR_FOCUS })
   }
 }
 export const commentLoadExisting = ({ phraseId }) => {
@@ -154,6 +159,19 @@ export default function reduceComment(state = defaultState, action) {
         commentRangeEnd: action.payload.end,
         commentReady: false,
       }, state)
+    }
+
+    case arrangeTool.SELECT: {
+      if (action.payload !== `comment`)
+        return u({
+          comment: null,
+          commentId: null,
+          commentTrackId: null,
+          commentRangeStart: null,
+          commentRangeEnd: null,
+          commentReady: false,
+        }, state)
+      return state
     }
 
     // ------------------------------------------------------------------------
