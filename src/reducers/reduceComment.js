@@ -41,9 +41,7 @@ export const commentSetFocus = ({ commentId }) => {
   }
 }
 export const commentClearFocus = () => {
-  return (dispatch) => {
-      dispatch({ type: comment.CLEAR_FOCUS })
-  }
+  return { type: comment.CLEAR_FOCUS }
 }
 export const commentLoadExisting = ({ phraseId }) => {
   return (dispatch) => {

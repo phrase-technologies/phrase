@@ -6,14 +6,12 @@ import {
 import { tryAnalyticsEvent } from 'helpers/tryAnalytics'
 
 export const arrangeToolSelect = tool => {
-  return (dispatch) => {
-    tryAnalyticsEvent({
-      eventName: "Changed Mouse Tool",
-      location: "PIANOROLL",
-      selectedTool: tool.toUpperCase(),
-    })
-    dispatch({ type: arrangeTool.SELECT, payload: tool })
-  }
+  tryAnalyticsEvent({
+    eventName: "Changed Mouse Tool",
+    location: "PIANOROLL",
+    selectedTool: tool.toUpperCase(),
+  })
+  return { type: arrangeTool.SELECT, payload: tool }
 }
 
 let defaultState = {
