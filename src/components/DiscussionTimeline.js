@@ -6,6 +6,7 @@ import _ from 'lodash'
 
 import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
 import {
+  commentClearFocus,
   commentReceive,
   commentLoadExisting,
   commentClearExisting,
@@ -15,11 +16,17 @@ export class DiscussionTimeline extends Component {
 
   list = {}
 
+  handleClick = (e) => {
+    if(e.target.className === `discussion-timeline`) {
+      this.props.dispatch(commentClearFocus())
+    }
+  }
+
   render() {
     let [ replyComments, originalComments ] = _.partition(this.props.comments, comment => comment.parentId)
 
     return (
-      <ul className="discussion-timeline">
+      <ul className="discussion-timeline" onClick={this.handleClick}>
         {
           // Loading status
           this.props.comments === null

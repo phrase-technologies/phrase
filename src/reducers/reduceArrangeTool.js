@@ -4,14 +4,18 @@ import {
   comment,
 } from 'actions/actions'
 import { tryAnalyticsEvent } from 'helpers/tryAnalytics'
+import { commentClearFocus } from './reduceComment'
 
-export let arrangeToolSelect = tool => {
-  tryAnalyticsEvent({
-    eventName: "Changed Mouse Tool",
-    location: "PIANOROLL",
-    selectedTool: tool.toUpperCase(),
-  })
-  return { type: arrangeTool.SELECT, payload: tool }
+export const arrangeToolSelect = tool => {
+  return (dispatch) => {
+    tryAnalyticsEvent({
+      eventName: "Changed Mouse Tool",
+      location: "PIANOROLL",
+      selectedTool: tool.toUpperCase(),
+    })
+    dispatch(commentClearFocus())
+    dispatch({ type: arrangeTool.SELECT, payload: tool })
+  }
 }
 
 let defaultState = {

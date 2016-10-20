@@ -7,6 +7,7 @@ import UserBubble from 'components/UserBubble'
 import { barToString } from 'helpers/trackHelpers'
 import { userRequestProfileIfNotExisting } from 'reducers/reduceUserProfile'
 import {
+  commentClearFocus,
   commentSetFocus,
   commentCreate,
 } from 'reducers/reduceComment'
@@ -150,7 +151,10 @@ export class DiscussionTimelineItem extends Component {
   }
 
   handleClick = () => {
-    this.props.dispatch(commentSetFocus({ commentId: this.props.comment.id }))
+    if (this.props.selected)
+      this.props.dispatch(commentClearFocus())
+    else
+      this.props.dispatch(commentSetFocus({ commentId: this.props.comment.id }))
   }
 
   openReply = () => {

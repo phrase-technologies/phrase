@@ -40,6 +40,11 @@ export const commentSetFocus = ({ commentId }) => {
     }
   }
 }
+export const commentClearFocus = () => {
+  return (dispatch) => {
+    dispatch({ type: comment.CLEAR_FOCUS })
+  }
+}
 export const commentLoadExisting = ({ phraseId }) => {
   return (dispatch) => {
     dispatch({ type: comment.REQUEST_EXISTING })
@@ -150,6 +155,19 @@ export default function reduceComment(state = defaultState, action) {
         commentReady: false,
       }, state)
     }
+
+    // ------------------------------------------------------------------------
+    case comment.CLEAR_FOCUS: {
+      return u({
+        comment: null,
+        commentId: null,
+        commentTrackId: null,
+        commentRangeStart: null,
+        commentRangeEnd: null,
+        commentReady: false,
+      }, state)
+    }
+
     // ------------------------------------------------------------------------
     case comment.REQUEST_EXISTING:
       return u({
