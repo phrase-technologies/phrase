@@ -40,6 +40,8 @@ export const phraseCreateTrack = (actionConfig) => {
     dispatch({ type: phrase.CREATE_TRACK, ...actionConfig })
     if (actionConfig.trackType === "AUDIO") {
       dispatch(arrangeToolSelect(`pointer`))
+    } else {
+      dispatch(arrangeToolSelect(`pencil`))
     }
 
     // Take measurements after the new track is created, adjust height

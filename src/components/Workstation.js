@@ -6,6 +6,7 @@ import Helmet from "react-helmet"
 import diffProps from 'helpers/diffProps'
 import { phrase, presence } from 'actions/actions'
 
+import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 import {
   phraseLoadFromDb,
   phraseLoadFinish,
@@ -15,7 +16,6 @@ import {
   phraseNotFound,
   phraseCreateTrack,
 } from 'reducers/reducePhrase'
-
 import { layoutConsoleSplit } from 'reducers/reduceNavigation'
 
 import CursorProvider from 'components/CursorProvider.js'
@@ -23,7 +23,6 @@ import HotkeyProvider from 'components/HotkeyProvider'
 import MouseEventProvider from 'components/MouseEventProvider'
 import SamplesProgress from 'components/SamplesProgress'
 import withSocket from 'components/withSocket'
-
 import WorkstationHeader from 'components/WorkstationHeader'
 // import WorkstationSplit from 'components/WorkstationSplit'
 import WorkstationFooter from 'components/WorkstationFooter'
@@ -167,6 +166,8 @@ export class Workstation extends Component {
     else if (loading !== phrase.REPHRASE) {
       dispatch(phraseNewPhrase())
     }
+
+    dispatch(arrangeToolSelect(`pointer`))
 
     // Set Leave Hook ("You have unsaved changes!")
     router.setRouteLeaveHook(route, this.leaveHook)
