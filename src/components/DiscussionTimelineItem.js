@@ -65,7 +65,7 @@ export class DiscussionTimelineItem extends Component {
             this.props.replies.map(reply => {
               let key = reply.id || reply.tempKey
               let timestamp = Moment(reply.dateCreated).calendar().toString()
-              let user = this.props.users[this.props.comment.authorId]
+              let user = this.props.users[reply.authorId]
               let username
               if (!user || user.pending)
                 username = <span className="fa fa-spinner fa-pulse" />
