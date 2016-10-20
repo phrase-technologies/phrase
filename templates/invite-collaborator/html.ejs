@@ -1,0 +1,8 @@
+
+<% include ../layout/header.ejs %>
+  <div class="invite-collaborator">
+    <p>Hi <%= user.username %>,</p>
+    <p><%= author.username %> just added you as a collaborator on their phrase!</p>
+    <% include ../partials/callToAction %>
+  </div>
+<% include ../layout/footer.ejs %>

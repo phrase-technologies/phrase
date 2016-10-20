@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import r from 'rethinkdb'
+
 import { getUsers, setUsers } from '../../setup/setupSocketConnection'
 import {
   rCollaboratorGet,
@@ -7,6 +8,7 @@ import {
   rCollaboratorDelete,
 } from '../../helpers/db-helpers'
 import isValidEmail from '../../helpers/isEmail'
+import { inviteCollaborator as emailCollaborator } from '../../helpers/email-helpers'
 
 export default ({ api, db, io }) => {
   api.post(`/collab/add`, async (req, res) => {
@@ -53,6 +55,17 @@ export default ({ api, db, io }) => {
         userId: targetUserId || targetUserEmail,
         phraseId,
       })
+
+      if (targetUserId) {
+        emailCollaborator({
+          user: targetUser,
+          author: authorUser,
+          phraseId,
+        })
+      }
+      else {
+        // TODO: Invite collaborator to join phrase, and notify of collaborator invite
+      }
 
       io.emit(`server::collaboratorAdded`, {
         phraseId,
