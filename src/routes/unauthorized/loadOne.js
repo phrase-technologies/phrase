@@ -1,5 +1,6 @@
 import r from 'rethinkdb'
 import chalk from 'chalk'
+import { rCollaboratorGet } from '../../helpers/db-helpers'
 
 export default ({ api, db }) => {
   api.post(`/loadOne`, async (req, res) => {
@@ -15,14 +16,16 @@ export default ({ api, db }) => {
         return res.json({ success: false, message: `Phrase not found!` })
       }
 
+      let collaboratorUserIds = await rCollaboratorGet(db, { phraseId })
       if (loadedPhrase.privacySetting === `private`) {
-        if (userId !== loadedPhrase.userId && !loadedPhrase.collaborators.includes(userId)) {
+        if (userId !== loadedPhrase.userId && !collaboratorUserIds.includes(userId)) {
           return res.json({ success: false, message: `Phrase not found!` })
         }
       }
 
       let phraseAuthor = await r.table(`users`).get(loadedPhrase.userId).run(db)
       loadedPhrase.username = phraseAuthor.username
+      loadedPhrase.collaborators = collaboratorUserIds
 
       res.json({ loadedPhrase })
 

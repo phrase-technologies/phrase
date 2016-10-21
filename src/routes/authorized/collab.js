@@ -1,38 +1,59 @@
 import _ from 'lodash'
 import r from 'rethinkdb'
 import { getUsers, setUsers } from '../../setup/setupSocketConnection'
+import {
+  rCollaboratorGet,
+  rCollaboratorInsert,
+  rCollaboratorDelete
+} from '../../helpers/db-helpers'
 
 export default ({ api, db, io }) => {
   api.post(`/collab/add`, async (req, res) => {
-    let { phraseId, userId, targetUserId } = req.body
+    let { phraseId, userId, targetUserId, targetUserEmail } = req.body
 
     try {
       let phrase = await r.table(`phrases`).get(phraseId)
       let author = await phrase.getField(`userId`).run(db)
-      let collaborators = await phrase.getField(`collaborators`).run(db)
-
-      let targetUser = await r.table(`users`).get(targetUserId).run(db)
-
-      if (!targetUser) {
-        return res.json({ success: false, message: `Target user does not exist.` })
-      }
-
-      if (collaborators.includes(targetUserId)) {
-        return res.json({ message: `User is already a collaborator on this phrase.` })
-      }
+      let collaboratorUserIds = await rCollaboratorGet(db, { phraseId })
 
       if (author !== userId) {
         throw Error(`You do not have permission to change this setting.`)
       }
 
-      await phrase.update(row => ({
-        collaborators: row(`collaborators`).append(targetUserId),
-      })).run(db)
+      // Handle add collaborator by id
+      let targetUser
+      if (targetUserId) {
+        targetUser = await r.table(`users`).get(targetUserId).run(db)
+        if (!targetUser) {
+          return res.json({ success: false, message: `Target user does not exist.` })
+        }
+
+      // Handle add collaborator by email
+      } else {
+        let userCursor = await r.table(`users`).filter(row =>
+          row(`email`).match(targetUserEmail)
+        ).run(db)
+        let users = await userCursor.toArray()
+        targetUser = users[0]
+
+        // Turns out this email already belongs to a user
+        if (targetUser)
+          targetUserId = targetUser.id
+      }
+
+      if (collaboratorUserIds.includes(targetUserId) || author === targetUserId) {
+        return res.json({ message: `User is already a collaborator on this phrase.` })
+      }
+
+      await rCollaboratorInsert(db, {
+        userId: targetUserId || targetUserEmail,
+        phraseId,
+      })
 
       io.emit(`server::collaboratorAdded`, {
         phraseId,
-        userId: targetUserId,
-        username: targetUser.username,
+        userId: targetUserId || targetUserEmail,
+        username: targetUser ? targetUser.username : targetUserEmail,
       })
 
       let users = getUsers()
@@ -66,17 +87,15 @@ export default ({ api, db, io }) => {
     try {
       let phrase = await r.table(`phrases`).get(phraseId)
       let author = await phrase.getField(`userId`).run(db)
-      let collaborators = await phrase.getField(`collaborators`).run(db)
+      let collaboratorUserIds = await rCollaboratorGet(db, { phraseId })
       let privacySetting = await phrase.getField(`privacySetting`).run(db)
 
       // Only author or can remove or collaborator can remove themselves.
-      if (author !== userId && !collaborators.includes(userId)) {
+      if (author !== userId && !collaboratorUserIds.includes(userId)) {
         throw Error(`You do not have permission to change this setting.`)
       }
 
-      await phrase.update({
-        collaborators: collaborators.filter(id => id !== targetUserId),
-      }).run(db)
+      await rCollaboratorDelete(db, { phraseId, userId: targetUserId })
 
       let users = getUsers()
 

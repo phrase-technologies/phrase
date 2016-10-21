@@ -37,6 +37,13 @@ export default async ({ name, db }) => {
   await r.table(`comments`).indexCreate(`authorId`).run(db)
   await r.table(`comments`).indexCreate(`start`).run(db)
 
+  await r.tableCreate(`collaborators`).run(db)
+  await r.table(`collaborators`).indexCreate(`phraseId`).run(db)
+  await r.table(`collaborators`).indexCreate(`userId`).run(db)
+  await r.table(`collaborators`).indexCreate(
+    "phraseIdAndUserId", [r.row(`phraseId`), r.row(`userId`)]
+  ).run(db)
+
   for(let i = 0; i < 100; i++) {
     let token = await generateUniqueToken({ db })
     await r.table(`inviteCodes`).insert({

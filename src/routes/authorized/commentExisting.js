@@ -1,4 +1,5 @@
 import r from 'rethinkdb'
+import { rCollaboratorGet } from '../../helpers/db-helpers'
 
 export default ({ api, db }) => {
   api.post(`/commentExisting`, async (req, res) => {
@@ -9,9 +10,10 @@ export default ({ api, db }) => {
 
     try {
       let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
+      let collaboratorUserIds = await rCollaboratorGet(db, { phraseId })
 
       let privatePhrase = loadedPhrase.privacySetting === "private"
-      let isCollaborator = loadedPhrase.collaborators.includes(id)
+      let isCollaborator = collaboratorUserIds.includes(id)
       let isAuthor = loadedPhrase.userId === id
       if (privatePhrase && !isCollaborator && !isAuthor) {
         return res.status(403).json({ message: `You do not have access.` })

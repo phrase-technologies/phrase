@@ -14,3 +14,7 @@ export rOAuthDeleteFromEmail      from './r-oauth-delete-from-email'
 export rOAuthGetFromEmail         from './r-oauth-get-from-email'
 
 export rPhraseGet                 from './r-phrase-get'
+
+export rCollaboratorGet           from './r-collaborator-get'
+export rCollaboratorInsert        from './r-collaborator-insert'
+export rCollaboratorDelete        from './r-collaborator-delete'
