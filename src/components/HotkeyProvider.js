@@ -4,6 +4,7 @@ import { withRouter } from 'react-router'
 import { ActionCreators as UndoActions } from 'redux-undo'
 
 import { isModifierOn } from 'helpers/compatibilityHelpers'
+import { zoomInterval } from 'helpers/intervalHelpers'
 
 import {
   midiIncrementOctave,
@@ -25,6 +26,8 @@ import {
   phraseQuantizeSelection,
   phraseSelectAll,
 } from 'reducers/reducePhrase'
+
+import { pianorollScrollX, pianorollScrollY } from 'reducers/reducePianoroll'
 
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 
@@ -63,7 +66,17 @@ class HotkeyProvider extends Component {
   }
 
   handleKeyDown = (e) => {
+<<<<<<< HEAD
     let { dispatch, ENGINE } = this.props
+=======
+    let { dispatch, show: modalShowing, ENGINE } = this.props
+console.log(e)
+    if (modalShowing) {
+      if (e.keyCode === 27) { // 'escape' - close modals
+        return dispatch(modalClose())
+      }
+    }
+>>>>>>> 852b5ec... Set up hotkeys for horizontal zoom in/out on x-axis
 
     // -----------------------------------------------------------------------
     // Bypass - Prevent doublebooking events with form <inputs>
@@ -161,6 +174,18 @@ class HotkeyProvider extends Component {
 
 
     switch(e.keyCode) {
+      case 189: // '-' - Zoom Out
+        if (e.shiftKey) {
+          console.log(this.props.xMin)
+          console.log(this.props.xMax)
+          dispatch(pianorollScrollX({max: this.props.xMax + 0.1}))
+        }
+        break
+      case 187: // '+' - Zoom in
+        if (e.shiftKey) {
+          dispatch(pianorollScrollX({max: this.props.xMax - 0.1}))
+        }
+        break
       // ----------------------------------------------------------------------
       // Editing
       case 8:   // Backspace - Delete Selection
@@ -269,6 +294,8 @@ function mapStateToProps(state) {
   return {
     ...state.modal,
     currentOctave: state.midi.currentOctave,
+    xMin: state.pianoroll.xMin,
+    xMax: state.pianoroll.xMax
   }
 }
 
