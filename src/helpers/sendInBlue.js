@@ -1,8 +1,7 @@
 
-import path from 'path'
 import fetch from 'node-fetch'
-import { EmailTemplate } from 'email-templates'
 
+import renderEmail from './renderEmail'
 import { sendInBlueApi, sendInBlueKey } from '../config'
 
 export let sendInBlueApiRequest = async ({ endpoint, method, body }) => {
@@ -45,18 +44,12 @@ export let addToMicrophoneLineInList = ({ email }) => {
 }
 
 export let sendHtmlEmail = async ({ email, subject, template, data, files }) => {
-  let emailTemplate = new EmailTemplate(path.resolve(`templates`, template))
-  let render = await new Promise((resolve, reject) => {
-    emailTemplate.render(data, (err, result) => {
-      if (err) reject(err)
-      else resolve(result)
-    })
-  })
+  let html = await renderEmail({ template, data })
   let body = {
     to: { [email]: email },
     from: [ `do-not-reply@phrase.fm`, `Phrase Technologies` ],
     subject,
-    html: render.html,
+    html,
   }
   if (files && files.length) {
     body.attachment = files

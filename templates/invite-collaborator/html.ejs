@@ -1,8 +1,17 @@
 
+<% let title = `Phrase.fm - You've been Invited!` %>
+<% let preheaderText = `${author.username} shared a phrase with you!` %>
 <% include ../layout/header.ejs %>
-  <div class="invite-collaborator">
-    <p>Hi <%= user.username %>,</p>
-    <p><%= author.username %> just added you as a collaborator on their phrase!</p>
-    <% include ../partials/callToAction %>
-  </div>
+
+  <%
+    let oneColumnTextContent = [
+      `Hi ${user.username}`,
+      `${author.username} just added you as a collaborator on their phrase!`,
+    ]
+  %>
+  <% include ../partials/oneColumnText.ejs %>
+
+  <% let button = { href: callToAction.href, text: callToAction.text } %>
+  <% include ../partials/button.ejs %>
+
 <% include ../layout/footer.ejs %>

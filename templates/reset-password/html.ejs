@@ -1,8 +1,17 @@
 
+<% let title = `Phrase.fm - Reset your password` %>
+<% let preheaderText = `Click the button to reset your password` %>
 <% include ../layout/header.ejs %>
-  <div class="reset-password">
-    <p>Hi <%= user.username %></p>
-    <p>You recently requested a new password on Phrase.fm. Click the button below to reset your password.</p>
-    <% include ../partials/callToAction %>
-  </div>
+
+  <%
+    let oneColumnTextContent = [
+      `Hi ${user.username}`,
+      `You recently requested a new password on Phrase.fm. Click the button below to reset your password.`,
+    ]
+  %>
+  <% include ../partials/oneColumnText.ejs %>
+
+  <% let button = { href: callToAction.href, text: callToAction.text } %>
+  <% include ../partials/button.ejs %>
+
 <% include ../layout/footer.ejs %>

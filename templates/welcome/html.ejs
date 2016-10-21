@@ -1,10 +1,18 @@
 
+<% let title = `Phrase.fm - Welcome!` %>
+<% let preheaderText = `Confirm code: ${confirmToken}` %>
 <% include ../layout/header.ejs %>
-  <div class="welcome-email">
-    <p>Hi <%= user.username %></p>
-    <p>Thank you for signing up at Phrase.fm! We are excited to welcome you to a community centered around creating and sharing music.</p>
-    <p>Here is your confirmation code: <%= confirmToken %>.</p>
-    <p>or</p>
-    <% include ../partials/callToAction %>
-  </div>
+
+  <%
+    let oneColumnTextContent = [
+      `Hi ${user.username}`,
+      `Thank you for signing up at Phrase.fm! We are excited to welcome you to a community centered around creating and sharing music.`,
+      `Here is your confirmation code: ${confirmToken}.`,
+    ]
+  %>
+  <% include ../partials/oneColumnText.ejs %>
+
+  <% let button = { href: callToAction.href, text: callToAction.text } %>
+  <% include ../partials/button.ejs %>
+
 <% include ../layout/footer.ejs %>
