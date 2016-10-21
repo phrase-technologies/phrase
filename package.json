@@ -5,6 +5,7 @@
     "start": "nodemon index.js",
     "start-prod": ". ./run-start-prod.sh",
     "migrate": "babel-node",
+    "render-template": "babel-node scripts/email/renderTemplate.js",
     "test": "find ./tests -name '*.test.js' | NODE_ENV=test xargs mocha --require babel-core/register",
     "test-watch": "find ./tests -name '*.test.js' | xargs mocha --require babel-core/register -w"
   },
@@ -25,6 +26,7 @@
     "multer": "^1.2.0",
     "node-fetch": "^1.6.3",
     "node-sass": "^3.10.1",
+    "opener": "^1.4.2",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "passport-google-oauth": "^1.0.0",

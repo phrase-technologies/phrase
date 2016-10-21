@@ -1,0 +1,12 @@
+{
+  "user": {
+    "username": "youTheUser"
+  },
+  "author": {
+    "username": "theAuthor"
+  },
+  "callToAction": {
+    "text": "Check out the phrase!",
+    "href": "http://thisisthecollabphrase.phrase"
+  }
+}
