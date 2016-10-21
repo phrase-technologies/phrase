@@ -66,17 +66,7 @@ class HotkeyProvider extends Component {
   }
 
   handleKeyDown = (e) => {
-<<<<<<< HEAD
     let { dispatch, ENGINE } = this.props
-=======
-    let { dispatch, show: modalShowing, ENGINE } = this.props
-    
-    if (modalShowing) {
-      if (e.keyCode === 27) { // 'escape' - close modals
-        return dispatch(modalClose())
-      }
-    }
->>>>>>> 852b5ec... Set up hotkeys for horizontal zoom in/out on x-axis
 
     // -----------------------------------------------------------------------
     // Bypass - Prevent doublebooking events with form <inputs>
