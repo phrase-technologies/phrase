@@ -2,8 +2,8 @@ import r from 'rethinkdb'
 import { generateAPIToken } from '../../helpers/token'
 import doubleHash from '../../helpers/doubleHash'
 
-export default ({ api, app, db }) => {
-  api.post(`/login`, async (req, res) => {
+export default ({ app, db }) => {
+  app.post(`/login`, async (req, res) => {
 
     let { email, password } = req.body
 
