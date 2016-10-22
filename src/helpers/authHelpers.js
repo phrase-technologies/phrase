@@ -22,7 +22,7 @@ export let signup = async ({ body, callback }) => {
 
 export let login = async ({ body, callback }) =>  {
     let response = await phraseFetch({
-      endpoint: `api/login`,
+      endpoint: `login`,
       body,
     })
     let { success, message, token, user, passwordFail } = response
