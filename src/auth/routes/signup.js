@@ -6,6 +6,7 @@ import {
   rInviteCodeUpdateMarkUsed,
   rOAuthGetFromEmail,
   rOAuthDeleteFromEmail,
+  rCollaboratorRegister,
 } from '../../helpers/db-helpers'
 
 import { generateUniqueToken } from '../../helpers/token'
@@ -85,6 +86,7 @@ export default ({ app, db }) => {
         return
       }
 
+      let resultingUser
       let oAuth = await rOAuthGetFromEmail(db, { email: lowerCaseEmail })
       if (oAuthToken) {
         if (!oAuth) {
@@ -105,7 +107,7 @@ export default ({ app, db }) => {
         delete oAuth.id
         delete oAuth.oAuthToken
         delete oAuth.email
-        rUserInsert(db, {
+        resultingUser = rUserInsert(db, {
           username: trimmedUsername,
           email: lowerCaseEmail,
           ...oAuth,
@@ -121,7 +123,7 @@ export default ({ app, db }) => {
         }
         if (oAuth) await rOAuthDeleteFromEmail(db, { email: lowerCaseEmail })
         let token = await generateUniqueToken({ index: `confirmToken`, db })
-        rUserInsert(db, {
+        resultingUser = rUserInsert(db, {
           username: trimmedUsername,
           email: lowerCaseEmail,
           password: doubleHash(trimmedPassword),
@@ -135,6 +137,7 @@ export default ({ app, db }) => {
       }
 
       rInviteCodeUpdateMarkUsed(db, { inviteCode: trimmedInviteCode })
+      rCollaboratorRegister(db, { email: lowerCaseEmail, userId: resultingUser.id })
 
       console.log(`${trimmedUsername} signed up!`)
 

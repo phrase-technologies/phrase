@@ -4,8 +4,9 @@ import { getUsers, setUsers } from '../../setup/setupSocketConnection'
 import {
   rCollaboratorGet,
   rCollaboratorInsert,
-  rCollaboratorDelete
+  rCollaboratorDelete,
 } from '../../helpers/db-helpers'
+import isValidEmail from '../../helpers/isEmail'
 
 export default ({ api, db, io }) => {
   api.post(`/collab/add`, async (req, res) => {
@@ -30,6 +31,9 @@ export default ({ api, db, io }) => {
 
       // Handle add collaborator by email
       } else {
+        if (!isValidEmail(targetUserEmail))
+          return res.json({ success: false, message: `Invalid target email.` })
+
         let userCursor = await r.table(`users`).filter(row =>
           row(`email`).match(targetUserEmail)
         ).run(db)
