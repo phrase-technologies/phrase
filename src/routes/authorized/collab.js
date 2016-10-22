@@ -6,6 +6,7 @@ import {
   rCollaboratorGet,
   rCollaboratorInsert,
   rCollaboratorDelete,
+  rUserGet,
 } from '../../helpers/db-helpers'
 import isValidEmail from '../../helpers/isEmail'
 import { inviteCollaborator as emailCollaborator } from '../../helpers/email-helpers'
@@ -26,7 +27,7 @@ export default ({ api, db, io }) => {
       // Handle add collaborator by id
       let targetUser
       if (targetUserId) {
-        targetUser = await r.table(`users`).get(targetUserId).run(db)
+        targetUser = await rUserGet(db, { id: targetUserId })
         if (!targetUser) {
           return res.json({ success: false, message: `Target user does not exist.` })
         }
@@ -57,6 +58,7 @@ export default ({ api, db, io }) => {
       })
 
       if (targetUserId) {
+        let authorUser = await rUserGet(db, { id: author })
         emailCollaborator({
           user: targetUser,
           author: authorUser,
