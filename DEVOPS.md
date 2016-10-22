@@ -15,7 +15,7 @@ Here are the motivations for the architectural decisions in this recipe.
 - ☑️ API must be on a separate server (non-standard ports are blocked at some places e.g. Ryerson, and merging repos to share same port on same server impractical)
 - ☑️ Deployments must be a single step, e.g. abstracted into a single script (cannot rely on humans getting multiple steps correctly)
 - ☑️ Deployments must be instant
-- ☑️ Deployments must be rollbackable instantly 
+- ☑️ Deployments must be rollbackable instantly
 
 At the end of each section below, each critical checkpoint is marked with a ✅.
 Make sure each of these checkpoints is met!
@@ -33,7 +33,7 @@ At the time of writing, these are our servers from IBM SoftLayer:
     208.43.253.180  bach-api
     208.43.253.182  mozart-web
     208.43.253.178  mozart-api
-    
+
 Add these entries to your hosts file (Usually located at `/etc/hosts` in Linux/MacOS) so that you can
 easily identify which server is which during SSH (see below).
 At the time of writing, `bach-web` and `bach-api` are being used for production,
@@ -77,11 +77,11 @@ You can accomplish this in Ubuntu 16.04 by creating a custom instance config:
 
     $ sudo cp /etc/rethinkdb/default.conf.sample /etc/rethinkdb/instances.d/instance1.conf
     $ sudo vim /etc/rethinkdb/instances.d/instance1.conf
-  
+
 Then, hardcode the directory by adding the following line:
 
     directory=/home/phrase/database
-  
+
 ✅ Hard-coded database directory!
 
 Which is equivalent to `~/database`. Now you'll actually have to create the directory,
@@ -89,17 +89,19 @@ and set it's privileges so that only RethinkDB has control:
 
     $ mkdir ~/database
     $ sudo chown -R rethinkdb.rethinkdb /home/phrase/database
-  
+
 You should now be able to start the database:
 
     $ sudo /etc/init.d/rethinkdb restart
-    
+
 Now, install the unofficial RethinkDB CLI interface so you can query stuff.
 You'll need to install node and npm first, followed by each of the repositories' node modules.
 Instead of directly install node, use nvm:
 
     $ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh | bash
-    
+    $ nvm install 6.4.0
+
+Note, at the time of writing, ^v6.4.0 is needed for compatibility with strict mode .ejs template rendering in email templates, along with babel-core ^v6.17.0.
 See full instructions here: [https://github.com/creationix/nvm](https://github.com/creationix/nvm)
 Back to the RethinkDB CLI:
 
@@ -130,7 +132,7 @@ At the end of this, you're expected to have a directory structure that looks lik
 Git clone this repository (`phrase-api`) and the corresponding `phrase-client` repository.
 
     $ git clone ...
-    
+
 Then, in each repository's folder, install the modules:
 
     $ npm install
@@ -147,19 +149,19 @@ deploy the codebase (we want to listen to port 80). There's a handy trick to cir
 
 Source: [http://stackoverflow.com/a/23281417/476426](http://stackoverflow.com/a/23281417/476426)
 
-The codebase requires that `imagemagick` be installed on the server hosting the API. 
+The codebase requires that `imagemagick` be installed on the server hosting the API.
 Install `imagemagick` using the following command:
 
     $ sudo apt-get install imagemagick
 
-The codebase also requires that `ffmpeg` be installed on the server hosting the API. 
+The codebase also requires that `ffmpeg` be installed on the server hosting the API.
 Install `ffmpeg` using the following command:
 
     $ sudo apt-get install ffmpeg
 
 ### Initial Client Build
 Now, to deploy to production, we use a different process than the `npm start` that we would use for
-the local development environment. Starting with the client. First we build to optimize the 
+the local development environment. Starting with the client. First we build to optimize the
 bundle.js file size:
 
     $ API_URL=http://api.phrase.fm npm run build
@@ -197,7 +199,7 @@ To verify that the new build was picked up by the server, check that it is respa
     $ tmux attach
     Check for "Server Started" log
 
-Also, a good sanity check is to simply browse to the site to see that the change appears. 
+Also, a good sanity check is to simply browse to the site to see that the change appears.
 TODO: Indicate a unique build number, probably the corresponding git commit hash, and indicate it
 visibly on the website somewhere.
 
@@ -235,30 +237,30 @@ Now, make sure that any API endpoints have their corresponding API tests
 Super important! We'll use cronjobs to take regular backups and regularly clear out old ones.
 
     $ crontab -e
-    
+
 We'll use the `phrase` user that you're logged in with, should be fine.
 But be warned that it matters which user the crontab is created for, in debugging.
 And then configure it like this:
 
     # Hourly
       0  *  *  *  *  cd /home/phrase/phrase-api/scripts/backup/ && ./backup-hourly.sh
-    
+
     # Daily at 4:05AM
       5  4  *  *  *  cd /home/phrase/phrase-api/scripts/backup/ && ./backup-daily.sh
-    
+
     # Weekly at Tuesday morning 4:10AM
      10  4  *  *  2  cd /home/phrase/phrase-api/scripts/backup/ && ./backup-weekly.sh
-    
+
     # Monthly, on first day of the Month at 4:15AM
      15  4  1  *  *  cd /home/phrase/phrase-api/scripts/backup/ && ./backup-monthly.sh
-    
+
     <<<<<<<< REMEMBER TO LEAVE A NEWLINE AT THE END OF THE CRONTAB!
 
 Test the scripts out by running them directly.
 They might need a Rethink python driver installed to work:
 
     sudo pip install rethinkdb
-    
+
 Source: [https://www.rethinkdb.com/docs/install-drivers/python/](https://www.rethinkdb.com/docs/install-drivers/python/)
 Make sure the crontab is working by checking after an hour.
 
