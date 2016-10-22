@@ -27,13 +27,13 @@ export let setPrivacySetting = ({ privacySetting }) => {
   }
 }
 
-export let addCollaborator = ({ targetUserId }) => {
+export let addCollaborator = ({ targetUserId, targetUserEmail }) => {
   return (dispatch, getState) => {
     let { phraseId } = getState().phraseMeta
 
     api({
       endpoint: `collab/add`,
-      body: { phraseId, targetUserId },
+      body: { phraseId, targetUserId, targetUserEmail },
     })
   }
 }

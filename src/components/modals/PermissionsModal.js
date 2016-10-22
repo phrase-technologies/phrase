@@ -82,13 +82,11 @@ export class PermissionsModal extends Component {
               name="collaborator-input"
               placeholder="Email or Username"
               loadOptions={this.autocompleteUsers}
-              onChange={({ value }) => this.props.dispatch(addCollaborator({ targetUserId: value }))}
+              onChange={this.inviteCollaborator}
               autoload={false} ignoreCase={true}
               isValidNewOption={params => isEmail(params.label)}
               promptTextCreator={label => `Send invitation to ${label}`}
               filterOptions={options => options.filter(option => !option.className)}
-              selectValue={value => console.log( value )}
-              onInputChange={false}
             />
           </div>
 
@@ -101,14 +99,19 @@ export class PermissionsModal extends Component {
             </li>
             {this.props.phraseMeta.collaborators
               .map(user => {
-                let username = this.props.users[user]
-                  ? this.props.users[user].username
-                  : <span className="fa fa-spinner fa-pulse" />
+                let username
+                if (isEmail(user)) {
+                  username = user
+                } else {
+                  username = this.props.users[user]
+                    ? this.props.users[user].username
+                    : <span className="fa fa-spinner fa-pulse" />
+                }
                 return (
                   <li key={user}>
                     <UserBubble userId={user} />
                     <span className="user-username">
-                      {username}
+                      { username }
                       <a
                         style={{ marginLeft: `0.5rem` }}
                         onClick={() => this.props.dispatch(removeCollaborator({ targetUserId: user }))}
@@ -209,6 +212,17 @@ export class PermissionsModal extends Component {
     )
   }
 
+  inviteCollaborator = (params) => {
+    if (params.className === "Select-create-option-placeholder") {
+      this.props.dispatch(addCollaborator({
+        targetUserEmail: params.value
+      }))
+    } else {
+      this.props.dispatch(addCollaborator({
+        targetUserId: params.value
+      }))
+    }
+  }
   expandPermissions = () => {
     this.setState({
       choosingPermissions: true,
@@ -227,8 +241,6 @@ export class PermissionsModal extends Component {
     this.setState({ choosingPermissions: false })
     if (e) e.preventDefault()
   }
-
-
   closeModal = () => {
     this.props.dispatch(modalClose())
   }
