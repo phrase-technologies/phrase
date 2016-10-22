@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
   <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
-  <title><%= title %></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+  <title><%= header.title %></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
   <!-- Web Font / @font-face : BEGIN -->
   <!-- NOTE: If web fonts are not required, lines 9 - 26 can be safely removed. -->
@@ -29,7 +29,7 @@
 </head>
 <body width="100%" bgcolor="white">
   <center>
-    <div class="preheader-text"><%= preheaderText %></div>
+    <div class="preheader-text"><%= header.preheaderText %></div>
     <div class="container max-width">
       <!--[if mso]>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">

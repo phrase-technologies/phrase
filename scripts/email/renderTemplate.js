@@ -15,28 +15,25 @@ let main = async (args) => {
       return
     }
 
-    let templateDir = path.resolve(`templates`, `${template}`)
+    let templateDir = path.resolve(`templates`, `templates`, `${template}`)
     if (!fs.existsSync(templateDir)) {
       console.log(`Template directory not found: ${templateDir}`)
       return
     }
-    console.log(`Using template directory: ${templateDir}`)
 
     let dataFile = path.resolve(baseDir, `test-data`, `${template}.json`)
     if(!fs.existsSync(dataFile)) {
       console.log(`Please create the following data file: ${dataFile}`)
       return
     }
-    console.log(`Using test file: ${dataFile}`)
 
     let outputFile = path.resolve(baseDir, `output`, `${template}_${Date.now()}.html`)
-    console.log(`Using output file: ${outputFile}`)
-
     let data = JSON.parse(fs.readFileSync(dataFile, 'utf8'))
     let html = await renderEmail({ template, data })
     fs.writeFileSync(outputFile, html)
-
     opener(outputFile)
+
+    console.log(`html email written to ${outputFile}`)
   }
   catch (e) {
     console.log(e)

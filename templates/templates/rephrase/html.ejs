@@ -1,0 +1,21 @@
+
+<%
+  let header = {
+    title: `Phrase.fm - RePhrase Notification`,
+    preheaderText: `${rePhraser.username} rePhrased your phrase`,
+  }
+%>
+<% include ../../layout/header.ejs %>
+
+  <%
+    let oneColumnText = [
+      `Hi ${user.username}`,
+      `${rePhraser.username} just rephrase'd your phrase!`,
+    ]
+  %>
+  <% include ../../partials/oneColumnText.ejs %>
+
+  <% let button = { href: callToAction.href, text: callToAction.text } %>
+  <% include ../../partials/button.ejs %>
+
+<% include ../../layout/footer.ejs %>

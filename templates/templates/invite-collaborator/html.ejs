@@ -1,0 +1,21 @@
+
+<%
+  let header = {
+    title: `Phrase.fm - You've been Invited!`,
+    preheaderText: `${author.username} shared a phrase with you!`,
+  }
+%>
+<% include ../../layout/header.ejs %>
+
+  <%
+    let oneColumnText = [
+      `Hi ${user.username}`,
+      `${author.username} just added you as a collaborator on their phrase!`,
+    ]
+  %>
+  <% include ../../partials/oneColumnText.ejs %>
+
+  <% let button = { href: callToAction.href, text: callToAction.text } %>
+  <% include ../../partials/button.ejs %>
+
+<% include ../../layout/footer.ejs %>
