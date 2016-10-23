@@ -1,7 +1,7 @@
 
 <%
   let header = {
-    title: `Phrase.fm - You've been Invited!`,
+    title: headline,
     preheaderText: `${author.username} shared a phrase with you!`,
   }
 %>
@@ -10,13 +10,15 @@
   <%
     let oneColumnText = [
       `${author.username} just added you as a collaborator on their phrase!`,
-      `Phrase.fm is a collaborative songwriting platform, as a collaborator you're welcome to join.`,
-      `Your invite code is ${inviteCode}`,
+      `Phrase.fm is a brand new collaborative songwriting and discussion platform,
+       and as a collaborator you're welcome to join. Click the link below
+       to instantly create an account and join their session.
+      `,
     ]
   %>
   <% include ../../partials/oneColumnText.ejs %>
 
-  <% let button = { href: callToAction.href, text: callToAction.text } %>
+  <% let button = { href: callToAction.href, text: "Login and View Phrase" } %>
   <% include ../../partials/button.ejs %>
 
 <% include ../../layout/footer.ejs %>

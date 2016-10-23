@@ -4,16 +4,15 @@ import { clientURL } from '../../config'
 
 export default async ({ email, author, token, phraseId }) => {
   let data = {
+    headline: `${author.username} added you as a collaborator`,
     author,
-    inviteCode: token,
     callToAction: {
-      text: `Get Started!`,
-      href: `${clientURL}/phrase/${author.username}/${phraseId}`,
+      href: `${clientURL}/phrase/${author.username}/${phraseId}?invite-code=${token}`,
     },
   }
   let response = await sendHtmlEmail({
     email,
-    subject: `Phrase.fm - Invite to collaborate!`,
+    subject: data.headline,
     template: `invite-email-collaborator`,
     data,
   })
