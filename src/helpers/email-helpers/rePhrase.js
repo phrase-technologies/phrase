@@ -4,16 +4,16 @@ import { clientURL } from '../../config'
 
 export default async ({ email, authorUsername, username, phraseId }) => {
   let data = {
+    headline: `${username} rephrased your phrase`,
     user: { username: authorUsername },
     rePhraser: { username },
     callToAction: {
-      text: `Check out the Phrase!`,
       href: `${clientURL}/phrase/${username}/${phraseId}`,
     },
   }
   let response = await sendHtmlEmail({
     email,
-    subject: `Phrase.fm - Rephrase Notification`,
+    subject: data.headline,
     template: `rephrase`,
     data,
   })

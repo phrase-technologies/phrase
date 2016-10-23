@@ -1,12 +1,11 @@
 {
   "user": {
-    "username": "notARealUserName"
+    "username": "TestUsername"
   },
   "rePhraser": {
     "username": "theRePhraser"
   },
   "callToAction": {
-    "text": "Check out the rePhrase!",
     "href": "http://thisistherephrase.phrase"
   }
 }

@@ -1,12 +1,11 @@
 {
   "user": {
-    "username": "youTheUser"
+    "username": "TestUsername"
   },
   "author": {
     "username": "theAuthor"
   },
   "callToAction": {
-    "text": "Check out the phrase!",
     "href": "http://thisisthecollabphrase.phrase"
   }
 }

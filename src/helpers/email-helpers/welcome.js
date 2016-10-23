@@ -4,16 +4,16 @@ import { clientURL } from '../../config'
 
 export default async ({ email, username, confirmToken }) => {
   let data = {
+    headline: `Activate your account on Phrase.fm`,
     user: { username },
     confirmToken,
     callToAction: {
-      text: `Confirm Here!`,
       href: `${clientURL}/confirm-user?token=${confirmToken}&email=${email}`,
     },
   }
   let response = await sendHtmlEmail({
     email,
-    subject: `Phrase.fm - Welcome!`,
+    subject: data.headline,
     template: `welcome`,
     data,
   })

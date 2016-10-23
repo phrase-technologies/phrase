@@ -27,8 +27,8 @@ body {
 
 .header {
   td {
-    padding: 20px 0;
-    text-align: center
+    padding: 20px;
+    text-align: left
   }
   img {
     height: auto;
@@ -42,12 +42,12 @@ body {
 
 .footer {
   td {
-    padding: 40px 10px;
+    padding: 20px;
     width: 100%;
     font-size: 12px;
     font-family: sans-serif;
     line-height:18px;
-    text-align: center;
+    text-align: left;
     color: #888888;
     mso-height-rule: exactly;
   }
@@ -68,9 +68,10 @@ body {
   }
 }
 
+.button-container-wrapper {
+  padding: 0 20px 20px;
+}
 .button-container {
-  margin: auto;
-
   td {
     border-radius: 3px;
     background: #222222;
@@ -97,12 +98,12 @@ body {
 
 .one-column-text {
   td {
-    padding: 40px;
+    padding: 20px;
     font-family: sans-serif;
     font-size: 15px;
     line-height: 20px;
     color: #555555;
-    mso-height-rule: exactly; 
+    mso-height-rule: exactly;
   }
 }
 

@@ -47,7 +47,7 @@ export let sendHtmlEmail = async ({ email, subject, template, data, files }) => 
   let html = await renderEmail({ template, data })
   let body = {
     to: { [email]: email },
-    from: [ `do-not-reply@phrase.fm`, `Phrase Technologies` ],
+    from: [ `hello@phrase.fm`, `Phrase.fm` ],
     subject,
     html,
   }

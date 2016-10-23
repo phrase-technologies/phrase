@@ -4,15 +4,15 @@ import { clientURL } from '../../config'
 
 export default async ({ username, email, resetToken }) => {
   let data = {
+    headline: `Reset your password`,
     user: { username },
     callToAction: {
-      text: `Reset Password!`,
       href: `${clientURL}/new-password?token=${resetToken}&email=${email}`,
     },
   }
   let response = await sendHtmlEmail({
     email,
-    subject: `Phrase.fm - Reset your password`,
+    subject: data.headline,
     template: `reset-password`,
     data,
   })

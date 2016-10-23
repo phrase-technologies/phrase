@@ -1,21 +1,24 @@
 
 <%
   let header = {
-    title: `Phrase.fm - Reset your password`,
-    preheaderText: `Click the button to reset your password`,
+    title: headline,
+    preheaderText: `You requested a new password for your account on Phrase.fm.`,
   }
 %>
 <% include ../../layout/header.ejs %>
 
   <%
     let oneColumnText = [
-      `Hi ${user.username}`,
-      `You recently requested a new password on Phrase.fm. Click the button below to reset your password.`,
+      `Hi ${user.username},`,
+      `You requested a new password for your account on Phrase.fm.
+       Click the button below to reset your password.
+       If you did not request a new password, simply ignore this message.
+      `,
     ]
   %>
   <% include ../../partials/oneColumnText.ejs %>
 
-  <% let button = { href: callToAction.href, text: callToAction.text } %>
+  <% let button = { href: callToAction.href, text: "Reset Password" } %>
   <% include ../../partials/button.ejs %>
 
 <% include ../../layout/footer.ejs %>

@@ -1,10 +1,9 @@
 {
   "user": {
-    "username": "notARealUserName"
+    "username": "TestUsername"
   },
-  "confirmToken": "NOT A REAL TOKEN",
+  "confirmToken": "FAKETOKEN",
   "callToAction": {
-    "text": "Confirm Here!",
     "href": "http://google.ca"
   }
 }
