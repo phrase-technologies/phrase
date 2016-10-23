@@ -12,10 +12,11 @@ export default class MobileCompatibilityOverlay extends Component {
 			<div id="mobile-compatibility-overlay">
 				<Modal  {...modalProps}>
 					<Modal.Header>
-						<Modal.Title>Mobile compatibility coming soon!</Modal.Title>
+						<Modal.Title>Notice!</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						Please visit Phrase.fm from a desktop browser for the full experience
+						<p>Mobile/Tablet Compatibility coming soon.</p>
+						<p>Please visit phrase.fm from a desktop browser for the full experience!</p>
 					</Modal.Body>
 				</Modal>
 			</div>
