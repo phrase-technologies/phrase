@@ -1,4 +1,5 @@
 {
+  "headline": "TestUsername rephrased your phrase`",
   "user": {
     "username": "TestUsername"
   },
@@ -6,6 +7,6 @@
     "username": "theRePhraser"
   },
   "callToAction": {
-    "href": "http://thisistherephrase.phrase"
+    "href": "`${clientURL}/phrase/${username}/${phraseId}`"
   }
 }

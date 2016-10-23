@@ -1,9 +1,10 @@
 {
+  "headline": "Activate your account on Phrase.fm",
   "user": {
     "username": "TestUsername"
   },
   "confirmToken": "FAKETOKEN",
   "callToAction": {
-    "href": "http://google.ca"
+    "href": "`${clientURL}/confirm-user?token=${confirmToken}&email=${email}`"
   }
 }

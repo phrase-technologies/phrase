@@ -1,10 +1,9 @@
 {
+  "headline": "theAuthor added you as a collaborator",
   "author": {
     "username": "theAuthor"
   },
-  "inviteCode": "NOT AN INVITE CODE IN THE LEAST",
   "callToAction": {
-    "text": "Get Started!",
-    "href": "http://thisisthecollabphrase.phrase"
+    "href": "`${clientURL}/phrase/${author.username}/${phraseId}?invite-code=${token}`"
   }
 }
