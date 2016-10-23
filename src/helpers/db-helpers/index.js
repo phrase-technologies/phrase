@@ -6,6 +6,7 @@ export rUserInsert                from './r-user-insert'
 export rUserUpdate                from './r-user-update'
 export rUserUpdateFromEmail       from './r-user-update-from-email'
 
+export rInviteCodeGenerate        from './r-invite-code-generate'
 export rInviteCodeUpdateMarkUsed  from './r-invite-code-update-mark-used'
 export rInviteCodeGetFromCode     from './r-invite-code-get-from-code'
 

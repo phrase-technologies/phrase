@@ -7,9 +7,13 @@ import {
   rCollaboratorInsert,
   rCollaboratorDelete,
   rUserGet,
+  rInviteCodeGenerate,
 } from '../../helpers/db-helpers'
 import isValidEmail from '../../helpers/isEmail'
-import { inviteCollaborator as emailCollaborator } from '../../helpers/email-helpers'
+import {
+  inviteCollaborator as emailCollaborator,
+  inviteEmailCollaborator,
+} from '../../helpers/email-helpers'
 
 export default ({ api, db, io }) => {
   api.post(`/collab/add`, async (req, res) => {
@@ -57,8 +61,8 @@ export default ({ api, db, io }) => {
         phraseId,
       })
 
+      let authorUser = await rUserGet(db, { id: author })
       if (targetUserId) {
-        let authorUser = await rUserGet(db, { id: author })
         emailCollaborator({
           user: targetUser,
           author: authorUser,
@@ -66,7 +70,14 @@ export default ({ api, db, io }) => {
         })
       }
       else {
-        // TODO: Invite collaborator to join phrase, and notify of collaborator invite
+        let token = await rInviteCodeGenerate(db)
+        inviteEmailCollaborator({
+          email: targetUserEmail,
+          token,
+          author: authorUser,
+          phraseId,
+        })
+        console.log(token)
       }
 
       io.emit(`server::collaboratorAdded`, {
