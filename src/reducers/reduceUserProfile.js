@@ -20,7 +20,7 @@ export const userRequestProfile = ({ userId }) => {
     dispatch({ type: userProfile.REQUEST_USER, payload: { id: userId } })
 
     catchAndToastException({ dispatch, toCatch: async () => {
-      let { loadedUser } = await api({ endpoint: `loadUser`, body: { userId } })
+      let { loadedUser } = await api({ endpoint: `loadUser`, body: { theUserId: userId } })
       dispatch({ type: userProfile.RECEIVE_USER, payload: loadedUser })
     }})
   }
