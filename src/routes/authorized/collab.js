@@ -77,7 +77,6 @@ export default ({ api, db, io }) => {
           author: authorUser,
           phraseId,
         })
-        console.log(token)
       }
 
       io.emit(`server::collaboratorAdded`, {
