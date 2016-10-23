@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import Header from 'components/Header'
 import AuthenticationWall from 'components/AuthenticationWall'
+import MobileCompatibilityOverlay from 'components/MobileCompatibilityOverlay'
 
 export let App = ({ routes, location, params, children }) => {
 
@@ -24,6 +25,7 @@ export let App = ({ routes, location, params, children }) => {
     <div>
       <Header theme={headerTheme} params={params} maximize={maximize} show={showHeader} />
       <div className="body" style={bodyStyle}>
+        <MobileCompatibilityOverlay />
         { children }
       </div>
     </div>
