@@ -11,16 +11,22 @@ export default ({ globals, observer }) => {
       expect(response.status).to.eq(200)
     })
 
-    it(`should complain if userId parameter is missing`, async function() {
+    it(`should complain if theUserId parameter is missing`, async function() {
       this.timeout(100000)
-      let response = await ajax({ url })
+      let response = await ajax({ url, body: { userId: observer.id } })
       let { message } = await response.json()
       expect(message).to.eq(`Must supply a userId`)
     })
 
     it(`should return 404 if no user found`, async function() {
       this.timeout(100000)
-      let response = await ajax({ url, body: { userId: `fake-id` } })
+      let response = await ajax({
+        url,
+        body: {
+          userId: observer.id,
+          theUserId: `fake id`,
+        },
+      })
       expect(response.status).to.eq(404)
       let { message } = await response.json()
       expect(message).to.eq(`User not found!`)
@@ -28,7 +34,13 @@ export default ({ globals, observer }) => {
 
     it(`should retreive a user by its id`, async function() {
       this.timeout(100000)
-      let response = await ajax({ url, body: { userId: observer.id } })
+      let response = await ajax({
+        url,
+        body: {
+          userId: observer.id,
+          theUserId: observer.id,
+        },
+      })
       let { loadedUser } = await response.json()
       expect(loadedUser.id).to.eq(observer.id)
     })

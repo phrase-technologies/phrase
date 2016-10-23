@@ -5,7 +5,7 @@ import { formatLoadedUser } from '../../helpers/user'
 
 export default ({ api, db }) => {
   api.post(`/loadUser`, async (req, res) => {
-    let { userId } = req.body
+    let { theUserId: userId } = req.body
     if (!userId)
       return res.json({ success: false, message: `Must supply a userId` })
 
