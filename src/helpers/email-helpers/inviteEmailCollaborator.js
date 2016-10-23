@@ -7,7 +7,7 @@ export default async ({ email, author, token, phraseId }) => {
     author,
     inviteCode: token,
     callToAction: {
-      text: `Check out the Phrase!`,
+      text: `Get Started!`,
       href: `${clientURL}/phrase/${author.username}/${phraseId}`,
     },
   }

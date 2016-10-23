@@ -31,7 +31,12 @@ let main = async (args) => {
     let data = JSON.parse(fs.readFileSync(dataFile, 'utf8'))
     let html = await renderEmail({ template, data })
     fs.writeFileSync(outputFile, html)
-    opener(outputFile)
+
+    let browser = opener(outputFile)
+    browser.unref()
+    browser.stdin.unref()
+    browser.stdout.unref()
+    browser.stderr.unref()
 
     console.log(`html email written to ${outputFile}`)
   }
