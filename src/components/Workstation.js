@@ -31,6 +31,7 @@ import TrackEditor from 'components/TrackEditor'
 import Rack from 'components/Rack'
 import Discussion from 'components/Discussion'
 import terms from 'constants/terms'
+import WorkstationMobileCompatibilityOverlay from 'components/WorkstationMobileCompatibilityOverlay'
 
 export class Workstation extends Component {
 
@@ -286,6 +287,7 @@ export class Workstation extends Component {
 
             <div className="workstation-background">
               <div className="workstation-container">
+                <WorkstationMobileCompatibilityOverlay />
                 <div className="workstation workstation-maximized disable-select">
                   <div className="workstation-core" style={this.getCoreSplit()}>
                     <Helmet title={`${this.props.phraseName || `Untitled Phrase`} by ${this.props.authorUsername || this.props.currentUsername || `Unknown`} - Phrase.fm`} />

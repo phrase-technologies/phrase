@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
 
-export default class MobileCompatibilityOverlay extends Component {
+export default class WorkstationMobileCompatibilityOverlay extends Component {
 	render() {
 		let modalProps = {
 			show: true,
@@ -9,8 +9,8 @@ export default class MobileCompatibilityOverlay extends Component {
 		}
 
 		return (
-			<div id="mobile-compatibility-overlay">
-				<Modal  {...modalProps}>
+			<div id="workstation-mobile-compatibility-overlay">
+				<Modal {...modalProps}>
 					<Modal.Header>
 						<Modal.Title>Notice!</Modal.Title>
 					</Modal.Header>
