@@ -220,15 +220,18 @@ export class WorkstationHeader extends Component {
   renderEditTool() {
     let { arrangeTool, dispatch } = this.props
     let editable = !this.props.existingPhrase || this.props.ownerOfPhrase
-    
+
     let DefaultTooltip = <Tooltip id="tooltip-default-tool">Selection Tool (1)</Tooltip>
     let CommentTooltip = <Tooltip id="tooltip-comment-tool">Comment Tool (5)</Tooltip> // TEMPORARILY CHANGE from 6 to 4 UNTIL WE FIX SLICE (TODO)
+    let PencilTooltip
+    let EraserTooltip
+    let VelocityTooltip
     if (editable) {
-      var PencilTooltip = <Tooltip id="tooltip-pencil-tool">Pencil Tool (2)</Tooltip>
-      var EraserTooltip = <Tooltip id="tooltip-eraser-tool">Eraser Tool (3)</Tooltip>
+      PencilTooltip = <Tooltip id="tooltip-pencil-tool">Pencil Tool (2)</Tooltip>
+      EraserTooltip = <Tooltip id="tooltip-eraser-tool">Eraser Tool (3)</Tooltip>
       // TEMPORARILY DISABLE UNTIL WE FIX SLICE (TODO)
       // let SliceTooltip = <Tooltip id="tooltip-slice-tool">Slice Tool (4)</Tooltip>
-      var VelocityTooltip = <Tooltip id="tooltip-velocity-tool">Velocity Tool (4)</Tooltip> // TEMPORARILY CHANGE from 5 to 4 UNTIL WE FIX SLICE (TODO)
+      VelocityTooltip = <Tooltip id="tooltip-velocity-tool">Velocity Tool (4)</Tooltip> // TEMPORARILY CHANGE from 5 to 4 UNTIL WE FIX SLICE (TODO)
     }
 
     return (
