@@ -235,7 +235,7 @@ a,
 .btn-facebook { background-image: linear-gradient(to bottom, #4B68B9, #3B55A1); }
 .btn-twitter { background-image: linear-gradient(to bottom, #1B95E0, #0B72B1); }
 .btn-google { background-image: linear-gradient(to bottom, #EE4433, #CC4433); }
-.btn-soundcloud { background-image: linear-gradient(to bottom, #FF7600, #FF3500); } 
+.btn-soundcloud { background-image: linear-gradient(to bottom, #FF7600, #FF3500); }
 
 // When against a light background, reduce contrast
 .btn-light-bg {
@@ -311,22 +311,31 @@ a,
     radial-gradient(circle at 50% 50%, #F00 64%, #000 75%);
 }
 
-// Talkus.io button customization
-#talkus-button {
-  border: 1px solid #000 !important;
-  border-bottom: 0 !important;
-  border-radius: 4px 4px 0 0 !important;
-  width: 140px !important;
-  height: 30px !important;
-  right: 10px !important;
-  bottom: 0px !important;
-  background-position: 6px 6px !important;
-  background-size: 18px 18px !important;
+// Smooch.io button customization
+@media (min-width: $screen-sm-max) {
+  #sk-container {
+    &.sk-appear {
+      #sk-wrapper {
+        width: 350px !important;
+      }
+      #sk-header  {
+        padding: 6px 18px !important;
+        font-size: 16px !important;
+        line-height: 32px !important;
+      }
+    }
 
-  &::before {
-    content: 'Ask us anything!';
-    display: block;
-    margin-top: 5px;
-    margin-left: 28px;
+    #sk-wrapper {
+      width: 150px !important;
+      height: 460px !important;
+      transition: width 0.4s, height 0.4s;
+    }
+    #sk-header {
+      padding: 0px !important;
+      font-size: 13px !important;
+      font-weight: bold !important;
+      line-height: 24px !important;
+      transition: padding 0.4s, line-height 0.4s;
+    }
   }
 }

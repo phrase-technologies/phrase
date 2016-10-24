@@ -64,12 +64,12 @@
     }(document, 'script', 'facebook-jssdk'));
   </script>
 
+  <script src="https://cdn.smooch.io/smooch.min.js"></script>
   <script>
-    (function(t,a,l,k,u,s,e){if(!t[u]){t[u]=function(){(t[u].q=t[u].q||[]).push(arguments)},t[u].l=1*new Date();s=a.createElement(l),e=a.getElementsByTagName(l)[0];s.async=1;s.src=k;e.parentNode.insertBefore(s,e)}})(window,document,'script','//www.talkus.io/plugin.js','talkus');
-    talkus('primaryColor', '#00FFFF', '#00b3b3');
-    talkus('hide');
-    talkus('create', 'extWzGNTTt5kiT8Ek');
-    setTimeout(function() { talkus('show'); }, 10000)
+    Smooch.init({
+      appToken: 'bkc7z0xffu4vwzp7whlnhexbi',
+      emailCaptureEnabled: true,
+    });
   </script>
 
 </body>
