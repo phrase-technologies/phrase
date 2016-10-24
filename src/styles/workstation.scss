@@ -632,10 +632,6 @@ div.workstation-header-title {
   .workstation-footer {
     display: none;
   }
-  #talkus-button,
-  #phrase-talkus-button {
-    display: none;
-  }
   #workstation-mobile-compatibility-overlay {
     display: block;
     position: relative;
@@ -643,11 +639,11 @@ div.workstation-header-title {
     width: 100%;
     z-index: 501;
     color: #000000;
-    
+
     .modal, .modal-backdrop  {
       position: absolute;
     }
-    
+
     .modal-backdrop.in {
       opacity: 0.7;
     }
