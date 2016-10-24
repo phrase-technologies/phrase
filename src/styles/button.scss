@@ -312,9 +312,14 @@ a,
 }
 
 // Smooch.io button customization
-@media (min-width: 768px) and (max-height: 667px) {
+@media (min-width: 769px) {
   #sk-container {
+    margin-bottom: -20px !important;
+    transition: magin 0.4s;
+
     &.sk-appear {
+      margin-bottom: 0px !important;
+
       #sk-wrapper {
         width: 350px !important;
       }
@@ -327,35 +332,7 @@ a,
 
     #sk-wrapper {
       width: 150px !important;
-      height: 460px !important;
-      transition: width 0.4s, height 0.4s;
-    }
-    #sk-header {
-      padding: 0px !important;
-      font-size: 13px !important;
-      font-weight: bold !important;
-      line-height: 24px !important;
-      transition: padding 0.4s, line-height 0.4s;
-    }
-  }
-}
-@media (min-height: 668px) {
-  #sk-container {
-    &.sk-appear {
-      #sk-wrapper {
-        width: 350px !important;
-      }
-      #sk-header  {
-        padding: 6px 18px !important;
-        font-size: 16px !important;
-        line-height: 32px !important;
-      }
-    }
-
-    #sk-wrapper {
-      width: 150px !important;
-      height: 620px !important;
-      transition: width 0.4s, height 0.4s;
+      transition: width 0.4s;
     }
     #sk-header {
       padding: 0px !important;
