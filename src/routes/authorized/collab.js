@@ -52,7 +52,11 @@ export default ({ api, db, io }) => {
           targetUserId = targetUser.id
       }
 
-      if (collaboratorUserIds.includes(targetUserId) || author === targetUserId) {
+      if (
+        collaboratorUserIds.includes(targetUserId) ||
+        collaboratorUserIds.includes(targetUserEmail) ||
+        author === targetUserId
+      ) {
         return res.json({ message: `User is already a collaborator on this phrase.` })
       }
 
