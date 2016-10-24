@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import r from 'rethinkdb'
 import chalk from 'chalk'
+import { rCollaboratorGet } from '../helpers/db-helpers'
 
 // We have a connections table, and maybe we should switch to using that
 // instead of this array at a later point, if we find a reason (eg analysis)
@@ -20,6 +21,7 @@ export default async ({ io, db }) => {
 
     socket.on(`client::joinRoom`, async ({ phraseId, username, userId }) => {
       let loadedPhrase = await r.table(`phrases`).get(phraseId).run(db)
+      let collaboratorUserIds = await rCollaboratorGet(db, { phraseId })
 
       let user = users.find(x => x.socketId === socket.id)
       user.username = username
@@ -36,7 +38,7 @@ export default async ({ io, db }) => {
       if (
         loadedPhrase.userId === userId ||
         loadedPhrase.privacySetting === `public` ||
-        loadedPhrase.collaborators.find(id => id === userId)
+        collaboratorUserIds.find(id => id === userId)
       ) {
         socket.join(phraseId)
         user.room = phraseId
