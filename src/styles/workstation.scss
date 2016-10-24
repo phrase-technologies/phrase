@@ -567,7 +567,7 @@ div.workstation-header-title {
 @media (max-width: $screen-sm-max) {
   html,
   body {
-    overflow: hidden;
+    // overflow: hidden; // Prevents scrolling on all pages... be careful!
     -webkit-overflow-scrolling: touch;
   }
   .header {

@@ -5,7 +5,6 @@ import 'babel-polyfill'
 // ============================================================================
 require(`css-element-queries/src/ResizeSensor.js`)
 require(`css-element-queries/src/ElementQueries.js`)
-require(`inobounce`)
 
 import './index.scss'
 import React from 'react'

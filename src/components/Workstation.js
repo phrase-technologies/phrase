@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import Helmet from "react-helmet"
+import iNoBounce from "inobounce"
+iNoBounce.disable()
 
 import diffProps from 'helpers/diffProps'
 import { phrase, presence } from 'actions/actions'
@@ -45,6 +47,7 @@ export class Workstation extends Component {
     } = this.props
 
     // Put the page into "app-mode" to prevent inertia scroll
+    iNoBounce.enable()
     document.documentElement.style.overflow = "hidden"
     document.body.style.overflow = "hidden"
 
@@ -325,6 +328,7 @@ export class Workstation extends Component {
 
   componentWillUnmount() {
     // Take the page back out of "app-mode"
+    iNoBounce.disable()
     document.documentElement.style.overflow = "auto"
     document.body.style.overflow = "auto"
 
