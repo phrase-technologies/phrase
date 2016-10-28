@@ -81,8 +81,24 @@ export class Discussion extends Component {
             masterControl={this.props.masterControl.includes(this.props.userId)}
             online
           />
+          { this.props.authorUserId !== this.props.userId &&
+            <UserBubble
+              type={`author`}
+              key={`collab-${this.props.authorUserId}`}
+              handleClick={
+                () => {
+                    this.props.dispatch(addMasterControl({ targetUserId: this.props.authorUserId }))
+                    this.setState({ loadingMasterControl: this.props.authorUserId })
+                }
+              }
+              userId={this.props.authorUserId}
+              loadingMasterControl={this.state.loadingMasterControl === this.props.authorUserId}
+              masterControl={this.props.masterControl.includes(this.props.authorUserId)}
+              online={this.props.users.find(user => user.userId === this.props.authorUserId)}
+            />
+          }
           {this.props.collaborators
-          .filter(x => x !== this.props.userId)
+          .filter(x => x !== this.props.userId && x !== this.props.authorUserId)
           .map(x =>
             <UserBubble
               type="collaborator"
@@ -109,9 +125,7 @@ export class Discussion extends Component {
             />
           )}
           {this.props.users
-          .filter(x =>
-            !this.props.collaborators.find(c => c === x.userId)
-          )
+          .filter(x => !this.props.collaborators.find(c => c === x.userId) && x.userId !== this.props.authorUserId)
           .map(x =>
             <UserBubble
               type={this.props.authorUserId === x.userId ? `author` : `observer`}
