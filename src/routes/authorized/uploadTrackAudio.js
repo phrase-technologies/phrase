@@ -5,6 +5,7 @@ import fileType from 'file-type'
 import ffmpeg from 'fluent-ffmpeg'
 
 import { rPhraseGet } from '../../helpers/db-helpers'
+import { rCollaboratorGet } from '../../helpers/db-helpers'
 
 export default ({ api, db }) => {
   api.post(`/uploadTrackAudio`, async (req, res) => {
@@ -28,12 +29,13 @@ export default ({ api, db }) => {
       }
 
       let phrase = await rPhraseGet(db, { phraseId })
+      let collaboratorUserIds = await rCollaboratorGet(db, { phraseId })
       if (!phrase) {
         fs.unlink(file.path)
         return res.status(404).json({ message: `Invalid phraseId` })
       }
       let isAuthor = phrase.userId === id
-      if (!phrase.collaborators.includes(id) && !isAuthor) {
+      if (!collaboratorUserIds.includes(id) && !isAuthor) {
         fs.unlink(file.path)
         return res.status(403).json({ message: `You do not have permission to edit this phrase` })
       }

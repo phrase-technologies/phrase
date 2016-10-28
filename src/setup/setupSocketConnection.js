@@ -24,6 +24,10 @@ export default async ({ io, db }) => {
       let collaboratorUserIds = await rCollaboratorGet(db, { phraseId })
 
       let user = users.find(x => x.socketId === socket.id)
+      if (!user) {
+        user = { socketId: socket.id, username: null, userId: null, room: null }
+        users.push(user)
+      }
       user.username = username
       user.userId = userId
 
@@ -55,6 +59,25 @@ export default async ({ io, db }) => {
           .map(x => ({ username: x.username, userId: x.userId })),
       )
 
+    })
+
+    socket.on(`client::leaveRoom`, async ({ phraseId }) => {
+      let user = users.find(x => x.socketId === socket.id)
+      users = users.filter(x => x.socketId !== socket.id)
+
+      // Indicate Presence
+      if (user) {
+        io.in(phraseId).emit(
+          `server::updatePresence`,
+          _.uniqBy(users, `userId`)
+            .filter(x => x.room === phraseId)
+            .map(x => ({ username: x.username, userId: x.userId })),
+        )
+      }
+
+      console.log(chalk.magenta(
+        `⚡ Disconnection! Number of open connections: ${users.length}`
+      ))
     })
 
     socket.on(`disconnect`, () => {
