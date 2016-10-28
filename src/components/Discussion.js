@@ -71,8 +71,8 @@ export class Discussion extends Component {
                   this.props.authorUserId === this.props.userId &&
                   !this.props.masterControl.includes(this.props.userId)
                 ) {
-                  this.props.dispatch(addMasterControl({ targetUserId: this.props.userId }))
-                  this.setState({ loadingMasterControl: this.props.userId })
+                  // this.props.dispatch(addMasterControl({ targetUserId: this.props.userId }))
+                  // this.setState({ loadingMasterControl: this.props.userId })
                 }
               }
             }
@@ -87,8 +87,8 @@ export class Discussion extends Component {
               key={`collab-${this.props.authorUserId}`}
               handleClick={
                 () => {
-                    this.props.dispatch(addMasterControl({ targetUserId: this.props.authorUserId }))
-                    this.setState({ loadingMasterControl: this.props.authorUserId })
+                    // this.props.dispatch(addMasterControl({ targetUserId: this.props.authorUserId }))
+                    // this.setState({ loadingMasterControl: this.props.authorUserId })
                 }
               }
               userId={this.props.authorUserId}
@@ -106,12 +106,12 @@ export class Discussion extends Component {
               handleClick={
                 () => {
                   if (this.props.authorUserId === this.props.userId) {
-                    if (this.props.masterControl.includes(x)) {
-                      this.props.dispatch(removeMasterControl())
-                    } else {
-                      this.props.dispatch(addMasterControl({ targetUserId: x }))
-                      this.setState({ loadingMasterControl: x })
-                    }
+                    // if (this.props.masterControl.includes(x)) {
+                    //   this.props.dispatch(removeMasterControl())
+                    // } else {
+                    //   this.props.dispatch(addMasterControl({ targetUserId: x }))
+                    //   this.setState({ loadingMasterControl: x })
+                    // }
                   }
                 }
               }
