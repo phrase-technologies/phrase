@@ -332,7 +332,15 @@ export class Workstation extends Component {
     document.documentElement.style.overflow = "auto"
     document.body.style.overflow = "auto"
 
-    this.props.socket.off("server::updatePhrase", this.receiveSocketUpdate)
+    // Switch session connection
+    this.props.socket.emit(`client::leaveRoom`, { phraseId: this.props.phraseId })
+    this.props.socket.off(`server::updatePhrase`)
+    this.props.socket.off(`server::updatePresence`)
+    this.props.socket.off(`server::collaboratorAdded`)
+    this.props.socket.off(`server::privacySettingChanged`)
+    this.props.socket.off(`server::collaboratorLeft`)
+    this.props.socket.off(`server::masterControlChanged`)
+    this.props.socket.off(`reconnect`)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -465,7 +473,7 @@ export class Workstation extends Component {
       this.props.socket.emit(`disconnect`, { phraseId: this.props.phraseId })
 
       // Don't join the room again
-      if (this.props.phraseId && nextProps.phraseId) {
+      if (nextProps.phraseId) {
         this.props.socket.emit(`client::joinRoom`, {
           phraseId: nextProps.phraseId,
           username: nextProps.currentUsername,
