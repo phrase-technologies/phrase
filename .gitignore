@@ -12,3 +12,5 @@ public/audio-tracks/*
 !public/audio-tracks/AUDIO_TRACKS_UPLOADS.md
 scripts/email/output/*
 !*.keep
+uploads/*
+yarn.lock

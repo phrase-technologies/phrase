@@ -135,7 +135,7 @@ export default ({ api, db, io }) => {
       let nextUsers = setUsers(
         users.map(x => ({
           ...x,
-          room: privacySetting === `public` || author === userId
+          room: privacySetting === `public` || author === x.userId
             ? phraseId
             : null,
         }))

@@ -29,7 +29,7 @@ export default ({
       expect(message).to.eq(`Collaborator added!`)
     })
 
-    it(`should not be contain two of the same collaborator in the list`, async function() {
+    it(`should not contain two of the same collaborator in the list`, async function() {
       this.timeout(10000)
 
       let response = await ajax({
