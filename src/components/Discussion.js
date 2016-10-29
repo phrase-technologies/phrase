@@ -81,7 +81,7 @@ export class Discussion extends Component {
             masterControl={this.props.masterControl.includes(this.props.userId)}
             online
           />
-          { this.props.authorUserId !== this.props.userId &&
+          { this.props.authorUserId && this.props.authorUserId !== this.props.userId &&
             <UserBubble
               type={`author`}
               key={`collab-${this.props.authorUserId}`}

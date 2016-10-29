@@ -202,12 +202,14 @@ export class PermissionsModal extends Component {
         <div className="col-xs-8">
           <PermissionsOption option={option} />
         </div>
+        { option.type !== "private" &&
         <div className="col-xs-4 text-right">
           <button className="btn btn-link link-primary" onClick={this.expandPermissions}>
             <span>Change </span>
             <span className="fa fa-sort" />
           </button>
         </div>
+        }
       </div>
     )
   }

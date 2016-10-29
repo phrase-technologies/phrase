@@ -7,6 +7,16 @@ a,
 .panel-title a {
   cursor: pointer;
 }
+
+a {
+  color: #088;
+}
+
+.btn-link {
+  text-decoration: none !important;
+  color: #088;
+}
+
 // Dark themed links
 .link-dark {
   color: #AAA;
@@ -16,10 +26,6 @@ a,
   &:hover, &.hover {
     color: #FFF;
   }
-}
-
-.btn-link {
-  text-decoration: none !important;
 }
 
 .link-primary {
