@@ -277,6 +277,7 @@ export class Workstation extends Component {
       dispatch: this.props.dispatch,
       consoleSplitRatio: this.props.consoleSplitRatio,
       focusedTrack: this.props.focusedTrack,
+      selectedTrack: this.props.selectedTrack,
       rackOpen: this.props.rackOpen,
       openInputMethod: this.props.inputMethodsTour,
     }

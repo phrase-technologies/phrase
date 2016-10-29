@@ -15,13 +15,18 @@ export default class WorkstationFooter extends Component {
     let rackClass = 'btn btn-sm btn-link link-dark btn-glow'
         rackClass += this.isRackActive() ? ' active' : ''
 
+    let isMidi = this.props.selectedTrack && this.props.selectedTrack.type !== "AUDIO"
+console.log( "isMidi", isMidi )
     return (
       <div className="workstation-footer">
+        { isMidi &&
         <InputMethodsTour
           show={this.props.openInputMethod !== null}
           openInputMethod={this.props.openInputMethod}
           setOpenInputMethod={this.setOpenInputMethod}
         />
+        }
+        { isMidi &&
         <div className="btn-toolbar">
           <div className="btn-group">
             <div
@@ -70,6 +75,7 @@ export default class WorkstationFooter extends Component {
           </div>
           */}
         </div>
+        }
       </div>
     )
   }
