@@ -19,6 +19,7 @@ import {
   stopPlayback,
 } from './AudioEnginePlaybackLoop'
 import initializeMIDIControllers from './AudioEngineMidiControl'
+import load from 'audio-loader'
 
 let AudioContext = window.AudioContext || window.webkitAudioContext || false
 
@@ -55,6 +56,7 @@ export default function initializeAudioEngine(ENGINE, STORE) {
     stopQueued: false,
     bufferMap: {},    // Storing audio samples
     waveformMap: {},  // Storing visual waveform data corresponding to each buffer
+    systemSounds: {},
     unsubscribeStoreChanges: null,
     lastState: {
       tracks: null,
@@ -109,6 +111,19 @@ export default function initializeAudioEngine(ENGINE, STORE) {
   })
 
   // --------------------------------------------------------------------------
+  // Phrase Wide Sounds (eg: Notification)
+  // --------------------------------------------------------------------------
+  let systemSounds = [
+    { id: `notification`, audio: `${API_URL}/system/notification.mp3` },
+  ]
+
+  systemSounds.forEach(sample =>
+    load(engine.ctx, sample).then(result => {
+      engine.systemSounds[result.id] = result.audio
+    })
+  )
+
+  // --------------------------------------------------------------------------
   // MIDI Controller driven behaviour
   // --------------------------------------------------------------------------
   initializeMIDIControllers(engine, STORE)
@@ -138,6 +153,17 @@ export default function initializeAudioEngine(ENGINE, STORE) {
   }
   ENGINE.getSampleWaveform = (url) => {
     return getSampleWaveform(engine, url)
+  }
+  ENGINE.fireSystemSound = (sound) => {
+    let buffer = engine.systemSounds[sound]
+    if (!buffer) return
+    let source = engine.ctx.createBufferSource()
+    let sourceGain = engine.ctx.createGain()
+    source.buffer = buffer
+    source.connect(sourceGain)
+    sourceGain.connect(engine.ctx.destination)
+    sourceGain.gain.value = 1
+    source.start()
   }
   ENGINE.destroy = () => {
     engine.unsubscribeStoreChanges()

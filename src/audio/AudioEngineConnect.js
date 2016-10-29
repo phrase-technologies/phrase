@@ -7,7 +7,7 @@ import engineShape from './AudioEnginePropTypes.js'
 // ============================================================================
 // Makes the AudioEngine available to all React Components via the `context`
 // trick. Inspired by the `react-redux` store <Provider>.
-// 
+//
 // See AudioEngineConnect.js for how to access the AudioEngine from components.
 export default function connectEngine(ChildComponent) {
 
@@ -25,7 +25,7 @@ export default function connectEngine(ChildComponent) {
     }
 
     static contextTypes = {
-      engine:   engineShape.isRequired,
+      engine: engineShape.isRequired,
     }
 
   }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import withSocket from 'components/withSocket'
+import connectEngine from 'audio/AudioEngineConnect'
 import _ from 'lodash'
 
 import DiscussionTimelineItem from 'components/DiscussionTimelineItem'
@@ -91,6 +92,11 @@ export class DiscussionTimeline extends Component {
       switch(action) {
         case "insert":
           this.props.dispatch(commentReceive(state))
+
+          if (this.props.currentUser.id !== state.authorId) {
+            this.props.ENGINE.fireSystemSound('notification')
+          }
+
           break
         // TODO, for when we add the ability to delete or edit existing comments
         case "delete":
@@ -100,6 +106,11 @@ export class DiscussionTimeline extends Component {
       }
     })
   }
+
+  componentWillUnmount() {
+    this.props.socket.off(`server::commentsChangeFeed`)
+  }
+
 
   componentDidUpdate(prevProps) {
     // Nothing to check if we are in a loading state
@@ -119,10 +130,11 @@ export class DiscussionTimeline extends Component {
 
 }
 
-export default withSocket(connect((state) => ({
+export default connectEngine(withSocket(connect((state) => ({
   phraseId: state.phraseMeta.phraseId,
   author: state.phraseMeta.userId,
+  currentUser: state.auth.user,
   comments: state.comment.comments,
   selectedCommentId: state.comment.commentId,
   currentTool: state.arrangeTool.currentTool,
-}))(DiscussionTimeline))
+}))(DiscussionTimeline)))
