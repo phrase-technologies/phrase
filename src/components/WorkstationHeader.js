@@ -38,7 +38,7 @@ export class WorkstationHeader extends Component {
       <div className="workstation-header">
         <div className={containerClasses} style={{ position: 'relative' }}>
           <div className="btn-toolbar workstation-header-rephrase">
-            { !editable &&
+            { !editable && !this.props.isAudio &&
               <Dropdown id="workstation-permissions" className="dropdown-dark">
                 <button
                   className="dropdown-toggle btn btn-sm btn-primary"
@@ -60,8 +60,8 @@ export class WorkstationHeader extends Component {
                 </Dropdown.Menu>
               </Dropdown>
             }
-            { this.props.isAudio || this.renderRephraseButton() }
-            { this.props.isAudio || this.renderRephraseReminder() }
+            { !this.props.isAudio && this.renderRephraseButton() }
+            { !this.props.isAudio && this.renderRephraseReminder() }
           </div>
           <div className="text-center">
             { this.renderLoginReminder() }
@@ -72,12 +72,14 @@ export class WorkstationHeader extends Component {
           </div>
           <div className="btn-toolbar workstation-header-social">
             <div className="btn-group">
-              { this.props.isAudio || this.renderMIDIExportButton() }
+              { !this.props.isAudio && this.renderMIDIExportButton() }
             </div>
           </div>
         </div>
         <div className="workstation-divider" />
-        <WorkstationHeaderStorage {...this.props} />
+        { !this.props.isAudio &&
+          <WorkstationHeaderStorage {...this.props} />
+        }
         <div className="workstation-controls">
           <TransportControls />
         </div>

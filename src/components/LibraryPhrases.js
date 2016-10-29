@@ -127,12 +127,14 @@ export class LibraryPhrases extends Component {
               <span> View Phrase</span>
             </button>
           </div>
-          <div className="btn-group" onClick={() => dispatch(phraseRephrase())}>
-            <button className="btn btn-bright btn-lg">
-              <span className="fa fa-pencil-square-o" />
-              <span> Rephrase</span>
-            </button>
-          </div>
+          {!this.props.hasAudio &&
+            <div className="btn-group" onClick={() => dispatch(phraseRephrase())}>
+              <button className="btn btn-bright btn-lg">
+                <span className="fa fa-pencil-square-o" />
+                <span> Rephrase</span>
+              </button>
+            </div>
+          }
         </div>
         <div className="library-preview-timestamp">
           {"Last changed " + dateModified}
@@ -192,6 +194,10 @@ export class LibraryPhrases extends Component {
 }
 
 function mapStateToProps(state) {
+  // In the future when mixing audio / midi tracks this might not make sense
+  // but for now this is fine
+  let hasAudio = state.phrase.present.tracks.some(x => x.type === 'AUDIO')
+
   return {
     phraseId: state.phraseMeta.phraseId,
     authorUsername: state.phraseMeta.authorUsername,
@@ -199,6 +205,7 @@ function mapStateToProps(state) {
     dateModified: state.phraseMeta.dateModified,
     playing: state.transport.playing,
     phraseName: state.phraseMeta.phraseName,
+    hasAudio,
   }
 }
 

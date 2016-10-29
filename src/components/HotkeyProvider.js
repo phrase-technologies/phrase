@@ -9,7 +9,7 @@ import {
   midiIncrementOctave,
   midiDecrementOctave,
 } from 'reducers/reduceMIDI'
-import connectEngine from '../audio/AudioEngineConnect.js'
+import connectEngine from 'audio/AudioEngineConnect.js'
 import {
   transportRecord,
   transportPlayToggle,
@@ -26,9 +26,9 @@ import {
   phraseSelectAll,
 } from 'reducers/reducePhrase'
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
-import { 
-  pianorollZoomX, 
-  pianorollZoomY 
+import {
+  pianorollZoomX,
+  pianorollZoomY
 } from 'reducers/reducePianoroll'
 
 // ============================================================================
