@@ -16,7 +16,7 @@ export default class WorkstationFooter extends Component {
         rackClass += this.isRackActive() ? ' active' : ''
 
     let isMidi = this.props.selectedTrack && this.props.selectedTrack.type !== "AUDIO"
-console.log( "isMidi", isMidi )
+
     return (
       <div className="workstation-footer">
         { isMidi &&

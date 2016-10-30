@@ -64,7 +64,7 @@ export function getSampleWaveform(engine, url) {
   if (peaks) {
     let canvas = document.createElement('canvas')
     let buffer = engine.bufferMap[url]
-    canvas.width = Math.min(buffer.duration * 100, 32767) // 32,767 is max canvas length
+    canvas.width = Math.min(buffer.duration * 100, 16384) // 16,384 is max canvas length
     canvas.height = 400
     drawWaveform({ canvas, peaks })
     return engine.waveformMap[url] = canvas
@@ -82,7 +82,7 @@ export function drawWaveform({
   // Split channels if necessary
   if (peaks[0] instanceof Array) {
     let channels = peaks
-    let splitChannels = true
+    let splitChannels = false
     if (splitChannels) {
       channels.forEach((channel, channelIndex) => drawWaveform({
         canvas,
@@ -109,7 +109,7 @@ export function drawWaveform({
 
   // A half-pixel offset makes lines crisp
   let $ = 0.5 / pixelRatio
-  let height = channelIndex === null
+  let height = !Number.isInteger(channelIndex)
     ? 1.0 * canvas.height * pixelRatio
     : 0.5 * canvas.height * pixelRatio
   let offsetY = height * channelIndex || 0
