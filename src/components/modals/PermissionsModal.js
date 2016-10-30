@@ -83,7 +83,7 @@ export class PermissionsModal extends Component {
               placeholder="Email or Username"
               loadOptions={this.autocompleteUsers}
               onChange={this.inviteCollaborator}
-              autoload={false} ignoreCase={true}
+              autoload={false} ignoreCase={false}
               isValidNewOption={params => isEmail(params.label)}
               promptTextCreator={label => `Send invitation to ${label}`}
               filterOptions={options => options.filter(option => !option.className)}
