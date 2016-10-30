@@ -36,7 +36,7 @@ export const pianorollZoomX = (zoomType) => {
     } else if (zoomType.toUpperCase() === 'OUT') {
       newMax = zoomOutScaling(min, max)
     }
-    dispatch({ 
+    dispatch({
       type: pianoroll.SCROLL_X,
       zoomType,
       newMax
@@ -54,8 +54,8 @@ export const pianorollZoomY = (zoomType) => {
     } else if (zoomType.toUpperCase() === 'OUT') {
       newMax = zoomOutScaling(min, max)
     }
-    dispatch({ 
-      type: pianoroll.SCROLL_Y, 
+    dispatch({
+      type: pianoroll.SCROLL_Y,
       zoomType,
       newMax
     })
@@ -102,7 +102,7 @@ export const defaultState = {
   width: 1000,
   height: 500,
   xMin: 0.000,
-  xMax: 0.250,
+  xMax: 1.000,
   yMin: 0.350,
   yMax: 0.650,
   selectionStartX: null,
@@ -157,8 +157,8 @@ export default function reducePianoroll(state = defaultState, action) {
       // Zooming with Hoykeys
       if (action.zoomType !== undefined) {
         return state = u({
-          xMax: action.newMax === undefined 
-            ? state.xMax 
+          xMax: action.newMax === undefined
+            ? state.xMax
             : Math.min(1.0, action.newMax)
         }, state)
       }
@@ -205,8 +205,8 @@ export default function reducePianoroll(state = defaultState, action) {
       if (action.zoomType !== undefined) {
         // debugger
         state = u({
-          yMax: action.newMax === undefined 
-            ? state.yMax 
+          yMax: action.newMax === undefined
+            ? state.yMax
             : Math.min(1.0, action.newMax)
         }, state)
         return restrictKeyboardZoom(state, true)
@@ -354,7 +354,7 @@ function restrictKeyboardZoom(state, maxOnly) {
     return u({
       yMax
     }, state)
-  } else { 
+  } else {
     return u({
       yMin,
       yMax
