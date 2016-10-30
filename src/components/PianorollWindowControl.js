@@ -43,6 +43,8 @@ import {
   commentSelectionEnd,
 } from 'reducers/reduceComment'
 
+import { transportMovePlayhead } from 'reducers/reduceTransport'
+
 import { phrase, mouse } from 'actions/actions'
 
 const SELECT_EMPTY_AREA = 'SELECT_EMPTY_AREA'
@@ -249,6 +251,10 @@ export class PianorollWindowControl extends Component {
     // First Click - Start Selection
     if (!this.lastEvent) {
       switch(this.props.arrangeTool) {
+        case `pointer`:
+          if (this.props.currentTrack.type === "AUDIO")
+            this.props.dispatch(transportMovePlayhead(bar, !isModifierOn(e), true))
+          break
         case `pencil`:
           if (this.props.currentTrack.type === "AUDIO")
             return

@@ -91,7 +91,7 @@ export class PianorollTimelineControl extends Component {
       foundClip = _.findLast(this.props.clips, clip => clip.start <= bar && clip.end > bar)
     }
 
-    if (foundClip) {
+    if (foundClip && this.props.currentTrack.type !== "AUDIO") {
       this.clipEvent(e, bar, foundClip)
     } else {
       this.emptyAreaEvent(e, bar, top >= 25)

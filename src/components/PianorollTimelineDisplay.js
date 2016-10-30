@@ -35,7 +35,8 @@ export class PianorollTimelineDisplay extends Component {
       canvasContext.fillRect(0, 0, this.props.grid.width, this.props.grid.height)
       this.props.grid.calculateZoomThreshold()
       this.renderBarLines(canvasContext, this.props.xMin, this.props.xMax, mobile)
-      this.renderClips(canvasContext, this.props.xMin, this.props.xMax, this.props.clips, mobile)
+      if (this.props.currentTrack.type !== "AUDIO")
+        this.renderClips(canvasContext, this.props.xMin, this.props.xMax, this.props.clips, mobile)
     }.bind(this)
   }
 
