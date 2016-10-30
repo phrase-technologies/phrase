@@ -7,10 +7,12 @@ import { xhrApi } from 'helpers/ajaxHelpers'
 
 import { addNotification } from 'reducers/reduceNotification'
 import { phraseCreateClip } from 'reducers/reducePhrase'
+import { phraseRename } from 'reducers/reducePhrase.js'
 
 export class AudioRollEmpty extends Component {
   state = {
     percentComplete: null,
+    filename: null,
   }
 
   updateProgress = (oEvent) => {
@@ -32,6 +34,7 @@ export class AudioRollEmpty extends Component {
         start: 0,
         audioUrl: `${API_URL}/audio-tracks/${response.audioFile}`,
       }))
+      this.props.dispatch(phraseRename(this.state.filename))
     } else {
       this.setState({ percentComplete: null })
       this.props.dispatch(addNotification({
@@ -52,6 +55,7 @@ export class AudioRollEmpty extends Component {
     if (!this.props.phraseId) {
       await dispatch(librarySaveNew())
     }
+    this.setState({ filename: files[0].name })
     xhrApi({
       endpoint: `uploadTrackAudio`,
       body: {
