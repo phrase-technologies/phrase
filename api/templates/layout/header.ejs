@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8"> <!-- utf-8 works for most cases -->
+  <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
+  <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
+  <title><%= header.title %></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+
+  <!-- Web Font / @font-face : BEGIN -->
+  <!-- NOTE: If web fonts are not required, lines 9 - 26 can be safely removed. -->
+
+  <!-- Desktop Outlook chokes on web font references and defaults to Times New Roman, so we force a safe fallback font. -->
+  <!--[if mso]>
+    <style>
+      * {
+        font-family: sans-serif !important;
+      }
+    </style>
+  <![endif]-->
+
+  <!-- All other clients get the webfont reference; some will render the font and others will silently fail to the fallbacks. More on that here: http://stylecampaign.com/blog/2015/02/webfont-support-in-email/ -->
+  <!--[if !mso]><!-->
+    <!-- insert web font reference, eg: <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'> -->
+  <!--<![endif]-->
+
+  <!-- Web Font / @font-face : END -->
+
+</head>
+<body width="100%" bgcolor="white">
+  <center>
+    <div class="preheader-text"><%= header.preheaderText %></div>
+    <div class="container max-width">
+      <!--[if mso]>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
+      <tr>
+      <td>
+      <![endif]-->
+
+      <!-- Email Header : BEGIN -->
+      <table class="header max-width" role="presentation" cellspacing="0" cellpadding="0" border="0" align="left" width="100%">
+        <tr>
+          <td>
+            <a href="<%= homeURL %>">
+              <img src="<%= imgURL %>/phrase-logo-email-header.png" width="116" height="40" alt="Phrase Technologies Inc." border="0">
+            </a>
+          </td>
+        </tr>
+      </table>
+      <!-- Email Header : END -->
+
+      <!-- Email Body : BEGIN -->
+      <table class="max-width" role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%">

@@ -1,0 +1,22 @@
+
+<%
+  let header = {
+    title: `Activate your account on Phrase.fm!`,
+    preheaderText: `Confirmation code: ${confirmToken}`,
+  }
+%>
+<% include ../../layout/header.ejs %>
+
+  <%
+    let oneColumnText = [
+      `Hi ${user.username},`,
+      `Welcome to Phrase.fm, and thanks for joining!
+      To complete your account registration, please click below.`
+    ]
+  %>
+  <% include ../../partials/oneColumnText.ejs %>
+
+  <% let button = { href: callToAction.href, text: "Verify Account" } %>
+  <% include ../../partials/button.ejs %>
+
+<% include ../../layout/footer.ejs %>

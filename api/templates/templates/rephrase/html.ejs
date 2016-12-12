@@ -1,0 +1,21 @@
+
+<%
+  let header = {
+    title: headline,
+    preheaderText: `${rePhraser.username} rePhrased your phrase`,
+  }
+%>
+<% include ../../layout/header.ejs %>
+
+  <%
+    let oneColumnText = [
+      `Hi ${user.username},`,
+      `${rePhraser.username} just rephrased your phrase!`,
+    ]
+  %>
+  <% include ../../partials/oneColumnText.ejs %>
+
+  <% let button = { href: callToAction.href, text: "Open Rephrase" } %>
+  <% include ../../partials/button.ejs %>
+
+<% include ../../layout/footer.ejs %>

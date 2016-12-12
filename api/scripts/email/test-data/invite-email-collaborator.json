@@ -1,0 +1,9 @@
+{
+  "headline": "theAuthor added you as a collaborator",
+  "author": {
+    "username": "theAuthor"
+  },
+  "callToAction": {
+    "href": "`${clientURL}/phrase/${author.username}/${phraseId}?invite-code=${token}`"
+  }
+}

@@ -1,0 +1,176 @@
+
+/* What it does: Remove spaces around the email design added by some email clients. */
+/* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */
+html,
+body {
+  margin: 0 auto !important;
+  padding: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+body {
+  margin: 0;
+
+  > center {
+     width: 100%;
+  }
+}
+
+.container {
+  margin: auto;
+}
+
+.max-width {
+  max-width: 600px;
+}
+
+.header {
+  td {
+    padding: 20px;
+    text-align: left
+  }
+  img {
+    height: auto;
+    font-size: 15px;
+    font-family: sans-serif;
+    line-height: 20px;
+    color: #555555;
+    mso-height-rule: exactly;
+  }
+}
+
+.footer {
+  td {
+    padding: 20px;
+    width: 100%;
+    font-size: 12px;
+    font-family: sans-serif;
+    line-height:18px;
+    text-align: left;
+    color: #888888;
+    mso-height-rule: exactly;
+  }
+}
+
+.hero-image {
+  img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    background: #dddddd;
+    font-family: sans-serif;
+    font-size: 15px;
+    mso-height-rule:
+    exactly;
+    line-height: 20px;
+    color: #555555;
+  }
+}
+
+.button-container-wrapper {
+  padding: 0 20px 20px;
+}
+.button-container {
+  td {
+    border-radius: 3px;
+    background: #222222;
+    text-align: center;
+  }
+
+  a {
+    background: #222222;
+    border: 15px solid #222222;
+    font-family: sans-serif;
+    font-size: 13px;
+    line-height: 1.1;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    border-radius: 3px;
+    font-weight: bold;
+
+    span {
+      color:#ffffff
+    }
+  }
+}
+
+.one-column-text {
+  td {
+    padding: 20px;
+    font-family: sans-serif;
+    font-size: 15px;
+    line-height: 20px;
+    color: #555555;
+    mso-height-rule: exactly;
+  }
+}
+
+/* What it does: Stops email clients resizing small text. */
+* {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* What is does: Centers email on Android 4.4 */
+div[style*="margin: 16px 0"] {
+  margin:0 !important;
+}
+
+/* What it does: Stops Outlook from adding extra spacing to tables. */
+table,
+td {
+  mso-table-lspace: 0pt !important;
+  mso-table-rspace: 0pt !important;
+}
+
+/* What it does: Fixes webkit padding issue. Fix for Yahoo mail table alignment bug. Applies table-layout to the first 2 tables then removes for anything nested deeper. */
+table {
+  border-spacing: 0 !important;
+  border-collapse: collapse !important;
+  table-layout: fixed !important;
+  margin: 0 auto !important;
+}
+table table table {
+  table-layout: auto;
+}
+
+/* What it does: Uses a better rendering method when resizing images in IE. */
+img {
+  -ms-interpolation-mode:bicubic;
+}
+
+/* What it does: A work-around for iOS meddling in triggered links. */
+.mobile-link--footer a,
+a[x-apple-data-detectors] {
+  color:inherit !important;
+  text-decoration: underline !important;
+}
+
+//==========================================
+//         Progressive Enhancements
+//==========================================
+
+/* What it does: Hover styles for buttons */
+.button-td,
+.button-a {
+  transition: all 100ms ease-in;
+}
+.button-td:hover,
+.button-a:hover {
+  background: #555555 !important;
+  border-color: #555555 !important;
+}
+
+.preheader-text {
+  display: none;
+  font-size: 1px;
+  line-height: 1px;
+  max-height: 0px;
+  max-width: 0px;
+  opacity: 0;
+  overflow: hidden;
+  mso-hide: all;
+  font-family: sans-serif;
+}

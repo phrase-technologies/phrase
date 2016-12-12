@@ -1,0 +1,12 @@
+{
+  "headline": "theAuthor added you as a collaborator",
+  "user": {
+    "username": "TestUsername"
+  },
+  "author": {
+    "username": "theAuthor"
+  },
+  "callToAction": {
+    "href": "http://thisisthecollabphrase.phrase"
+  }
+}

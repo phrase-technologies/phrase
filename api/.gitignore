@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+.DS_Store
+rethinkdb_data
+rethinkdb.exe
+backups
+logs/*
+!logs/LOGS.md
+public/profile/*
+!public/profile/PROFILE_PICTURE_UPLOADS.md
+public/audio-tracks/*
+!public/audio-tracks/AUDIO_TRACKS_UPLOADS.md
+scripts/email/output/*
+!*.keep
+uploads/*
+yarn.lock
