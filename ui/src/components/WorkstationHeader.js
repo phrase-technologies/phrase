@@ -2,13 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Tooltip, OverlayTrigger, MenuItem } from 'react-bootstrap'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
-
 import WorkstationHeaderTitle from './WorkstationHeaderTitle'
 import WorkstationHeaderAuthor from './WorkstationHeaderAuthor'
 import WorkstationHeaderStorage from './WorkstationHeaderStorage'
 import TransportControls from './TransportControls'
 import HintRing from 'components/HintRing'
-
 import {
   phraseLoginReminder,
   phraseRephraseReminder,
@@ -17,7 +15,8 @@ import {
 } from 'reducers/reducePhrase'
 import {
   changeQuantizeDivision,
-  quantizerDivisions } from 'reducers/reduceQuantizer'
+  quantizerDivisions
+} from 'reducers/reduceQuantizer'
 import { arrangeToolSelect } from 'reducers/reduceArrangeTool'
 import { exportToMidi } from 'actions/actionsMidi'
 import isSafari from 'helpers/isSafari'
